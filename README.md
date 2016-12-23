@@ -1,3 +1,2 @@
-# titra ![titra logo](public/favicons/mstile-150x150.png)
-![titra logo](public/favicons/mstile-150x150.png)
+# ![titra logo](public/favicons/favicon-32x32.png) titra
 modern open source time tracking for small companies
