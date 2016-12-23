@@ -1,0 +1,8 @@
+<template name ="home">
+  <div style="text-align:center;">
+    <h5>Hello {{#each currentUser.emails}} {{address}} {{/each}}!</h5>
+    <a href="/tracktime" class="waves-effect waves-light btn">Track time</a><br><br>
+    <a href="#" class="waves-effect waves-light btn">Stats</a><br><br>
+    <a href="#" class="waves-effect waves-light btn">Export</a><br><br>
+  </div>
+</template>

@@ -1,0 +1,46 @@
+<template name="tracktime">
+  <div class="row">
+    <form class="col s12">
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="date" type="date" class="datepicker">
+          <label for="date">Date</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <select id="targetProject">
+            <!-- <option value="" disabled selected>Select a project</option> -->
+            {{#each projects}}
+              <option value="{{_id}}">{{name}}</option>
+            {{/each}}
+          </select>
+          <label>Project</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="task" type="text" class="validate">
+          <label for="task">Task</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="hours" type="number" class="validate">
+          <label for="hours">Working time (h)</label>
+        </div>
+      </div>
+      <div class="row" style="text-align:center">
+        <div class="input-field col s4">
+          <a href="#" class="waves-effect waves-light btn" id="previous">previous</a>
+        </div>
+        <div class="input-field col s4">
+          <a href="#" class="waves-effect waves-light btn" id="save">save</a>
+        </div>
+        <div class="input-field col s4">
+          <a href="#" class="waves-effect waves-light btn" id="next">next</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</template>
