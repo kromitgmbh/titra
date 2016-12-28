@@ -54,6 +54,7 @@ Template.tracktime.onRendered(()=>{
     selectMonths: true, // Creates a dropdown to control month
     selectYears: 1
   })
+  Materialize.updateTextFields()
   // picker.set('select', new Date())
   // Template.instance().data.picker = picker.pickadate('picker')
 })
