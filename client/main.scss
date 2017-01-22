@@ -9,3 +9,8 @@ $secondary-text-color: #757575;
 $divider-color:        #BDBDBD;
 
 @import "{poetic:materialize-scss}/sass/materialize.scss";
+
+button > .navbar-icon{
+  height: 36px !important;
+  line-height:36px !important;
+}

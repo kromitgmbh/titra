@@ -1,5 +1,6 @@
-import './navbar.html'
 import { Template } from 'meteor/templating'
+import './timetracker.js'
+import './navbar.html'
 import { Projects } from '../../api/projects/projects.js'
 
 Template.navbar.onCreated( function createAppLayout() {
