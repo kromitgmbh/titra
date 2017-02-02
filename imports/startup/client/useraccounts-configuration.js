@@ -1,4 +1,5 @@
 import { AccountsTemplates } from 'meteor/useraccounts:core'
+import { FlowRouter } from 'meteor/kadira:flow-router'
 // AccountsTemplates.configure({
 //   defaultLayout: 'appLayout',
 //   defaultLayoutRegions: {},

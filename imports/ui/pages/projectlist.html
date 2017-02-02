@@ -1,0 +1,12 @@
+<template name="projectlist">
+  <h5 style="text-align:center">Your projects</h5>
+  <div class="col s8">
+    <ul class="collection">
+      {{#each projects}}
+      <li class="collection-item" id="{{_id}}"><a href="/list/timecards/{{_id}}">{{name}}</a> <span class="right"><a href="/edit/project/{{_id}}"><i class="tiny material-icons">mode_edit</i>
+</a> <a href="#" class="js-delete-project"><i class="tiny material-icons">delete</i></a></span></li>
+      {{/each}}
+    </ul>
+  </div>
+  <a href="/create/project" class="waves-effect waves-light btn" id="next">New project</a>
+</template>

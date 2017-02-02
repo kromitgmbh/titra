@@ -1,5 +1,5 @@
-import { Projects } from './projects.js';
+import Projects from './projects.js'
 
-export function initNewUser (userId, info) {
-  Projects.insert({ userId: userId, name:'Default' })
+export default function initNewUser(userId, info) {
+  Projects.insert({ userId, name: 'Default' })
 }

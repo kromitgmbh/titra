@@ -1,2 +1,4 @@
 import { Mongo } from 'meteor/mongo'
-export const Timecards = new Mongo.Collection('timecards')
+
+const Timecards = new Mongo.Collection('timecards')
+export { Timecards as default }

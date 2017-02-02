@@ -9,18 +9,19 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <select id="targetProject">
-            <!-- <option value="" disabled selected>Select a project</option> -->
-            {{#each projects}}
-              <option value="{{_id}}">{{name}}</option>
-            {{/each}}
-          </select>
+          {{>projectselect}}
           <label>Project</label>
         </div>
       </div>
-      <div class="row">
+      <!-- <div class="row">
         <div class="input-field col s12">
           <input id="task" type="text" class="validate">
+          <label for="task">Task</label>
+        </div>
+      </div> -->
+      <div class="row">
+        <div class="input-field col s12">
+          {{>tasksearch}}
           <label for="task">Task</label>
         </div>
       </div>

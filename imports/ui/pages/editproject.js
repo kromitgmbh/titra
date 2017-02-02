@@ -1,0 +1,49 @@
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import './editproject.html'
+import Projects from '../../api/projects/projects.js'
+
+Template.editproject.onCreated(function editprojectSetup() {
+  this.subscribe('singleProject', FlowRouter.getParam('id'))
+  this.autorun(() => {
+    if (this.subscriptionsReady()) {
+      Materialize.updateTextFields()
+    }
+  })
+})
+Template.editproject.events({
+  'click #save': (event, templateInstance) => {
+    event.preventDefault()
+    if (FlowRouter.getParam('id')) {
+      Meteor.call('updateProject', { projectId: FlowRouter.getParam('id'), projectArray: templateInstance.$('#editProjectForm').serializeArray() }, (error, result) => {
+        if (!error) {
+          console.log(result)
+        } else {
+          console.error(error)
+        }
+      })
+    } else {
+      Meteor.call('createProject', { projectArray: templateInstance.$('#editProjectForm').serializeArray() }, (error, result) => {
+        if (!error) {
+          console.log(result)
+        } else {
+          console.error(error)
+        }
+      })
+    }
+    FlowRouter.go('/list/projects')
+  },
+})
+Template.editproject.helpers({
+  name: () => {
+    return Projects.findOne() ? Projects.findOne().name : false
+  },
+  desc: () => {
+    return Projects.findOne() ? Projects.findOne().desc : false
+  },
+  customer: () => {
+    return Projects.findOne() ? Projects.findOne().customer : false
+  },
+  rate: () => {
+    return Projects.findOne() ? Projects.findOne().rate : false
+  },
+})

@@ -1,0 +1,22 @@
+<template name="timecardlist">
+  <div class="row">
+    <a href="/tracktime/{{projectId}}" class="waves-effect waves-light btn">Add time</a> <a href="#" id="export" class="waves-effect waves-light btn">Export</a>
+  </div>
+  <div class="row">
+    <div class="input-field col s6">
+      {{>projectselect}}
+      <label>Project</label>
+    </div>
+    <div class="input-field col s6">
+      {{>periodpicker}}
+      <label>Time period</label>
+    </div>
+  </div>
+  <ul class="collection">
+    <li class="collection-item"><strong>Task</strong> <strong class="right">Edit/Delete</strong></li>
+    {{#each timecards}}
+    <li class="collection-item" id="{{_id}}">{{prettify(date)}}: {{task}} ({{hours}} hours) <a href="#" class="secondary-content js-delete-timecard"><i class="tiny material-icons">delete</i></a> <a href="/edit/timecard/{{_id}}" class="secondary-content"><i class="tiny material-icons">mode_edit</i>
+</a></li>
+    {{/each}}
+  </ul>
+</template>

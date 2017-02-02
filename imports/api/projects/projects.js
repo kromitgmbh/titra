@@ -1,2 +1,4 @@
 import { Mongo } from 'meteor/mongo'
-export const Projects = new Mongo.Collection('projects')
+
+const Projects = new Mongo.Collection('projects')
+export { Projects as default }

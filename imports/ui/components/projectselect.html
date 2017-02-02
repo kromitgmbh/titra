@@ -1,0 +1,8 @@
+<template name ="projectselect">
+  <select id="targetProject">
+    <option value="" disabled selected>Select a project</option>
+    {{#each projects}}
+      <option value="{{_id}}">{{name}}</option>
+    {{/each}}
+  </select>
+</template>

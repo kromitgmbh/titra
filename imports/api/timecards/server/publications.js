@@ -1,8 +1,34 @@
-import { Timecards } from '../timecards.js'
+import moment from 'moment'
+import Timecards from '../timecards.js'
 
-Meteor.publish('projectTimecards', function(id) {
-  if(!this.userId || !Timecards.findOne({ projectId: id, userId: this.userId })) {
+Meteor.publish('projectTimecards', function projectTimecards({ projectId, period }) {
+  if (!this.userId || !Timecards.findOne({ projectId, userId: this.userId })) {
     return this.ready()
   }
-  return Timecards.find({ projectId: id, userId: this.userId })
+  if (period && period !== 'all') {
+    let startDate
+    let endDate
+    switch (period) {
+      default:
+        startDate = moment().startOf('month').toDate()
+        endDate = moment().endOf('month').toDate()
+        break
+      case 'currentWeek':
+        startDate = moment().startOf('week').toDate()
+        endDate = moment().endOf('week').toDate()
+        break
+      case 'lastMonth':
+        startDate = moment().subtract(1, 'month').startOf('month').toDate()
+        endDate = moment().subtract(1, 'month').endOf('month').toDate()
+        break
+      case 'lastWeek':
+        startDate = moment().subtract(1, 'week').startOf('week').toDate()
+        endDate = moment().subtract(1, 'week').endOf('week').toDate()
+        break
+    }
+    return Timecards.find({ userId: this.userId,
+      projectId,
+      date: { $gte: startDate, $lte: endDate } })
+  }
+  return Timecards.find({ projectId, userId: this.userId })
 })

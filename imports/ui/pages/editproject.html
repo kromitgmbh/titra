@@ -1,0 +1,29 @@
+<template name="editproject">
+  <form class="col s12" id="editProjectForm">
+    <div class="row">
+      <div class="input-field col s12">
+        <input name="name" id="name" type="text" value="{{name}}">
+        <label for="name">Name</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <input name="desc" id="desc" type="text" value="{{desc}}">
+        <label for="desc">Description</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <input name="customer" id="customer" type="text" value={{customer}}>
+        <label for="desc">Customer</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <input name="rate" id="rate" type="number" value={{rate}}>
+        <label for="desc">Rate ($/h)</label>
+      </div>
+    </div>
+    <a href="#" class="waves-effect waves-light btn" id="save">save</a>
+  </form>
+</template>
