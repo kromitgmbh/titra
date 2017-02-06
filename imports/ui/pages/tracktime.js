@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import moment from 'moment'
+import Timecards from '../../api/timecards/timecards.js'
 import './tracktime.html'
 import '../components/projectselect.js'
 import '../components/tasksearch.js'
@@ -24,28 +25,49 @@ Template.tracktime.events({
         }
       })
   },
-  'click #previous'(event) {
+  'click #previous'(event, templateInstance) {
     event.preventDefault()
-    const picker = $('#date').pickadate('picker')
-    // console.log(picker.get('select').obj)
-    picker.set('select', new Date(moment(picker.get('select').obj).subtract(1, 'days').utc()))
+    templateInstance.date.set(new Date(moment(templateInstance.date.get()).subtract(1, 'days').utc()))
+    $('.js-tasksearch-input').val('')
+    $('#hours').val('')
+    $('.js-tasksearch-results').hide()
   },
-  'click #next'(event) {
+  'click #next'(event, templateInstance) {
     event.preventDefault()
-    const picker = $('#date').pickadate('picker')
-    // console.log(picker.get('select').obj)
-    picker.set('select', new Date(moment(picker.get('select').obj).add(1, 'days').utc()))
+    templateInstance.date.set(new Date(moment(templateInstance.date.get()).add(1, 'days').utc()))
+    $('.js-tasksearch-input').val('')
+    $('#hours').val('')
+    $('.js-tasksearch-results').hide()
   },
 })
-Template.tracktime.onRendered(() => {
-  // $('#date')[0].value = new Date().toString('yyyy-MM-dd')
-  $('#date').data('value', new Date())
-  $('#date').pickadate({
-    select: new Date(),
-    selectMonths: true, // Creates a dropdown to control month
-    selectYears: 1,
-  })
-  Materialize.updateTextFields()
-  // picker.set('select', new Date())
-  // Template.instance().data.picker = picker.pickadate('picker')
+Template.tracktime.helpers({
+  date: () => {
+    return new moment(Template.instance().date.get()).format('YYYY-MM-DD')
+  },
+  projectId: () => {
+    if (FlowRouter.getParam('projectId')) {
+      return FlowRouter.getParam('projectId')
+    }
+    return Timecards.findOne() ? Timecards.findOne().projectId : false
+  },
+  isEdit: () => {
+    return FlowRouter.getParam('tcid')
+  },
+  task: () => {
+    return Timecards.findOne() ? Timecards.findOne().task : false
+  },
+  hours: () => {
+    return Timecards.findOne() ? Timecards.findOne().hours : false
+  },
+})
+Template.tracktime.onCreated(function tracktimeCreated() {
+  this.date = new ReactiveVar(new Date())
+  if (FlowRouter.getParam('tcid')) {
+    this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
+    this.autorun(() => {
+      if (this.subscriptionsReady()) {
+        this.date.set(Timecards.findOne() ? Timecards.findOne().date : new Date())
+      }
+    })
+  }
 })

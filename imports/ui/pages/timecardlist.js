@@ -36,7 +36,7 @@ Template.timecardlist.onCreated(function createTimeCardList() {
 })
 Template.timecardlist.helpers({
   timecards() {
-    return Timecards.find()
+    return Timecards.findOne() ? Timecards.find() : false
   },
   prettify(date) {
     return moment(date).format('DD.MM.YYYY')

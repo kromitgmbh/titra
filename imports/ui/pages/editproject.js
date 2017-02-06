@@ -1,4 +1,5 @@
 import { FlowRouter } from 'meteor/kadira:flow-router'
+import 'jquery-serializejson'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 
@@ -6,13 +7,14 @@ Template.editproject.onCreated(function editprojectSetup() {
   this.subscribe('singleProject', FlowRouter.getParam('id'))
   this.autorun(() => {
     if (this.subscriptionsReady()) {
-      Materialize.updateTextFields()
+      // Materialize.updateTextFields()
     }
   })
 })
 Template.editproject.events({
   'click #save': (event, templateInstance) => {
     event.preventDefault()
+    console.log(templateInstance.$('#editProjectForm').serializeJSON())
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', { projectId: FlowRouter.getParam('id'), projectArray: templateInstance.$('#editProjectForm').serializeArray() }, (error, result) => {
         if (!error) {

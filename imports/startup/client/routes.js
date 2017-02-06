@@ -31,6 +31,12 @@ FlowRouter.route('/tracktime/:projectId?', {
   },
   name: 'tracktime',
 })
+FlowRouter.route('/edit/timecard/:tcid', {
+  action() {
+    BlazeLayout.render('appLayout', { main: 'tracktime' })
+  },
+  name: 'tracktime',
+})
 FlowRouter.route('/export', {
   action() {
     BlazeLayout.render('appLayout', { main: 'export' })

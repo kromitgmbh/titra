@@ -1,5 +1,5 @@
 <template name ="projectselect">
-  <select id="targetProject">
+  <select id="targetProject" class="custom-select form-control">
     <option value="" disabled selected>Select a project</option>
     {{#each projects}}
       <option value="{{_id}}">{{name}}</option>

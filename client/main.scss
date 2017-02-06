@@ -1,16 +1,32 @@
-@import "{poetic:materialize-scss}/sass/components/_color.scss";
-$primary-color-dark:   #455A64;
-$primary-color:        #607D8B;
-$primary-color-light:  #CFD8DC;
-$primary-color-text:   #FFFFFF;
-$accent-color:         #009688;
-$primary-text-color:   #212121;
-$secondary-text-color: #757575;
-$divider-color:        #BDBDBD;
-
-@import "{poetic:materialize-scss}/sass/materialize.scss";
-
-button > .navbar-icon{
-  height: 36px !important;
-  line-height:36px !important;
-}
+// @import "{poetic:materialize-scss}/sass/components/_color.scss";
+// $primary-color-dark:   #455A64;
+// $primary-color:        #607D8B;
+// $primary-color-light:  #CFD8DC;
+// $primary-color-text:   #FFFFFF;
+// $accent-color:         #009688;
+// $primary-text-color:   #212121;
+// $secondary-text-color: #757575;
+// $divider-color:        #BDBDBD;
+//
+// @import "{poetic:materialize-scss}/sass/materialize.scss";
+//
+// button > .navbar-icon{
+//   height: 36px !important;
+//   line-height:36px !important;
+// }
+$brand-primary:             #009688;
+$brand-inverse:             #455A64;
+@import "{}/node_modules/bootstrap/scss/bootstrap.scss";
+// @import "{}/node_modules/font-awesome/scss/_variables.scss";
+// @import "{}/node_modules/font-awesome/scss/_mixins.scss";
+// @import "{}/node_modules/font-awesome/scss/_path.scss";
+// @import "{}/node_modules/font-awesome/scss/_core.scss";
+// @import "{}/node_modules/font-awesome/scss/_larger.scss";
+// @import "{}/node_modules/font-awesome/scss/_fixed-width.scss";
+// @import "{}/node_modules/font-awesome/scss/_list.scss";
+// @import "{}/node_modules/font-awesome/scss/_bordered-pulled.scss";
+// @import "{}/node_modules/font-awesome/scss/_animated.scss";
+// @import "{}/node_modules/font-awesome/scss/_rotated-flipped.scss";
+// @import "{}/node_modules/font-awesome/scss/_stacked.scss";
+// @import "{}/node_modules/font-awesome/scss/_icons.scss";
+// @import "{}/node_modules/font-awesome/scss/_screen-reader.scss";

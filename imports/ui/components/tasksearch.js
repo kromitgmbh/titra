@@ -1,12 +1,14 @@
+import { FlowRouter } from 'meteor/kadira:flow-router'
 import './tasksearch.html'
 import Tasks from '../../api/tasks/tasks.js'
+import Timecards from '../../api/timecards/timecards.js'
 
 Template.tasksearch.events({
   'click .js-tasksearch-result': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-tasksearch-input').val(event.currentTarget.innerHTML)
     templateInstance.$('js-tasksearch-results').hide()
-    Materialize.updateTextFields()
+    // Materialize.updateTextFields()
   },
   'keyup .js-tasksearch-input': (event, templateInstance) => {
     templateInstance.filter.set($(event.currentTarget).val())
@@ -18,6 +20,12 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
   this.filter = new ReactiveVar()
   this.autorun(() => {
     this.subscribe('mytasks', this.filter.get())
+    if (FlowRouter.getParam('tcid')) {
+      this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
+      if (this.subscriptionsReady()) {
+        this.$('.js-tasksearch-input').val(Timecards.findOne().task)
+      }
+    }
   })
 })
 

@@ -28,6 +28,7 @@ ejson@1.0.13
 email@1.1.18
 es5-shim@4.6.15
 fastclick@1.0.13
+fortawesome:fontawesome@4.7.0
 fourseven:scss@3.13.0
 geojson-utils@1.0.10
 hot-code-push@1.0.4
@@ -58,7 +59,6 @@ npm-bcrypt@0.9.2
 npm-mongo@2.2.16_1
 observe-sequence@1.0.14
 ordered-dict@1.0.9
-poetic:materialize-scss@1.97.6_1
 promise@0.8.8
 random@1.0.10
 rate-limit@1.0.6

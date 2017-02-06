@@ -1,29 +1,21 @@
 <template name="editproject">
-  <form class="col s12" id="editProjectForm">
-    <div class="row">
-      <div class="input-field col s12">
-        <input name="name" id="name" type="text" value="{{name}}">
-        <label for="name">Name</label>
-      </div>
+  <form id="editProjectForm">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input name="name" id="name" type="text" value="{{name}}" class="form-control"/>
     </div>
-    <div class="row">
-      <div class="input-field col s12">
-        <input name="desc" id="desc" type="text" value="{{desc}}">
-        <label for="desc">Description</label>
-      </div>
+    <div class="form-group">
+      <label for="desc">Description</label>
+      <input name="desc" id="desc" type="text" value="{{desc}}" class="form-control"/>
     </div>
-    <div class="row">
-      <div class="input-field col s12">
-        <input name="customer" id="customer" type="text" value={{customer}}>
-        <label for="desc">Customer</label>
-      </div>
+    <div class="form-group">
+      <label for="desc">Customer</label>
+      <input name="customer" id="customer" type="text" value={{customer}} class="form-control"/>
     </div>
-    <div class="row">
-      <div class="input-field col s12">
-        <input name="rate" id="rate" type="number" value={{rate}}>
-        <label for="desc">Rate ($/h)</label>
-      </div>
+    <div class="form-group">
+      <label for="desc">Rate ($/h)</label>
+      <input name="rate" id="rate" type="number" value={{rate}} class="form-control"/>
     </div>
-    <a href="#" class="waves-effect waves-light btn" id="save">save</a>
+    <button class="btn btn-primary" id="save">save</button>
   </form>
 </template>

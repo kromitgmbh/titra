@@ -11,5 +11,5 @@ Template.periodpicker.events({
 })
 
 Template.periodpicker.onRendered(() => {
-  Template.instance().$('select').material_select()
+  // Template.instance().$('select').material_select()
 })

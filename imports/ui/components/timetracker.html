@@ -1,7 +1,7 @@
 <template name="timetracker">
   {{#if timerIsRunning}}
-    <button class="waves-effect waves-light btn js-stop"><span class="js-timer">00:00:00</span><i class="material-icons navbar-icon right">stop</i></button>
+    <button class="btn btn-primary js-stop"><span class="js-timer">00:00:00</span><i class="material-icons navbar-icon right">stop</i></button>
   {{else}}
-    <button class="waves-effect waves-light btn js-start">Timer <i class="material-icons navbar-icon right">play_circle_filled</i></button>
+    <button class="btn btn-primary js-start">Timer <i class="material-icons navbar-icon right">play_circle_filled</i></button>
   {{/if}}
 </template>

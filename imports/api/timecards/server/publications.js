@@ -32,3 +32,10 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
   }
   return Timecards.find({ projectId, userId: this.userId })
 })
+Meteor.publish('singleTimecard', function singleTimecard(_id) {
+  check(_id, String)
+  if (!this.userId || !Timecards.findOne({ userId: this.userId, _id })) {
+    return this.ready()
+  }
+  return Timecards.find({ _id })
+})
