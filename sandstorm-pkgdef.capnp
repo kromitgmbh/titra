@@ -61,7 +61,7 @@ const pkgdef :Spk.PackageDefinition = (
       # URL of the app's source code repository, e.g. a GitHub URL.
       # Required if you specify a license requiring redistributing code, but optional otherwise.
 
-      license = (opensource = gpl3),
+      license = (openSource = gpl3),
       # The license this package is distributed under.  See
       # https://docs.sandstorm.io/en/latest/developing/publishing-apps/#license
 
