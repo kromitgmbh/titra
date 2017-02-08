@@ -9,32 +9,10 @@
         <ul class="navbar-nav mr-auto">
           <li class="nav-item"><a class="nav-link" href="/list/projects">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="/tracktime">Track time</a></li>
+          {{#unless sandStormUser}}
+            <li class="nav-item"><a class="nav-link js-logout" href="#">Logout</a></li>
+          {{/unless}}
         </ul>
       </div>
     </nav>
-  <!-- <nav>
-  <div class="nav-wrapper">
-    <a href="/" class="brand-logo" style="margin-left:20px;"><img src="/favicons/favicon-32x32.png" alt="titra logo"/></a>
-    <a href="#" data-activates="mobile-view" class="button-collapse"><i class="material-icons">menu</i></a>
-    <ul id="nav-mobile" class="right hide-on-med-and-down"> -->
-      <!-- <li><a href="/signin">Login</a></li>
-      <li><a href="/join">Signup</a></li> -->
-      <!-- Dropdown Trigger -->
-      <!-- <li><a href="/tracktime">Track time</a></li>
-      <li><a href="/list/projects">Projects</a></li> -->
-      <!-- <li><a href="/export">Export</a></li> -->
-
-      <!-- <li>
-        {{>timetracker}}
-      </li> -->
-      <!-- <li><a href="#" id="logout">Logout</a></li>
-    </ul>
-    <ul class="side-nav" id="mobile-view"> -->
-      <!-- <li><a class="dropdown-button" href="#!" data-activates="projects">Projects<i class="material-icons right">arrow_drop_down</i></a></li> -->
-      <!-- <li><a href="/tracktime">Track time</a></li>
-      <li><a href="/list/projects">Projects</a></li>
-      <li><a href="#" id="logout">Logout</a></li>
-    </ul>
-  </div>
-  </nav> -->
 </template>

@@ -55,7 +55,7 @@ Template.timecardlist.events({
   },
   'click .js-delete-timecard': (event) => {
     event.preventDefault()
-    Meteor.call('deleteTimeCard', { timecardId: event.currentTarget.parentNode.id }, (error, result) => {
+    Meteor.call('deleteTimeCard', { timecardId: event.currentTarget.parentNode.parentNode.id }, (error, result) => {
       if (!error) {
         console.log(result)
       } else {
