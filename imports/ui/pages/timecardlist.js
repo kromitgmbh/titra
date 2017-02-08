@@ -67,7 +67,7 @@ Template.timecardlist.events({
     event.preventDefault()
     Meteor.call('export', { projectId: $('#targetProject').val(), timePeriod: $('#period').val() }, (error, result) => {
       if (!error) {
-        saveAs(new Blob([result], { type: 'application/vnd.ms-excel' }), 'excel-test.xls')
+        saveAs(new Blob([result], { type: 'application/vnd.ms-excel' }), `titra_export_${moment().format('YYYYMMDD-HHmm')}.xls`)
         // console.log(result)
       } else {
         console.error(error)
