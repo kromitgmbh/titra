@@ -2,7 +2,8 @@ import moment from 'moment'
 import Timecards from '../timecards.js'
 
 Meteor.publish('projectTimecards', function projectTimecards({ projectId, period }) {
-  if (!this.userId || !Timecards.findOne({ projectId, userId: this.userId })) {
+  if (!this.userId || !Timecards.findOne({ projectId,
+    $or: [{ userId: this.userId }, { public: true }] })) {
     return this.ready()
   }
   if (period && period !== 'all') {
@@ -34,7 +35,7 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
 })
 Meteor.publish('singleTimecard', function singleTimecard(_id) {
   check(_id, String)
-  if (!this.userId || !Timecards.findOne({ userId: this.userId, _id })) {
+  if (!this.userId || !Timecards.findOne({ $$or: [{ userId: this.userId }, { public: true }] })) {
     return this.ready()
   }
   return Timecards.find({ _id })

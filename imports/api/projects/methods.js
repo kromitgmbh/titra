@@ -25,6 +25,9 @@ Meteor.methods({
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
     }
+    if (!updateJSON.public) {
+      updateJSON.public = false
+    }
     Projects.update({ userId: this.userId, _id: projectId }, { $set: updateJSON })
   },
   'createProject'({ projectArray }) {
@@ -34,6 +37,9 @@ Meteor.methods({
     const updateJSON = {}
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
+    }
+    if (!updateJSON.public) {
+      updateJSON.public = false
     }
     updateJSON.userId = this.userId
     Projects.insert(updateJSON)

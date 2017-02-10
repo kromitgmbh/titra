@@ -48,4 +48,7 @@ Template.editproject.helpers({
   rate: () => {
     return Projects.findOne() ? Projects.findOne().rate : false
   },
+  public: () => {
+    return Projects.findOne() ? Projects.findOne().public : false
+  },
 })

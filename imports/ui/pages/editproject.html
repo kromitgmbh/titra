@@ -16,6 +16,15 @@
       <label for="desc">Rate ($/h)</label>
       <input name="rate" id="rate" type="number" value={{rate}} class="form-control"/>
     </div>
+    <div class="form-group">
+      <label for="desc">Public project (visible to all users)</label>
+      {{#if public}}
+        <input name="public" id="public" type="checkbox" checked class="form-control"/>
+      {{else}}
+        <input name="public" id="public" type="checkbox" class="form-control"/>
+      {{/if}}
+      <!-- <input name="public" id="public" type="hidden" value={{public}} class="form-control"/> -->
+    </div>
     <button class="btn btn-primary" id="save">save</button>
   </form>
 </template>

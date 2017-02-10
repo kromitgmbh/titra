@@ -5,7 +5,7 @@ Template.navbar.onRendered(() => {
 })
 
 Template.navbar.helpers({
-  sandStormUser: () => Meteor.sandStormUser(),
+  sandStormUser: () => Meteor.settings.public.sandstorm,
 })
 
 Template.navbar.events({

@@ -2,6 +2,7 @@ import moment from 'moment'
 import csv from 'fast-csv'
 import Timecards from './timecards.js'
 import Tasks from '../tasks/tasks.js'
+import Projects from '../projects/projects.js'
 
 Meteor.methods({
   'insertTimeCard'({ projectId, task, date, hours }) {
@@ -37,16 +38,25 @@ Meteor.methods({
         endDate = moment().subtract(1, 'week').endOf('week').toDate()
         break
     }
+    const timecardArray = Timecards.find({ userId: this.userId,
+      projectId,
+      date: { $gte: startDate, $lte: endDate } }).fetch()
+    for (const timecard of timecardArray) {
+      timecard.date = moment(timecard.date).format('DD.MM.YYYY')
+      timecard.Resource = Meteor.users.findOne({ _id: timecard.userId }).profile.name
+      timecard.Project = Projects.findOne({ _id: timecard.projectId }).name
+      delete timecard.userId
+      delete timecard.projectId
+      delete timecard._id
+    }
     return new Promise((resolve, reject) => {
-      csv.writeToString(Timecards.find({ userId: this.userId,
-        projectId,
-        date: { $gte: startDate, $lte: endDate } }).fetch(), { headers: true, delimiter: '\t' }, (error, data) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(data)
-          }
-        })
+      csv.writeToString(timecardArray, { headers: true, delimiter: '\t' }, (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(data)
+        }
+      })
     })
     // return new Buffer(json2xls(Timecards.find({ userId: this.userId,
     //   projectId,

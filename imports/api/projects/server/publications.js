@@ -5,12 +5,12 @@ Meteor.publish('myprojects', function myProjects() {
   if (!this.userId) {
     return this.ready()
   }
-  return Projects.find({ userId: this.userId })
+  return Projects.find({ $or: [{ userId: this.userId }, { public: true }] })
 })
 Meteor.publish('singleProject', function singleProject(projectId) {
   check(projectId, String)
   if (!this.userId) {
     return this.ready()
   }
-  return Projects.find({ userId: this.userId, _id: projectId })
+  return Projects.find({ $or: [{ userId: this.userId }, { public: true }], _id: projectId })
 })

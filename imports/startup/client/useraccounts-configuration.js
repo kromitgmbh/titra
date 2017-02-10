@@ -29,10 +29,27 @@ AccountsTemplates.configure({
   positiveValidation: true,
   negativeFeedback: false,
   positiveFeedback: true,
-  onLogoutHook: () => {
-    FlowRouter.go('signin')
-  },
+  // onLogoutHook: () => {
+  //   FlowRouter.go('/signin')
+  // },
   // Privacy Policy and Terms of Use
   //privacyUrl: 'privacy',
   //termsUrl: 'terms-of-use',
+})
+
+AccountsTemplates.addField({
+  _id: 'name',
+  type: 'text',
+  placeholder: {
+    signUp: 'Your Fullname',
+  },
+  required: true,
+})
+
+Accounts.onLogin(() => {
+  FlowRouter.go('/list/projects')
+})
+
+Accounts.onLogout(() => {
+  window.location.href = '/'
 })
