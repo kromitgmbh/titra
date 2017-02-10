@@ -22,6 +22,7 @@
     <li class="list-group-item justify-content-between" id="{{_id}}">{{prettify(date)}}: {{task}} ({{hours}} hours) <span><a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i>
 </a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a></span></li>
     {{/each}}
+    <li class="list-group-item"><strong>Total:</strong>&nbsp; {{totalHours}} (hours)</li>
   </ul>
   {{else}}
     <p>Sorry, no data found. Please refine your search <i class="fa fa-binoculars"></i></p>

@@ -17,6 +17,9 @@
 $brand-primary:             #009688;
 $brand-inverse:             #455A64;
 @import "{}/node_modules/bootstrap/scss/bootstrap.scss";
+.navbar {
+  display: block;
+}
 // @import "{}/node_modules/font-awesome/scss/_variables.scss";
 // @import "{}/node_modules/font-awesome/scss/_mixins.scss";
 // @import "{}/node_modules/font-awesome/scss/_path.scss";

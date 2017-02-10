@@ -1,10 +1,10 @@
 <template name="navbar">
   <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+    <div class="container">
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="/"><img src="/favicons/favicon-32x32.png" alt="titra logo"/></a>
-
+      <a class="navbar-brand floa-left" href="/"><img src="/favicons/favicon-32x32.png" alt="titra logo"/></a>
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item"><a class="nav-link" href="/list/projects">Dashboard</a></li>
@@ -14,5 +14,6 @@
           {{/unless}}
         </ul>
       </div>
+    </div>
     </nav>
 </template>

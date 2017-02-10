@@ -44,6 +44,13 @@ Template.timecardlist.helpers({
   projectId() {
     return FlowRouter.getParam('projectId')
   },
+  totalHours() {
+    let hoursCount = 0
+    for (const timecard of Timecards.find().fetch()) {
+      hoursCount += Number.parseFloat(timecard.hours)
+    }
+    return hoursCount
+  },
 })
 
 Template.timecardlist.events({

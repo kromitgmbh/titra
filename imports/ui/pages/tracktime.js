@@ -5,6 +5,7 @@ import Timecards from '../../api/timecards/timecards.js'
 import './tracktime.html'
 import '../components/projectselect.js'
 import '../components/tasksearch.js'
+import '../components/timetracker.js'
 
 Template.tracktime.events({
   'click #save'(event, templateInstance) {

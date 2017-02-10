@@ -1,4 +1,5 @@
 <template name="editproject">
+  <h5 class="text-center">Edit project</h5>
   <form id="editProjectForm">
     <div class="form-group">
       <label for="name">Name</label>
@@ -25,6 +26,9 @@
       {{/if}}
       <!-- <input name="public" id="public" type="hidden" value={{public}} class="form-control"/> -->
     </div>
-    <button class="btn btn-primary" id="save">save</button>
   </form>
+  <div class="row text-center">
+    <button class="col-5 col-md-2 btn-secondary form-control" id="back">back</button>
+    <button class="offset-2 col-5 offset-md-8 col-md-2 btn btn-primary form-control" id="save">save</button>
+  </div>
 </template>

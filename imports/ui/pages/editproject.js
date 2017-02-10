@@ -34,6 +34,10 @@ Template.editproject.events({
     }
     FlowRouter.go('/list/projects')
   },
+  'click #back': (event) => {
+    event.preventDefault()
+    window.history.back()
+  },
 })
 Template.editproject.helpers({
   name: () => {

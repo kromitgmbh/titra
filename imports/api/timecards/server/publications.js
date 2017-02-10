@@ -35,7 +35,7 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
 })
 Meteor.publish('singleTimecard', function singleTimecard(_id) {
   check(_id, String)
-  if (!this.userId || !Timecards.findOne({ $$or: [{ userId: this.userId }, { public: true }] })) {
+  if (!this.userId || !Timecards.findOne({ $or: [{ userId: this.userId }, { public: true }] })) {
     return this.ready()
   }
   return Timecards.find({ _id })
