@@ -1,9 +1,10 @@
 import moment from 'moment'
 import Timecards from '../timecards.js'
+import Projects from '../../projects/projects.js'
 
 Meteor.publish('projectTimecards', function projectTimecards({ projectId, period }) {
-  if (!this.userId || !Timecards.findOne({ projectId,
-    $or: [{ userId: this.userId }, { public: true }] })) {
+  const project = Projects.findOne({ _id: projectId })
+  if (!this.userId || (!Timecards.findOne({ projectId, userId: this.userId }) && !project.public)) {
     return this.ready()
   }
   if (period && period !== 'all') {
@@ -27,15 +28,16 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
         endDate = moment().subtract(1, 'week').endOf('week').toDate()
         break
     }
-    return Timecards.find({ userId: this.userId,
-      projectId,
+    return Timecards.find({ projectId,
       date: { $gte: startDate, $lte: endDate } })
   }
-  return Timecards.find({ projectId, userId: this.userId })
+  return Timecards.find({ projectId })
 })
 Meteor.publish('singleTimecard', function singleTimecard(_id) {
   check(_id, String)
-  if (!this.userId || !Timecards.findOne({ $or: [{ userId: this.userId }, { public: true }] })) {
+  const timecard = Timecards.findOne({ _id })
+  const project = Projects.findOne({ _id: timecard.projectId })
+  if (!this.userId || (!Timecards.findOne({ userId: this.userId }) && !project.public)) {
     return this.ready()
   }
   return Timecards.find({ _id })

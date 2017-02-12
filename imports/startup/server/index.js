@@ -7,5 +7,6 @@ import '../../api/timecards/methods.js'
 import '../../api/tasks/tasks.js'
 import '../../api/tasks/server/publications.js'
 import '../../api/tasks/methods.js'
+import '../../api/users/server/publications.js'
 
 import './useraccounts-configuration.js'

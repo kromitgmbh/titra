@@ -27,6 +27,8 @@ Meteor.methods({
     }
     if (!updateJSON.public) {
       updateJSON.public = false
+    } else {
+      updateJSON.public = true
     }
     Projects.update({ userId: this.userId, _id: projectId }, { $set: updateJSON })
   },
@@ -40,6 +42,8 @@ Meteor.methods({
     }
     if (!updateJSON.public) {
       updateJSON.public = false
+    } else {
+      updateJSON.public = true
     }
     updateJSON.userId = this.userId
     Projects.insert(updateJSON)

@@ -16,7 +16,6 @@ Template.projectselect.onCreated(function createTrackTime() {
       if (FlowRouter.getParam('tcid')) {
         this.$('#targetProject').val(Timecards.findOne().projectId)
       }
-      // this.$('select').material_select()
     }
   })
 })

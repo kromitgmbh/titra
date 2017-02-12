@@ -32,6 +32,7 @@ Template.timecardlist.onCreated(function createTimeCardList() {
   this.period = new ReactiveVar('currentMonth')
   this.autorun(() => {
     this.subscribe('projectTimecards', { projectId: FlowRouter.getParam('projectId'), period: this.period.get() })
+    this.subscribe('projectUsers', { projectId: FlowRouter.getParam('projectId') })
   })
 })
 Template.timecardlist.helpers({
@@ -50,6 +51,10 @@ Template.timecardlist.helpers({
       hoursCount += Number.parseFloat(timecard.hours)
     }
     return hoursCount
+  },
+  username(_id) {
+    const meteorUser = Meteor.users.findOne({ _id })
+    return meteorUser ? meteorUser.profile.name : false
   },
 })
 

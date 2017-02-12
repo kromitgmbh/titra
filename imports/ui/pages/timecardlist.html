@@ -16,14 +16,63 @@
     </div>
   </div>
   {{#if timecards}}
-  <ul class="list-group">
-    <li class="list-group-item justify-content-between"><strong>Task</strong> <strong class="right">Edit/Delete</strong></li>
-    {{#each timecards}}
-    <li class="list-group-item justify-content-between" id="{{_id}}">{{prettify(date)}}: {{task}} ({{hours}} hours) <span><a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i>
-</a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a></span></li>
-    {{/each}}
-    <li class="list-group-item"><strong>Total:</strong>&nbsp; {{totalHours}} (hours)</li>
-  </ul>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Task</th>
+          <th>Resource</th>
+          <th class="text-center">Hours</th>
+          <th class="text-right">Edit/Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each timecards}}
+        <tr id="{{_id}}">
+          <td>{{prettify(date)}}</td>
+          <td>{{task}}</td>
+          <td>{{username(userId)}}</td>
+          <td class="text-center">{{hours}}</td>
+          <!-- <li class="list-group-item justify-content-between" id="{{_id}}">{{prettify(date)}}: {{task}} ({{hours}} hours) <span><a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i>
+      </a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a></span></li> -->
+          <td class="text-right"><a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i></a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a></td>
+        </tr>
+        {{/each}}
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="text-right"><strong>Total:</strong></td>
+          <td class="text-center">{{totalHours}}</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- <ul class="list-group">
+    <li class="list-group-item">
+      <div class="col-2">
+        <strong>Date</strong>
+      </div>
+      <div class="col-4">
+        <strong>Task</strong>
+      </div>
+      <div class="col-2">
+        <strong>Resource</strong>
+      </div>
+      <div class="col-2">
+        <strong>Hours</strong>
+      </div>
+      <div class="col-2">
+        <strong class="text-right">Edit/Delete</strong>
+      </div>
+    </li> -->
+    <!-- {{#each timecards}} -->
+    <!-- <li class="list-group-item justify-content-between" id="{{_id}}">{{prettify(date)}}: {{task}} ({{hours}} hours) <span><a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i>
+</a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a></span></li> -->
+    <!-- {{/each}} -->
+    <!-- <li class="list-group-item"><strong>Total:</strong>&nbsp; {{totalHours}} (hours)</li> -->
+  <!-- </ul> -->
   {{else}}
     <p>Sorry, no data found. Please refine your search <i class="fa fa-binoculars"></i></p>
   {{/if}}
