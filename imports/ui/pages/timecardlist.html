@@ -6,13 +6,17 @@
     </div>
   </div>
   <div class="row mb-2">
-    <div class="col-sm-6">
+    <div class="col-sm-4">
       <label>Project</label>
       {{>projectselect}}
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-4">
       <label>Time period</label>
       {{>periodpicker}}
+    </div>
+    <div class="col-sm-4">
+      <label>Resource</label>
+      {{>resourceselect}}
     </div>
   </div>
   {{#if timecards}}

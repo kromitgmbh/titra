@@ -8,5 +8,7 @@ import '../../api/tasks/tasks.js'
 import '../../api/tasks/server/publications.js'
 import '../../api/tasks/methods.js'
 import '../../api/users/server/publications.js'
+import '../../api/users/methods.js'
+
 
 import './useraccounts-configuration.js'

@@ -8,6 +8,7 @@ import '../../ui/pages/export.js'
 import '../../ui/pages/projectlist.js'
 import '../../ui/pages/timecardlist.js'
 import '../../ui/pages/editproject.js'
+import '../../ui/pages/settings.js'
 
 
 // import '../../ui/pages/root-redirector.js';
@@ -16,9 +17,9 @@ import '../../ui/pages/editproject.js'
 
 // Import to override accounts templates
 // import '../../ui/accounts/accounts-templates.js';
-
-FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn])
-
+if (!Meteor.settings.public.sandstorm) {
+  FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn])
+}
 FlowRouter.route('/', {
   action() {
     BlazeLayout.render('appLayout', { main: 'home' })
@@ -66,6 +67,12 @@ FlowRouter.route('/list/timecards/:projectId', {
     BlazeLayout.render('appLayout', { main: 'timecardlist' })
   },
   name: 'projectlist',
+})
+FlowRouter.route('/settings', {
+  action() {
+    BlazeLayout.render('appLayout', { main: 'settings' })
+  },
+  name: 'settings',
 })
 AccountsTemplates.configureRoute('signIn', {
   name: 'signin',

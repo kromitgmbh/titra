@@ -42,18 +42,14 @@ Template.tracktime.events({
   },
 })
 Template.tracktime.helpers({
-  date: () => {
-    return new moment(Template.instance().date.get()).format('YYYY-MM-DD')
-  },
+  date: () => moment(Template.instance().date.get()).format('YYYY-MM-DD'),
   projectId: () => {
     if (FlowRouter.getParam('projectId')) {
       return FlowRouter.getParam('projectId')
     }
     return Timecards.findOne() ? Timecards.findOne().projectId : false
   },
-  isEdit: () => {
-    return FlowRouter.getParam('tcid')
-  },
+  isEdit: () => FlowRouter.getParam('tcid'),
   task: () => {
     return Timecards.findOne() ? Timecards.findOne().task : false
   },

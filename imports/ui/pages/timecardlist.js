@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver'
 import Timecards from '../../api/timecards/timecards.js'
 import './timecardlist.html'
 import '../components/periodpicker.js'
+import '../components/resourceselect.js'
 
 const base64toBlob = (base64Data, contentTypeArgument) => {
   check(base64Data, String)
@@ -30,8 +31,9 @@ const base64toBlob = (base64Data, contentTypeArgument) => {
 
 Template.timecardlist.onCreated(function createTimeCardList() {
   this.period = new ReactiveVar('currentMonth')
+  this.resource = new ReactiveVar('all')
   this.autorun(() => {
-    this.subscribe('projectTimecards', { projectId: FlowRouter.getParam('projectId'), period: this.period.get() })
+    this.subscribe('projectTimecards', { projectId: FlowRouter.getParam('projectId'), period: this.period.get(), userId: this.resource.get() })
     this.subscribe('projectUsers', { projectId: FlowRouter.getParam('projectId') })
   })
 })
@@ -61,6 +63,9 @@ Template.timecardlist.helpers({
 Template.timecardlist.events({
   'change #period': (event, templateInstance) => {
     templateInstance.period.set($(event.currentTarget).val())
+  },
+  'change #resourceselect': (event, templateInstance) => {
+    templateInstance.resource.set($(event.currentTarget).val())
   },
   'change #targetProject': (event) => {
     FlowRouter.go(`/list/timecards/${$(event.currentTarget).val()}`)
