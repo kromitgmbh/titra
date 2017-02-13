@@ -1,8 +1,11 @@
+import { Meteor } from 'meteor/meteor'
 import './settings.html'
+import '../components/backbutton.js'
+
 
 Template.settings.helpers({
   name() {
-    return Meteor.user().profile.name
+    return Meteor.user() ? Meteor.user().profile.name : false
   },
 })
 
@@ -13,11 +16,7 @@ Template.settings.events({
       if (error) {
         console.error(error)
       }
-      console.log(result)
+      $.notify('Settings saved successfully')
     })
-  },
-  'click .js-back'(event) {
-    event.preventDefault()
-    window.history.back()
   },
 })

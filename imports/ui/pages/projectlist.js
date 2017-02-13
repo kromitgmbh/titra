@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import './projectlist.html'
 import Projects from '../../api/projects/projects'
 import '../components/timetracker.js'
@@ -25,7 +26,7 @@ Template.projectlist.events({
     event.preventDefault()
     Meteor.call('deleteProject', { projectId: event.currentTarget.parentNode.parentNode.id }, (error, result) => {
       if (!error) {
-        console.log(result)
+        $.notify('Project deleted successfully')
       } else {
         console.error(error)
       }

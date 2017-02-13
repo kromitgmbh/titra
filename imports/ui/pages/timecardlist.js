@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import moment from 'moment'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { saveAs } from 'file-saver'
@@ -74,7 +75,7 @@ Template.timecardlist.events({
     event.preventDefault()
     Meteor.call('deleteTimeCard', { timecardId: event.currentTarget.parentNode.parentNode.id }, (error, result) => {
       if (!error) {
-        console.log(result)
+        $.notify('Time entry deleted')
       } else {
         console.error(error)
       }

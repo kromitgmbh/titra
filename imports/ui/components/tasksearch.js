@@ -11,8 +11,10 @@ Template.tasksearch.events({
     // Materialize.updateTextFields()
   },
   'keyup .js-tasksearch-input': (event, templateInstance) => {
-    templateInstance.filter.set($(event.currentTarget).val())
-    templateInstance.$('js-tasksearch-results').show()
+    if ($(event.currentTarget).val() !== '') {
+      templateInstance.filter.set($(event.currentTarget).val())
+      templateInstance.$('js-tasksearch-results').show()
+    }
   },
 })
 

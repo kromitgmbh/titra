@@ -2,9 +2,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router'
 import { BlazeLayout } from 'meteor/kadira:blaze-layout'
 import { AccountsTemplates } from 'meteor/useraccounts:core'
 import '../../ui/layouts/appLayout.js'
-import '../../ui/pages/home.js'
 import '../../ui/pages/tracktime.js'
-import '../../ui/pages/export.js'
 import '../../ui/pages/projectlist.js'
 import '../../ui/pages/timecardlist.js'
 import '../../ui/pages/editproject.js'
@@ -22,7 +20,7 @@ if (!Meteor.settings.public.sandstorm) {
 }
 FlowRouter.route('/', {
   action() {
-    BlazeLayout.render('appLayout', { main: 'home' })
+    BlazeLayout.render('appLayout', { main: 'projectlist' })
   },
   name: 'home',
 })
@@ -36,13 +34,7 @@ FlowRouter.route('/edit/timecard/:tcid', {
   action() {
     BlazeLayout.render('appLayout', { main: 'tracktime' })
   },
-  name: 'tracktime',
-})
-FlowRouter.route('/export', {
-  action() {
-    BlazeLayout.render('appLayout', { main: 'export' })
-  },
-  name: 'tracktime',
+  name: 'edittime',
 })
 FlowRouter.route('/list/projects', {
   action() {
@@ -66,7 +58,7 @@ FlowRouter.route('/list/timecards/:projectId', {
   action() {
     BlazeLayout.render('appLayout', { main: 'timecardlist' })
   },
-  name: 'projectlist',
+  name: 'timecards',
 })
 FlowRouter.route('/settings', {
   action() {

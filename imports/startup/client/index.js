@@ -5,6 +5,7 @@
 // import 'font-awesome/css/font-awesome.min.css'
 import './useraccounts-configuration.js'
 import './routes.js'
+import './startup.js'
 
 window.Tether = require('tether')
 require('bootstrap')

@@ -1,7 +1,9 @@
+import { Meteor } from 'meteor/meteor'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import 'jquery-serializejson'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
+import '../components/backbutton.js'
 
 Template.editproject.onCreated(function editprojectSetup() {
   this.subscribe('singleProject', FlowRouter.getParam('id'))
@@ -14,11 +16,11 @@ Template.editproject.onCreated(function editprojectSetup() {
 Template.editproject.events({
   'click #save': (event, templateInstance) => {
     event.preventDefault()
-    console.log(templateInstance.$('#editProjectForm').serializeJSON())
+    // console.log(templateInstance.$('#editProjectForm').serializeJSON())
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', { projectId: FlowRouter.getParam('id'), projectArray: templateInstance.$('#editProjectForm').serializeArray() }, (error, result) => {
         if (!error) {
-          console.log(result)
+          $.notify('Project updated successfully')
         } else {
           console.error(error)
         }
@@ -26,7 +28,7 @@ Template.editproject.events({
     } else {
       Meteor.call('createProject', { projectArray: templateInstance.$('#editProjectForm').serializeArray() }, (error, result) => {
         if (!error) {
-          console.log(result)
+          $.notify('Project created successfully')
         } else {
           console.error(error)
         }

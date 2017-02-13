@@ -28,7 +28,11 @@
     </div>
   </form>
   <div class="row text-center">
-    <button class="col-5 col-md-2 btn-secondary form-control" id="back">back</button>
-    <button class="offset-2 col-5 offset-md-8 col-md-2 btn btn-primary form-control" id="save">save</button>
+    <div class="col-5 col-md-2">
+      {{>backbutton}}
+    </div>
+    <div class="offset-2 col-5 offset-md-8 col-md-2">
+      <button class="btn btn-primary form-control" id="save">save</button>
+    </div>
   </div>
 </template>

@@ -1,19 +1,27 @@
 <template name="tracktime">
   <form>
-    <div class="form-group">
-      <label for="date">Date</label>
-      <input id="date" type="date" class="form-control" value="{{date}}">
+    <div class="row form-group">
+      {{#unless isEdit}}
+        <div class="col-2">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary form-control js-previous"><i class="fa fa-chevron-left"></i></button>
+        </div>
+      {{/unless}}
+      <div class="col">
+        <label for="date">Date</label>
+        <input id="date" type="date" class="form-control" value="{{date}}">
+      </div>
+      {{#unless isEdit}}
+        <div class="col-2 text-right">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary form-control js-next"><i class="fa fa-chevron-right"></i></button>
+        </div>
+      {{/unless}}
     </div>
     <div class="form-group">
       <label>Project</label>
       {{>projectselect}}
     </div>
-    <!-- <div class="row">
-      <div class="input-field col s12">
-        <input id="task" type="text" class="validate">
-        <label for="task">Task</label>
-      </div>
-    </div> -->
     <div class="form-group">
       <label for="task">Task</label>
       {{>tasksearch}}
@@ -21,27 +29,24 @@
     <div class="form-group">
       <label for="hours">Working time (h)</label>
       <div class="row">
-        <div class="col-md-10 col-6">
+        <div class="col">
           <input id="hours" type="number" class="form-control" value="{{hours}}" step="0.01"/>
         </div>
-        <div class="col-md-2 col-6 text-right">
-          {{>timetracker}}
-        </div>
+        {{#unless isEdit}}
+          <div class="col-md-3 col-6 text-right">
+            {{>timetracker}}
+          </div>
+        {{/unless}}
       </div>
     </div>
     <div class="row">
-      <div class="col-4 col-lg-2 text-left">
-        {{#unless isEdit}}
-        <button class="btn btn-primary form-control" id="previous">previous</button>
-        {{/unless}}
+      <div class="col-5 col-md-3">
+        {{>backbutton}}
       </div>
-      <div class="col-4 offset-lg-3 col-lg-2 text-center">
-        <button class="btn btn-primary form-control" id="save">save</button>
+      <div class="col">
       </div>
-      <div class="col-4 offset-lg-3 col-lg-2 text-right">
-        {{#unless isEdit}}
-        <button class="btn btn-primary form-control" id="next">next</button>
-        {{/unless}}
+      <div class="col-5 col-md-3 text-right">
+        <button class="btn btn-primary form-control js-save">save</button>
       </div>
     </div>
   </form>

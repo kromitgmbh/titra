@@ -14,6 +14,15 @@ Meteor.methods({
     }
     Timecards.insert({ userId: this.userId, projectId, date, hours, task })
   },
+  'updateTimeCard'({ _id, task, date, hours }) {
+    if (!this.userId) {
+      throw new Meteor.Error('You have to be signed in to use this method.')
+    }
+    if (!Tasks.findOne({ userId: this.userId, name: task })) {
+      Tasks.insert({ userId: this.userId, name: task })
+    }
+    Timecards.update({ _id }, { $set: { date, hours, task } })
+  },
   'export'({ projectId, timePeriod }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')

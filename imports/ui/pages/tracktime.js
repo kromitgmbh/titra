@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import moment from 'moment'
@@ -6,34 +7,52 @@ import './tracktime.html'
 import '../components/projectselect.js'
 import '../components/tasksearch.js'
 import '../components/timetracker.js'
+import '../components/backbutton.js'
 
 Template.tracktime.events({
-  'click #save'(event, templateInstance) {
+  'click .js-save'(event, templateInstance) {
     event.preventDefault()
     // console.log(Template.instance().data.picker.component.item.select.obj)
     // console.log(Template.instance().data.picker)
-    Meteor.call('insertTimeCard', { projectId: $('#targetProject').val(),
-      date: new Date(Date.parse($('#date').val())),
-      hours: $('#hours').val(),
-      task: templateInstance.$('.js-tasksearch-input').val() }, (error, result) => {
-        if (error) {
-          console.error(error)
-        } else {
-          $('.js-tasksearch-input').val('')
-          $('#hours').val('')
-          $('.js-tasksearch-results').hide()
-          console.log(result)
-        }
-      })
+    if (FlowRouter.getParam('tcid')) {
+      Meteor.call('updateTimeCard', { _id: FlowRouter.getParam('tcid'),
+        date: new Date(Date.parse($('#date').val())),
+        hours: $('#hours').val(),
+        task: templateInstance.$('.js-tasksearch-input').val() }, (error, result) => {
+          if (error) {
+            console.error(error)
+          } else {
+            $('.js-tasksearch-input').val('')
+            $('#hours').val('')
+            $('.js-tasksearch-results').hide()
+            $.notify('Time entry updated successfully')
+            window.history.back()
+          }
+        })
+    } else {
+      Meteor.call('insertTimeCard', { projectId: $('#targetProject').val(),
+        date: new Date(Date.parse($('#date').val())),
+        hours: $('#hours').val(),
+        task: templateInstance.$('.js-tasksearch-input').val() }, (error, result) => {
+          if (error) {
+            console.error(error)
+          } else {
+            $('.js-tasksearch-input').val('')
+            $('#hours').val('')
+            $('.js-tasksearch-results').hide()
+            $.notify('Time entry saved successfully')
+          }
+        })
+    }
   },
-  'click #previous'(event, templateInstance) {
+  'click .js-previous'(event, templateInstance) {
     event.preventDefault()
     templateInstance.date.set(new Date(moment(templateInstance.date.get()).subtract(1, 'days').utc()))
     $('.js-tasksearch-input').val('')
     $('#hours').val('')
     $('.js-tasksearch-results').hide()
   },
-  'click #next'(event, templateInstance) {
+  'click .js-next'(event, templateInstance) {
     event.preventDefault()
     templateInstance.date.set(new Date(moment(templateInstance.date.get()).add(1, 'days').utc()))
     $('.js-tasksearch-input').val('')
