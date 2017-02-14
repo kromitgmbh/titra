@@ -59,6 +59,9 @@ Template.tracktime.events({
     $('#hours').val('')
     $('.js-tasksearch-results').hide()
   },
+  'change #targetProject'(event, templateInstance) {
+    templateInstance.data.projectId.set($(event.currentTarget).val())
+  },
 })
 Template.tracktime.helpers({
   date: () => moment(Template.instance().date.get()).format('YYYY-MM-DD'),
@@ -78,6 +81,7 @@ Template.tracktime.helpers({
 })
 Template.tracktime.onCreated(function tracktimeCreated() {
   this.date = new ReactiveVar(new Date())
+  this.data.projectId = new ReactiveVar(FlowRouter.getParam('projectId'))
   if (FlowRouter.getParam('tcid')) {
     this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
     this.autorun(() => {

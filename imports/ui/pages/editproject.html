@@ -3,22 +3,26 @@
   <form id="editProjectForm">
     <div class="form-group">
       <label for="name">Name</label>
-      <input name="name" id="name" type="text" value="{{name}}" class="form-control"/>
+      <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="My project"/>
     </div>
     <div class="form-group">
       <label for="desc">Description</label>
-      <input name="desc" id="desc" type="text" value="{{desc}}" class="form-control"/>
+      <textarea name="desc" id="desc" type="text" value="{{desc}}" class="form-control" placeholder="Describe your project here ..."></textarea>
     </div>
     <div class="form-group">
-      <label for="desc">Customer</label>
-      <input name="customer" id="customer" type="text" value={{customer}} class="form-control"/>
+      <label for="customer">Customer</label>
+      <input name="customer" id="customer" type="text" value={{customer}} class="form-control" placeholder="Sample Customer"/>
     </div>
     <div class="form-group">
-      <label for="desc">Rate ($/h)</label>
-      <input name="rate" id="rate" type="number" value={{rate}} class="form-control"/>
+      <label for="rate">Rate ($/h)</label>
+      <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100"/>
     </div>
     <div class="form-group">
-      <label for="desc">Public project (visible to all users)</label>
+      <label for="wekanurl">Wekan integration</label>
+      <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://url.of.your.wekan.environment/"/>
+    </div>
+    <div class="form-group">
+      <label for="public">Public project (visible to all users)</label>
       {{#if public}}
         <input name="public" id="public" type="checkbox" checked class="form-control"/>
       {{else}}
