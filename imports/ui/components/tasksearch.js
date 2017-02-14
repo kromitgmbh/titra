@@ -10,13 +10,11 @@ Template.tasksearch.events({
   'click .js-tasksearch-result': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-tasksearch-input').val(event.currentTarget.innerHTML)
-    templateInstance.$('js-tasksearch-results').hide()
+    templateInstance.$('.js-tasksearch-results').hide()
   },
   'keyup .js-tasksearch-input': (event, templateInstance) => {
-    if ($(event.currentTarget).val() !== '') {
-      templateInstance.filter.set($(event.currentTarget).val())
-      templateInstance.$('js-tasksearch-results').show()
-    }
+    templateInstance.filter.set($(event.currentTarget).val())
+    templateInstance.$('.js-tasksearch-results').show()
   },
 })
 
@@ -47,7 +45,7 @@ Template.tasksearch.helpers({
       return false
     }
     if (Template.instance().wekanTasks) {
-      const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' } })
+      const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' }, archived: false })
       if (wekanResult.count() > 0) {
         return wekanResult.map((elem) => { return { name: elem.title } })
       }
