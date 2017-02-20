@@ -23,10 +23,12 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
   this.autorun(() => {
     if (Template.currentData().projectId.get()) {
       const project = Projects.findOne({ _id: Template.currentData().projectId.get() })
-      if (project.wekanurl) {
-        const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
-        this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
-        ddpcon.subscribe('board', 'sandstorm')
+      if (project) {
+        if (project.wekanurl) {
+          const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
+          this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
+          ddpcon.subscribe('board', 'sandstorm')
+        }
       }
     }
     this.subscribe('mytasks', this.filter.get())
@@ -45,12 +47,12 @@ Template.tasksearch.helpers({
       return false
     }
     if (Template.instance().wekanTasks) {
-      const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' }, archived: false })
+      const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' }, archived: false }, { limit: 5 })
       if (wekanResult.count() > 0) {
-        return wekanResult.map((elem) => { return { name: elem.title } })
+        return wekanResult.map(elem => ({ name: elem.title, wekan: true }))
       }
     }
-    const result = Tasks.find({ name: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' } })
+    const result = Tasks.find({ name: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' } }, { limit: 5 })
     return result.count() > 0 ? result : false
   },
 })

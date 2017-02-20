@@ -1,13 +1,15 @@
 <template name="tasksearch">
   <input type="text" class="js-tasksearch-input form-control"/>
   {{#if tasks}}
-    <div class="js-tasksearch-results">
-      Did you mean:
-      <ul>
+    <div class="list-group js-tasksearch-results">
+      {{#unless Template.subscriptionsReady}}
+        <div class="list-group-item">
+          Searching for tasks ...
+        </div>
+      {{/unless}}
       {{#each tasks}}
-        <li><a href="#" id="{{id}}" class="js-tasksearch-result">{{name}}</a></li>
+        <a href="#" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result">{{#if wekan}}<img src="/img/wekan.png"/>{{/if}} &nbsp;{{name}}</a>
       {{/each}}
-      </ul>
     </div>
   {{/if}}
 </template>
