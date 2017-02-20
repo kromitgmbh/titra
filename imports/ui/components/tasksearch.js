@@ -9,7 +9,7 @@ import Projects from '../../api/projects/projects.js'
 Template.tasksearch.events({
   'click .js-tasksearch-result': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.$('.js-tasksearch-input').val(event.currentTarget.innerHTML)
+    templateInstance.$('.js-tasksearch-input').val($(event.currentTarget).children('.js-tasksearch-task-name').text())
     templateInstance.$('.js-tasksearch-results').hide()
   },
   'keyup .js-tasksearch-input': (event, templateInstance) => {

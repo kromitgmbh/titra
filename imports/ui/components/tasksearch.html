@@ -8,7 +8,7 @@
         </div>
       {{/unless}}
       {{#each tasks}}
-        <a href="#" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result">{{#if wekan}}<img src="/img/wekan.png"/>{{/if}} &nbsp;{{name}}</a>
+        <a href="#" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result">{{#if wekan}}<img src="/img/wekan.png"/>{{/if}} &nbsp;<span class="js-tasksearch-task-name">{{name}}</span></a>
       {{/each}}
     </div>
   {{/if}}
