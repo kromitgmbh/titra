@@ -23,7 +23,7 @@ Meteor.methods({
     }
     Timecards.update({ _id }, { $set: { date, hours, task } })
   },
-  'export'({ projectId, timePeriod }) {
+  'export'({ projectId, timePeriod, userId }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -47,9 +47,15 @@ Meteor.methods({
         endDate = moment().subtract(1, 'week').endOf('week').toDate()
         break
     }
-    const timecardArray = Timecards.find({ userId: this.userId,
-      projectId,
-      date: { $gte: startDate, $lte: endDate } }).fetch()
+    let timecardArray = []
+    if (userId !== 'all') {
+      timecardArray = Timecards.find({ userId,
+        projectId,
+        date: { $gte: startDate, $lte: endDate } }).fetch()
+    } else {
+      timecardArray = Timecards.find({ projectId,
+        date: { $gte: startDate, $lte: endDate } }).fetch()
+    }
     for (const timecard of timecardArray) {
       timecard.date = moment(timecard.date).format('DD.MM.YYYY')
       timecard.Resource = Meteor.users.findOne({ _id: timecard.userId }).profile.name
