@@ -1,13 +1,15 @@
 import Timecards from '../../timecards/timecards.js'
+import Projects from '../../projects/projects.js'
 
-Meteor.publish('projectUsers', function projectUsers(param) {
-  check(param, Object)
-  check(param.projectId, String)
+Meteor.publish('projectUsers', function projectUsers({ projectId }) {
+  check(projectId, String)
   const userIds = []
-  if (Timecards.find({ projectId: param.projectId }).count() <= 0) {
+  const projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
+    { _id: 1 }).fetch().map(value => value._id)
+  if (Timecards.find({ projectId: { $in: projectList } }).count() <= 0) {
     return this.ready()
   }
-  Timecards.find({ projectId: param.projectId }).forEach((timecard) => {
+  Timecards.find({ projectId: { $in: projectList } }).forEach((timecard) => {
     userIds.push(timecard.userId)
   })
   const uniqueUsers = [...new Set(userIds)]

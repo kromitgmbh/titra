@@ -3,10 +3,18 @@ import Timecards from '../timecards.js'
 import Projects from '../../projects/projects.js'
 
 Meteor.publish('projectTimecards', function projectTimecards({ projectId, period, userId }) {
-  const project = Projects.findOne({ _id: projectId })
-  if (!this.userId || (!Timecards.findOne({ projectId, userId: this.userId }) && !project.public)) {
-    return this.ready()
+  // console.log(projectId)
+  let projectList = []
+  if (projectId === 'all') {
+    projectList = Projects.find({ $or: [{ userId }, { public: true }] },
+    { $fields: { _id: 1 } }).fetch().map(value => value._id)
+  } else {
+    projectList = [Projects.findOne({ _id: projectId })._id]
   }
+  // const project = Projects.findOne({ _id: { $in: projectList } })
+  // if (!this.userId || (!Timecards.findOne({ projectId, userId: this.userId })) {
+  //   return this.ready()
+  // }
   if (period && period !== 'all') {
     let startDate
     let endDate
@@ -29,17 +37,17 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
         break
     }
     if (userId === 'all') {
-      return Timecards.find({ projectId,
+      return Timecards.find({ projectId: { $in: projectList },
         date: { $gte: startDate, $lte: endDate } })
     }
-    return Timecards.find({ projectId,
+    return Timecards.find({ projectId: { $in: projectList },
       userId,
       date: { $gte: startDate, $lte: endDate } })
   }
   if (userId === 'all') {
-    return Timecards.find({ projectId })
+    return Timecards.find({ projectId: { $in: projectList } })
   }
-  return Timecards.find({ projectId, userId })
+  return Timecards.find({ projectId: { $in: projectList }, userId })
 })
 Meteor.publish('singleTimecard', function singleTimecard(_id) {
   check(_id, String)

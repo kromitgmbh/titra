@@ -48,12 +48,19 @@ Meteor.methods({
         break
     }
     let timecardArray = []
+    let projectList = []
+    if (projectId === 'all') {
+      projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
+      { _id: 1 }).fetch().map(value => value._id)
+    } else {
+      projectList = [projectId]
+    }
     if (userId !== 'all') {
       timecardArray = Timecards.find({ userId,
-        projectId,
+        projectId: { $in: projectList },
         date: { $gte: startDate, $lte: endDate } }).fetch()
     } else {
-      timecardArray = Timecards.find({ projectId,
+      timecardArray = Timecards.find({ projectId: { $in: projectList },
         date: { $gte: startDate, $lte: endDate } }).fetch()
     }
     for (const timecard of timecardArray) {

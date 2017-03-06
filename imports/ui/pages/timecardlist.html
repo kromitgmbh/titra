@@ -8,7 +8,7 @@
   <div class="row mb-2">
     <div class="col-sm-4">
       <label>Project</label>
-      {{>projectselect}}
+      {{>projectselect allProjects = true}}
     </div>
     <div class="col-sm-4">
       <label>Time period</label>
@@ -24,6 +24,7 @@
     <table class="table table-hover">
       <thead>
         <tr>
+          <th>Project</th>
           <th>Date</th>
           <th>Task</th>
           <th>Resource</th>
@@ -34,6 +35,7 @@
       <tbody>
         {{#each timecards}}
         <tr id="{{_id}}">
+          <td>{{projectName(projectId)}}</td>
           <td>{{prettify(date)}}</td>
           <td>{{task}}</td>
           <td>{{username(userId)}}</td>
