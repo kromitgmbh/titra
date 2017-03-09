@@ -1,7 +1,7 @@
 <template name="timecardlist">
   <div class="row mb-2">
     <div class="col-12">
-      <a href="/tracktime/{{projectId}}" class="btn btn-primary mr-2">Add time</a>
+      <a href="/tracktime/{{selectedProjectId}}" class="btn btn-primary mr-2">Add time</a>
       <button id="export" class="btn btn-primary">Export</button>
     </div>
   </div>
@@ -40,8 +40,6 @@
           <td>{{task}}</td>
           <td>{{username(userId)}}</td>
           <td class="text-center">{{hours}}</td>
-          <!-- <li class="list-group-item justify-content-between" id="{{_id}}">{{prettify(date)}}: {{task}} ({{hours}} hours) <span><a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i>
-      </a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a></span></li> -->
           <td class="text-right"><a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i></a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a></td>
         </tr>
         {{/each}}
@@ -55,30 +53,6 @@
       </tbody>
     </table>
   </div>
-  <!-- <ul class="list-group">
-    <li class="list-group-item">
-      <div class="col-2">
-        <strong>Date</strong>
-      </div>
-      <div class="col-4">
-        <strong>Task</strong>
-      </div>
-      <div class="col-2">
-        <strong>Resource</strong>
-      </div>
-      <div class="col-2">
-        <strong>Hours</strong>
-      </div>
-      <div class="col-2">
-        <strong class="text-right">Edit/Delete</strong>
-      </div>
-    </li> -->
-    <!-- {{#each timecards}} -->
-    <!-- <li class="list-group-item justify-content-between" id="{{_id}}">{{prettify(date)}}: {{task}} ({{hours}} hours) <span><a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i>
-</a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a></span></li> -->
-    <!-- {{/each}} -->
-    <!-- <li class="list-group-item"><strong>Total:</strong>&nbsp; {{totalHours}} (hours)</li> -->
-  <!-- </ul> -->
   {{else}}
     <p>Sorry, no data found. Please refine your search <i class="fa fa-binoculars"></i></p>
   {{/if}}

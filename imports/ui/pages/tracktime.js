@@ -48,14 +48,12 @@ Template.tracktime.events({
   'click .js-previous'(event, templateInstance) {
     event.preventDefault()
     templateInstance.date.set(new Date(moment(templateInstance.date.get()).subtract(1, 'days').utc()))
-    $('.js-tasksearch-input').val('')
     $('#hours').val('')
     $('.js-tasksearch-results').hide()
   },
   'click .js-next'(event, templateInstance) {
     event.preventDefault()
     templateInstance.date.set(new Date(moment(templateInstance.date.get()).add(1, 'days').utc()))
-    $('.js-tasksearch-input').val('')
     $('#hours').val('')
     $('.js-tasksearch-results').hide()
   },

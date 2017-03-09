@@ -6,7 +6,7 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
   // console.log(projectId)
   let projectList = []
   if (projectId === 'all') {
-    projectList = Projects.find({ $or: [{ userId }, { public: true }] },
+    projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
     { $fields: { _id: 1 } }).fetch().map(value => value._id)
   } else {
     projectList = [Projects.findOne({ _id: projectId })._id]

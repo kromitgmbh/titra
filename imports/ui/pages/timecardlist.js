@@ -48,9 +48,9 @@ Template.timecardlist.helpers({
   prettify(date) {
     return moment(date).format('DD.MM.YYYY')
   },
-  // projectId() {
-  //   return Template.instance().project.get()
-  // },
+  selectedProjectId() {
+    return Template.instance().project.get() !== 'all' ? Template.instance().project.get() : ''
+  },
   projectName(_id) {
     return Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false
   },
