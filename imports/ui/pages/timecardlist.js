@@ -46,7 +46,7 @@ Template.timecardlist.helpers({
     return Timecards.findOne() ? Timecards.find({}, { sort: { date: -1 } }) : false
   },
   prettify(date) {
-    return moment(date).format('DD.MM.YYYY')
+    return moment(date).format('ddd DD.MM.YYYY')
   },
   selectedProjectId() {
     return Template.instance().project.get() !== 'all' ? Template.instance().project.get() : ''
