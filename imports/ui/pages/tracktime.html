@@ -27,15 +27,22 @@
       {{>tasksearch}}
     </div>
     <div class="form-group">
-      <label for="hours">Working time (h)</label>
       <div class="row">
         <div class="col">
-          <input id="hours" type="number" class="form-control" value="{{hours}}" step="0.01"/>
+          <div class="form-group">
+            <label for="hours">Working time ({{timeunit}})</label>
+            <input id="hours" type="string" class="form-control" value="{{timeInUserUnit (hours)}}"/>
+          </div>
         </div>
         {{#unless isEdit}}
-          <div class="col-md-3 col-6 text-right">
-            {{>timetracker}}
-          </div>
+          {{#if showTracker}}
+            <div class="col-md-3 col-6 text-right">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                  {{>timetracker}}
+              </div>
+            </div>
+          {{/if}}
         {{/unless}}
       </div>
     </div>

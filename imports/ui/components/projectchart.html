@@ -1,0 +1,26 @@
+<template name="projectchart">
+  <div class="row">
+    <div class="col-12 col-md-4">
+      {{#if allTeamMembers}} Team: {{allTeamMembers}}<br/> {{/if}}
+      Total time: {{timeInUserUnit(totalHours)}} ({{timeunit}})<br/>
+      {{#if turnOver}}
+      Turnover: {{turnOver}} {{unit}}
+      {{/if}}
+    </div>
+    <div class="hidden-sm-down col-md-4">
+      {{#if topTasks}}
+      Top tasks:
+      <ol>
+        {{#each topTasks}}
+          <li>{{_id}}</li>
+        {{/each}}
+      </ol>
+      {{/if}}
+      <!-- Top tasks: {{topTasks}} -->
+    </div>
+    <div class="hidden-sm-down col-md-4 text-center">
+      <div class="js-chart-container">
+      </div>
+    </div>
+  </div>
+</template>

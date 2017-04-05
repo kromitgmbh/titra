@@ -31,7 +31,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
         }
       }
     }
-    this.subscribe('mytasks', this.filter.get())
+    this.subscribe('mytasks', this.filter.get() ? this.filter.get() : '')
     if (FlowRouter.getParam('tcid')) {
       this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
       if (this.subscriptionsReady()) {

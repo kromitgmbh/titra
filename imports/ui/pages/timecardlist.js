@@ -35,10 +35,9 @@ const base64toBlob = (base64Data, contentTypeArgument) => {
 Template.timecardlist.onCreated(function createTimeCardList() {
   this.period = new ReactiveVar('currentMonth')
   this.resource = new ReactiveVar('all')
-  this.project = new ReactiveVar(FlowRouter.getParam('projectId'))
+  this.data.project = new ReactiveVar(FlowRouter.getParam('projectId'))
   this.autorun(() => {
-    this.subscribe('projectTimecards', { projectId: this.project.get(), period: this.period.get(), userId: this.resource.get() })
-    this.subscribe('projectUsers', { projectId: this.project.get() })
+    this.subscribe('projectTimecards', { projectId: this.data.project.get(), period: this.period.get(), userId: this.resource.get() })
   })
 })
 Template.timecardlist.helpers({
@@ -49,7 +48,7 @@ Template.timecardlist.helpers({
     return moment(date).format('ddd DD.MM.YYYY')
   },
   selectedProjectId() {
-    return Template.instance().project.get() !== 'all' ? Template.instance().project.get() : ''
+    return Template.instance().data.project.get() !== 'all' ? Template.instance().data.project.get() : ''
   },
   projectName(_id) {
     return Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false
@@ -65,6 +64,9 @@ Template.timecardlist.helpers({
     const meteorUser = Meteor.users.findOne({ _id })
     return meteorUser ? meteorUser.profile.name : false
   },
+  timeUnitName() {
+    return Meteor.user().profile.timeunit === 'd' ? 'Days' : 'Hours'
+  },
 })
 
 Template.timecardlist.events({
@@ -75,7 +77,7 @@ Template.timecardlist.events({
     templateInstance.resource.set($(event.currentTarget).val())
   },
   'change #targetProject': (event, templateInstance) => {
-    templateInstance.project.set($(event.currentTarget).val())
+    templateInstance.data.project.set($(event.currentTarget).val())
     // FlowRouter.go(`/list/timecards/${$(event.currentTarget).val()}`)
   },
   'click .js-delete-timecard': (event) => {

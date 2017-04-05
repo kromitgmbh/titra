@@ -2,21 +2,49 @@ import { Meteor } from 'meteor/meteor'
 import './settings.html'
 import '../components/backbutton.js'
 
-
 Template.settings.helpers({
   name() {
     return Meteor.user() ? Meteor.user().profile.name : false
   },
+  unit() {
+    return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
+  },
+  hoursToDays() {
+    return Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8
+  },
+  displayHoursToDays() {
+    return Template.instance().displayHoursToDays.get()
+  },
 })
 
 Template.settings.events({
-  'click .js-save'(event) {
+  'click .js-save': (event) => {
     event.preventDefault()
-    Meteor.call('updateSettings', { name: $('#name').val() }, (error, result) => {
-      if (error) {
-        console.error(error)
-      }
-      $.notify('Settings saved successfully')
-    })
+    Meteor.call('updateSettings', {
+      name: $('#name').val(),
+      unit: $('#unit').val(),
+      timeunit: $('#timeunit').val(),
+      hoursToDays: $('#hoursToDays').val() }, (error) => {
+        if (error) {
+          console.error(error)
+        }
+        $.notify('Settings saved successfully')
+      })
   },
+  'change #timeunit': () => {
+    Template.instance().displayHoursToDays.set($('#timeunit').val() === 'd')
+  },
+})
+Template.settings.onCreated(function settingsCreated() {
+  this.displayHoursToDays = new ReactiveVar()
+  if (Meteor.user()) {
+    if (Meteor.user().profile) {
+      this.displayHoursToDays.set(Meteor.user().profile.timeunit === 'd')
+    }
+  }
+})
+Template.settings.onRendered(function settingsRendered() {
+  this.autorun(() => {
+    $('#timeunit').val(Meteor.user().profile.timeunit)
+  })
 })

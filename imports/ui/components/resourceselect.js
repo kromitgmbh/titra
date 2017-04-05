@@ -1,22 +1,16 @@
-import { Meteor } from 'meteor/meteor'
-import { FlowRouter } from 'meteor/kadira:flow-router'
 import './resourceselect.html'
+import projectUsers from '../../api/users/users.js'
 
 Template.resourceselect.onCreated(function createResourceSelect() {
-  this.resources = new ReactiveVar()
+  // this.resources = new ReactiveVar()
   this.autorun(() => {
-    Meteor.call('getResourcesInProject', { projectId: FlowRouter.getParam('projectId') }, (error, result) => {
-      if (error) {
-        console.error(error)
-      } else {
-        this.resources.set(result)
-      }
-    })
+    this.subscribe('projectUsers', { projectId: Template.currentData().get() })
   })
 })
 
 Template.resourceselect.helpers({
   resources() {
-    return Template.instance().resources.get()
+    return projectUsers.findOne({ _id: Template.currentData().get() })
+    ? projectUsers.findOne({ _id: Template.currentData().get() }).users : false
   },
 })

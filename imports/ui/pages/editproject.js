@@ -18,7 +18,10 @@ Template.editproject.events({
     event.preventDefault()
     // console.log(templateInstance.$('#editProjectForm').serializeJSON())
     if (FlowRouter.getParam('id')) {
-      Meteor.call('updateProject', { projectId: FlowRouter.getParam('id'), projectArray: templateInstance.$('#editProjectForm').serializeArray() }, (error, result) => {
+      Meteor.call('updateProject', {
+        projectId: FlowRouter.getParam('id'),
+        projectArray: templateInstance.$('#editProjectForm').serializeArray(),
+      }, (error) => {
         if (!error) {
           $.notify('Project updated successfully')
         } else {
@@ -26,7 +29,9 @@ Template.editproject.events({
         }
       })
     } else {
-      Meteor.call('createProject', { projectArray: templateInstance.$('#editProjectForm').serializeArray() }, (error, result) => {
+      Meteor.call('createProject', {
+        projectArray: templateInstance.$('#editProjectForm').serializeArray(),
+      }, (error) => {
         if (!error) {
           $.notify('Project created successfully')
         } else {
@@ -42,22 +47,10 @@ Template.editproject.events({
   },
 })
 Template.editproject.helpers({
-  name: () => {
-    return Projects.findOne() ? Projects.findOne().name : false
-  },
-  desc: () => {
-    return Projects.findOne() ? Projects.findOne().desc : false
-  },
-  customer: () => {
-    return Projects.findOne() ? Projects.findOne().customer : false
-  },
-  rate: () => {
-    return Projects.findOne() ? Projects.findOne().rate : false
-  },
-  wekanurl: () => {
-    return Projects.findOne() ? Projects.findOne().wekanurl : false
-  },
-  public: () => {
-    return Projects.findOne() ? Projects.findOne().public : false
-  },
+  name: () => (Projects.findOne() ? Projects.findOne().name : false),
+  desc: () => (Projects.findOne() ? Projects.findOne().desc : false),
+  customer: () => (Projects.findOne() ? Projects.findOne().customer : false),
+  rate: () => (Projects.findOne() ? Projects.findOne().rate : false),
+  wekanurl: () => (Projects.findOne() ? Projects.findOne().wekanurl : false),
+  public: () => (Projects.findOne() ? Projects.findOne().public : false),
 })

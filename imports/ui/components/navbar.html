@@ -1,20 +1,20 @@
 <template name="navbar">
-  <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
-    <div class="container">
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+  <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+    <!-- <div class="container"> -->
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand floa-left" href="/"><img src="/favicons/favicon-32x32.png" alt="titra logo"/></a>
-      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <a class="navbar-brand float-left" href="/"><img src="/favicons/favicon-32x32.png" alt="titra logo" class="d-inline-block" height="25"/></a>
+      <div class="collapse navbar-collapse w-75" id="navbar">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item"><a class="nav-link" href="/tracktime">Track time</a></li>
-          <li class="nav-item"><a class="nav-link" href="/list/projects">Projects</a></li>
-          <li class="nav-item"><a class="nav-link" href="/settings">Settings</a></li>
+          <li class="nav-item"><a class="nav-link {{isRouteActive 'tracktime'}}" href="/tracktime">Track time</a></li>
+          <li class="nav-item"><a class="nav-link {{isRouteActive 'projectlist'}}" href="/list/projects">Projects</a></li>
+          <li class="nav-item"><a class="nav-link {{isRouteActive 'settings'}}" href="/settings">Settings</a></li>
           {{#unless sandStormUser}}
             <li class="nav-item"><a class="nav-link js-logout" href="#">Logout</a></li>
           {{/unless}}
         </ul>
       </div>
-    </div>
+    <!-- </div> -->
     </nav>
 </template>

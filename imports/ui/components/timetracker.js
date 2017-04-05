@@ -13,23 +13,20 @@ function pad(num, size) {
 }
 
 Template.timetracker.events({
-  'click .js-stop'(event, templateInstance) {
+  'click .js-stop': (event, templateInstance) => {
     event.preventDefault()
     $('#hours').val(moment.duration(moment().valueOf() - templateInstance.timer.get().valueOf()).asHours().toFixed(2))
-    // alert('wow, you tracked ' + moment.duration(moment().valueOf() - templateInstance.timer.get().valueOf()).asSeconds() + ' seconds')
-    // TODO: here is where the magic should happen
-    // i.e. redirect to the tracktime page prefilled with what we tracked so far
     Meteor.clearTimeout(templateInstance.intervalHandle)
     Template.instance().timer.set(null)
   },
-  'click .js-start'(event, templateInstance) {
+  'click .js-start': (event, templateInstance) => {
     event.preventDefault()
     Template.instance().timer.set(moment())
     const timer = templateInstance.timer.get()
     Template.instance().intervalHandle = Meteor.setInterval(function handleTimer() {
       // console.log(timer)
       const duration = moment.duration(moment().valueOf() - timer.get().valueOf())
-      this.$('.js-timer').text(pad(duration.hours(), 2) + ':' + pad(duration.minutes(), 2) + ':' + pad(duration.seconds(), 2))
+      this.$('.js-timer').text(`${pad(duration.hours(), 2)}:${pad(duration.minutes(), 2)}:${pad(duration.seconds(), 2)}`)
     }, 1000)
   },
 })

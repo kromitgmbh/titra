@@ -1,8 +1,8 @@
 <template name="timecardlist">
   <div class="row mb-2">
     <div class="col-12">
-      <a href="/tracktime/{{selectedProjectId}}" class="btn btn-primary mr-2">Add time</a>
-      <button id="export" class="btn btn-primary">Export</button>
+      <a href="/tracktime/{{selectedProjectId}}" class="btn btn-primary mr-2"><i class="fa fa-plus"></i> Time</a>
+      <button id="export" class="btn btn-primary"><i class="fa fa-download"></i> Export</button>
     </div>
   </div>
   <div class="row mb-2">
@@ -16,7 +16,9 @@
     </div>
     <div class="col-sm-4">
       <label>Resource</label>
-      {{>resourceselect}}
+      {{#with project}}
+        {{>resourceselect}}
+      {{/with}}
     </div>
   </div>
   {{#if timecards}}
@@ -28,7 +30,7 @@
           <th>Date</th>
           <th>Task</th>
           <th>Resource</th>
-          <th class="text-center">Hours</th>
+          <th class="text-center">{{timeUnitName}}</th>
           <th class="text-right">Edit/Delete</th>
         </tr>
       </thead>
@@ -39,7 +41,7 @@
           <td>{{prettify(date)}}</td>
           <td>{{task}}</td>
           <td>{{username(userId)}}</td>
-          <td class="text-center">{{hours}}</td>
+          <td class="text-center">{{timeInUserUnit(hours)}}</td>
           <td class="text-right"><a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i></a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a></td>
         </tr>
         {{/each}}
@@ -48,7 +50,7 @@
           <td></td>
           <td></td>
           <td class="text-right"><strong>Total:</strong></td>
-          <td class="text-center">{{totalHours}}</td>
+          <td class="text-center">{{timeInUserUnit(totalHours)}}</td>
           <td></td>
         </tr>
       </tbody>

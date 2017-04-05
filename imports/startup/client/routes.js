@@ -22,7 +22,7 @@ FlowRouter.route('/', {
   action() {
     BlazeLayout.render('appLayout', { main: 'projectlist' })
   },
-  name: 'home',
+  name: 'projectlist',
 })
 FlowRouter.route('/tracktime/:projectId?', {
   action() {

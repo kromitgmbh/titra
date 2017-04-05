@@ -2,7 +2,8 @@
   {{#if currentUser}}
     {{>navbar}}
   {{/if}}
-  <div class="container" style="margin-top:80px;">
+  <div class="container mb-3">
     {{>Template.dynamic template=main}}
   </div>
+  {{>connectioncheck}}
 </template>
