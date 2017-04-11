@@ -53,3 +53,30 @@ body{
 // @import "{}/node_modules/font-awesome/scss/_stacked.scss";
 // @import "{}/node_modules/font-awesome/scss/_icons.scss";
 // @import "{}/node_modules/font-awesome/scss/_screen-reader.scss";
+
+//@import "{}/node_modules/fullcalendar/dist/fullcalendar.css";
+
+@import "{}/node_modules/bootstrap-colorpicker/src/sass/_colorpicker.scss";
+// OVERRIDE
+$colorpicker-img-path: "img/bootstrap-colorpicker" !default;
+@mixin bgImg($imgFilename) {
+  background-image: url("#{$colorpicker-img-path}/#{$imgFilename}");
+}
+.colorpicker-saturation {
+  @include bgImg('saturation.png');
+}
+.colorpicker-hue {
+  @include bgImg('hue.png');
+}
+.colorpicker-alpha {
+  @include bgImg('alpha.png');
+}
+.colorpicker-color {
+  @include bgImg('alpha.png');
+}
+.colorpicker.colorpicker-horizontal .colorpicker-hue {
+  @include bgImg('hue-horizontal.png');
+}
+.colorpicker.colorpicker-horizontal .colorpicker-alpha {
+  @include bgImg('alpha-horizontal.png');
+}

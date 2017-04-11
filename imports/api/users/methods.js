@@ -11,10 +11,11 @@ Meteor.methods({
   //   const uniqueUsers = [...new Set(userIds)]
   //   return Meteor.users.find({ _id: { $in: uniqueUsers } }, { 'profile.name': 1 }).fetch()
   // },
-  updateSettings({ name, unit, timeunit }) {
+  updateSettings({ name, unit, timeunit, timetrackview }) {
     check(name, String)
     check(unit, String)
     check(timeunit, String)
-    Meteor.users.update({ _id: this.userId }, { $set: { 'profile.name': name, 'profile.unit': unit, 'profile.timeunit': timeunit } })
+    check(timetrackview, String)
+    Meteor.users.update({ _id: this.userId }, { $set: { 'profile.name': name, 'profile.unit': unit, 'profile.timeunit': timeunit, 'profile.timetrackview': timetrackview } })
   },
 })

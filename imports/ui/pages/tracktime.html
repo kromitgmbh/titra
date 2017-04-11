@@ -58,3 +58,23 @@
     </div>
   </form>
 </template>
+
+
+<template name="tracktimemain">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link {{showDay}} js-day" href="#">Day</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{showMonth}} js-month" href="#">Month</a>
+    </li>
+  </ul>
+  {{#if showDay}}
+    {{>tracktime}}
+  {{/if}}
+  {{#if showMonth}}
+    {{>calendar}}
+  {{/if}}
+</template>
+
+

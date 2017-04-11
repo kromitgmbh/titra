@@ -4,6 +4,8 @@ import 'jquery-serializejson'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
+//import 'bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css'
+import 'bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js'
 
 Template.editproject.onCreated(function editprojectSetup() {
   this.subscribe('singleProject', FlowRouter.getParam('id'))
@@ -12,6 +14,9 @@ Template.editproject.onCreated(function editprojectSetup() {
       // Materialize.updateTextFields()
     }
   })
+})
+Template.editproject.onRendered(function editprojectRendered() {
+  $('#colpick').colorpicker();
 })
 Template.editproject.events({
   'click #save': (event, templateInstance) => {

@@ -7,7 +7,11 @@ import './tracktime.html'
 import '../components/projectselect.js'
 import '../components/tasksearch.js'
 import '../components/timetracker.js'
+import '../components/calendar.js'
 import '../components/backbutton.js'
+//import 'fullcalendar'
+//import 'fullcalendar/dist/fullcalendar.css'
+//import 'fullcalendar/dist/locale-all.js'
 
 const core = require('mathjs/core')
 
@@ -106,3 +110,26 @@ Template.tracktime.onCreated(function tracktimeCreated() {
     })
   }
 })
+
+Template.tracktimemain.onCreated(function tracktimeCreated() {
+  this.timetrackview = new ReactiveVar(Meteor.user().profile.timetrackview || 'd')
+  if(FlowRouter.getParam('projectId')) this.timetrackview.set('d');
+})
+
+Template.tracktimemain.helpers({
+  showDay: () => (Template.instance().timetrackview.get() == 'd' ? 'active' : ''),
+  showMonth: () => (Template.instance().timetrackview.get() == 'M' ? 'active' : '')
+})
+
+Template.tracktimemain.events({
+  'click .js-day': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.timetrackview.set('d')
+  },
+  'click .js-month': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.timetrackview.set('M')
+  },
+})
+
+

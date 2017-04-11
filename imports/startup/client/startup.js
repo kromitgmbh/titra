@@ -21,6 +21,12 @@ Template.registerHelper('timeunit', () => {
   }
   return false
 })
+Template.registerHelper('timetrackview', () => {
+  if (Meteor.user()) {
+    return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd'
+  }
+  return false
+})
 Template.registerHelper('timeInUserUnit', (time) => {
   if (Meteor.user()) {
     if (Meteor.user().profile.timeunit === 'd') {
