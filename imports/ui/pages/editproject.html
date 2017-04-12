@@ -1,5 +1,5 @@
 <template name="editproject">
-  <h5 class="text-center">Edit project</h5>
+  <h5 class="text-center">{{#if new}}New{{else}}Edit{{/if}} project</h5>
   <form id="editProjectForm">
     <div class="form-group">
       <label for="name">Name</label>
@@ -9,9 +9,9 @@
       <label for="desc">Description</label>
       <textarea name="desc" id="desc" type="text" value="{{desc}}" class="form-control" placeholder="Describe your project here ..."></textarea>
     </div>
-    <div class="input-group" id="colpick">
-      <label for="desc">Color</label>
-      <input name="color" id="color" type="text" value="{{color}}" class="input-group"/><span class="input-group-addon"><i></i></span>
+    <label for="color">Color</label>
+    <div class="input-group" id="colpick">      
+      <input name="color" id="color" type="text" value="{{color}}" class="form-control"/><span class="input-group-addon"><i></i></span>
     </div>
     <div class="form-group">
       <label for="customer">Customer</label>

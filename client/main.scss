@@ -16,6 +16,7 @@
 // }
 $brand-primary:             #009688;
 $brand-inverse:             #455A64;
+$tooltip-bg:                #009688;
 @import "{}/node_modules/bootstrap/scss/bootstrap.scss";
 // .navbar {
 //   display: block;
@@ -79,4 +80,18 @@ $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
 }
 .colorpicker.colorpicker-horizontal .colorpicker-alpha {
   @include bgImg('alpha-horizontal.png');
+}
+
+.underline {
+  padding-bottom: 5px;
+  background-position: 0 1.05em;
+  background-repeat: repeat-x;
+  background-size: 1px 5px;
+}
+.fc-event {
+  color: #292b2c;
+  font-size: 90%;
+} 
+.fc-event:hover {
+  color: #009688;
 }

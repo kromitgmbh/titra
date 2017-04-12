@@ -1,6 +1,13 @@
 <template name="calendar">
   <div class="row">
+    <div class="col-3 hidden-sm-down">
+      {{#each project in projects}}
+        <p class=""><span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span></p>
+      {{/each}}
+    </div>
+    <div class="col">
       <div id="cal">
       </div>
+    </div>
   </div>
 </template>

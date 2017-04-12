@@ -3,6 +3,8 @@ import './projectchart.html'
 import Projects, { ProjectStats } from '../../api/projects/projects.js'
 
 import projectUsers from '../../api/users/users.js'
+import hex2rgba from '../../utils/hex2rgba.js'
+
 
 Template.projectchart.onCreated(function projectchartCreated() {
   // this.resources = new ReactiveVar()
@@ -72,17 +74,17 @@ Template.projectchart.onRendered(function projectchartRendered() {
             // ],
             fill: true,
             lineTension: 0.1,
-            backgroundColor: 'rgba(75,192,192,0.4)',
-            borderColor: 'rgba(0, 150, 136, 0.8)',
+            backgroundColor: hex2rgba(Projects.findOne({ _id: Template.instance().data.projectId }).color || '#009688', 40), //'rgba(75,192,192,0.4)',
+            borderColor: hex2rgba(Projects.findOne({ _id: Template.instance().data.projectId }).color || '#009688', 80),//'rgba(0, 150, 136, 0.8)',
             borderCapStyle: 'butt',
             borderDash: [],
             borderDashOffset: 0.0,
             borderJoinStyle: 'miter',
-            pointBorderColor: 'rgba(0, 150, 136, 0.8)',
+            pointBorderColor: hex2rgba(Projects.findOne({ _id: Template.instance().data.projectId }).color || '#009688', 80),//'rgba(0, 150, 136, 0.8)',
             pointBackgroundColor: '#fff',
             pointBorderWidth: 1,
             pointHoverRadius: 5,
-            pointHoverBackgroundColor: 'rgba(0, 150, 136, 0.8)',
+            pointHoverBackgroundColor: hex2rgba(Projects.findOne({ _id: Template.instance().data.projectId }).color || '#009688', 80),//'rgba(0, 150, 136, 0.8)',
             pointHoverBorderColor: 'rgba(220,220,220,1)',
             pointHoverBorderWidth: 2,
             pointRadius: 1,

@@ -3,6 +3,7 @@ import './projectlist.html'
 import Projects from '../../api/projects/projects'
 import '../components/timetracker.js'
 import '../components/projectchart.js'
+import hex2rgba from '../../utils/hex2rgba.js'
 
 Template.projectlist.onCreated(function createProjectList() {
   this.subscribe('myprojects')
@@ -13,6 +14,9 @@ Template.projectlist.helpers({
   },
   isProjectOwner(_id) {
     return Projects.findOne({ _id }) ? Projects.findOne({ _id }).userId === Meteor.userId() : false
+  },
+  colorOpacity(hex, op) {
+    return hex2rgba(hex, !isNaN(op) ? op : 50)
   },
 })
 
