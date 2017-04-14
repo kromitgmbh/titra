@@ -1,5 +1,5 @@
 <template name ="projectselect">
-  <select id="targetProject" class="custom-select form-control">
+  <select id="targetProject" class="custom-select form-control" style="border-color: {{projectcolor}}">
     <option value="" disabled selected>Select a project</option>
     {{#if allProjects}}
       <option value="all">All projects</option>

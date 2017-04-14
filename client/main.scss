@@ -82,16 +82,38 @@ $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
   @include bgImg('alpha-horizontal.png');
 }
 
+// underlining feature
 .underline {
   padding-bottom: 5px;
   background-position: 0 1.05em;
   background-repeat: repeat-x;
   background-size: 1px 5px;
 }
-.fc-event {
-  color: #292b2c;
-  font-size: 90%;
+
+// Fullcalender adjustments
+#cal {
+  margin-top: .5rem;
+  .fc-event {
+    color: #292b2c;
+    font-size: 80%;
+  } 
 } 
 .fc-event:hover {
   color: #009688;
 }
+
+// draggable
+.drag {
+  z-index: 1000;
+  & .card-block {
+    padding: .5rem;
+  }
+  &.card {
+    margin-top: .5rem;
+  }
+  &.card:hover {
+    background-color: #eee;
+    cursor: pointer;
+  }
+}
+

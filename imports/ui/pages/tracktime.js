@@ -9,9 +9,6 @@ import '../components/tasksearch.js'
 import '../components/timetracker.js'
 import '../components/calendar.js'
 import '../components/backbutton.js'
-//import 'fullcalendar'
-//import 'fullcalendar/dist/fullcalendar.css'
-//import 'fullcalendar/dist/locale-all.js'
 
 const core = require('mathjs/core')
 
@@ -108,12 +105,20 @@ Template.tracktime.onCreated(function tracktimeCreated() {
         this.date.set(Timecards.findOne() ? Timecards.findOne().date : new Date())
       }
     })
+  } else if (FlowRouter.getQueryParam('date')) {
+    this.autorun(() => {
+       this.date.set(FlowRouter.getQueryParam('date'))
+    })
   }
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {
   this.timetrackview = new ReactiveVar(Meteor.user().profile.timetrackview || 'd')
-  if(FlowRouter.getParam('projectId')) this.timetrackview.set('d');
+  this.autorun(() => {
+    if(FlowRouter.getParam('projectId')) {
+      this.timetrackview.set('d');
+    }
+  })
 })
 
 Template.tracktimemain.helpers({
@@ -129,6 +134,8 @@ Template.tracktimemain.events({
   'click .js-month': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.timetrackview.set('M')
+    FlowRouter.setParams({projectId: ''});
+    FlowRouter.setQueryParams({date: null});
   },
 })
 

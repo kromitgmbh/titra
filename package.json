@@ -15,6 +15,7 @@
     "fullcalendar": "^3.3.1",
     "jquery": "^3.2.1",
     "jquery-serializejson": "^2.8.1",
+    "jquery-ui": "^1.12.1",
     "mathjs": "^3.11.5",
     "meteor-node-stubs": "~0.2.5",
     "moment": "^2.18.1",

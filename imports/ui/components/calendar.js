@@ -1,11 +1,23 @@
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
+import { FlowRouter } from 'meteor/kadira:flow-router'
 import moment from 'moment'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
 import './calendar.html'
 import 'fullcalendar'
+//import 'fullcalendar/dist/locale-all.js'
 import 'fullcalendar/dist/fullcalendar.css'
+// required for draggable feature
+import 'jquery-ui'
+import 'jquery-ui/ui/version.js'
+import 'jquery-ui/ui/data.js'
+import 'jquery-ui/ui/plugin.js'
+import 'jquery-ui/ui/safe-active-element'
+import 'jquery-ui/ui/safe-blur'
+import 'jquery-ui/ui/scroll-parent'
+import 'jquery-ui/ui/widgets/mouse.js'
+import 'jquery-ui/ui/widgets/draggable.js'
 
 import hex2rgba from '../../utils/hex2rgba.js'
 
@@ -21,17 +33,23 @@ Template.calendar.onRendered(function trackmonthRendered() {
     //let periodTimecardsSub = self.subscribe('periodTimecards', {startDate: moment().startOf('month').toDate(), endDate: moment().endOf('month').toDate(), userId: 'all'})
     self.fc.fullCalendar({
       header: { center: 'month,basicWeek' },
+      droppable: true,
+      drop: function(date) {
+        FlowRouter.go('/tracktime/'+$(this).data('id')+'?date='+date.format())
+      },
       eventClick: function(calEvent, jsEvent, view) {
         $(this).tooltip('hide')
       },
       eventRender: function(event, element, view) {
         //element.text('bala')
-        element.tooltip({
-          html: true,
-          placement: 'right',
-          trigger : 'hover',
-          title: '<table><tr><td style="">'+event.title+'</td></tr><tr><td>'+event.hours+' hours</td></tr></table>',
-        })
+        if(window.innerWidth >= 768) {
+          element.tooltip({
+            html: true,
+            placement: 'right',
+            trigger : 'hover',
+            title: '<table><tr><td style="">'+event.title+'</td></tr><tr><td>'+event.hours+' hours</td></tr></table>',
+          })
+        }
       },
       events: function (start, end, tz, callback) {
         //subscribe only to specified date range
@@ -53,6 +71,12 @@ Template.calendar.onRendered(function trackmonthRendered() {
     })
     if (self.periodTimecardsSub.ready()) {
       self.fc.fullCalendar('refetchEvents');
+      $('.drag').draggable({
+        revert: true,
+        revertDuration: 0,
+        helper: "clone",
+        appendTo: "#cal"
+      })
     }
   })
 })
