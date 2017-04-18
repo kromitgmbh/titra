@@ -44,3 +44,4 @@ Template.registerHelper('projectColor', (_id) => {
   }
   return '#d9d9d9'
 })
+Template.registerHelper('isSandstorm', () => Meteor.settings.public.sandstorm)

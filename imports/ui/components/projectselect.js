@@ -12,8 +12,10 @@ Template.projectselect.onCreated(function createTrackTime() {
   this.autorun(() => {
     if (this.subscriptionsReady()) {
       if (FlowRouter.getParam('projectId')) {
-        this.$('#targetProject').val(FlowRouter.getParam('projectId'))
-        this.selectedId.set(FlowRouter.getParam('projectId'))
+        if (FlowRouter.getParam('projectId') !== 'all') {
+          this.$('#targetProject').val(FlowRouter.getParam('projectId'))
+          this.selectedId.set(FlowRouter.getParam('projectId'))
+        }
       }
       if (FlowRouter.getParam('tcid')) {
         this.$('#targetProject').val(Timecards.findOne().projectId)
