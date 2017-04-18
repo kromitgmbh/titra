@@ -1,0 +1,7 @@
+<template name="tablecell">
+  {{#if canBeModified}}
+  <div class="text-right">
+    <a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i></a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a>
+  </div>
+  {{/if}}
+</template>

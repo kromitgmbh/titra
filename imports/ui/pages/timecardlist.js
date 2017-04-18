@@ -1,71 +1,64 @@
-import { Meteor } from 'meteor/meteor'
 import moment from 'moment'
 import { FlowRouter } from 'meteor/kadira:flow-router'
-import { saveAs } from 'file-saver'
-import Timecards from '../../api/timecards/timecards.js'
-import Projects from '../../api/projects/projects.js'
-
+import { $ } from 'meteor/jquery'
+import JSZip from 'jszip'
+import dataTableButtons from 'datatables.net-buttons-bs4'
+import html5ExportButtons from 'datatables.net-buttons/js/buttons.html5.js'
+import dataTablesBootstrap from '../components/dataTables.bootstrap4.js'
+import '../components/dataTables.bootstrap4.scss'
 import './timecardlist.html'
 import '../components/periodpicker.js'
 import '../components/resourceselect.js'
-
-const base64toBlob = (base64Data, contentTypeArgument) => {
-  check(base64Data, String)
-  check(contentTypeArgument, Match.OneOf(undefined, null, String))
-  const contentType = contentTypeArgument || ''
-  const sliceSize = 1024
-  const byteCharacters = atob(base64Data)
-  const bytesLength = byteCharacters.length
-  const slicesCount = Math.ceil(bytesLength / sliceSize)
-  const byteArrays = new Array(slicesCount)
-
-  for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-    const begin = sliceIndex * sliceSize
-    const end = Math.min(begin + sliceSize, bytesLength)
-
-    const bytes = new Array(end - begin)
-    for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
-      bytes[i] = byteCharacters[offset].charCodeAt(0)
-    }
-    byteArrays[sliceIndex] = new Uint8Array(bytes)
-  }
-  return new Blob(byteArrays, { type: contentType })
-}
+import '../components/tablecell.js'
+import '../../api/timecards/tabular.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {
   this.period = new ReactiveVar('currentMonth')
   this.resource = new ReactiveVar('all')
   this.data.project = new ReactiveVar(FlowRouter.getParam('projectId'))
-  this.autorun(() => {
-    this.subscribe('projectTimecards', { projectId: this.data.project.get(), period: this.period.get(), userId: this.resource.get() })
-  })
+  // super hacky, but is needed for Excel export button to show
+  window.JSZip = JSZip
+  dataTablesBootstrap(window, $)
+  dataTableButtons(window, $)
+  html5ExportButtons(window, $)
+})
+// at least free up the window assignment when this template instance is removed from DOM
+Template.timecardlist.onDestroyed(() => {
+  delete window.JSZip
 })
 Template.timecardlist.helpers({
-  timecards() {
-    return Timecards.findOne() ? Timecards.find({}, { sort: { date: -1 } }) : false
-  },
-  prettify(date) {
-    return moment(date).format('ddd DD.MM.YYYY')
-  },
-  selectedProjectId() {
-    return Template.instance().data.project.get() !== 'all' ? Template.instance().data.project.get() : ''
-  },
-  projectName(_id) {
-    return Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false
-  },
-  totalHours() {
-    let hoursCount = 0
-    for (const timecard of Timecards.find().fetch()) {
-      hoursCount += Number.parseFloat(timecard.hours)
+  selector() {
+    const returnSelector = {}
+    if (Template.instance().data.project.get() !== 'all') {
+      returnSelector.projectId = Template.instance().data.project.get()
     }
-    return hoursCount
-  },
-  username(_id) {
-    const meteorUser = Meteor.users.findOne({ _id })
-    return meteorUser ? meteorUser.profile.name : false
-  },
-  timeUnitName() {
-    return Meteor.user().profile.timeunit === 'd' ? 'Days' : 'Hours'
+    if (Template.instance().resource.get() !== 'all') {
+      returnSelector.userId = Template.instance().resource.get()
+    }
+    if (Template.instance().period.get() !== 'all') {
+      let startDate
+      let endDate
+      switch (Template.instance().period.get()) {
+        default:
+          startDate = moment().startOf('month').toDate()
+          endDate = moment().endOf('month').toDate()
+          break
+        case 'currentWeek':
+          startDate = moment().startOf('week').toDate()
+          endDate = moment().endOf('week').toDate()
+          break
+        case 'lastMonth':
+          startDate = moment().subtract(1, 'month').startOf('month').toDate()
+          endDate = moment().subtract(1, 'month').endOf('month').toDate()
+          break
+        case 'lastWeek':
+          startDate = moment().subtract(1, 'week').startOf('week').toDate()
+          endDate = moment().subtract(1, 'week').endOf('week').toDate()
+          break
+      }
+      returnSelector.date = { $gte: startDate, $lte: endDate }
+    }
+    return returnSelector
   },
 })
 
@@ -80,36 +73,26 @@ Template.timecardlist.events({
     templateInstance.data.project.set($(event.currentTarget).val())
     // FlowRouter.go(`/list/timecards/${$(event.currentTarget).val()}`)
   },
-  'click .js-delete-timecard': (event) => {
-    event.preventDefault()
-    Meteor.call('deleteTimeCard', { timecardId: event.currentTarget.parentNode.parentNode.id }, (error, result) => {
-      if (!error) {
-        $.notify('Time entry deleted')
-      } else {
-        console.error(error)
-      }
-    })
-  },
-  'click #export': (event) => {
-    event.preventDefault()
-    Meteor.call('export', { projectId: $('#targetProject').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val() }, (error, result) => {
-      if (!error) {
-        let prjName = 'allprojects'
-        if ($('#targetProject').val() !== 'all') {
-          prjName = $('#targetProject').children(':selected').text()
-          if (prjName.length > 12 && prjName.split(' ').length > 0) {
-            const tmpPrjNameArray = prjName.split(' ')
-            prjName = ''
-            for (const part of tmpPrjNameArray) {
-              prjName += part.substring(0, 1)
-            }
-          }
-        }
-        saveAs(new Blob([result], { type: 'application/vnd.ms-excel' }), `titra_export_${prjName}_${moment().format('YYYYMMDD-HHmm')}.xls`)
-        // console.log(result)
-      } else {
-        console.error(error)
-      }
-    })
-  },
+  // 'click #export': (event) => {
+  //   event.preventDefault()
+  //   Meteor.call('export', { projectId: $('#targetProject').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val() }, (error, result) => {
+  //     if (!error) {
+  //       let prjName = 'allprojects'
+  //       if ($('#targetProject').val() !== 'all') {
+  //         prjName = $('#targetProject').children(':selected').text()
+  //         if (prjName.length > 12 && prjName.split(' ').length > 0) {
+  //           const tmpPrjNameArray = prjName.split(' ')
+  //           prjName = ''
+  //           for (const part of tmpPrjNameArray) {
+  //             prjName += part.substring(0, 1)
+  //           }
+  //         }
+  //       }
+  //       saveAs(new Blob([result], { type: 'application/vnd.ms-excel' }), `titra_export_${prjName}_${moment().format('YYYYMMDD-HHmm')}.xls`)
+  //       // console.log(result)
+  //     } else {
+  //       console.error(error)
+  //     }
+  //   })
+  // },
 })

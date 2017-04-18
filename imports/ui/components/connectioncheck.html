@@ -1,5 +1,5 @@
 <template name="connectioncheck">
-  <div class="modal" tabindex="-1" role="dialog" id="offlineModal" data-keyboard="false" data-backdrop="static">
+  <!-- <div class="modal" tabindex="-1" role="dialog" id="offlineModal" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-header"><h4>Your are offline</h4></div>
@@ -9,5 +9,10 @@
         </div>
       </div>
     </div>
+  </div> -->
+  {{#if offline}}
+  <div class="alert alert-warning text-center" style="margin-top:-1.5rem;">
+    Could not connect to server. Trying again {{nextRetry}} ... <a href="#" id="connectButton" class="alert-link">retry now</a>
   </div>
+  {{/if}}
 </template>

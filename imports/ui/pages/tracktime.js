@@ -92,7 +92,7 @@ Template.tracktime.helpers({
   isEdit: () => FlowRouter.getParam('tcid'),
   task: () => (Timecards.findOne() ? Timecards.findOne().task : false),
   hours: () => (Timecards.findOne() ? Timecards.findOne().hours : false),
-  showTracker: () => (Meteor.user().profile.timeunit !== 'd'),
+  showTracker: () => (Meteor.user() ? (Meteor.user().profile.timeunit !== 'd') : false),
 })
 Template.tracktime.onCreated(function tracktimeCreated() {
   this.date = new ReactiveVar(new Date())

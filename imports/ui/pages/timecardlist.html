@@ -1,11 +1,11 @@
 <template name="timecardlist">
-  <div class="row mb-2">
+  <!-- <div class="row mb-2">
     <div class="col-12">
       <a href="/tracktime/{{selectedProjectId}}" class="btn btn-primary mr-2"><i class="fa fa-plus"></i> Time</a>
       <button id="export" class="btn btn-primary"><i class="fa fa-download"></i> Export</button>
     </div>
-  </div>
-  <div class="row mb-2">
+  </div> -->
+  <div class="row mb-2 px-2">
     <div class="col-sm-4">
       <label>Project</label>
       {{>projectselect allProjects = true}}
@@ -21,42 +21,7 @@
       {{/with}}
     </div>
   </div>
-  {{#if timecards}}
   <div class="table-responsive">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>Project</th>
-          <th>Date</th>
-          <th>Task</th>
-          <th>Resource</th>
-          <th class="text-center">{{timeUnitName}}</th>
-          <th class="text-right">Edit/Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each timecards}}
-        <tr id="{{_id}}">
-          <td>{{projectName(projectId)}}</td>
-          <td>{{prettify(date)}}</td>
-          <td>{{task}}</td>
-          <td>{{username(userId)}}</td>
-          <td class="text-center">{{timeInUserUnit(hours)}}</td>
-          <td class="text-right"><a href="/edit/timecard/{{_id}}"><i class="fa fa-edit"></i></a> <a href="#" class="js-delete-timecard"><i class="fa fa-trash"></i></a></td>
-        </tr>
-        {{/each}}
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td class="text-right"><strong>Total:</strong></td>
-          <td class="text-center">{{timeInUserUnit(totalHours)}}</td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+    {{> tabular table=TabularTables.Timecards selector=selector class="table table-hover"}}
   </div>
-  {{else}}
-    <p>Sorry, no data found. Please refine your search <i class="fa fa-binoculars"></i></p>
-  {{/if}}
 </template>
