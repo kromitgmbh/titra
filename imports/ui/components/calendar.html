@@ -1,0 +1,15 @@
+<template name="calendar">
+  <div class="row">
+    <div class="col-3 hidden-sm-down">
+      {{#each project in projects}}
+        <div class="card drag" data-id="{{project._id}}"><div class="card-block "><span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{projectColor(project._id)}} 40%);">{{project.name}} </span>
+        </div></div>
+      {{/each}}
+    </div>
+    <div class="col">
+      <!-- Fullcalender element -->
+      <div id="cal">
+      </div>
+    </div>
+  </div>
+</template>

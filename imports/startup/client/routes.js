@@ -26,7 +26,7 @@ FlowRouter.route('/', {
 })
 FlowRouter.route('/tracktime/:projectId?', {
   action() {
-    BlazeLayout.render('appLayout', { main: 'tracktime' })
+    BlazeLayout.render('appLayout', { main: 'tracktimemain' })
   },
   name: 'tracktime',
 })

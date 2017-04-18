@@ -49,6 +49,20 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
   }
   return Timecards.find({ projectId: { $in: projectList }, userId })
 })
+
+Meteor.publish('periodTimecards', function periodTimecards({ startDate, endDate, userId }) {
+  let projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
+    { $fields: { _id: 1 } }).fetch().map(value => value._id)
+
+  if (userId === 'all') {
+    return Timecards.find({ projectId: { $in: projectList },
+      date: { $gte: startDate, $lte: endDate } })
+  }
+  return Timecards.find({ projectId: { $in: projectList },
+    userId,
+    date: { $gte: startDate, $lte: endDate } })
+})
+
 Meteor.publish('singleTimecard', function singleTimecard(_id) {
   check(_id, String)
   const timecard = Timecards.findOne({ _id })

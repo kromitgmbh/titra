@@ -4,19 +4,31 @@ import 'jquery-serializejson'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
+//import 'bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css'
+import 'bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js'
 
 Template.editproject.onCreated(function editprojectSetup() {
-  this.subscribe('singleProject', FlowRouter.getParam('id'))
+  if(FlowRouter.getParam('id')){
+    this.subscribe('singleProject', FlowRouter.getParam('id'))
+  }
   this.autorun(() => {
     if (this.subscriptionsReady()) {
       // Materialize.updateTextFields()
     }
   })
 })
+Template.editproject.onRendered(function editprojectRendered() {
+  $('#colpick').colorpicker({
+    format: 'hex',
+  });
+  this.autorun(()=>{
+    $('#colpick').colorpicker('setValue',(Projects.findOne() ? Projects.findOne().color : '#009688'))
+  })
+})
 Template.editproject.events({
   'click #save': (event, templateInstance) => {
     event.preventDefault()
-    // console.log(templateInstance.$('#editProjectForm').serializeJSON())
+     console.log(templateInstance.$('#editProjectForm').serializeArray())
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {
         projectId: FlowRouter.getParam('id'),
@@ -47,8 +59,10 @@ Template.editproject.events({
   },
 })
 Template.editproject.helpers({
+  new: () => (FlowRouter.getParam('id') ? false : true),
   name: () => (Projects.findOne() ? Projects.findOne().name : false),
   desc: () => (Projects.findOne() ? Projects.findOne().desc : false),
+  color: () => (Projects.findOne() ? Projects.findOne().color : false),
   customer: () => (Projects.findOne() ? Projects.findOne().customer : false),
   rate: () => (Projects.findOne() ? Projects.findOne().rate : false),
   wekanurl: () => (Projects.findOne() ? Projects.findOne().wekanurl : false),

@@ -1,4 +1,5 @@
 import { Template } from 'meteor/templating'
+import Projects from '../../../imports/api/projects/projects.js'
 
 $.notifyDefaults({
   type: 'success',
@@ -21,6 +22,12 @@ Template.registerHelper('timeunit', () => {
   }
   return false
 })
+Template.registerHelper('timetrackview', () => {
+  if (Meteor.user()) {
+    return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd'
+  }
+  return false
+})
 Template.registerHelper('timeInUserUnit', (time) => {
   if (Meteor.user()) {
     if (Meteor.user().profile.timeunit === 'd') {
@@ -30,4 +37,10 @@ Template.registerHelper('timeInUserUnit', (time) => {
     }
   }
   return time
+})
+Template.registerHelper('projectColor', (_id) => {
+  if (Projects.findOne({ _id })) {
+    return Projects.findOne({ _id }).color ? Projects.findOne({ _id }).color : '#009688'
+  }
+  return '#d9d9d9'
 })

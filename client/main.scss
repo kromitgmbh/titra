@@ -16,6 +16,7 @@
 // }
 $brand-primary:             #009688;
 $brand-inverse:             #455A64;
+$tooltip-bg:                #009688;
 @import "{}/node_modules/bootstrap/scss/bootstrap.scss";
 // .navbar {
 //   display: block;
@@ -53,3 +54,66 @@ body{
 // @import "{}/node_modules/font-awesome/scss/_stacked.scss";
 // @import "{}/node_modules/font-awesome/scss/_icons.scss";
 // @import "{}/node_modules/font-awesome/scss/_screen-reader.scss";
+
+//@import "{}/node_modules/fullcalendar/dist/fullcalendar.css";
+
+@import "{}/node_modules/bootstrap-colorpicker/src/sass/_colorpicker.scss";
+// OVERRIDE
+$colorpicker-img-path: "img/bootstrap-colorpicker" !default;
+@mixin bgImg($imgFilename) {
+  background-image: url("#{$colorpicker-img-path}/#{$imgFilename}");
+}
+.colorpicker-saturation {
+  @include bgImg('saturation.png');
+}
+.colorpicker-hue {
+  @include bgImg('hue.png');
+}
+.colorpicker-alpha {
+  @include bgImg('alpha.png');
+}
+.colorpicker-color {
+  @include bgImg('alpha.png');
+}
+.colorpicker.colorpicker-horizontal .colorpicker-hue {
+  @include bgImg('hue-horizontal.png');
+}
+.colorpicker.colorpicker-horizontal .colorpicker-alpha {
+  @include bgImg('alpha-horizontal.png');
+}
+
+// underlining feature
+.underline {
+  padding-bottom: 5px;
+  background-position: 0 1.05em;
+  background-repeat: repeat-x;
+  background-size: 1px 5px;
+}
+
+// Fullcalender adjustments
+#cal {
+  margin-top: .5rem;
+  .fc-event {
+    color: #292b2c;
+    font-size: 80%;
+  } 
+} 
+.fc-event:hover {
+  color: #009688;
+}
+
+// draggable
+.drag {
+  z-index: 1000;
+  & .card-block {
+    padding: .5rem;
+  }
+  &.card {
+    margin-top: .5rem;
+  }
+  &.card:hover {
+    background-color: #eee;
+    cursor: pointer;
+  }
+}
+

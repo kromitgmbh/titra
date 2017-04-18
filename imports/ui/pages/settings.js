@@ -9,6 +9,9 @@ Template.settings.helpers({
   unit() {
     return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
   },
+  timetrackview() {
+    return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd'
+  },
   hoursToDays() {
     return Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8
   },
@@ -24,6 +27,7 @@ Template.settings.events({
       name: $('#name').val(),
       unit: $('#unit').val(),
       timeunit: $('#timeunit').val(),
+      timetrackview: $('#timetrackview').val(),
       hoursToDays: $('#hoursToDays').val() }, (error) => {
         if (error) {
           console.error(error)
@@ -46,5 +50,6 @@ Template.settings.onCreated(function settingsCreated() {
 Template.settings.onRendered(function settingsRendered() {
   this.autorun(() => {
     $('#timeunit').val(Meteor.user().profile.timeunit)
+    $('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
   })
 })
