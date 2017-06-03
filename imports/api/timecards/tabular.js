@@ -1,12 +1,11 @@
-import Tabular from 'meteor/aldeed:tabular'
 import moment from 'moment'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { Template } from 'meteor/templating'
+import Tabular from 'meteor/aldeed:tabular'
 import Timecards from './timecards.js'
 import Projects from '../projects/projects.js'
 import projectUsers from '../users/users.js'
 // import '../../ui/components/tablecell.js'
-
 new Tabular.Table({
   name: 'Timecards',
   collection: Timecards,
@@ -57,6 +56,7 @@ new Tabular.Table({
     targets: 5,
     orderable: false,
   }],
+  order: [[1, 'desc']],
   responsive: true,
   autoWidth: false,
   buttonContainer: '.row:eq(0)',
@@ -73,14 +73,44 @@ new Tabular.Table({
       className: 'btn-primary',
       text: '<i class="fa fa-download"></i> Excel',
       title: `titra_export_${moment().format('YYYYMMDD-HHmm')}`,
+      exportOptions: {
+        columns: [0, 1, 2, 3, 4],
+      },
     },
     {
       extend: 'csvHtml5',
       className: 'btn-primary',
       text: '<i class="fa fa-download"></i> CSV',
       title: `titra_export_${moment().format('YYYYMMDD-HHmm')}`,
+      exportOptions: {
+        columns: [0, 1, 2, 3, 4],
+      },
     },
   ],
+  footerCallback(row, data, start, end, display) {
+    const api = this.api()
+    const intVal = (i) => {
+      return typeof i === 'string' ?
+        i.replace(/[\$,]/g, '') * 1 :
+        typeof i === 'number' ?
+            i : 0
+    }
+    // Remove the formatting to get integer data for summation
+    // Total over all pages
+    // const total = api
+    //     .column(4)
+    //     .data()
+    //     .reduce((a, b) => intVal(a) + intVal(b), 0)
+
+    // Total over this page
+    const pageTotal = api
+        .column(4, { page: 'current' })
+        .data()
+        .reduce((a, b) => intVal(a) + intVal(b), 0)
+    // console.log(total)
+    // Update footer
+    $('tfoot').html(`<tr><th></th><th></th><th></th><th style='text-align:right'>Sum:</th><th>${pageTotal}</th><th></th></tr>`)
+  },
   // drawCallback() {
   //   const api = this.api()
   //   const rows = api.rows({ page: 'current' }).nodes()

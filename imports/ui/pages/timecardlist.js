@@ -22,6 +22,7 @@ Template.timecardlist.onCreated(function createTimeCardList() {
   dataTableButtons(window, $)
   html5ExportButtons(window, $)
 })
+
 // at least free up the window assignment when this template instance is removed from DOM
 Template.timecardlist.onDestroyed(() => {
   delete window.JSZip

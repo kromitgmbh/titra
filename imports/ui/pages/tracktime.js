@@ -10,14 +10,40 @@ import '../components/timetracker.js'
 import '../components/calendar.js'
 import '../components/backbutton.js'
 
-const core = require('mathjs/core')
-
-const math = core.create()
-math.import(require('mathjs/lib/expression/function'))
-math.import(require('mathjs/lib/function/arithmetic/add'))
-math.import(require('mathjs/lib/function/arithmetic/subtract'))
-math.import(require('mathjs/lib/function/arithmetic/multiply'))
-math.import(require('mathjs/lib/function/arithmetic/divide'))
+Template.tracktime.onCreated(function tracktimeCreated() {
+  import('mathjs/core').then((core) => {
+    this.math = core.default.create()
+    import('mathjs/lib/expression/function').then((module) => {
+      this.math.import(module.default)
+    })
+    import('mathjs/lib/function/arithmetic/add').then((module) => {
+      this.math.import(module.default)
+    })
+    import('mathjs/lib/function/arithmetic/subtract').then((module) => {
+      this.math.import(module.default)
+    })
+    import('mathjs/lib/function/arithmetic/multiply').then((module) => {
+      this.math.import(module.default)
+    })
+    import('mathjs/lib/function/arithmetic/divide').then((module) => {
+      this.math.import(module.default)
+    })
+  })
+  this.date = new ReactiveVar(new Date())
+  this.data.projectId = new ReactiveVar(FlowRouter.getParam('projectId'))
+  if (FlowRouter.getParam('tcid')) {
+    this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
+    this.autorun(() => {
+      if (this.subscriptionsReady()) {
+        this.date.set(Timecards.findOne() ? Timecards.findOne().date : new Date())
+      }
+    })
+  } else if (FlowRouter.getQueryParam('date')) {
+    this.autorun(() => {
+      this.date.set(FlowRouter.getQueryParam('date'))
+    })
+  }
+})
 
 Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
@@ -25,20 +51,21 @@ Template.tracktime.events({
     // console.log(Template.instance().data.picker.component.item.select.obj)
     // console.log(Template.instance().data.picker)
     try {
-      math.eval($('#hours').val())
+      templateInstance.math.eval($('#hours').val())
     } catch (exception) {
       $.notify({ message: 'Please check your input' }, { type: 'danger' })
       $('#hours').parent().addClass('has-danger')
       return
     }
+    const projectId = templateInstance.$('#targetProject').val()
     const task = templateInstance.$('.js-tasksearch-input').val()
     const date = new Date(Date.parse($('#date').val()))
-    let hours = math.eval($('#hours').val())
+    let hours = templateInstance.math.eval($('#hours').val())
     if (Meteor.user().profile.timeunit === 'd') {
-      hours = math.eval($('#hours').val() * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8))
+      hours = templateInstance.math.eval($('#hours').val() * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8))
     }
     if (FlowRouter.getParam('tcid')) {
-      Meteor.call('updateTimeCard', { _id: FlowRouter.getParam('tcid'), date, hours, task }, (error) => {
+      Meteor.call('updateTimeCard', { _id: FlowRouter.getParam('tcid'), projectId, date, hours, task }, (error) => {
         if (error) {
           console.error(error)
         } else {
@@ -95,35 +122,19 @@ Template.tracktime.helpers({
   hours: () => (Timecards.findOne() ? Timecards.findOne().hours : false),
   showTracker: () => (Meteor.user() ? (Meteor.user().profile.timeunit !== 'd') : false),
 })
-Template.tracktime.onCreated(function tracktimeCreated() {
-  this.date = new ReactiveVar(new Date())
-  this.data.projectId = new ReactiveVar(FlowRouter.getParam('projectId'))
-  if (FlowRouter.getParam('tcid')) {
-    this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
-    this.autorun(() => {
-      if (this.subscriptionsReady()) {
-        this.date.set(Timecards.findOne() ? Timecards.findOne().date : new Date())
-      }
-    })
-  } else if (FlowRouter.getQueryParam('date')) {
-    this.autorun(() => {
-       this.date.set(FlowRouter.getQueryParam('date'))
-    })
-  }
-})
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {
   this.timetrackview = new ReactiveVar(Meteor.user().profile.timetrackview || 'd')
   this.autorun(() => {
-    if(FlowRouter.getParam('projectId')) {
-      this.timetrackview.set('d');
+    if (FlowRouter.getParam('projectId')) {
+      this.timetrackview.set('d')
     }
   })
 })
 
 Template.tracktimemain.helpers({
-  showDay: () => (Template.instance().timetrackview.get() == 'd' ? 'active' : ''),
-  showMonth: () => (Template.instance().timetrackview.get() == 'M' ? 'active' : '')
+  showDay: () => (Template.instance().timetrackview.get() === 'd' ? 'active' : ''),
+  showMonth: () => (Template.instance().timetrackview.get() === 'M' ? 'active' : ''),
 })
 
 Template.tracktimemain.events({
@@ -134,9 +145,7 @@ Template.tracktimemain.events({
   'click .js-month': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.timetrackview.set('M')
-    FlowRouter.setParams({projectId: ''});
-    FlowRouter.setQueryParams({date: null});
+    FlowRouter.setParams({ projectId: '' })
+    FlowRouter.setQueryParams({ date: null })
   },
 })
-
-

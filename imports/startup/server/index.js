@@ -10,6 +10,5 @@ import '../../api/tasks/server/publications.js'
 import '../../api/tasks/methods.js'
 import '../../api/users/server/publications.js'
 import '../../api/users/methods.js'
-import '../../api/timecards/tabular.js'
-
 import './useraccounts-configuration.js'
+import '../../api/timecards/tabular.js'

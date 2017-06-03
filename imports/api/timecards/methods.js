@@ -5,7 +5,7 @@ import Tasks from '../tasks/tasks.js'
 import Projects from '../projects/projects.js'
 
 Meteor.methods({
-  'insertTimeCard'({ projectId, task, date, hours }) {
+  insertTimeCard({ projectId, task, date, hours }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -14,16 +14,16 @@ Meteor.methods({
     }
     Timecards.insert({ userId: this.userId, projectId, date, hours, task })
   },
-  'updateTimeCard'({ _id, task, date, hours }) {
+  updateTimeCard({ projectId, _id, task, date, hours }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
     if (!Tasks.findOne({ userId: this.userId, name: task })) {
       Tasks.insert({ userId: this.userId, name: task })
     }
-    Timecards.update({ _id }, { $set: { date, hours, task } })
+    Timecards.update({ _id }, { $set: { projectId, date, hours, task } })
   },
-  'export'({ projectId, timePeriod, userId }) {
+  export({ projectId, timePeriod, userId }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -84,7 +84,7 @@ Meteor.methods({
     //   projectId,
     //   date: { $gte: startDate, $lte: endDate } }).fetch())).toString('base64')
   },
-  'deleteTimeCard'({ timecardId }) {
+  deleteTimeCard({ timecardId }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
