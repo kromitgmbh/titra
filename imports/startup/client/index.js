@@ -7,5 +7,7 @@ import './useraccounts-configuration.js'
 import './routes.js'
 import './startup.js'
 
-window.Tether = require('tether')
-require('bootstrap')
+import('tether').then((Tether) => {
+  window.Tether = Tether.default
+  import('bootstrap')
+})

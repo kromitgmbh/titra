@@ -32,7 +32,7 @@ Template.editproject.events({
     event.preventDefault()
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {
-        projectId: FlowRouter.getParam('id'),
+        projectId: $('#targetProject').val(),
         projectArray: templateInstance.$('#editProjectForm').serializeArray(),
       }, (error) => {
         if (!error) {

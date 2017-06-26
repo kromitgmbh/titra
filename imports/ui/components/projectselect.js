@@ -26,7 +26,7 @@ Template.projectselect.onCreated(function createTrackTime() {
 })
 Template.projectselect.helpers({
   projects() {
-    return Projects.find()
+    return Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] })
   },
 })
 

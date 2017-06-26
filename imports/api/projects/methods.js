@@ -75,6 +75,22 @@ Meteor.methods({
     Projects.remove({ $or: [{ userId: this.userId }, { public: true }], _id: projectId })
     return true
   },
+  'archiveProject'({ projectId }) {
+    if (!this.userId) {
+      throw new Meteor.Error('You have to be signed in to use this method.')
+    }
+    check(projectId, String)
+    Projects.update({ _id: projectId }, { $set: { archived: true } })
+    return true
+  },
+  'restoreProject'({ projectId }) {
+    if (!this.userId) {
+      throw new Meteor.Error('You have to be signed in to use this method.')
+    }
+    check(projectId, String)
+    Projects.update({ _id: projectId }, { $set: { archived: false } })
+    return true
+  },
   'getTopTasks'({ projectId }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')

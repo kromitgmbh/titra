@@ -1,4 +1,13 @@
 <template name="projectlist">
+  <div class="row form-group">
+    <div class="col-6">
+      <a href="/create/project" class="btn btn-primary" id="next">New project</a>
+    </div>
+    <div class="col-6">
+      <input id="showArchived" type="checkbox"/>
+      <label for="showArchived">Show archived</label>
+    </div>
+  </div>
   <!-- <h5 style="text-align:center">Your projects</h5> -->
     <!-- <ul class="list-group mb-2"> -->
       {{#each project in projects}}
@@ -17,20 +26,32 @@
             <!-- <br/> -->
             <!-- <div class="row no-gutters" style="margin-left:-1em; margin-right:-1em;">
               <div class="btn-group btn-group-m w-100"> -->
-              <div class="row mt-2">
-                <div class="col-3">
-                  <a href="/tracktime/{{project._id}}" class="btn btn-secondary btn-block"><i class="fa fa-plus"></i> <span class="hidden-sm-down">Time</span></a>
-                </div>
+              <div class="row mt-2" id="{{project._id}}">
+                {{#if archived (project._id)}}
+                  <div class="col-3">
+                    <button class="btn btn-secondary btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="hidden-sm-down">Restore</span></button>
+                  </div>
+                {{else}}
+                  <div class="col-3">
+                    <a href="/tracktime/{{project._id}}" class="btn btn-secondary btn-block"><i class="fa fa-plus"></i> <span class="hidden-sm-down">Time</span></a>
+                  </div>
+                {{/if}}
                 <div class="col-3">
                   <a href="/list/timecards/{{project._id}}" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> <span class="hidden-sm-down">List</span></a>
                 </div>
                 {{#if isProjectOwner (project._id)}}
-                <div class="col-3">
-                  <a href="/edit/project/{{project._id}}" class="btn btn-secondary btn-block"><i class="fa fa-edit"></i> <span class="hidden-sm-down">Edit</span></a>
-                </div>
-                <div class="col-3">
-                  <button class="btn btn-secondary btn-block js-delete-project" id="{{project._id}}"><i class="fa fa-trash"></i> <span class="hidden-sm-down">Delete</span></button>
-                </div>
+                  <div class="col-3">
+                    <a href="/edit/project/{{project._id}}" class="btn btn-secondary btn-block"><i class="fa fa-edit"></i> <span class="hidden-sm-down">Edit</span></a>
+                  </div>
+                  {{#if archived (project._id)}}
+                  <div class="col-3">
+                    <button class="btn btn-secondary btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="hidden-sm-down">Delete</span></button>
+                  </div>
+                  {{else}}
+                  <div class="col-3">
+                    <button class="btn btn-secondary btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="hidden-sm-down">Archive</span></button>
+                  </div>
+                  {{/if}}
                 {{/if}}
               </div>
               <!-- </div>
@@ -40,5 +61,4 @@
       <!-- </li> -->
       {{/each}}
     <!-- </ul> -->
-  <a href="/create/project" class="btn btn-primary" id="next">New project</a>
 </template>
