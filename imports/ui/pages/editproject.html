@@ -28,12 +28,16 @@
       </div>
     {{/if}}
     <div class="form-group">
-      <label for="public">Public project (visible to all users)</label>
-      {{#if public}}
-        <input name="public" id="public" type="checkbox" checked class="form-control"/>
-      {{else}}
-        <input name="public" id="public" type="checkbox" class="form-control"/>
-      {{/if}}
+      <label class="custom-control custom-checkbox">
+        {{#if public}}
+          <input name="public" id="public" type="checkbox" checked class="custom-control-input">
+        {{else}}
+          <input name="public" id="public" type="checkbox" class="custom-control-input"/>
+        {{/if}}
+        <span class="custom-control-indicator"></span>
+        <span class="custom-control-description">Public project (visible to all users)</span>
+      </label>
+
       <!-- <input name="public" id="public" type="hidden" value={{public}} class="form-control"/> -->
     </div>
   </form>

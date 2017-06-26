@@ -38,7 +38,7 @@ Template.calendar.onRendered(function trackmonthRendered() {
           FlowRouter.go(`/tracktime/${$(this).data('id')}?date=${date.format()}`)
         },
         eventClick: (calEvent, jsEvent, view) => {
-          $(this).tooltip('hide')
+          $('.tooltip').tooltip('dispose')
           FlowRouter.go(`/edit/timecard/${calEvent.id}`)
         },
         eventRender: (event, element, view) => {
