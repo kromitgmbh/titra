@@ -39,6 +39,7 @@ Template.calendar.onRendered(function trackmonthRendered() {
         },
         eventClick: (calEvent, jsEvent, view) => {
           $(this).tooltip('hide')
+          FlowRouter.go(`/edit/timecard/${calEvent.id}`)
         },
         eventRender: (event, element, view) => {
           // element.text('bala')
@@ -62,7 +63,7 @@ Template.calendar.onRendered(function trackmonthRendered() {
               start: it.date,
               hours: it.hours,
               color: hex2rgba(Projects.findOne({ _id: it.projectId }).color ? Projects.findOne({ _id: it.projectId }).color : '#009688', 40),
-              url: `/edit/timecard/${it._id}`,
+              // url: `/edit/timecard/${it._id}`,
               allDay: true,
             }))
           callback(events)

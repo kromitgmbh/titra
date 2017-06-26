@@ -17,10 +17,16 @@
 $brand-primary:             #009688;
 $brand-inverse:             #455A64;
 $tooltip-bg:                #009688;
+
 @import "{}/node_modules/bootstrap/scss/bootstrap.scss";
 // .navbar {
 //   display: block;
 // }
+.custom-control-input {
+  &:active ~ .custom-control-indicator {
+   background-color: #009688;
+ }
+}
 body{
   padding-top: 4.5rem;
 }
@@ -96,8 +102,8 @@ $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
   .fc-event {
     color: #292b2c;
     font-size: 80%;
-  } 
-} 
+  }
+}
 .fc-event:hover {
   color: #009688;
 }
@@ -116,4 +122,3 @@ $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
     cursor: pointer;
   }
 }
-
