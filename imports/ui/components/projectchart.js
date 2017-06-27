@@ -26,7 +26,10 @@ Template.projectchart.onCreated(function projectchartCreated() {
 Template.projectchart.helpers({
   totalHours() {
     return ProjectStats.findOne({ _id: Template.instance().data.projectId })
-      ? ProjectStats.findOne({ _id: Template.instance().data.projectId }).totalHours : false
+      ? Number(ProjectStats.findOne({
+        _id: Template.instance().data.projectId,
+      }).totalHours).toFixed(2)
+      : false
   },
   allTeamMembers() {
     // return Template.instance().resources.get()
@@ -67,13 +70,9 @@ Template.projectchart.onRendered(function projectchartRendered() {
         new Chart(ctx, {
           type: 'line',
           data: {
-            labels: [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
+            labels:
+            [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
             datasets: [{
-              // backgroundColor: [
-              //   'rgba(69, 90, 100, 0.8)',
-              //   'rgba(0, 150, 136, 0.2)',
-              //   'rgba(0, 150, 136, 0.8)',
-              // ],
               fill: true,
               lineTension: 0.1,
               backgroundColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 40), // 'rgba(75,192,192,0.4)',
