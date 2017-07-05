@@ -11,11 +11,6 @@ Template.editproject.onCreated(function editprojectSetup() {
   if (FlowRouter.getParam('id')) {
     this.subscribe('singleProject', FlowRouter.getParam('id'))
   }
-  this.autorun(() => {
-    if (this.subscriptionsReady()) {
-      // Materialize.updateTextFields()
-    }
-  })
 })
 Template.editproject.onRendered(function editprojectRendered() {
   $('#colpick').colorpicker({
@@ -32,7 +27,7 @@ Template.editproject.events({
     event.preventDefault()
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {
-        projectId: $('#targetProject').val(),
+        projectId: FlowRouter.getParam('id'),
         projectArray: templateInstance.$('#editProjectForm').serializeArray(),
       }, (error) => {
         if (!error) {
