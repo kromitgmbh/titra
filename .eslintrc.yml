@@ -6,14 +6,14 @@ parserOptions:
   allowImportExportEverywhere: true
 
 # register plugins
-# plugins:
-#   - meteor
+plugins:
+  - meteor
 
 # use the rules of eslint-config-airbnb
 # and the recommended rules of eslint-plugin-meteor
 extends:
   - airbnb-base
-  # - plugin:meteor/recommended
+  - plugin:meteor/recommended
 
 # registerenvironments
 env:
@@ -41,5 +41,5 @@ rules:
   # meteor/prefer-session-equals: [2] # prefer Session.equals instead
   import/extensions: 0
 
-globals:
+#globals:
   # collections

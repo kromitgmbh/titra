@@ -1,4 +1,3 @@
-// import 'newrelic'
 import '../../api/projects/projects.js'
 import '../../api/projects/methods.js'
 import '../../api/projects/server/publications.js'

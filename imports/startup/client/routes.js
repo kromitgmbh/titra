@@ -8,13 +8,6 @@ import '../../ui/pages/timecardlist.js'
 import '../../ui/pages/editproject.js'
 import '../../ui/pages/settings.js'
 
-
-// import '../../ui/pages/root-redirector.js';
-// import '../../ui/pages/lists-show-page.js';
-// import '../../ui/pages/app-not-found.js';
-
-// Import to override accounts templates
-// import '../../ui/accounts/accounts-templates.js';
 if (!Meteor.settings.public.sandstorm) {
   FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn])
 }

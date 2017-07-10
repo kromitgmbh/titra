@@ -5,7 +5,7 @@ import Tabular from 'meteor/aldeed:tabular'
 import Timecards from './timecards.js'
 import Projects from '../projects/projects.js'
 import projectUsers from '../users/users.js'
-// import '../../ui/components/tablecell.js'
+
 new Tabular.Table({
   name: 'Timecards',
   collection: Timecards,
@@ -49,7 +49,7 @@ new Tabular.Table({
   ],
   selector(userId) {
     const projectList = Projects.find({ $or: [{ userId }, { public: true }] },
-    { $fields: { _id: 1 } }).fetch().map(value => value._id)
+      { $fields: { _id: 1 } }).fetch().map(value => value._id)
     return { projectId: { $in: projectList } }
   },
   columnDefs: [{
@@ -87,42 +87,17 @@ new Tabular.Table({
       },
     },
   ],
-  footerCallback(row, data, start, end, display) {
+  footerCallback() {
     const api = this.api()
     const intVal = (i) => {
       return typeof i === 'string' ?
-        i.replace(/[\$,]/g, '') * 1 :
-        typeof i === 'number' ?
-            i : 0
+        i.replace(/[$,]/g, '') * 1 :
+        typeof i === 'number' ? i : 0
     }
-    // Remove the formatting to get integer data for summation
-    // Total over all pages
-    // const total = api
-    //     .column(4)
-    //     .data()
-    //     .reduce((a, b) => intVal(a) + intVal(b), 0)
-
-    // Total over this page
     const pageTotal = api
-        .column(4, { page: 'current' })
-        .data()
-        .reduce((a, b) => intVal(a) + intVal(b), 0)
-    // console.log(total)
-    // Update footer
+      .column(4, { page: 'current' })
+      .data()
+      .reduce((a, b) => intVal(a) + intVal(b), 0)
     $('tfoot').html(`<tr><th></th><th></th><th></th><th style='text-align:right'>Sum:</th><th>${pageTotal}</th><th></th></tr>`)
   },
-  // drawCallback() {
-  //   const api = this.api()
-  //   const rows = api.rows({ page: 'current' }).nodes()
-  //   let last = null
-  //
-  //   api.column(0, { page: 'current' }).data().each((group, i) => {
-  //     if (last !== group) {
-  //       $(rows).eq(i).before(
-  //           `<tr><td colspan="5" style="background-color:#455A64; color:white;">${moment(group).format('ddd DD.MM.YYYY')}</td></tr>`,
-  //       )
-  //       last = group
-  //     }
-  //   })
-  // },
 })

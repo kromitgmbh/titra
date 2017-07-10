@@ -7,7 +7,7 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
   let projectList = []
   if (projectId === 'all') {
     projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
-    { $fields: { _id: 1 } }).fetch().map(value => value._id)
+      { $fields: { _id: 1 } }).fetch().map(value => value._id)
   } else {
     projectList = [Projects.findOne({ _id: projectId })._id]
   }
@@ -51,7 +51,7 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
 })
 
 Meteor.publish('periodTimecards', function periodTimecards({ startDate, endDate, userId }) {
-  let projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
+  const projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
     { $fields: { _id: 1 } }).fetch().map(value => value._id)
 
   if (userId === 'all') {

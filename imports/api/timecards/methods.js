@@ -51,7 +51,7 @@ Meteor.methods({
     let projectList = []
     if (projectId === 'all') {
       projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
-      { _id: 1 }).fetch().map(value => value._id)
+        { _id: 1 }).fetch().map(value => value._id)
     } else {
       projectList = [projectId]
     }

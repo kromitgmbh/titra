@@ -3,7 +3,7 @@ import Timecards from '../timecards/timecards'
 import Projects from '../projects/projects'
 
 Meteor.methods({
-  'getProjectStats'() {
+  getProjectStats() {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -36,7 +36,7 @@ Meteor.methods({
     }
     return stats
   },
-  'updateProject'({ projectId, projectArray }) {
+  updateProject({ projectId, projectArray }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -51,7 +51,7 @@ Meteor.methods({
     }
     Projects.update({ userId: this.userId, _id: projectId }, { $set: updateJSON })
   },
-  'createProject'({ projectArray }) {
+  createProject({ projectArray }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -67,7 +67,7 @@ Meteor.methods({
     updateJSON.userId = this.userId
     Projects.insert(updateJSON)
   },
-  'deleteProject'({ projectId }) {
+  deleteProject({ projectId }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -75,7 +75,7 @@ Meteor.methods({
     Projects.remove({ $or: [{ userId: this.userId }, { public: true }], _id: projectId })
     return true
   },
-  'archiveProject'({ projectId }) {
+  archiveProject({ projectId }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -83,7 +83,7 @@ Meteor.methods({
     Projects.update({ _id: projectId }, { $set: { archived: true } })
     return true
   },
-  'restoreProject'({ projectId }) {
+  restoreProject({ projectId }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -91,7 +91,7 @@ Meteor.methods({
     Projects.update({ _id: projectId }, { $set: { archived: false } })
     return true
   },
-  'getTopTasks'({ projectId }) {
+  getTopTasks({ projectId }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }

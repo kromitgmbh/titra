@@ -1,5 +1,4 @@
 import { Template } from 'meteor/templating'
-// import LogRocket from 'logrocket'
 import Projects from '../../../imports/api/projects/projects.js'
 
 $.notifyDefaults({
@@ -10,18 +9,6 @@ $.notifyDefaults({
     align: 'center',
   },
 })
-
-// Meteor.startup(() => {
-//   LogRocket.init('xsozky/titra')
-//   Tracker.autorun(() => {
-//     if (Meteor.user()) {
-//       LogRocket.identify(Meteor.userId(), {
-//         name: Meteor.user().profile.name,
-//         email: Meteor.user().emails[0].address,
-//       })
-//     }
-//   })
-// })
 
 Template.registerHelper('unit', () => {
   if (Meteor.user()) {

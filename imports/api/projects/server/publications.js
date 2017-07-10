@@ -30,25 +30,8 @@ Meteor.publish('myProjectStats', function myProjectStats() {
   // `initializing` state.
   const handle = Projects.find({ $or: [{ userId: this.userId },
     { public: true }] }).observeChanges({
-      added: (projectId) => {
-        if (!initializing) {
-          let totalHours = 0
-          let currentMonthHours = 0
-          let previousMonthHours = 0
-          for (const timecard of
-            Timecards.find({ userId: this.userId, projectId }).fetch()) {
-            if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
-              currentMonthHours += Number.parseFloat(timecard.hours)
-            }
-            if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
-              previousMonthHours += Number.parseFloat(timecard.hours)
-            }
-            totalHours += Number.parseFloat(timecard.hours)
-          }
-          this.changed('projectStats', projectId, { totalHours, currentMonthHours, previousMonthHours })
-        }
-      },
-      removed: (projectId) => {
+    added: (projectId) => {
+      if (!initializing) {
         let totalHours = 0
         let currentMonthHours = 0
         let previousMonthHours = 0
@@ -63,24 +46,41 @@ Meteor.publish('myProjectStats', function myProjectStats() {
           totalHours += Number.parseFloat(timecard.hours)
         }
         this.changed('projectStats', projectId, { totalHours, currentMonthHours, previousMonthHours })
-      },
-      changed: (projectId) => {
-        let totalHours = 0
-        let currentMonthHours = 0
-        let previousMonthHours = 0
-        for (const timecard of
-          Timecards.find({ userId: this.userId, projectId }).fetch()) {
-          if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
-            currentMonthHours += Number.parseFloat(timecard.hours)
-          }
-          if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
-            previousMonthHours += Number.parseFloat(timecard.hours)
-          }
-          totalHours += Number.parseFloat(timecard.hours)
+      }
+    },
+    removed: (projectId) => {
+      let totalHours = 0
+      let currentMonthHours = 0
+      let previousMonthHours = 0
+      for (const timecard of
+        Timecards.find({ userId: this.userId, projectId }).fetch()) {
+        if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+          currentMonthHours += Number.parseFloat(timecard.hours)
         }
-        this.changed('projectStats', projectId, { totalHours, currentMonthHours, previousMonthHours })
-      },
-    })
+        if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+          previousMonthHours += Number.parseFloat(timecard.hours)
+        }
+        totalHours += Number.parseFloat(timecard.hours)
+      }
+      this.changed('projectStats', projectId, { totalHours, currentMonthHours, previousMonthHours })
+    },
+    changed: (projectId) => {
+      let totalHours = 0
+      let currentMonthHours = 0
+      let previousMonthHours = 0
+      for (const timecard of
+        Timecards.find({ userId: this.userId, projectId }).fetch()) {
+        if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+          currentMonthHours += Number.parseFloat(timecard.hours)
+        }
+        if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+          previousMonthHours += Number.parseFloat(timecard.hours)
+        }
+        totalHours += Number.parseFloat(timecard.hours)
+      }
+      this.changed('projectStats', projectId, { totalHours, currentMonthHours, previousMonthHours })
+    },
+  })
   // Instead, we'll send one `self.added()` message right after
   // observeChanges has returned, and mark the subscription as
   // ready.

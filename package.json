@@ -27,7 +27,7 @@
     "tether": "^1.4.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.2.2",
+    "babel-eslint": "^7.2.3",
     "eslint": "^4.1.1",
     "eslint-config-airbnb-base": "^11.1.3",
     "eslint-import-resolver-meteor": "^0.4.0",
