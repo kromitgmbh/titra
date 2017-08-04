@@ -15,6 +15,9 @@ Template.projectselect.onCreated(function createTrackTime() {
         if (FlowRouter.getParam('projectId') !== 'all') {
           this.$('#targetProject').val(FlowRouter.getParam('projectId'))
           this.selectedId.set(FlowRouter.getParam('projectId'))
+        } else if (this.data.allProjects) {
+          this.$('#targetProject').val(FlowRouter.getParam('projectId'))
+          this.selectedId.set('all')
         }
       }
       if (FlowRouter.getParam('tcid')) {
@@ -33,5 +36,6 @@ Template.projectselect.helpers({
 Template.projectselect.events({
   'change #targetProject': (event, templateInstance) => {
     templateInstance.selectedId.set($(event.currentTarget).val())
+    FlowRouter.setParams({ projectId: $(event.currentTarget).val() })
   },
 })

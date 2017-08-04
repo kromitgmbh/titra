@@ -15,7 +15,9 @@ import '../../api/timecards/tabular.js'
 Template.timecardlist.onCreated(function createTimeCardList() {
   this.period = new ReactiveVar('currentMonth')
   this.resource = new ReactiveVar('all')
-  this.data.project = new ReactiveVar(FlowRouter.getParam('projectId'))
+  this.autorun(() => {
+    this.data.project = new ReactiveVar(FlowRouter.getParam('projectId'))
+  })
   // super hacky, but is needed for Excel export button to show
   window.JSZip = JSZip
   dataTablesBootstrap(window, $)
@@ -70,10 +72,10 @@ Template.timecardlist.events({
   'change #resourceselect': (event, templateInstance) => {
     templateInstance.resource.set($(event.currentTarget).val())
   },
-  'change #targetProject': (event, templateInstance) => {
-    templateInstance.data.project.set($(event.currentTarget).val())
-    // FlowRouter.go(`/list/timecards/${$(event.currentTarget).val()}`)
-  },
+  // 'change #targetProject': (event, templateInstance) => {
+  //   Template.instance().data.project.set($(event.currentTarget).val())
+  //   // FlowRouter.go(`/list/timecards/${$(event.currentTarget).val()}`)
+  // },
   // 'click #export': (event) => {
   //   event.preventDefault()
   //   Meteor.call('export', { projectId: $('#targetProject').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val() }, (error, result) => {

@@ -29,11 +29,11 @@ Template.settings.events({
       timeunit: $('#timeunit').val(),
       timetrackview: $('#timetrackview').val(),
       hoursToDays: $('#hoursToDays').val() }, (error) => {
-        if (error) {
-          console.error(error)
-        }
-        $.notify('Settings saved successfully')
-      })
+      if (error) {
+        console.error(error)
+      }
+      $.notify('Settings saved successfully')
+    })
   },
   'change #timeunit': () => {
     Template.instance().displayHoursToDays.set($('#timeunit').val() === 'd')

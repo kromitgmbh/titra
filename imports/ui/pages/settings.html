@@ -28,6 +28,11 @@
       <label for="name">Cost unit</label>
       <input type="text" class="form-control" id="unit" value="{{unit}}"/>
     </div>
+    {{#unless isSandstorm}}
+    <div class="form-group">
+      <a class="btn btn-secondary" href="/changePwd">Change password</a>
+    </div>
+    {{/unless}}
   </form>
   <div class="row">
     <div class="col-5 col-md-3">

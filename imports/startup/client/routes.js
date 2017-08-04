@@ -67,3 +67,7 @@ AccountsTemplates.configureRoute('signUp', {
   name: 'join',
   path: '/join',
 })
+AccountsTemplates.configureRoute('changePwd', {
+  name: 'changePwd',
+  path: '/changePwd',
+})
