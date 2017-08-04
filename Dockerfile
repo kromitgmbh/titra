@@ -10,13 +10,15 @@ COPY server/ ./server/
 COPY client/ ./client/
 COPY imports/ ./imports/
 COPY .meteor/ ./.meteor/
-RUN ls -lash
 RUN meteor build /build/ --server-only --architecture os.linux.x86_64
 
 FROM node:4.8.4-alpine
+RUN apk update && apk add python make g++
 COPY --from=0 /build/*.tar.gz /app/bundle.tar.gz
 WORKDIR /app/
 RUN tar xvzf bundle.tar.gz
 ENV PORT 3000
 RUN cd /app/bundle/programs/server; npm install --production --silent;
+RUN apk del python make g++
+EXPOSE 3000
 CMD ["node", "bundle/main.js"]
