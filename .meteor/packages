@@ -29,3 +29,5 @@ mouse0270:bootstrap-notify
 random@1.0.10
 aldeed:tabular
 dynamic-import@0.1.1
+ostrio:loggerconsole
+faburem:client-server-logger

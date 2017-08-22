@@ -124,7 +124,7 @@ Template.tracktime.helpers({
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {
-  this.timetrackview = new ReactiveVar(Meteor.user().profile.timetrackview || 'd')
+  this.timetrackview = new ReactiveVar(Meteor.user() ? Meteor.user().profile.timetrackview || 'd' : 'd')
   this.autorun(() => {
     if (FlowRouter.getParam('projectId')) {
       this.timetrackview.set('d')

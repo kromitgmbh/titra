@@ -1,11 +1,12 @@
 
 // Import to load these templates
-
+// import Popper from 'popper.js'
 import './useraccounts-configuration.js'
 import './routes.js'
 import './startup.js'
 
-import('tether').then((Tether) => {
-  window.Tether = Tether.default
+import('popper.js').then((Popper) => {
+  // window.Tether = Tether.default
+  window.Popper = Popper
   import('bootstrap')
 })

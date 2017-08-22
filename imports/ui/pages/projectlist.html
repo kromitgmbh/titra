@@ -14,7 +14,7 @@
     </div>
   </div>
   <div class="card mb-3" style="border: 1px solid #455A64">
-    <div class="card-block">
+    <div class="card-body">
       <h6 class="card-subtitle mb-1">All projects</h6>
       <!-- <span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span> -->
       {{> allprojectschart}}
@@ -41,7 +41,7 @@
         <!-- <br/> -->
         <!-- <div class="mb-1" style="width:100%;padding-top:10px"> -->
         <div class="card mb-3" style="border: 1px solid {{colorOpacity project.color 50}}">
-          <div class="card-block">
+          <div class="card-body">
             <h6 class="card-subtitle mb-1">{{project.name}}</h6>
             <!-- <span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span> -->
             {{> projectchart projectId=project._id}}

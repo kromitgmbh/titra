@@ -21,12 +21,12 @@
       <label for="rate">Rate ($/h)</label>
       <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100"/>
     </div>
-    {{#if isSandstorm}}
-      <div class="form-group">
-        <label for="wekanurl">Wekan integration</label>
-        <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://url.of.your.wekan.environment/"/>
-      </div>
-    {{/if}}
+    <!-- {{#if isSandstorm}} -->
+    <div class="form-group">
+      <label for="wekanurl">Wekan integration</label>
+      <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://url.of.your.wekan.environment/"/>
+    </div>
+    <!-- {{/if}} -->
     <div class="form-group">
       <label class="custom-control custom-checkbox">
         {{#if public}}
@@ -42,10 +42,10 @@
     </div>
   </form>
   <div class="row text-center">
-    <div class="col-5 col-md-2">
+    <div class="col-5 col-md-2 mr-auto">
       {{>backbutton}}
     </div>
-    <div class="offset-2 col-5 offset-md-8 col-md-2">
+    <div class="col-5 col-md-2">
       <button class="btn btn-primary form-control" id="save">save</button>
     </div>
   </div>

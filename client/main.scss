@@ -14,14 +14,26 @@
 //   height: 36px !important;
 //   line-height:36px !important;
 // }
-$brand-primary:             #009688;
-$brand-inverse:             #455A64;
-$tooltip-bg:                #009688;
+$theme-colors: (
+  primary: #009688,
+  secondary: #EEE,
+  success: #009688,
+  info: #CFD8DC,
+  warning: yellow,
+  danger: red,
+  light: #BDBDBD,
+  dark: #455A64
+);
 
 @import "{}/node_modules/bootstrap/scss/bootstrap.scss";
 // .navbar {
 //   display: block;
 // }
+
+// $brand-primary:             #009688;
+// $brand-inverse:             #455A64;
+// $tooltip-bg:                #009688;
+
 .custom-control-input {
   &:active ~ .custom-control-indicator {
    background-color: #009688;
@@ -30,12 +42,12 @@ $tooltip-bg:                #009688;
 body{
   padding-top: 4.5rem;
 }
-.navbar-inverse .navbar-nav .nav-link {
+.navbar-dark .navbar-nav .nav-link {
   color: white;
-  border-bottom: 4px solid $brand-inverse;
+  // border-bottom: 4px solid map-get($theme-colors, primary);
 }
-.navbar-inverse .navbar-nav .active {
-    border-bottom: 4px solid $brand-primary;
+.navbar-dark .navbar-nav .active {
+    border-bottom: 4px solid map-get($theme-colors, primary);
 }
 .navbar-toggleable-md .navbar-nav .nav-link {
   padding-left: 0;
@@ -108,7 +120,7 @@ $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
   }
 }
 .fc-event:hover {
-  color: #009688;
+  color: map-get($theme-colors, primary);
 }
 
 // draggable

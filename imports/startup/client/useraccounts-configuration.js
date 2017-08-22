@@ -24,9 +24,9 @@ AccountsTemplates.addField({
   required: true,
 })
 
-Accounts.onLogin(() => {
-  FlowRouter.go('/list/projects')
-})
+// Accounts.onLogin(() => {
+//   FlowRouter.go('/list/projects')
+// })
 
 Accounts.onLogout(() => {
   window.location.href = '/'
