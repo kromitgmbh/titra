@@ -11,6 +11,6 @@ Template.resourceselect.onCreated(function createResourceSelect() {
 Template.resourceselect.helpers({
   resources() {
     return projectUsers.findOne({ _id: Template.currentData().get() })
-    ? projectUsers.findOne({ _id: Template.currentData().get() }).users : false
+      ? projectUsers.findOne({ _id: Template.currentData().get() }).users : false
   },
 })

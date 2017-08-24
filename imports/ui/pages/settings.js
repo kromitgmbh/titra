@@ -38,6 +38,10 @@ Template.settings.events({
   'change #timeunit': () => {
     Template.instance().displayHoursToDays.set($('#timeunit').val() === 'd')
   },
+  'click .js-logout': (event) => {
+    event.preventDefault()
+    Meteor.logout()
+  },
 })
 Template.settings.onCreated(function settingsCreated() {
   this.displayHoursToDays = new ReactiveVar()

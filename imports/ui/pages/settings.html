@@ -4,6 +4,18 @@
       <label for="name">Name</label>
       <input type="text" class="form-control" id="name" value="{{name}}"/>
     </div>
+    {{#unless isSandstorm}}
+    <div class="form-group">
+      <div class="row">
+        <div class="col-6 col-md-3 mr-auto">
+          <a class="btn btn-secondary form-control" href="/changePwd">Change password</a>
+        </div>
+        <div class="col-6 col-md-3">
+          <a class="btn btn-secondary js-logout form-control" href="#">Logout</a>
+        </div>
+      </div>
+    </div>
+    {{/unless}}
     <div class="form-group">
       <label for="name">Track time view</label>
       <select class="form-control" id="timetrackview">
@@ -28,19 +40,12 @@
       <label for="name">Cost unit</label>
       <input type="text" class="form-control" id="unit" value="{{unit}}"/>
     </div>
-    {{#unless isSandstorm}}
-    <div class="form-group">
-      <a class="btn btn-secondary" href="/changePwd">Change password</a>
-    </div>
-    {{/unless}}
   </form>
   <div class="row">
-    <div class="col-5 col-md-3 mr-auto">
+    <div class="col-6 col-md-3 mr-auto">
       {{>backbutton}}
     </div>
-    <div class="col">
-    </div>
-    <div class="col-5 col-md-3">
+    <div class="col-6 col-md-3">
       <button class="btn btn-primary form-control js-save">save</button>
     </div>
   </div>

@@ -1,18 +1,15 @@
 <template name="navbar">
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand bg-dark fixed-top">
     <!-- <div class="container"> -->
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <a class="navbar-brand" href="/"><img src="/favicons/favicon-32x32.png" alt="titra logo" class="d-inline-block" height="25"/></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand float-left" href="/"><img src="/favicons/favicon-32x32.png" alt="titra logo" class="d-inline-block" height="25"/></a>
-      <div class="collapse navbar-collapse w-75" id="navbar">
+      <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item"><a class="nav-link {{isRouteActive 'tracktime'}}" href="/tracktime">Track time</a></li>
-          <li class="nav-item"><a class="nav-link {{isRouteActive 'projectlist'}}" href="/list/projects">Projects</a></li>
-          <li class="nav-item"><a class="nav-link {{isRouteActive 'settings'}}" href="/settings">Settings</a></li>
-          {{#unless sandStormUser}}
-            <li class="nav-item"><a class="nav-link js-logout" href="#">Logout</a></li>
-          {{/unless}}
+          <li class="nav-item"><a class="nav-link {{isRouteActive 'tracktime'}}" href="/tracktime"><i class="fa fa-plus"></i> Track time</a></li>
+          <li class="nav-item"><a class="nav-link {{isRouteActive 'projectlist'}}" href="/list/projects"><i class="fa fa-list"></i> Projects</a></li>
+          <li class="nav-item"><a class="nav-link {{isRouteActive 'settings'}}" href="/settings"><i class="fa fa-cogs"></i> <span class="d-none d-md-inline">Settings</span></a></li>
         </ul>
       </div>
     <!-- </div> -->

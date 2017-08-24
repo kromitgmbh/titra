@@ -16,11 +16,11 @@
 // }
 $theme-colors: (
   primary: #009688,
-  secondary: #EEE,
+  secondary: #e4e4e4,
   success: #009688,
-  info: #CFD8DC,
-  warning: yellow,
-  danger: red,
+  info: #b2dfdb,
+  warning: #ffc107,
+  danger: #ff5722,
   light: #BDBDBD,
   dark: #455A64
 );
@@ -42,14 +42,18 @@ $theme-colors: (
 body{
   padding-top: 4.5rem;
 }
-.navbar-dark .navbar-nav .nav-link {
+.navbar .navbar-nav .nav-link {
   color: white;
   // border-bottom: 4px solid map-get($theme-colors, primary);
 }
-.navbar-dark .navbar-nav .active {
+.navbar .navbar-nav {
+  flex-direction: row;
+  // border-bottom: 4px solid map-get($theme-colors, primary);
+}
+.navbar .navbar-nav .active {
     border-bottom: 4px solid map-get($theme-colors, primary);
 }
-.navbar-toggleable-md .navbar-nav .nav-link {
+.navbar .navbar-nav .nav-link {
   padding-left: 0;
   padding-right: 0;
   margin-left: 0.5rem;
