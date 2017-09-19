@@ -21,8 +21,8 @@ Template.tasksearch.events({
 Template.tasksearch.onCreated(function tasksearchcreated() {
   this.filter = new ReactiveVar()
   this.autorun(() => {
-    if (Template.currentData().projectId.get()) {
-      const project = Projects.findOne({ _id: Template.currentData().projectId.get() })
+    if (FlowRouter.getParam('projectId')) {
+      const project = Projects.findOne({ _id: FlowRouter.getParam('projectId') })
       if (project) {
         if (project.wekanurl) {
           const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))

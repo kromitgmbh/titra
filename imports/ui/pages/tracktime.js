@@ -30,7 +30,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
     })
   })
   this.date = new ReactiveVar(new Date())
-  this.data.projectId = new ReactiveVar(FlowRouter.getParam('projectId'))
+  this.projectId = new ReactiveVar(FlowRouter.getParam('projectId'))
   if (FlowRouter.getParam('tcid')) {
     this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
     this.autorun(() => {
@@ -92,17 +92,17 @@ Template.tracktime.events({
   'click .js-previous': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.date.set(new Date(moment(templateInstance.date.get()).subtract(1, 'days').utc()))
-    $('#hours').val('')
+    $('#hours').val(0)
     $('.js-tasksearch-results').hide()
   },
   'click .js-next': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.date.set(new Date(moment(templateInstance.date.get()).add(1, 'days').utc()))
-    $('#hours').val('')
+    $('#hours').val(0)
     $('.js-tasksearch-results').hide()
   },
   'change #targetProject': (event, templateInstance) => {
-    templateInstance.data.projectId.set($(event.currentTarget).val())
+    templateInstance.projectId.set($(event.currentTarget).val())
   },
   'change #date': (event, templateInstance) => {
     // we need this to correctly capture calender change events from the input
