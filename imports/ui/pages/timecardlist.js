@@ -15,8 +15,9 @@ import '../../api/timecards/tabular.js'
 Template.timecardlist.onCreated(function createTimeCardList() {
   this.period = new ReactiveVar('currentMonth')
   this.resource = new ReactiveVar('all')
+  this.project = new ReactiveVar()
   this.autorun(() => {
-    this.data.project = new ReactiveVar(FlowRouter.getParam('projectId'))
+    this.project.set(FlowRouter.getParam('projectId'))
   })
   // super hacky, but is needed for Excel export button to show
   window.JSZip = JSZip
@@ -32,8 +33,8 @@ Template.timecardlist.onDestroyed(() => {
 Template.timecardlist.helpers({
   selector() {
     const returnSelector = {}
-    if (Template.instance().data.project.get() !== 'all') {
-      returnSelector.projectId = Template.instance().data.project.get()
+    if (Template.instance().project.get() !== 'all') {
+      returnSelector.projectId = Template.instance().project.get()
     }
     if (Template.instance().resource.get() !== 'all') {
       returnSelector.userId = Template.instance().resource.get()
@@ -63,6 +64,9 @@ Template.timecardlist.helpers({
     }
     return returnSelector
   },
+  project() {
+    return Template.instance().project
+  },
 })
 
 Template.timecardlist.events({
@@ -72,30 +76,4 @@ Template.timecardlist.events({
   'change #resourceselect': (event, templateInstance) => {
     templateInstance.resource.set($(event.currentTarget).val())
   },
-  // 'change #targetProject': (event, templateInstance) => {
-  //   Template.instance().data.project.set($(event.currentTarget).val())
-  //   // FlowRouter.go(`/list/timecards/${$(event.currentTarget).val()}`)
-  // },
-  // 'click #export': (event) => {
-  //   event.preventDefault()
-  //   Meteor.call('export', { projectId: $('#targetProject').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val() }, (error, result) => {
-  //     if (!error) {
-  //       let prjName = 'allprojects'
-  //       if ($('#targetProject').val() !== 'all') {
-  //         prjName = $('#targetProject').children(':selected').text()
-  //         if (prjName.length > 12 && prjName.split(' ').length > 0) {
-  //           const tmpPrjNameArray = prjName.split(' ')
-  //           prjName = ''
-  //           for (const part of tmpPrjNameArray) {
-  //             prjName += part.substring(0, 1)
-  //           }
-  //         }
-  //       }
-  //       saveAs(new Blob([result], { type: 'application/vnd.ms-excel' }), `titra_export_${prjName}_${moment().format('YYYYMMDD-HHmm')}.xls`)
-  //       // console.log(result)
-  //     } else {
-  //       console.error(error)
-  //     }
-  //   })
-  // },
 })
