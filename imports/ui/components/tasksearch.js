@@ -21,6 +21,14 @@ Template.tasksearch.events({
 Template.tasksearch.onCreated(function tasksearchcreated() {
   this.filter = new ReactiveVar()
   this.autorun(() => {
+    if (FlowRouter.getParam('tcid')) {
+      const handle = this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
+      if (handle.ready()) {
+        this.$('.js-tasksearch-input').val(Timecards.findOne().task)
+      }
+    }
+  })
+  this.autorun(() => {
     if (FlowRouter.getParam('projectId')) {
       const project = Projects.findOne({ _id: FlowRouter.getParam('projectId') })
       if (project) {
@@ -32,12 +40,6 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
       }
     }
     this.subscribe('mytasks', this.filter.get() ? this.filter.get() : '')
-    if (FlowRouter.getParam('tcid')) {
-      this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
-      if (this.subscriptionsReady()) {
-        this.$('.js-tasksearch-input').val(Timecards.findOne().task)
-      }
-    }
   })
 })
 

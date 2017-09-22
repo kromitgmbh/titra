@@ -54,7 +54,7 @@ Template.calendar.onRendered(function trackmonthRendered() {
         },
         events: (start, end, tz, callback) => {
           // subscribe only to specified date range
-          this.periodTimecardsSub = this.subscribe('periodTimecards', { startDate: start.toDate(), endDate: end.toDate(), userId: 'all' })
+          this.periodTimecardsSub = this.subscribe('periodTimecards', { startDate: start.toDate(), endDate: end.toDate(), userId: Meteor.userId() })
           // find all, because we've already subscribed to a specific range
           const events = Timecards.find().map(it => (
             {
