@@ -33,9 +33,15 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
       const project = Projects.findOne({ _id: FlowRouter.getParam('projectId') })
       if (project) {
         if (project.wekanurl) {
-          const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
-          this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
-          ddpcon.subscribe('board', 'sandstorm')
+          if (Meteor.settings.public.sandstorm) {
+            const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
+            this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
+            ddpcon.subscribe('board', 'sandstorm')
+          } else {
+            const ddpcon = DDP.connect(project.wekanurl.substring(0, project.wekanurl.indexOf('/b')))
+            this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
+            ddpcon.subscribe('board', project.wekanurl.match(/b\/(.*)\//)[1])
+          }
         }
       }
     }
