@@ -39,8 +39,9 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             ddpcon.subscribe('board', 'sandstorm')
           } else {
             const ddpcon = DDP.connect(project.wekanurl.substring(0, project.wekanurl.indexOf('/b')))
+            ddpcon.call('login', { resume: project.wekanurl.match(/authToken=(.*)/)[1] })
             this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
-            ddpcon.subscribe('board', project.wekanurl.match(/b\/(.*)\//)[1])
+            ddpcon.subscribe('board', project.wekanurl.match(/boards\/(.*)\//)[1])
           }
         }
       }
