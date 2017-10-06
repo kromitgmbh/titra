@@ -7,8 +7,10 @@ Meteor.methods({
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
-    const projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
-      { _id: 1 }).fetch().map(value => value._id)
+    const projectList = Projects.find(
+      { $or: [{ userId: this.userId }, { public: true }] },
+      { _id: 1 },
+    ).fetch().map(value => value._id)
     let totalHours = 0
     let currentMonthHours = 0
     let previousMonthHours = 0
@@ -105,13 +107,45 @@ Meteor.methods({
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
-    const projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
-      { _id: 1 }).fetch().map(value => value._id)
+    const projectList = Projects.find(
+      { $or: [{ userId: this.userId }, { public: true }] },
+      { _id: 1 },
+    ).fetch().map(value => value._id)
     const rawCollection = Timecards.rawCollection()
     const aggregate = Meteor.wrapAsync(rawCollection.aggregate, rawCollection)
     if (projectId === 'all') {
       return aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: '$task', count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 3 }])
     }
     return aggregate([{ $match: { projectId } }, { $group: { _id: '$task', count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 3 }])
+  },
+  addTeamMember({ projectId, eMail }) {
+    check(projectId, String)
+    check(eMail, String)
+    if (!this.userId) {
+      throw new Meteor.Error('You have to be signed in to use this method.')
+    }
+    const targetProject = Projects.findOne({ _id: projectId })
+    if (!targetProject || targetProject.userId !== this.userId) {
+      throw new Meteor.Error('Only the project owner can add new team members')
+    }
+    const targetUser = Meteor.users.findOne({ 'emails.0.address': eMail })
+    if (targetUser) {
+      Projects.update({ _id: targetProject._id }, { $addToSet: { team: targetUser._id } })
+      return 'Team member added successfully.'
+    }
+    throw new Meteor.Error('No user with this e-mail address could be found, please create the corresponding user account first.')
+  },
+  removeTeamMember({ projectId, userId }) {
+    check(projectId, String)
+    check(userId, String)
+    if (!this.userId) {
+      throw new Meteor.Error('You have to be signed in to use this method.')
+    }
+    const targetProject = Projects.findOne({ _id: projectId })
+    if (!targetProject || targetProject.userId !== this.userId) {
+      throw new Meteor.Error('Only the project owner can remove team members')
+    }
+    Projects.update({ _id: targetProject._id }, { $pull: { team: userId } })
+    return 'Team member removed successfully'
   },
 })

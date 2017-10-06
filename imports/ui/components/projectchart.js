@@ -66,6 +66,9 @@ Template.projectchart.onRendered(function projectchartRendered() {
           stats.currentMonthHours /=
           (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
         }
+        if (!this.$('.js-hour-chart')[0]) {
+          return
+        }
         const ctx = this.$('.js-hour-chart')[0].getContext('2d')
         new Chart(ctx, {
           type: 'line',

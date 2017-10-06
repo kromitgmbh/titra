@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor'
+import { FlowRouter } from 'meteor/kadira:flow-router'
 import './projectlist.html'
 import Projects from '../../api/projects/projects'
 import '../components/timetracker.js'
@@ -65,6 +66,12 @@ Template.projectlist.events({
         console.error(error)
       }
     })
+  },
+  'click .js-edit-project': (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    const projectId = event.currentTarget.parentElement.parentElement.id
+    FlowRouter.go('editproject', { id: projectId })
   },
   'change #showArchived': (event) => {
     Template.instance().data.showArchived.set($(event.currentTarget).is(':checked'))

@@ -1,4 +1,4 @@
-accounts-base@1.3.3
+accounts-base@1.3.4
 accounts-password@1.4.0
 aldeed:tabular@2.1.1
 allow-deny@1.0.9
@@ -25,7 +25,7 @@ ddp-server@2.0.2
 deps@1.0.12
 diff-sequence@1.0.7
 dynamic-import@0.1.3
-ecmascript@0.8.2
+ecmascript@0.8.3
 ecmascript-runtime@0.4.1
 ecmascript-runtime-client@0.4.3
 ecmascript-runtime-server@0.4.1
@@ -33,7 +33,6 @@ ejson@1.0.14
 email@1.2.3
 es5-shim@4.6.15
 faburem:client-server-logger@0.0.2
-fastclick@1.0.13
 fortawesome:fontawesome@4.7.0
 fourseven:scss@4.5.4
 geojson-utils@1.0.10
@@ -52,9 +51,9 @@ logging@1.1.17
 meteor@1.7.2
 meteor-base@1.1.0
 minifier-css@1.2.16
-minifier-js@2.1.3
-minimongo@1.3.1
-mobile-experience@1.0.4
+minifier-js@2.1.4
+minimongo@1.3.2
+mobile-experience@1.0.5
 mobile-status-bar@1.0.14
 modules@0.10.0
 modules-runtime@0.8.0
@@ -85,7 +84,7 @@ spacebars@1.0.15
 spacebars-compiler@1.1.3
 srp@1.0.10
 standard-minifier-css@1.3.5
-standard-minifier-js@2.1.1
+standard-minifier-js@2.1.2
 templating@1.3.2
 templating-compiler@1.3.3
 templating-runtime@1.3.2

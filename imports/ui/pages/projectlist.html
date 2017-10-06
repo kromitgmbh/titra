@@ -64,7 +64,7 @@
                 </div>
                 {{#if isProjectOwner (project._id)}}
                   <div class="col-3">
-                    <a href="/edit/project/{{project._id}}" class="btn btn-secondary btn-block"><i class="fa fa-edit"></i> <span class="d-none d-md-inline">Edit</span></a>
+                    <button class="btn btn-secondary btn-block js-edit-project"><i class="fa fa-edit"></i> <span class="d-none d-md-inline">Edit</span></button>
                   </div>
                   {{#if archived (project._id)}}
                   <div class="col-3">

@@ -8,8 +8,10 @@ Meteor.publish('projectUsers', function projectUsers({ projectId }) {
   let initializing = true
   let uniqueUsers
   if (projectId === 'all') {
-    const projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }] },
-      { _id: 1 }).fetch().map(value => value._id)
+    const projectList = Projects.find(
+      { $or: [{ userId: this.userId }, { public: true }] },
+      { _id: 1 },
+    ).fetch().map(value => value._id)
     if (Timecards.find({ projectId: { $in: projectList } }).count() <= 0) {
       return this.ready()
     }
@@ -75,4 +77,21 @@ Meteor.publish('projectUsers', function projectUsers({ projectId }) {
     handle.stop()
   })
   // return Meteor.users.find({ _id: { $in: uniqueUsers } })
+})
+
+Meteor.publish('projectTeam', ({ userIds }) => {
+  check(userIds, Array)
+  return Meteor.users.find(
+    { _id: { $in: userIds } },
+    {
+      fields: { 'profile.name': 1 },
+    },
+  )
+  // return Projects.findOne({ _id: projectId }).team
+  //   ? Meteor.users.find(
+  //     { _id: { $in: Projects.findOne({ _id: projectId }).team } },
+  //     {
+  //       fields: { 'profile.name': 1 },
+  //     },
+  //   ) : false
 })
