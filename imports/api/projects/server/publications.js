@@ -7,14 +7,21 @@ Meteor.publish('myprojects', function myProjects() {
   if (!this.userId) {
     return this.ready()
   }
-  return Projects.find({ $or: [{ userId: this.userId }, { public: true }] })
+  return Projects.find({
+    $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+  })
 })
 Meteor.publish('singleProject', function singleProject(projectId) {
   check(projectId, String)
   if (!this.userId) {
     return this.ready()
   }
-  return Projects.find({ $or: [{ userId: this.userId }, { public: true }], _id: projectId })
+  return Projects.find({
+    $or: [{ userId: this.userId },
+      { public: true },
+      { team: this.userId }],
+    _id: projectId,
+  })
 })
 
 Meteor.publish('myProjectStats', function myProjectStats() {
@@ -28,8 +35,10 @@ Meteor.publish('myProjectStats', function myProjectStats() {
   // have run. Until then, we don't want to send a lot of
   // `self.changed()` messages - hence tracking the
   // `initializing` state.
-  const handle = Projects.find({ $or: [{ userId: this.userId },
-    { public: true }] }).observeChanges({
+  const handle = Projects.find({
+    $or: [{ userId: this.userId },
+      { public: true }, { team: this.userId }],
+  }).observeChanges({
     added: (projectId) => {
       if (!initializing) {
         let totalHours = 0
@@ -85,8 +94,10 @@ Meteor.publish('myProjectStats', function myProjectStats() {
   // observeChanges has returned, and mark the subscription as
   // ready.
   initializing = false
-  for (const project of Projects.find({ $or: [{ userId: this.userId },
-    { public: true }] }).fetch()) {
+  for (const project of Projects.find({
+    $or: [{ userId: this.userId },
+      { public: true }, { team: this.userId }],
+  }).fetch()) {
     let totalHours = 0
     let currentMonthHours = 0
     let previousMonthHours = 0
@@ -113,8 +124,10 @@ Meteor.publish('myProjectStats', function myProjectStats() {
 
 Meteor.publish('projectStats', function projectStats(projectId) {
   check(projectId, String)
-  if (!this.userId || !Projects.findOne({ _id: projectId,
-    $or: [{ userId: this.userId }, { public: true }] })) {
+  if (!this.userId || !Projects.findOne({
+    _id: projectId,
+    $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+  })) {
     return this.ready()
   }
   let initializing = true
@@ -186,7 +199,15 @@ Meteor.publish('projectStats', function projectStats(projectId) {
           beforePreviousMonthHours += Number.parseFloat(timecard.hours)
         }
         totalHours += Number.parseFloat(timecard.hours)
-        this.changed('projectStats', projectId, { totalHours, currentMonthName, currentMonthHours, previousMonthHours, previousMonthName, beforePreviousMonthName, beforePreviousMonthHours })
+        this.changed('projectStats', projectId, {
+          totalHours,
+          currentMonthName,
+          currentMonthHours,
+          previousMonthHours,
+          previousMonthName,
+          beforePreviousMonthName,
+          beforePreviousMonthHours,
+        })
       }
     },
   })
@@ -208,7 +229,15 @@ Meteor.publish('projectStats', function projectStats(projectId) {
     }
     totalHours += Number.parseFloat(timecard.hours)
   }
-  this.added('projectStats', projectId, { totalHours, currentMonthName, currentMonthHours, previousMonthHours, previousMonthName, beforePreviousMonthName, beforePreviousMonthHours })
+  this.added('projectStats', projectId, {
+    totalHours,
+    currentMonthName,
+    currentMonthHours,
+    previousMonthHours,
+    previousMonthName,
+    beforePreviousMonthName,
+    beforePreviousMonthHours,
+  })
   // Stop observing the cursor when client unsubs.
   // Stopping a subscription automatically takes
   // care of sending the client any removed messages.

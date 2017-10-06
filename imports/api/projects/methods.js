@@ -8,7 +8,7 @@ Meteor.methods({
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
     const projectList = Projects.find(
-      { $or: [{ userId: this.userId }, { public: true }] },
+      { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
     ).fetch().map(value => value._id)
     let totalHours = 0
@@ -84,7 +84,10 @@ Meteor.methods({
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
     check(projectId, String)
-    Projects.remove({ $or: [{ userId: this.userId }, { public: true }], _id: projectId })
+    Projects.remove({
+      $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+      _id: projectId,
+    })
     return true
   },
   archiveProject({ projectId }) {
@@ -108,7 +111,7 @@ Meteor.methods({
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
     const projectList = Projects.find(
-      { $or: [{ userId: this.userId }, { public: true }] },
+      { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
     ).fetch().map(value => value._id)
     const rawCollection = Timecards.rawCollection()

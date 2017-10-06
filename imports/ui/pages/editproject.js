@@ -19,8 +19,9 @@ Template.editproject.onRendered(function editprojectRendered() {
   })
   this.autorun(() => {
     if (Projects.findOne()) {
+      const userIds = Projects.findOne().team ? Projects.findOne().team : []
       $('#colpick').colorpicker('setValue', (Projects.findOne().color ? Projects.findOne().color : '#009688'))
-      this.subscribe('projectTeam', { userIds: Projects.findOne().team })
+      this.subscribe('projectTeam', { userIds })
     }
   })
 })
@@ -94,7 +95,9 @@ Template.editproject.helpers({
   wekanurl: () => (Projects.findOne() ? Projects.findOne().wekanurl : false),
   public: () => (Projects.findOne() ? Projects.findOne().public : false),
   team: () => {
-    return (Projects.findOne()
-      ? Meteor.users.find({ _id: { $in: Projects.findOne().team } }) : false)
+    if (Projects.findOne() && Projects.findOne().team) {
+      return Meteor.users.find({ _id: { $in: Projects.findOne().team } })
+    }
+    return false
   },
 })

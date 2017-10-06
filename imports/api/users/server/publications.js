@@ -9,7 +9,7 @@ Meteor.publish('projectUsers', function projectUsers({ projectId }) {
   let uniqueUsers
   if (projectId === 'all') {
     const projectList = Projects.find(
-      { $or: [{ userId: this.userId }, { public: true }] },
+      { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
     ).fetch().map(value => value._id)
     if (Timecards.find({ projectId: { $in: projectList } }).count() <= 0) {

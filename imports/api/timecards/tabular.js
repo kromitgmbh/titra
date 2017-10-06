@@ -48,7 +48,7 @@ new Tabular.Table({
     },
   ],
   selector(userId) {
-    const projectList = Projects.find({ $or: [{ userId }, { public: true }] },
+    const projectList = Projects.find({ $or: [{ userId }, { public: true }, { team: userId }] },
       { $fields: { _id: 1 } }).fetch().map(value => value._id)
     return { projectId: { $in: projectList } }
   },
