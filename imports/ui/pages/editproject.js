@@ -8,10 +8,12 @@ import '../components/backbutton.js'
 // import 'bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css'
 
 Template.editproject.onCreated(function editprojectSetup() {
-  const projectId = FlowRouter.getParam('id')
-  if (projectId) {
-    this.subscribe('singleProject', projectId)
-  }
+  this.autorun(() => {
+    const projectId = FlowRouter.getParam('id')
+    if (projectId) {
+      this.subscribe('singleProject', projectId)
+    }
+  } )
 })
 Template.editproject.onRendered(function editprojectRendered() {
   $('#colpick').colorpicker({
@@ -42,16 +44,17 @@ Template.editproject.events({
     } else {
       Meteor.call('createProject', {
         projectArray: templateInstance.$('#editProjectForm').serializeArray(),
-      }, (error) => {
+      }, (error, result) => {
         if (!error) {
           $.notify('Project created successfully')
+          FlowRouter.go('editproject', { id: result })
         } else {
           console.error(error)
         }
       })
     }
   },
-  'click #back': (event) => {
+  'click .js-backbutton': (event) => {
     event.preventDefault()
     FlowRouter.go('/list/projects')
   },
@@ -86,7 +89,8 @@ Template.editproject.events({
   },
 })
 Template.editproject.helpers({
-  new: () => (FlowRouter.getParam('id') || true),
+  // don't trust the linter, this has to stay!
+  newProject: () => (FlowRouter.getParam('id') ? false : true),
   name: () => (Projects.findOne() ? Projects.findOne().name : false),
   desc: () => (Projects.findOne() ? Projects.findOne().desc : false),
   color: () => (Projects.findOne() ? Projects.findOne().color : '#009688'),
@@ -100,4 +104,5 @@ Template.editproject.helpers({
     }
     return false
   },
+  disablePublic: () => Meteor.settings.public.disablePublic,
 })

@@ -1,12 +1,13 @@
 Meteor.methods({
-  updateSettings({ name, unit, timeunit, timetrackview }) {
+  updateSettings({ name, unit, timeunit, timetrackview, enableWekan }) {
     check(name, String)
     check(unit, String)
     check(timeunit, String)
     check(timetrackview, String)
+    check(enableWekan, Boolean)
     Meteor.users.update({ _id: this.userId }, {
       $set: {
-        'profile.name': name, 'profile.unit': unit, 'profile.timeunit': timeunit, 'profile.timetrackview': timetrackview,
+        'profile.name': name, 'profile.unit': unit, 'profile.timeunit': timeunit, 'profile.timetrackview': timetrackview, 'profile.enableWekan': enableWekan,
       },
     })
   },

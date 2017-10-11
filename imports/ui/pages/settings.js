@@ -18,6 +18,9 @@ Template.settings.helpers({
   displayHoursToDays() {
     return Template.instance().displayHoursToDays.get()
   },
+  enableWekan() {
+    return Meteor.user().profile ? Meteor.user().profile.enableWekan : false
+  },
 })
 
 Template.settings.events({
@@ -28,7 +31,9 @@ Template.settings.events({
       unit: $('#unit').val(),
       timeunit: $('#timeunit').val(),
       timetrackview: $('#timetrackview').val(),
-      hoursToDays: $('#hoursToDays').val() }, (error) => {
+      hoursToDays: $('#hoursToDays').val(),
+      enableWekan: $('#enableWekan').is(':checked'),
+    }, (error) => {
       if (error) {
         console.error(error)
       }
@@ -53,7 +58,9 @@ Template.settings.onCreated(function settingsCreated() {
 })
 Template.settings.onRendered(function settingsRendered() {
   this.autorun(() => {
-    $('#timeunit').val(Meteor.user().profile.timeunit)
-    $('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
+    if (Meteor.user()) {
+      $('#timeunit').val(Meteor.user().profile.timeunit)
+      $('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
+    }
   })
 })

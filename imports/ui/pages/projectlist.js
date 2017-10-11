@@ -11,11 +11,19 @@ Template.projectlist.onCreated(function createProjectList() {
   this.subscribe('myprojects')
   this.data.showArchived = new ReactiveVar(false)
 })
+Template.projectlist.onRendered(() => {
+  if (Meteor.settings.public.adsenseClientId) {
+    import('../../startup/client/googleads.js');
+    (adsbygoogle = window.adsbygoogle || []).push({})
+  }
+})
 Template.projectlist.helpers({
   projects() {
     return Template.instance().data.showArchived.get() ? Projects.find({}, { sort: { name: 1 } })
-      : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] },
-        { sort: { name: 1 } })
+      : Projects.find(
+        { $or: [{ archived: { $exists: false } }, { archived: false }] },
+        { sort: { name: 1 } },
+      )
   },
   isProjectOwner(_id) {
     return Projects.findOne({ _id }) ? Projects.findOne({ _id }).userId === Meteor.userId() : false
@@ -26,6 +34,8 @@ Template.projectlist.helpers({
   archived(_id) {
     return Projects.findOne({ _id }).archived
   },
+  adsenseClientId: () => Meteor.settings.public.adsenseClientId,
+  adsenseAdSlot: () => Meteor.settings.public.adsenseAdSlot,
 })
 
 Template.projectlist.events({

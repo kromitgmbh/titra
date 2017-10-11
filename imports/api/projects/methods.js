@@ -76,8 +76,10 @@ Meteor.methods({
     } else {
       updateJSON.public = true
     }
+    updateJSON._id = Random.id()
     updateJSON.userId = this.userId
     Projects.insert(updateJSON)
+    return updateJSON._id
   },
   deleteProject({ projectId }) {
     if (!this.userId) {

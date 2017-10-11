@@ -1,5 +1,5 @@
 <template name="editproject">
-  <h5 class="text-center">{{#if new}}New{{else}}Edit{{/if}} project</h5>
+  <h5 class="text-center">{{#if newProject}}New{{else}}Edit{{/if}} project</h5>
   <form id="editProjectForm">
     <div class="form-group">
       <label for="name"><strong>Name</strong></label>
@@ -21,45 +21,49 @@
       <label for="rate"><strong>Rate ($/h)</strong></label>
       <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100"/>
     </div>
-    <!-- {{#if isSandstorm}} -->
+    {{#if currentUser.profile.enableWekan}}
     <div class="form-group">
       <label for="wekanurl"><strong>Wekan integration</strong></label>
       <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://url.of.your.wekan.environment/"/>
     </div>
-    <!-- {{/if}} -->
-    <div class="form-group">
-      <label><strong>Access rights</strong></label>
-      <br/>
-      {{#unless public}}
-        <div class="input-group mb-1">
-          <input id="newmembermail" type="email" class="form-control" placeholder="E-mail address of team member to add" aria-label="E-mail address of team member to add">
-          <span class="input-group-btn">
-            <button class="btn btn-secondary" type="button" id="addNewMember">Add</button>
-          </span>
-        </div>
-        <ul class="list-group mb-2">
-          <li class="list-group-item">{{currentUser.profile.name}} (owner)</li>
-          {{#each member in team}}
-            <li id="{{member._id}}" class="list-group-item">{{member.profile.name}} <span class="float-right"><a href="#removeMember" id="removeTeamMember"><i class="fa fa-trash"></i></a></span></li>
-          {{/each}}
-        </ul>
-      {{/unless}}
-      <label class="custom-control custom-checkbox">
-        {{#if public}}
-          <input name="public" id="public" type="checkbox" checked class="custom-control-input">
-        {{else}}
-          <input name="public" id="public" type="checkbox" class="custom-control-input"/>
-        {{/if}}
-        <span class="custom-control-indicator"></span>
-        <span class="custom-control-description">Public project (visible to all users)</span>
-      </label>
+    {{/if}}
+    {{#unless newProject}}
+      <div class="form-group">
+        <label><strong>Access rights</strong></label>
+        <br/>
+        {{#unless public}}
+          <div class="input-group mb-1">
+            <input id="newmembermail" type="email" class="form-control" placeholder="E-mail address of team member to add" aria-label="E-mail address of team member to add">
+            <span class="input-group-btn">
+              <button class="btn btn-secondary" type="button" id="addNewMember">Add</button>
+            </span>
+          </div>
+          <ul class="list-group mb-2">
+            <li class="list-group-item">{{currentUser.profile.name}} (owner)</li>
+            {{#each member in team}}
+              <li id="{{member._id}}" class="list-group-item">{{member.profile.name}} <span class="float-right"><a href="#removeMember" id="removeTeamMember"><i class="fa fa-trash"></i></a></span></li>
+            {{/each}}
+          </ul>
+        {{/unless}}
+        {{#unless disablePublic}}
+        <label class="custom-control custom-checkbox">
+          {{#if public}}
+            <input name="public" id="public" type="checkbox" checked class="custom-control-input">
+          {{else}}
+            <input name="public" id="public" type="checkbox" class="custom-control-input"/>
+          {{/if}}
+          <span class="custom-control-indicator"></span>
+          <span class="custom-control-description">Public project (visible to all users)</span>
+        </label>
+        {{/unless}}
 
-      <!-- <input name="public" id="public" type="hidden" value={{public}} class="form-control"/> -->
-    </div>
+        <!-- <input name="public" id="public" type="hidden" value={{public}} class="form-control"/> -->
+      </div>
+    {{/unless}}
   </form>
   <div class="row text-center">
     <div class="col-6 col-md-2 mr-auto">
-      {{>backbutton}}
+      <button class="btn btn-secondary js-backbutton form-control">back</button>
     </div>
     <div class="col-6 col-md-2">
       <button class="btn btn-primary form-control" id="save">save</button>

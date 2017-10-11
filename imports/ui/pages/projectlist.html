@@ -31,6 +31,18 @@
       </div> -->
     </div>
   </div>
+  {{#if adsenseClientId}}
+    <div class="card mb-3" style="border: 1px solid #455A64">
+      <div class="card-body">
+          <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-format="fluid"
+             data-ad-layout-key="-ga+3x+7w-8q-9w"
+             data-ad-client="{{adsenseClientId}}"
+             data-ad-slot="{{adsenseAdSlot}}"></ins>
+       </div>
+     </div>
+   {{/if}}
   <!-- <h5 style="text-align:center">Your projects</h5> -->
     <!-- <ul class="list-group mb-2"> -->
       {{#each project in projects}}
