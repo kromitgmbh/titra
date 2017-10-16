@@ -1,8 +1,8 @@
 # enable ES6
 parser: "babel-eslint"
 parserOptions:
-  #ecmaVersion: 6
-  #sourceType: "module"
+  ecmaVersion: 6
+  sourceType: "module"
   allowImportExportEverywhere: true
 
 # register plugins
@@ -41,5 +41,6 @@ rules:
   # meteor/prefer-session-equals: [2] # prefer Session.equals instead
   import/extensions: 0
 
-#globals:
+globals:
+  adsbygoogle: true
   # collections

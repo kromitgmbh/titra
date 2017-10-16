@@ -1,5 +1,4 @@
 import { AccountsTemplates } from 'meteor/useraccounts:core'
-import { FlowRouter } from 'meteor/kadira:flow-router'
 
 AccountsTemplates.configure({
   defaultLayout: 'appLayout',
@@ -13,6 +12,12 @@ AccountsTemplates.configure({
   positiveValidation: true,
   negativeFeedback: false,
   positiveFeedback: true,
+  texts: {
+    errors: {
+      mustBeLoggedIn: 'Please login or sign up to continue.',
+      loginForbidden: 'Unable to login, please check your username/password.',
+    },
+  },
 })
 
 AccountsTemplates.addField({

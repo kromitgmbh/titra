@@ -3,23 +3,31 @@ import './settings.html'
 import '../components/backbutton.js'
 
 Template.settings.helpers({
-  name() {
-    return Meteor.user() ? Meteor.user().profile.name : false
-  },
+  name: () => (Meteor.user() ? Meteor.user().profile.name : false),
   unit() {
-    return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
+    if (Meteor.user()) {
+      return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
+    }
+    return false
   },
   timetrackview() {
-    return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd'
+    if (Meteor.user()) {
+      return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd'
+    }
+    return false
   },
   hoursToDays() {
-    return Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8
+    if (Meteor.user()) {
+      return Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8
+    }
+    return false
   },
-  displayHoursToDays() {
-    return Template.instance().displayHoursToDays.get()
-  },
+  displayHoursToDays: () => Template.instance().displayHoursToDays.get(),
   enableWekan() {
-    return Meteor.user().profile ? Meteor.user().profile.enableWekan : false
+    if (Meteor.user()) {
+      return Meteor.user().profile ? Meteor.user().profile.enableWekan : false
+    }
+    return false
   },
 })
 

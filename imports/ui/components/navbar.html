@@ -2,6 +2,7 @@
   <nav class="navbar navbar-expand bg-dark fixed-top">
     <!-- <div class="container"> -->
       <a class="navbar-brand" href="/"><img src="/favicons/favicon-32x32.png" alt="titra logo" class="d-inline-block" height="25"/></a>
+      {{#if currentUser}}
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -12,6 +13,7 @@
           <li class="nav-item"><a class="nav-link {{isRouteActive 'settings'}}" href="/settings"><i class="fa fa-cogs"></i> <span class="d-none d-md-inline">Settings</span></a></li>
         </ul>
       </div>
+      {{/if}}
     <!-- </div> -->
     </nav>
 </template>

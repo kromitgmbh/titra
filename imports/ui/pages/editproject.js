@@ -11,18 +11,22 @@ Template.editproject.onCreated(function editprojectSetup() {
   this.autorun(() => {
     const projectId = FlowRouter.getParam('id')
     if (projectId) {
-      this.subscribe('singleProject', projectId)
+      this.handle = this.subscribe('singleProject', projectId)
     }
-  } )
+  })
 })
 Template.editproject.onRendered(function editprojectRendered() {
+  this.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
   $('#colpick').colorpicker({
     format: 'hex',
+    color: this.color,
   })
   this.autorun(() => {
+    if (this.handle && this.handle.ready() && Projects.findOne()) {
+      $('#colpick').colorpicker('setValue', (Projects.findOne().color ? Projects.findOne().color : this.color))
+    }
     if (Projects.findOne()) {
       const userIds = Projects.findOne().team ? Projects.findOne().team : []
-      $('#colpick').colorpicker('setValue', (Projects.findOne().color ? Projects.findOne().color : '#009688'))
       this.subscribe('projectTeam', { userIds })
     }
   })
@@ -30,12 +34,17 @@ Template.editproject.onRendered(function editprojectRendered() {
 Template.editproject.events({
   'click #save': (event, templateInstance) => {
     event.preventDefault()
+    if (!$('#name').val()) {
+      $('#name').addClass('is-invalid')
+      return
+    }
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {
         projectId: FlowRouter.getParam('id'),
         projectArray: templateInstance.$('#editProjectForm').serializeArray(),
       }, (error) => {
         if (!error) {
+          $('#name').removeClass('is-invalid')
           $.notify('Project updated successfully')
         } else {
           console.error(error)
@@ -60,7 +69,7 @@ Template.editproject.events({
   },
   'click #addNewMember': (event) => {
     event.preventDefault()
-    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     const newmembermail = $('#newmembermail').val()
     if (newmembermail && emailRegex.test(newmembermail)) {
       Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: $('#newmembermail').val() }, (error, result) => {
@@ -89,11 +98,10 @@ Template.editproject.events({
   },
 })
 Template.editproject.helpers({
-  // don't trust the linter, this has to stay!
-  newProject: () => (FlowRouter.getParam('id') ? false : true),
+  newProject: () => (!FlowRouter.getParam('id')),
   name: () => (Projects.findOne() ? Projects.findOne().name : false),
   desc: () => (Projects.findOne() ? Projects.findOne().desc : false),
-  color: () => (Projects.findOne() ? Projects.findOne().color : '#009688'),
+  color: () => (Projects.findOne() ? Projects.findOne().color : Template.instance().color),
   customer: () => (Projects.findOne() ? Projects.findOne().customer : false),
   rate: () => (Projects.findOne() ? Projects.findOne().rate : false),
   wekanurl: () => (Projects.findOne() ? Projects.findOne().wekanurl : false),

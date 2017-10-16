@@ -41,6 +41,9 @@ Template.calendar.onRendered(function trackmonthRendered() {
           $('.tooltip').tooltip('dispose')
           FlowRouter.go(`/edit/timecard/${calEvent.id}`)
         },
+        dayClick: (date, jsEvent, view) => {
+          FlowRouter.go(`/tracktime/?date=${date.format()}&view=d`)
+        },
         eventRender: (event, element, view) => {
           // element.text('bala')
           if (window.innerWidth >= 768) {
@@ -84,7 +87,12 @@ Template.calendar.onRendered(function trackmonthRendered() {
 
 Template.calendar.helpers({
   projects() {
-    return Projects.find({}, { sort: { name: 1 } })
+    return Projects.find(
+      {
+        $or: [{ archived: { $exists: false } }, { archived: false }],
+      },
+      { sort: { name: 1 } },
+    )
   },
   colorOpacity(hex, op) {
     return hex2rgba(hex || '#009688', !isNaN(op) ? op : 50)

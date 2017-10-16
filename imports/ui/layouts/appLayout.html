@@ -1,8 +1,6 @@
 <template name="appLayout">
   {{>connectioncheck}}
-  {{#if currentUser}}
-    {{>navbar}}
-  {{/if}}
+  {{>navbar}}
   <div class="container mb-3">
     {{>Template.dynamic template=main}}
   </div>

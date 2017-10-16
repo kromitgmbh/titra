@@ -65,7 +65,9 @@ Template.tracktime.events({
       hours = templateInstance.math.eval($('#hours').val() * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8))
     }
     if (FlowRouter.getParam('tcid')) {
-      Meteor.call('updateTimeCard', { _id: FlowRouter.getParam('tcid'), projectId, date, hours, task }, (error) => {
+      Meteor.call('updateTimeCard', {
+        _id: FlowRouter.getParam('tcid'), projectId, date, hours, task,
+      }, (error) => {
         if (error) {
           console.error(error)
         } else {
@@ -77,7 +79,9 @@ Template.tracktime.events({
         }
       })
     } else {
-      Meteor.call('insertTimeCard', { projectId: $('#targetProject').val(), date, hours, task }, (error) => {
+      Meteor.call('insertTimeCard', {
+        projectId: $('#targetProject').val(), date, hours, task,
+      }, (error) => {
         if (error) {
           console.error(error)
         } else {
@@ -128,6 +132,8 @@ Template.tracktimemain.onCreated(function tracktimeCreated() {
   this.autorun(() => {
     if (FlowRouter.getParam('projectId')) {
       this.timetrackview.set('d')
+    } else if (FlowRouter.getQueryParam('view')) {
+      this.timetrackview.set(FlowRouter.getQueryParam('view'))
     }
   })
 })
@@ -141,11 +147,13 @@ Template.tracktimemain.events({
   'click .js-day': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.timetrackview.set('d')
+    FlowRouter.setQueryParams({ view: 'd' })
   },
   'click .js-month': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.timetrackview.set('M')
     FlowRouter.setParams({ projectId: '' })
     FlowRouter.setQueryParams({ date: null })
+    FlowRouter.setQueryParams({ view: 'M' })
   },
 })
