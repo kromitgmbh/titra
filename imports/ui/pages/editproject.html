@@ -15,12 +15,12 @@
         <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control"/><span class="input-group-addon"><i></i></span>
       </div>
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label for="customer"><strong>Customer</strong></label>
       <input name="customer" id="customer" type="text" value={{customer}} class="form-control" placeholder="Sample Customer"/>
-    </div>
+    </div> -->
     <div class="form-group">
-      <label for="rate"><strong>Rate ($/h)</strong></label>
+      <label for="rate"><strong>Rate ({{unit}}/h)</strong></label>
       <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100"/>
     </div>
     {{#if currentUser.profile.enableWekan}}

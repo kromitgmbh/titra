@@ -102,7 +102,7 @@ Template.editproject.helpers({
   name: () => (Projects.findOne() ? Projects.findOne().name : false),
   desc: () => (Projects.findOne() ? Projects.findOne().desc : false),
   color: () => (Projects.findOne() ? Projects.findOne().color : Template.instance().color),
-  customer: () => (Projects.findOne() ? Projects.findOne().customer : false),
+  // customer: () => (Projects.findOne() ? Projects.findOne().customer : false),
   rate: () => (Projects.findOne() ? Projects.findOne().rate : false),
   wekanurl: () => (Projects.findOne() ? Projects.findOne().wekanurl : false),
   public: () => (Projects.findOne() ? Projects.findOne().public : false),

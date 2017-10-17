@@ -50,11 +50,14 @@ Template.tracktime.events({
     event.preventDefault()
     // console.log(Template.instance().data.picker.component.item.select.obj)
     // console.log(Template.instance().data.picker)
+    if (!templateInstance.$('#targetProject').val()) {
+      $.notify({ message: 'Please select a project.' }, { type: 'danger' })
+      return
+    }
     try {
       templateInstance.math.eval($('#hours').val())
     } catch (exception) {
-      $.notify({ message: 'Please check your input' }, { type: 'danger' })
-      $('#hours').parent().addClass('has-danger')
+      $.notify({ message: 'Please check your time input' }, { type: 'danger' })
       return
     }
     const projectId = templateInstance.$('#targetProject').val()

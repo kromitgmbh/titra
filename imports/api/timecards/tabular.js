@@ -64,13 +64,13 @@ new Tabular.Table({
   buttons: [
     {
       text: '<i class="fa fa-plus"></i> Time',
+      className: 'btn-primary',
       action: () => {
         FlowRouter.go('tracktime', { projectId: $('#targetProject').val() })
       },
     },
     {
       extend: 'excelHtml5',
-      className: 'btn-primary',
       text: '<i class="fa fa-download"></i> Excel',
       title: `titra_export_${moment().format('YYYYMMDD-HHmm')}`,
       exportOptions: {
@@ -79,7 +79,6 @@ new Tabular.Table({
     },
     {
       extend: 'csvHtml5',
-      className: 'btn-primary',
       text: '<i class="fa fa-download"></i> CSV',
       title: `titra_export_${moment().format('YYYYMMDD-HHmm')}`,
       exportOptions: {

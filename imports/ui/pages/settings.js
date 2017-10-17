@@ -67,7 +67,7 @@ Template.settings.onCreated(function settingsCreated() {
 Template.settings.onRendered(function settingsRendered() {
   this.autorun(() => {
     if (Meteor.user()) {
-      $('#timeunit').val(Meteor.user().profile.timeunit)
+      $('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h')
       $('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
     }
   })
