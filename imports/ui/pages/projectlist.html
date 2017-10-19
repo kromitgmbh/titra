@@ -13,24 +13,26 @@
       </label>
     </div>
   </div>
-  <div class="card mb-3" style="border: 1px solid #455A64">
-    <div class="card-body">
-      <h6 class="card-subtitle mb-1">All projects</h6>
-      <!-- <span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span> -->
-      {{> allprojectschart}}
-      <!-- <p>{{totalHours(_id)}} - {{currentMonthHours(_id)}} - {{previousMonthHours(_id)}}</p> -->
-      <!-- <br/> -->
-      <!-- <div class="row no-gutters" style="margin-left:-1em; margin-right:-1em;">
-        <div class="btn-group btn-group-m w-100"> -->
-        <div class="row mt-2" id="{{project._id}}">
-          <div class="col-3 col-offset-9">
-            <a href="/list/timecards/all" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
+  {{#if moreThanOneProject}}
+    <div class="card mb-3" style="border: 1px solid #455A64">
+      <div class="card-body">
+        <h6 class="card-subtitle mb-1">All projects</h6>
+        <!-- <span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span> -->
+        {{> allprojectschart}}
+        <!-- <p>{{totalHours(_id)}} - {{currentMonthHours(_id)}} - {{previousMonthHours(_id)}}</p> -->
+        <!-- <br/> -->
+        <!-- <div class="row no-gutters" style="margin-left:-1em; margin-right:-1em;">
+          <div class="btn-group btn-group-m w-100"> -->
+          <div class="row mt-2" id="{{project._id}}">
+            <div class="col-3 col-offset-9">
+              <a href="/list/timecards/all" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
+            </div>
           </div>
-        </div>
-        <!-- </div>
-      </div> -->
+          <!-- </div>
+        </div> -->
+      </div>
     </div>
-  </div>
+  {{/if}}
   {{#if adsenseClientId}}
     <div class="card mb-3" style="border: 1px solid #455A64; overflow:hidden;">
       <div class="card-body">

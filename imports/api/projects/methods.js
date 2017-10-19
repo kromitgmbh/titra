@@ -1,6 +1,7 @@
 import moment from 'moment'
 import Timecards from '../timecards/timecards'
 import Projects from '../projects/projects'
+import { addNotification } from '../notifications/notifications.js'
 
 Meteor.methods({
   getAllProjectStats() {
@@ -136,6 +137,7 @@ Meteor.methods({
     const targetUser = Meteor.users.findOne({ 'emails.0.address': eMail })
     if (targetUser) {
       Projects.update({ _id: targetProject._id }, { $addToSet: { team: targetUser._id } })
+      addNotification(`You have been invited to collaborate on the titra project '${targetProject.name}'`, targetUser._id)
       return 'Team member added successfully.'
     }
     throw new Meteor.Error('No user with this e-mail address could be found, please create the corresponding user account first.')

@@ -1,4 +1,5 @@
 import moment from 'moment'
+import emoji from 'node-emoji'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { Template } from 'meteor/templating'
 import Tabular from 'meteor/aldeed:tabular'
@@ -6,13 +7,14 @@ import Timecards from './timecards.js'
 import Projects from '../projects/projects.js'
 import projectUsers from '../users/users.js'
 
+const replacer = match => emoji.emojify(match)
 new Tabular.Table({
   name: 'Timecards',
   collection: Timecards,
   columns: [
     { data: 'projectId', title: 'Project', render: _id => Projects.findOne({ _id }).name },
     { data: 'date', title: 'Date', render: val => moment(val).format('ddd DD.MM.YYYY') },
-    { data: 'task', title: 'Task' },
+    { data: 'task', title: 'Task', render: val => val.replace(/(:.*:)/g, replacer)},
     { data: 'userId',
       title: 'Resource',
       render: (_id, type, doc) => {

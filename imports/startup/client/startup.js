@@ -1,4 +1,5 @@
 import { Template } from 'meteor/templating'
+import emoji from 'node-emoji'
 import Projects from '../../../imports/api/projects/projects.js'
 
 $.notifyDefaults({
@@ -15,6 +16,10 @@ Template.registerHelper('unit', () => {
     return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
   }
   return false
+})
+Template.registerHelper('emojify', (text) => {
+  const replacer = match => emoji.emojify(match)
+  return text.replace(/(:.*:)/g, replacer)
 })
 Template.registerHelper('timeunit', () => {
   if (Meteor.user()) {

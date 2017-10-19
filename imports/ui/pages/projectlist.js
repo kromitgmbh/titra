@@ -25,6 +25,14 @@ Template.projectlist.helpers({
         { sort: { name: 1 } },
       )
   },
+  moreThanOneProject() {
+    return Template.instance().data.showArchived.get()
+      ? Projects.find({}, { sort: { name: 1 } }).count() > 1
+      : Projects.find(
+        { $or: [{ archived: { $exists: false } }, { archived: false }] },
+        { sort: { name: 1 } },
+      ).count() > 1
+  },
   isProjectOwner(_id) {
     return Projects.findOne({ _id }) ? Projects.findOne({ _id }).userId === Meteor.userId() : false
   },

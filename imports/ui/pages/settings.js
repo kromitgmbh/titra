@@ -65,6 +65,15 @@ Template.settings.onCreated(function settingsCreated() {
   }
 })
 Template.settings.onRendered(function settingsRendered() {
+  import('node-emoji').then((emojiImport) => {
+    const emoji = emojiImport.default
+    const replacer = match => emoji.emojify(match)
+    $.getJSON('https://api.github.com/repos/faburem/titra/commits/master', (data) => {
+      $('#titra-changelog').html(`<a href="https://github.com/faburem/titra" target="_blank">${data.sha.substring(0, 7)}</a>: ${data.commit.message.replace(/(:.*:)/g, replacer)}`)
+    }).fail(() => {
+      $('#titra-changelog').html('Could not retrieve changelog from Github.')
+    })
+  })
   this.autorun(() => {
     if (Meteor.user()) {
       $('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h')
