@@ -13,8 +13,10 @@ Template.projectlist.onCreated(function createProjectList() {
 })
 Template.projectlist.onRendered(() => {
   if (Meteor.settings.public.adsenseClientId) {
-    import('../../startup/client/googleads.js');
-    (adsbygoogle = window.adsbygoogle || []).push({})
+    Meteor.setTimeout(() => {
+      import('../../startup/client/googleads.js');
+      (adsbygoogle = window.adsbygoogle || []).push({})
+    }, 5000)
   }
 })
 Template.projectlist.helpers({
