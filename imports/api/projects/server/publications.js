@@ -246,3 +246,8 @@ Meteor.publish('projectStats', function projectStats(projectId) {
   })
   return this.ready()
 })
+
+Meteor.publish('publicProjectName', (_id) => {
+  check(_id, String)
+  return Projects.find({ _id }, { name: 1 })
+})

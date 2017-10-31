@@ -1,4 +1,4 @@
-FROM node:4.8.4
+FROM node:8.8.1
 ENV METEOR_ALLOW_SUPERUSER true
 RUN curl https://install.meteor.com/ | sh
 RUN meteor --version
@@ -12,7 +12,7 @@ COPY imports/ ./imports/
 COPY .meteor/ ./.meteor/
 RUN meteor build /build/ --server-only --architecture os.linux.x86_64
 
-FROM node:4.8.4-alpine
+FROM node:8.8.1-alpine
 RUN apk update && apk add python make g++
 COPY --from=0 /build/*.tar.gz /app/bundle.tar.gz
 WORKDIR /app/

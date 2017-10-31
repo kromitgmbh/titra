@@ -52,6 +52,7 @@ body{
 }
 .navbar .navbar-nav .active {
     border-bottom: 4px solid map-get($theme-colors, primary);
+    padding-bottom: 4px;
 }
 .navbar .navbar-nav .nav-link {
   padding-left: 0;
@@ -61,7 +62,7 @@ body{
 }
 .navbar {
   padding-top: 0.1rem;
-  padding-bottom: 0.1rem;
+  padding-bottom: 0;
 }
 .navbar-toggler {
   padding: 0.1rem 0.3rem;

@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.23.0",
-    "bcrypt": "^1.0.2",
+    "bcrypt": "^1.0.3",
     "bootstrap": "^4.0.0-beta",
     "bootstrap-colorpicker": "^2.5.1",
     "chart.js": "^2.5.0",
@@ -25,6 +25,7 @@
     "moment": "^2.18.1",
     "node-emoji": "^1.8.1",
     "popper.js": "^1.12.3",
+    "randomcolor": "^0.5.3",
     "tether": "^1.4.0"
   },
   "devDependencies": {

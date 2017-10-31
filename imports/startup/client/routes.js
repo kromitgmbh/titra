@@ -7,9 +7,10 @@ import '../../ui/pages/projectlist.js'
 import '../../ui/pages/timecardlist.js'
 import '../../ui/pages/editproject.js'
 import '../../ui/pages/settings.js'
+import '../../ui/pages/dashboard.js'
 
 if (!Meteor.settings.public.sandstorm) {
-  FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn])
+  FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn], { except: ['dashboard'] })
 }
 FlowRouter.route('/', {
   action() {
@@ -58,6 +59,12 @@ FlowRouter.route('/settings', {
     BlazeLayout.render('appLayout', { main: 'settings' })
   },
   name: 'settings',
+})
+FlowRouter.route('/dashboard/:_id', {
+  action() {
+    BlazeLayout.render('appLayout', { main: 'dashboard' })
+  },
+  name: 'dashboard',
 })
 AccountsTemplates.configureRoute('signIn', {
   name: 'signin',

@@ -1,0 +1,53 @@
+import { dashboardAggregation, Dashboards } from '../dashboards.js'
+import Timecards from '../../timecards/timecards'
+
+Meteor.publish('dashboardById', function dashboardById(_id) {
+  check(_id, String)
+  if (!Dashboards.findOne({ _id })) {
+    return this.ready()
+  }
+  const dashboard = Dashboards.findOne({ _id })
+  if (dashboard.resourceId === 'all') {
+    return Timecards.find({
+      projectId: dashboard.projectId,
+      date: { $gte: dashboard.startDate, $lte: dashboard.endDate },
+    }, { sort: { date: 1 } })
+  }
+  return Timecards.find({
+    projectId: dashboard.projectId,
+    userId: dashboard.resourceId,
+    date: { $gte: dashboard.startDate, $lte: dashboard.endDate },
+  }, { sort: { date: 1 } })
+})
+Meteor.publish('dashboardByIdDetails', (_id) => {
+  check(_id, String)
+  return Dashboards.find({ _id })
+})
+
+// Meteor.publish('dashboardAggregation', ({ dashboardId }) => {
+//   check(dashboardId, String)
+//   const dashboard = Dashboards.findOne({ _id: dashboardId })
+//   if (!dashboard) {
+//     return this.ready()
+//   }
+//   // console.log(dashboard)
+//   Timecards.rawCollection().aggregate([
+//     {
+//       $match: {
+//         projectId: dashboard.projectId,
+//         date: { $gte: dashboard.startDate, $lte: dashboard.endDate },
+//       },
+//     },
+//     {
+//       $group: {
+//         _id: '$task',
+//         count: { $sum: 1 },
+//         totalHours: { $sum: '$hours' },
+//       },
+//     },
+//     {
+//       $out: 'dashboardAggregation',
+//     },
+//   ])
+//   return dashboardAggregation.find({ dashboardId })
+// })

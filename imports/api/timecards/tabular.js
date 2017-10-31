@@ -8,14 +8,15 @@ import Projects from '../projects/projects.js'
 import projectUsers from '../users/users.js'
 
 const replacer = match => emoji.emojify(match)
-new Tabular.Table({
+const timecards = new Tabular.Table({
   name: 'Timecards',
   collection: Timecards,
   columns: [
     { data: 'projectId', title: 'Project', render: _id => Projects.findOne({ _id }).name },
     { data: 'date', title: 'Date', render: val => moment(val).format('ddd DD.MM.YYYY') },
-    { data: 'task', title: 'Task', render: val => val.replace(/(:.*:)/g, replacer)},
-    { data: 'userId',
+    { data: 'task', title: 'Task', render: val => val.replace(/(:.*:)/g, replacer) },
+    {
+      data: 'userId',
       title: 'Resource',
       render: (_id, type, doc) => {
         Meteor.subscribe('projectUsers', { projectId: doc.projectId })
@@ -24,7 +25,8 @@ new Tabular.Table({
             .users.find(elem => elem._id === _id).profile.name : false
       },
     },
-    { data: 'hours',
+    {
+      data: 'hours',
       titleFn: () => {
         if (Meteor.user()) {
           return Meteor.user().profile.timeunit === 'd' ? 'Days' : 'Hours'
@@ -50,8 +52,10 @@ new Tabular.Table({
     },
   ],
   selector(userId) {
-    const projectList = Projects.find({ $or: [{ userId }, { public: true }, { team: userId }] },
-      { $fields: { _id: 1 } }).fetch().map(value => value._id)
+    const projectList = Projects.find(
+      { $or: [{ userId }, { public: true }, { team: userId }] },
+      { $fields: { _id: 1 } },
+    ).fetch().map(value => value._id)
     return { projectId: { $in: projectList } }
   },
   columnDefs: [{
@@ -87,13 +91,55 @@ new Tabular.Table({
         columns: [0, 1, 2, 3, 4],
       },
     },
+    {
+      text: '<i class="fa fa-link"></i> Share',
+      className: 'btn-primary js-share',
+      action: () => {
+        if ($('#period').val() === 'all' || $('#targetProject').val() === 'all') {
+          $.notify({ message: 'Sorry, but for your own sanity you can not share all projects/time. ' }, { type: 'danger' })
+          return
+        }
+        let startDate
+        let endDate
+        switch ($('#period').val()) {
+          default:
+            startDate = moment().startOf('month').toDate()
+            endDate = moment().endOf('month').toDate()
+            break
+          case 'currentWeek':
+            startDate = moment().startOf('week').toDate()
+            endDate = moment().endOf('week').toDate()
+            break
+          case 'lastMonth':
+            startDate = moment().subtract(1, 'month').startOf('month').toDate()
+            endDate = moment().subtract(1, 'month').endOf('month').toDate()
+            break
+          case 'lastWeek':
+            startDate = moment().subtract(1, 'week').startOf('week').toDate()
+            endDate = moment().subtract(1, 'week').endOf('week').toDate()
+            break
+        }
+        Meteor.call('addDashboard', {
+          projectId: $('#targetProject').val(), resourceId: $('#resourceselect').val(), startDate, endDate,
+        }, (error, _id) => {
+          if (error) {
+            console.error(error)
+          } else {
+            $('#dashboardURL').val(FlowRouter.url('dashboard', { _id }))
+            $('.js-dashboard-modal').modal('toggle')
+            // FlowRouter.go('dashboard', { _id })
+          }
+        })
+      },
+    },
   ],
   footerCallback() {
     const api = this.api()
     const intVal = (i) => {
-      return typeof i === 'string' ?
-        i.replace(/[$,]/g, '') * 1 :
-        typeof i === 'number' ? i : 0
+      if (typeof i === 'string') {
+        return i.replace(/[$,]/g, '') * 1
+      }
+      return typeof i === 'number' ? i : 0
     }
     const pageTotal = api
       .column(4, { page: 'current' })
@@ -102,3 +148,5 @@ new Tabular.Table({
     $('tfoot').html(`<tr><th></th><th></th><th></th><th style='text-align:right'>Sum:</th><th>${pageTotal}</th><th></th></tr>`)
   },
 })
+
+export { timecards as default }
