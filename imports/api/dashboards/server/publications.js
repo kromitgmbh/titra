@@ -1,4 +1,4 @@
-import { dashboardAggregation, Dashboards } from '../dashboards.js'
+import { Dashboards } from '../dashboards.js'
 import Timecards from '../../timecards/timecards'
 
 Meteor.publish('dashboardById', function dashboardById(_id) {

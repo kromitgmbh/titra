@@ -1,15 +1,18 @@
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import moment from 'moment'
 import randomColor from 'randomcolor'
+import emoji from 'node-emoji'
 import './dashboard.html'
 import Timecards from '../../api/timecards/timecards'
 import Projects from '../../api/projects/projects'
 import { Dashboards } from '../../api/dashboards/dashboards'
 
 function timeInUnitHelper(hours) {
-  if (Dashboards.findOne().timeunit === 'd') {
-    return Dashboards.findOne().hoursToDays
-      ? Number(hours / Dashboards.findOne().hoursToDays) : Number(hours / 8)
+  if (Dashboards.findOne()) {
+    if (Dashboards.findOne().timeunit === 'd') {
+      return Dashboards.findOne().hoursToDays
+        ? Number(hours / Dashboards.findOne().hoursToDays) : Number(hours / 8)
+    }
   }
   return hours
 }
@@ -31,17 +34,18 @@ Template.dashboard.onCreated(function dashboardCreated() {
 Template.dashboard.onRendered(function dashboardRendered() {
   import('chart.js').then((chartModule) => {
     const Chart = chartModule.default
+    const replacer = match => emoji.emojify(match)
     this.autorun(() => {
       if (this.subscriptionsReady()) {
         let temphours = 0
         this.totalHours.set(0)
         const taskmap = new Map()
         const datemap = new Map()
-        for (const timecard of Timecards.find().fetch()) {
+        for (const timecard of Timecards.find({}, { sort: { date: 1 } }).fetch()) {
           taskmap.set(
-            timecard.task,
-            taskmap.get(timecard.task)
-              ? Number(taskmap.get(timecard.task)) + timeInUnitHelper(Number(timecard.hours))
+            timecard.task.replace(/(:.*:)/g, replacer),
+            taskmap.get(timecard.task.replace(/(:.*:)/g, replacer))
+              ? Number(taskmap.get(timecard.task.replace(/(:.*:)/g, replacer))) + timeInUnitHelper(Number(timecard.hours))
               : timeInUnitHelper(timecard.hours),
           )
           datemap.set(
@@ -53,6 +57,7 @@ Template.dashboard.onRendered(function dashboardRendered() {
           temphours += timecard.hours
         }
         if (this.linechart) {
+          this.linechart.clear()
           this.linechart.destroy()
         }
         this.$('.js-line-chart').remove()
@@ -155,10 +160,12 @@ Template.dashboard.helpers({
   },
   timeInUnit: hours => timeInUnitHelper(hours),
   totalHours: () => {
-    if (Dashboards.findOne().timeunit === 'd') {
-      return Dashboards.findOne().hoursToDays
-        ? Number(Template.instance().totalHours.get() / Dashboards.findOne().hoursToDays).toFixed(2)
-        : Number(Template.instance().totalHours.get() / 8).toFixed(2)
+    if (Dashboards.findOne()) {
+      if (Dashboards.findOne().timeunit === 'd') {
+        return Dashboards.findOne().hoursToDays
+          ? Number(Template.instance().totalHours.get() / Dashboards.findOne().hoursToDays).toFixed(2)
+          : Number(Template.instance().totalHours.get() / 8).toFixed(2)
+      }
     }
     return Template.instance().totalHours.get()
   },

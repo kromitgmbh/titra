@@ -15,7 +15,7 @@ Meteor.methods({
         'profile.timeunit': timeunit,
         'profile.timetrackview': timetrackview,
         'profile.enableWekan': enableWekan,
-        'profile.hourseToDays': hoursToDays,
+        'profile.hoursToDays': hoursToDays,
       },
     })
   },

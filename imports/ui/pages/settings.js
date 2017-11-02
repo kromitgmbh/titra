@@ -39,13 +39,14 @@ Template.settings.events({
       unit: $('#unit').val(),
       timeunit: $('#timeunit').val(),
       timetrackview: $('#timetrackview').val(),
-      hoursToDays: $('#hoursToDays').val(),
+      hoursToDays: Number($('#hoursToDays').val()),
       enableWekan: $('#enableWekan').is(':checked'),
     }, (error) => {
       if (error) {
-        console.error(error)
+        $.notify({ message: error }, { type: 'danger' })
+      } else {
+        $.notify('Settings saved successfully')
       }
-      $.notify('Settings saved successfully')
     })
   },
   'change #timeunit': () => {
@@ -58,11 +59,13 @@ Template.settings.events({
 })
 Template.settings.onCreated(function settingsCreated() {
   this.displayHoursToDays = new ReactiveVar()
-  if (Meteor.user()) {
-    if (Meteor.user().profile) {
-      this.displayHoursToDays.set(Meteor.user().profile.timeunit === 'd')
+  this.autorun(() => {
+    if (Meteor.user()) {
+      if (Meteor.user().profile) {
+        this.displayHoursToDays.set(Meteor.user().profile.timeunit === 'd')
+      }
     }
-  }
+  })
 })
 Template.settings.onRendered(function settingsRendered() {
   import('node-emoji').then((emojiImport) => {
