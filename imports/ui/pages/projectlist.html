@@ -1,20 +1,23 @@
 <template name="projectlist">
   <div class="row form-group">
-    <div class="col-6">
+    <div class="col-4">
       <a href="/create/project" class="btn btn-primary" id="next">New project</a>
     </div>
-    <div class="col-6">
+    <div class="col-8 text-right">
       <!-- <input id="showArchived" type="checkbox"/>
       <label for="showArchived">Show archived</label> -->
-      <label class="custom-control custom-checkbox">
-        <input id="showArchived" type="checkbox" class="custom-control-input">
-        <span class="custom-control-indicator"></span>
-        <span class="custom-control-description">Show archived</span>
-      </label>
+      {{#if hasArchivedProjects}}
+        <label class="custom-control custom-checkbox">
+          <input id="showArchived" type="checkbox" class="custom-control-input">
+          <span class="custom-control-indicator"></span>
+          <span class="custom-control-description"> <span class="d-none d-sm-inline">Show archived </span><i class="fa fa-archive d-inline d-sm-none"></i></span>
+        </label>
+      {{/if}}
+      <span class="badge badge-secondary" data-toggle="tooltip" data-placement="right" title="Number of projects" id="projectCount">{{projectCount}}</span>
     </div>
   </div>
   {{#if moreThanOneProject}}
-    <div class="card mb-3" style="border: 1px solid #455A64">
+    <div class="card mb-3" style="background: rgba(0,112,101,0.05)">
       <div class="card-body">
         <h6 class="card-subtitle mb-1">All projects</h6>
         <!-- <span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span> -->
@@ -47,6 +50,7 @@
    {{/if}}
   <!-- <h5 style="text-align:center">Your projects</h5> -->
     <!-- <ul class="list-group mb-2"> -->
+    <div class="js-project-list">
       {{#each project in projects}}
       <!-- <li class="list-group-item" id="{{_id}}"> -->
         <!-- <div class="d-flex w-100 justify-content-between">
@@ -97,5 +101,6 @@
         </div>
       <!-- </li> -->
       {{/each}}
+    </div>
     <!-- </ul> -->
 </template>

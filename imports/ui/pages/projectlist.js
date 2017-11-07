@@ -18,6 +18,40 @@ Template.projectlist.onRendered(() => {
       (adsbygoogle = window.adsbygoogle || []).push({})
     }, 5000)
   }
+  if ($().tooltip) {
+    $('[data-toggle="tooltip"]').tooltip()
+  }
+  import('jquery-ui').then(() => {
+    import('jquery-ui/ui/version.js').then(() => {
+      import('jquery-ui/ui/data.js').then(() => {
+        import('jquery-ui/ui/plugin.js').then(() => {
+          import('jquery-ui/ui/scroll-parent').then(() => {
+            import('jquery-ui/ui/widgets/mouse.js').then(() => {
+              import('jquery-ui/ui/widgets/sortable').then(() => {
+                const projectList = $('.js-project-list')
+                projectList.sortable({
+                  // Only make the .panel-heading child elements support dragging.
+                  // Omit this to make then entire <li>...</li> draggable.
+                  // handle: '.card',
+                  cursor: 'move',
+                  opacity: 0.7,
+                  update: () => {
+                    $('.card', projectList).each((index, elem) => {
+                      const $listItem = $(elem)
+                      const newIndex = $listItem.index()
+                      console.log($listItem.children('.card-body').children('.row.mt-2')[0].id)
+                      console.log(newIndex)
+                      // Persist the new indices.
+                    })
+                  },
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
 })
 Template.projectlist.helpers({
   projects() {
@@ -35,6 +69,8 @@ Template.projectlist.helpers({
         { sort: { name: 1 } },
       ).count() > 1
   },
+  hasArchivedProjects: () => Projects.find({}).count()
+    !== Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count(),
   isProjectOwner(_id) {
     return Projects.findOne({ _id }) ? Projects.findOne({ _id }).userId === Meteor.userId() : false
   },
@@ -46,6 +82,9 @@ Template.projectlist.helpers({
   },
   adsenseClientId: () => Meteor.settings.public.adsenseClientId,
   adsenseAdSlot: () => Meteor.settings.public.adsenseAdSlot,
+  projectCount: () => (Template.instance().data.showArchived.get()
+    ? Projects.find({}).count()
+    : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count()),
 })
 
 Template.projectlist.events({

@@ -32,7 +32,8 @@ Template.calendar.onRendered(function trackmonthRendered() {
       // {startDate: moment().startOf('month').toDate(),
       // endDate: moment().endOf('month').toDate(), userId: 'all'})
       this.fc.fullCalendar({
-        header: { center: 'month,basicWeek' },
+        // header: { center: 'month,basicWeek' },
+        firstDay: 1,
         droppable: true,
         drop: function dropEvent(date) {
           FlowRouter.go(`/tracktime/${$(this).data('id')}?date=${date.format()}`)

@@ -1,27 +1,54 @@
 import moment from 'moment'
 import csv from 'fast-csv'
+import emoji from 'node-emoji'
 import Timecards from './timecards.js'
 import Tasks from '../tasks/tasks.js'
 import Projects from '../projects/projects.js'
 
+const replacer = match => emoji.emojify(match)
+
 Meteor.methods({
-  insertTimeCard({ projectId, task, date, hours }) {
+  insertTimeCard({
+    projectId,
+    task,
+    date,
+    hours,
+  }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
-    if (!Tasks.findOne({ userId: this.userId, name: task })) {
-      Tasks.insert({ userId: this.userId, name: task })
+    if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })) {
+      Tasks.insert({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })
     }
-    Timecards.insert({ userId: this.userId, projectId, date, hours, task })
+    Timecards.insert({
+      userId: this.userId,
+      projectId,
+      date,
+      hours,
+      task: task.replace(/(:.*:)/g, replacer),
+    })
   },
-  updateTimeCard({ projectId, _id, task, date, hours }) {
+  updateTimeCard({
+    projectId,
+    _id,
+    task,
+    date,
+    hours,
+  }) {
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
-    if (!Tasks.findOne({ userId: this.userId, name: task })) {
-      Tasks.insert({ userId: this.userId, name: task })
+    if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })) {
+      Tasks.insert({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })
     }
-    Timecards.update({ _id }, { $set: { projectId, date, hours, task } })
+    Timecards.update({ _id }, {
+      $set: {
+        projectId,
+        date,
+        hours,
+        task: task.replace(/(:.*:)/g, replacer),
+      },
+    })
   },
   export({ projectId, timePeriod, userId }) {
     if (!this.userId) {
@@ -60,12 +87,16 @@ Meteor.methods({
       projectList = [projectId]
     }
     if (userId !== 'all') {
-      timecardArray = Timecards.find({ userId,
+      timecardArray = Timecards.find({
+        userId,
         projectId: { $in: projectList },
-        date: { $gte: startDate, $lte: endDate } }).fetch()
+        date: { $gte: startDate, $lte: endDate },
+      }).fetch()
     } else {
-      timecardArray = Timecards.find({ projectId: { $in: projectList },
-        date: { $gte: startDate, $lte: endDate } }).fetch()
+      timecardArray = Timecards.find({
+        projectId: { $in: projectList },
+        date: { $gte: startDate, $lte: endDate },
+      }).fetch()
     }
     for (const timecard of timecardArray) {
       timecard.date = moment(timecard.date).format('DD.MM.YYYY')

@@ -8,6 +8,7 @@ import '../../ui/pages/timecardlist.js'
 import '../../ui/pages/editproject.js'
 import '../../ui/pages/settings.js'
 import '../../ui/pages/dashboard.js'
+import '../../ui/pages/404.html'
 
 if (!Meteor.settings.public.sandstorm) {
   FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn], { except: ['dashboard'] })
@@ -66,6 +67,17 @@ FlowRouter.route('/dashboard/:_id', {
   },
   name: 'dashboard',
 })
+FlowRouter.route('/404', {
+  action() {
+    BlazeLayout.render('appLayout', { main: '404' })
+  },
+  name: '404',
+})
+FlowRouter.notFound = {
+  action: () => {
+    BlazeLayout.render('appLayout', { main: '404' })
+  },
+}
 AccountsTemplates.configureRoute('signIn', {
   name: 'signin',
   path: '/signin',

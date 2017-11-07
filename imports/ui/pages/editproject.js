@@ -5,6 +5,7 @@ import 'bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
+
 // import 'bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css'
 
 Template.editproject.onCreated(function editprojectSetup() {
@@ -13,6 +14,7 @@ Template.editproject.onCreated(function editprojectSetup() {
     if (projectId) {
       this.handle = this.subscribe('singleProject', projectId)
     }
+    this.deletion = new ReactiveVar(false)
   })
 })
 Template.editproject.onRendered(function editprojectRendered() {
@@ -22,8 +24,12 @@ Template.editproject.onRendered(function editprojectRendered() {
     color: this.color,
   })
   this.autorun(() => {
-    if (this.handle && this.handle.ready() && Projects.findOne()) {
-      $('#colpick').colorpicker('setValue', (Projects.findOne().color ? Projects.findOne().color : this.color))
+    if (this.handle && this.handle.ready()) {
+      if (Projects.findOne()) {
+        $('#colpick').colorpicker('setValue', (Projects.findOne().color ? Projects.findOne().color : this.color))
+      } else if (FlowRouter.getRouteName() !== 'createProject' && !this.deletion) {
+        FlowRouter.go('404')
+      }
     }
     if (Projects.findOne()) {
       const userIds = Projects.findOne().team ? Projects.findOne().team : []
@@ -96,6 +102,43 @@ Template.editproject.events({
       }
     })
   },
+  'click .js-delete-project': (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    if (confirm('Do you really want to delete this project?')) {
+      Template.instance().deletion.set(true)
+      Meteor.call('deleteProject', { projectId: FlowRouter.getParam('id') }, (error) => {
+        if (!error) {
+          FlowRouter.go('projectlist')
+          $.notify('Project deleted successfully')
+        } else {
+          console.error(error)
+        }
+      })
+    }
+  },
+  'click .js-archive-project': (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    Meteor.call('archiveProject', { projectId: FlowRouter.getParam('id') }, (error) => {
+      if (!error) {
+        $.notify('Project archived successfully')
+      } else {
+        console.error(error)
+      }
+    })
+  },
+  'click .js-restore-project': (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    Meteor.call('restoreProject', { projectId: FlowRouter.getParam('id') }, (error) => {
+      if (!error) {
+        $.notify('Project restored successfully')
+      } else {
+        console.error(error)
+      }
+    })
+  },
 })
 Template.editproject.helpers({
   newProject: () => (!FlowRouter.getParam('id')),
@@ -112,5 +155,7 @@ Template.editproject.helpers({
     }
     return false
   },
+  projectId: () => FlowRouter.getParam('id'),
   disablePublic: () => Meteor.settings.public.disablePublic,
+  archived: _id => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).archived : false),
 })

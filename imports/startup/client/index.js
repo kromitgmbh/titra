@@ -8,5 +8,7 @@ import './startup.js'
 import('popper.js').then((Popper) => {
   // window.Tether = Tether.default
   window.Popper = Popper.default
-  import('bootstrap')
+  import('bootstrap').then(() => {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
 })

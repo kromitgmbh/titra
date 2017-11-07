@@ -143,6 +143,10 @@ $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
   }
 }
 
+#cal > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2 {
+  font-size: 1.5rem;
+}
+
 .card-block {
     -webkit-box-flex: 1;
     -webkit-flex: 1 1 auto;
@@ -153,4 +157,7 @@ $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
 
 .custom-select {
   background: #fff !important;
+}
+.js-project-list > .card:hover {
+  cursor: move;
 }

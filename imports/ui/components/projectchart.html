@@ -1,10 +1,14 @@
 <template name="projectchart">
   <div class="row">
     <div class="col-12 col-md-4">
-      {{#if allTeamMembers}} Team: {{allTeamMembers}}<br/> {{/if}}
-      Total time: {{timeInUserUnit(totalHours)}} ({{timeunit}})<br/>
+      {{#if allTeamMembers}}
+        Team: {{allTeamMembers}}<br/>
+      {{/if}}
+      {{#if totalHours}}
+        Total time: {{timeInUserUnit(totalHours)}} ({{timeunit}})<br/>
+      {{/if}}
       {{#if turnOver}}
-      Turnover: {{turnOver}} {{unit}}
+        Turnover: {{turnOver}} {{unit}}
       {{/if}}
     </div>
     <div class="d-none d-md-block col-md-4">

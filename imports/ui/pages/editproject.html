@@ -64,10 +64,27 @@
     {{/unless}}
   </form>
   <div class="row text-center">
-    <div class="col-6 col-md-2 mr-auto">
+    <div class="col-3 mr-auto">
       <button class="btn btn-secondary js-backbutton form-control">back</button>
     </div>
-    <div class="col-6 col-md-2">
+    {{#unless newProject}}
+      {{#if archived (projectId)}}
+        <div class="col-3">
+          <button class="btn btn-secondary btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="d-none d-md-inline">Restore</span></button>
+        </div>
+        <div class="col-3">
+          <button class="btn btn-secondary btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">Delete</span></button>
+        </div>
+      {{else}}
+        <div class="col-3">
+          <a href="/list/timecards/{{projectId}}" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
+        </div>
+        <div class="col-3">
+          <button class="btn btn-secondary btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">Archive</span></button>
+        </div>
+      {{/if}}
+    {{/unless}}
+    <div class="col-3">
       <button class="btn btn-primary form-control" id="save">save</button>
     </div>
   </div>

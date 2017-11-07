@@ -1,7 +1,10 @@
 import moment from 'moment'
+import emoji from 'node-emoji'
 import Timecards from '../timecards/timecards'
 import Projects from '../projects/projects'
 import { addNotification } from '../notifications/notifications.js'
+
+const replacer = match => emoji.emojify(match)
 
 Meteor.methods({
   getAllProjectStats() {
@@ -57,6 +60,7 @@ Meteor.methods({
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
     }
+    updateJSON.name = updateJSON.name.replace(/(:.*:)/g, replacer)
     if (!updateJSON.public) {
       updateJSON.public = false
     } else {
@@ -77,6 +81,7 @@ Meteor.methods({
     } else {
       updateJSON.public = true
     }
+    updateJSON.name = updateJSON.name.replace(/(:.*:)/g, replacer)
     updateJSON._id = Random.id()
     updateJSON.userId = this.userId
     Projects.insert(updateJSON)
