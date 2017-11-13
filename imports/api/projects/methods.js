@@ -160,4 +160,13 @@ Meteor.methods({
     Projects.update({ _id: targetProject._id }, { $pull: { team: userId } })
     return 'Team member removed successfully'
   },
+  updatePriority({ projectId, priority }) {
+    check(projectId, String)
+    check(priority, Number)
+    if (!this.userId) {
+      throw new Meteor.Error('You have to be signed in to use this method.')
+    }
+    Projects.update({ _id: projectId }, { $set: { priority } })
+    return 'Project priority updated successfully'
+  },
 })

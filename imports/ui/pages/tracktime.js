@@ -3,6 +3,8 @@ import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import moment from 'moment'
 import Timecards from '../../api/timecards/timecards.js'
+import Projects from '../../api/projects/projects.js'
+
 import './tracktime.html'
 import '../components/projectselect.js'
 import '../components/tasksearch.js'
@@ -38,11 +40,22 @@ Template.tracktime.onCreated(function tracktimeCreated() {
         this.date.set(Timecards.findOne() ? Timecards.findOne().date : new Date())
       }
     })
-  } else if (FlowRouter.getQueryParam('date')) {
-    this.autorun(() => {
-      this.date.set(FlowRouter.getQueryParam('date'))
-    })
   }
+  this.totalTime = new ReactiveVar(0)
+  let handle
+  this.autorun(() => {
+    if (FlowRouter.getQueryParam('date')) {
+      this.date.set(moment(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate())
+    }
+    handle = this.subscribe('myTimecardsForDate', { date: moment(this.date.get()).format('YYYY-MM-DD') })
+    if (handle.ready()) {
+      Timecards.find().forEach((timecard) => {
+        this.subscribe('publicProjectName', timecard.projectId)
+      })
+    }
+    this.totalTime.set(Timecards.find()
+      .fetch().reduce((a, b) => (a === 0 ? b.hours : a + b.hours), 0))
+  })
 })
 
 Template.tracktime.events({
@@ -78,7 +91,7 @@ Template.tracktime.events({
           $('#hours').val('')
           $('.js-tasksearch-results').hide()
           $.notify('Time entry updated successfully')
-          window.history.back()
+          // window.history.back()
         }
       })
     } else {
@@ -98,22 +111,35 @@ Template.tracktime.events({
   },
   'click .js-previous': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.date.set(new Date(moment(templateInstance.date.get()).subtract(1, 'days').utc()))
-    $('#hours').val(0)
+    FlowRouter.setQueryParams({ date: moment(templateInstance.date.get()).subtract(1, 'days').format('YYYY-MM-DD') })
+    // templateInstance.date.set(new Date(moment(templateInstance.date.get()).subtract(1, 'days').utc()))
+    $('#hours').val('')
     $('.js-tasksearch-results').hide()
   },
   'click .js-next': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.date.set(new Date(moment(templateInstance.date.get()).add(1, 'days').utc()))
-    $('#hours').val(0)
+    FlowRouter.setQueryParams({ date: moment(templateInstance.date.get()).add(1, 'days').format('YYYY-MM-DD') })
+    // templateInstance.date.set(new Date(moment(templateInstance.date.get()).add(1, 'days').utc()))
+    $('#hours').val('')
     $('.js-tasksearch-results').hide()
   },
   'change #targetProject': (event, templateInstance) => {
     templateInstance.projectId.set($(event.currentTarget).val())
   },
   'change #date': (event, templateInstance) => {
+    let date = moment($(event.currentTarget).val())
+    if (!date.isValid()) {
+      date = moment()
+      event.currentTarget.valueAsDate = date.toDate()
+    }
+    date = date.format('YYYY-MM-DD')
     // we need this to correctly capture calender change events from the input
-    templateInstance.date.set($(event.currentTarget).val())
+    FlowRouter.setQueryParams({ date })
+    // templateInstance.date.set($(event.currentTarget).val())
+  },
+  'click .js-toggle-timecards': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.$('.js-show-timecards').toggleClass('d-none')
   },
 })
 Template.tracktime.helpers({
@@ -122,12 +148,15 @@ Template.tracktime.helpers({
     if (FlowRouter.getParam('projectId')) {
       return FlowRouter.getParam('projectId')
     }
-    return Timecards.findOne() ? Timecards.findOne().projectId : false
+    return Timecards.findOne({ _id: FlowRouter.getParam('tcid') }) ? Timecards.findOne({ _id: FlowRouter.getParam('tcid') }).projectId : false
   },
+  projectName: _id => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false),
+  timecards: () => Timecards.find(),
   isEdit: () => FlowRouter.getParam('tcid'),
-  task: () => (Timecards.findOne() ? Timecards.findOne().task : false),
-  hours: () => (Timecards.findOne() ? Timecards.findOne().hours : false),
+  task: () => (Timecards.findOne({ _id: FlowRouter.getParam('tcid') }) ? Timecards.findOne({ _id: FlowRouter.getParam('tcid') }).task : false),
+  hours: () => (Timecards.findOne({ _id: FlowRouter.getParam('tcid') }) ? Timecards.findOne({ _id: FlowRouter.getParam('tcid') }).hours : false),
   showTracker: () => (Meteor.user() ? (Meteor.user().profile.timeunit !== 'd') : false),
+  totalTime: () => Template.instance().totalTime.get(),
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

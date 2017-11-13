@@ -38,9 +38,13 @@ Template.projectlist.onRendered(() => {
                   update: () => {
                     $('.card', projectList).each((index, elem) => {
                       const $listItem = $(elem)
-                      const newIndex = $listItem.index()
-                      console.log($listItem.children('.card-body').children('.row.mt-2')[0].id)
-                      console.log(newIndex)
+                      const priority = $listItem.index()
+                      const projectId = $listItem.children('.card-body').children('.row.mt-2')[0].id
+                      Meteor.call('updatePriority', { projectId, priority }, (error, result) => {
+                        if (error) {
+                          console.error(error)
+                        }
+                      })
                       // Persist the new indices.
                     })
                   },
@@ -55,19 +59,17 @@ Template.projectlist.onRendered(() => {
 })
 Template.projectlist.helpers({
   projects() {
-    return Template.instance().data.showArchived.get() ? Projects.find({}, { sort: { name: 1 } })
+    return Template.instance().data.showArchived.get()
+      ? Projects.find({}, { sort: { priority: 1, name: 1 } })
       : Projects.find(
         { $or: [{ archived: { $exists: false } }, { archived: false }] },
-        { sort: { name: 1 } },
+        { sort: { priority: 1, name: 1 } },
       )
   },
   moreThanOneProject() {
     return Template.instance().data.showArchived.get()
-      ? Projects.find({}, { sort: { name: 1 } }).count() > 1
-      : Projects.find(
-        { $or: [{ archived: { $exists: false } }, { archived: false }] },
-        { sort: { name: 1 } },
-      ).count() > 1
+      ? Projects.find({}).count() > 1
+      : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count() > 1
   },
   hasArchivedProjects: () => Projects.find({}).count()
     !== Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count(),

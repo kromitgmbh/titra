@@ -3,6 +3,9 @@ import Timecards from '../timecards.js'
 import Projects from '../../projects/projects.js'
 
 Meteor.publish('projectTimecards', function projectTimecards({ projectId, period, userId }) {
+  check(projectId, String)
+  check(period, String)
+  check(userId, String)
   // console.log(projectId)
   let projectList = []
   if (projectId === 'all') {
@@ -41,12 +44,16 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
         break
     }
     if (userId === 'all') {
-      return Timecards.find({ projectId: { $in: projectList },
-        date: { $gte: startDate, $lte: endDate } })
+      return Timecards.find({
+        projectId: { $in: projectList },
+        date: { $gte: startDate, $lte: endDate },
+      })
     }
-    return Timecards.find({ projectId: { $in: projectList },
+    return Timecards.find({
+      projectId: { $in: projectList },
       userId,
-      date: { $gte: startDate, $lte: endDate } })
+      date: { $gte: startDate, $lte: endDate },
+    })
   }
   if (userId === 'all') {
     return Timecards.find({ projectId: { $in: projectList } })
@@ -55,16 +62,33 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
 })
 
 Meteor.publish('periodTimecards', function periodTimecards({ startDate, endDate, userId }) {
-  const projectList = Projects.find({ $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
-    { $fields: { _id: 1 } }).fetch().map(value => value._id)
+  check(startDate, Date)
+  check(endDate, Date)
+  check(userId, String)
+  const projectList = Projects.find(
+    { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
+    { $fields: { _id: 1 } },
+  ).fetch().map(value => value._id)
 
   if (userId === 'all') {
-    return Timecards.find({ projectId: { $in: projectList },
-      date: { $gte: startDate, $lte: endDate } })
+    return Timecards.find({
+      projectId: { $in: projectList },
+      date: { $gte: startDate, $lte: endDate },
+    })
   }
-  return Timecards.find({ projectId: { $in: projectList },
+  return Timecards.find({
+    projectId: { $in: projectList },
     userId,
-    date: { $gte: startDate, $lte: endDate } })
+    date: { $gte: startDate, $lte: endDate },
+  })
+})
+
+Meteor.publish('myTimecardsForDate', function myTimecardsForDate({ date }) {
+  check(date, String)
+  return Timecards.find({
+    userId: this.userId,
+    date: new Date(date),
+  })
 })
 
 Meteor.publish('singleTimecard', function singleTimecard(_id) {

@@ -8,8 +8,8 @@
         </div>
       {{/unless}}
       <div class="col">
-        <label for="date">Date</label>
-        <input id="date" type="date" class="form-control" value="{{date}}" style="padding-top:6px;padding-bottom:6px;">
+        <label for="date">&nbsp;</label>
+        <input id="date" type="date" class="form-control pl-2 pr-2 text-center" value="{{date}}">
       </div>
       {{#unless isEdit}}
         <div class="col-2 text-right">
@@ -18,6 +18,34 @@
         </div>
       {{/unless}}
     </div>
+    {{#unless isEdit}}
+      <div class="card form-group">
+        <div class="card-header js-toggle-timecards">
+          {{#if totalTime}}
+            Time tracked: {{timeInUserUnit(totalTime)}} {{timeunit}}
+            <a href="#" class="text-dark"><i class="fa fa-chevron-down float-right"></i></a>
+            {{else}}
+            No time tracked yet.
+          {{/if}}
+        </div>
+        {{#if totalTime}}
+          <div class="card-block d-none js-show-timecards">
+            <div class="row">
+              <div class="col-4 col-md-4"><strong>Project</strong></div>
+              <div class="col-5 col-md-6"><strong>Task</strong></div>
+              <div class="col-3 col-md-2"><strong>Time</strong></div>
+            </div>
+              {{#each timecard in timecards}}
+              <div class="row">
+                <div class="col-4 col-md-4">{{projectName(timecard.projectId)}}</div>
+                <div class="col-5 col-md-6">{{timecard.task}}</div>
+                <div class="col-3 col-md-2">{{timeInUserUnit(timecard.hours)}}</div>
+              </div>
+              {{/each}}
+          </div>
+        {{/if}}
+      </div>
+    {{/unless}}
     <div class="form-group">
       <label>Project</label>
       {{>projectselect}}
@@ -31,7 +59,7 @@
         <div class="col">
           <div class="form-group">
             <label for="hours">Working time ({{timeunit}})</label>
-            <input id="hours" type="string" class="form-control" value="{{timeInUserUnit (hours)}}"/>
+            <input id="hours" type="string" class="form-control" value="{{timeInUserUnit (hours)}}" placeholder="0.00"/>
           </div>
         </div>
         {{#unless isEdit}}

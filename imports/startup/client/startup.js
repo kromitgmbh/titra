@@ -41,7 +41,10 @@ Template.registerHelper('timeInUserUnit', (time) => {
       return convertedTime !== Number(0).toFixed(2) ? convertedTime : undefined
     }
   }
-  return Number(time).toFixed(2)
+  if (time) {
+    return Number(time).toFixed(2)
+  }
+  return false
 })
 Template.registerHelper('projectColor', (_id) => {
   if (Projects.findOne({ _id })) {
