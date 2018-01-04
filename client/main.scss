@@ -35,7 +35,7 @@ $theme-colors: (
 // $tooltip-bg:                #009688;
 
 .custom-control-input {
-  &:active ~ .custom-control-indicator {
+  &:active {
    background-color: #009688;
  }
 }

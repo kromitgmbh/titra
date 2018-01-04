@@ -7,11 +7,10 @@
       <!-- <input id="showArchived" type="checkbox"/>
       <label for="showArchived">Show archived</label> -->
       {{#if hasArchivedProjects}}
-        <label class="custom-control custom-checkbox">
-          <input id="showArchived" type="checkbox" class="custom-control-input">
-          <span class="custom-control-indicator"></span>
-          <span class="custom-control-description"> <span class="d-none d-sm-inline">Show archived </span><i class="fa fa-archive d-inline d-sm-none"></i></span>
-        </label>
+      <div class="form-check">
+          <input id="showArchived" type="checkbox" class="form-check-input"/>
+          <label class="form-check-label"> <span class="d-none d-sm-inline">Show archived </span><i class="fa fa-archive d-inline d-sm-none"></i></label>
+      </div>
       {{/if}}
       <span class="badge badge-secondary" data-toggle="tooltip" data-placement="right" title="Number of projects" id="projectCount">{{projectCount}}</span>
     </div>

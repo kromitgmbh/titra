@@ -63,6 +63,10 @@ Template.tracktime.events({
     event.preventDefault()
     // console.log(Template.instance().data.picker.component.item.select.obj)
     // console.log(Template.instance().data.picker)
+    if (!$('#hours').val()) {
+      $.notify({ message: 'Please enter your time' }, { type: 'danger' })
+      return
+    }
     if (!templateInstance.$('#targetProject').val()) {
       $.notify({ message: 'Please select a project.' }, { type: 'danger' })
       return
