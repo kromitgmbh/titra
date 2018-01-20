@@ -7,17 +7,17 @@
       <div class="card-block">
         <div class="form-group">
           <label for="name">Name</label>
-          <input type="text" class="form-control" id="name" value="{{name}}"/>
+          <input type="text" class="form-control" id="name" value="{{name}}" />
         </div>
         {{#unless isSandstorm}}
-          <div class="row">
-            <div class="col-6 col-md-3 mr-auto">
-              <a class="btn btn-secondary form-control" href="/changePwd">Change password</a>
-            </div>
-            <div class="col-6 col-md-3">
-              <a class="btn btn-secondary js-logout form-control" href="#">Logout</a>
-            </div>
+        <div class="row">
+          <div class="col-6 col-md-3 mr-auto">
+            <a class="btn btn-secondary form-control" href="/changePwd">Change password</a>
           </div>
+          <div class="col-6 col-md-3">
+            <a class="btn btn-secondary js-logout form-control" href="#">Logout</a>
+          </div>
+        </div>
         {{/unless}}
       </div>
     </div>
@@ -43,12 +43,12 @@
         {{#if displayHoursToDays}}
         <div class="form-group">
           <label for="name">Hours per day</label>
-          <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}"/>
+          <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" />
         </div>
         {{/if}}
         <div>
           <label for="name">Cost unit</label>
-          <input type="text" class="form-control" id="unit" value="{{unit}}"/>
+          <input type="text" class="form-control" id="unit" value="{{unit}}" />
         </div>
       </div>
     </div>
@@ -57,18 +57,15 @@
         Wekan integration
       </div>
       <div class="card-block">
-        <div>
-          <label class="custom-control custom-checkbox">
-            <input id="enableWekan" type="checkbox" class="custom-control-input" checked={{enableWekan}}>
-            <span class="custom-control-indicator"></span>
-            <span class="custom-control-description">Enable Wekan integration?</span>
-          </label>
+        <div class="form-check">
+          <input id="enableWekan" type="checkbox" class="form-check-input" checked={{enableWekan}} />
+          <label class="form-check-label">Enable Wekan integration?</label>
         </div>
       </div>
     </div>
     <div class="card form-group">
       <div class="card-header">
-        Titra version changelog
+        Titra changelog
       </div>
       <div class="card-block">
         <div>

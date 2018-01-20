@@ -91,8 +91,6 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
         } else {
-          $('.js-tasksearch-input').val('')
-          $('#hours').val('')
           $('.js-tasksearch-results').hide()
           $.notify('Time entry updated successfully')
           // window.history.back()
