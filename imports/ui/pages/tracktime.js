@@ -47,11 +47,13 @@ Template.tracktime.onCreated(function tracktimeCreated() {
     if (FlowRouter.getQueryParam('date')) {
       this.date.set(moment(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate())
     }
-    handle = this.subscribe('myTimecardsForDate', { date: moment(this.date.get()).format('YYYY-MM-DD') })
-    if (handle.ready()) {
-      Timecards.find().forEach((timecard) => {
-        this.subscribe('publicProjectName', timecard.projectId)
-      })
+    if (!FlowRouter.getParam('tcid')) {
+      handle = this.subscribe('myTimecardsForDate', { date: moment(this.date.get()).format('YYYY-MM-DD') })
+      if (handle.ready()) {
+        Timecards.find().forEach((timecard) => {
+          this.subscribe('publicProjectName', timecard.projectId)
+        })
+      }
     }
     this.totalTime.set(Timecards.find()
       .fetch().reduce((a, b) => (a === 0 ? b.hours : a + b.hours), 0))
@@ -114,7 +116,8 @@ Template.tracktime.events({
   'click .js-previous': (event, templateInstance) => {
     event.preventDefault()
     FlowRouter.setQueryParams({ date: moment(templateInstance.date.get()).subtract(1, 'days').format('YYYY-MM-DD') })
-    // templateInstance.date.set(new Date(moment(templateInstance.date.get()).subtract(1, 'days').utc()))
+    // templateInstance.date.set(new Date(moment(templateInstance.date.get())
+    // .subtract(1, 'days').utc()))
     $('#hours').val('')
     $('.js-tasksearch-results').hide()
   },
@@ -128,7 +131,7 @@ Template.tracktime.events({
   'change #targetProject': (event, templateInstance) => {
     templateInstance.projectId.set($(event.currentTarget).val())
   },
-  'change #date': (event, templateInstance) => {
+  'change #date': (event) => {
     let date = moment($(event.currentTarget).val())
     if (!date.isValid()) {
       date = moment()
