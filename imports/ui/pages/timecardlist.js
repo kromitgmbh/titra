@@ -5,17 +5,20 @@ import JSZip from 'jszip'
 import dataTableButtons from 'datatables.net-buttons-bs4'
 import html5ExportButtons from 'datatables.net-buttons/js/buttons.html5.js'
 import dataTablesBootstrap from '../components/dataTables.bootstrap4.js'
+import Projects from '../../api/projects/projects.js'
 import '../components/dataTables.bootstrap4.scss'
 import './timecardlist.html'
 import '../components/periodpicker.js'
 import '../components/resourceselect.js'
 import '../components/tablecell.js'
+import '../components/customerselect.js'
 import '../../api/timecards/tabular.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {
   this.period = new ReactiveVar('currentMonth')
   this.resource = new ReactiveVar('all')
   this.project = new ReactiveVar()
+  this.customer = new ReactiveVar('all')
   this.autorun(() => {
     this.project.set(FlowRouter.getParam('projectId'))
   })
@@ -38,6 +41,16 @@ Template.timecardlist.helpers({
     }
     if (Template.instance().resource.get() !== 'all') {
       returnSelector.userId = Template.instance().resource.get()
+    }
+    if (Template.instance().customer.get() !== 'all') {
+      const projectList = Projects.find(
+        {
+          customer: Template.instance().customer.get(),
+          $or: [{ userId: Meteor.userId() }, { public: true }, { team: Meteor.userId() }],
+        },
+        { $fields: { _id: 1 } },
+      ).fetch().map(value => value._id)
+      returnSelector.projectId = { $in: projectList }
     }
     if (Template.instance().period.get() !== 'all') {
       let startDate
@@ -75,5 +88,8 @@ Template.timecardlist.events({
   },
   'change #resourceselect': (event, templateInstance) => {
     templateInstance.resource.set($(event.currentTarget).val())
+  },
+  'change #customerselect': (event, templateInstance) => {
+    templateInstance.customer.set($(event.currentTarget).val())
   },
 })

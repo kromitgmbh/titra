@@ -6,6 +6,7 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
   check(projectId, String)
   check(period, String)
   check(userId, String)
+  
   // console.log(projectId)
   let projectList = []
   if (projectId === 'all') {

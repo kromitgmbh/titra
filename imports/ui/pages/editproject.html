@@ -18,10 +18,10 @@
         </div>
       </div>
     </div>
-    <!-- <div class="form-group">
+    <div class="form-group">
       <label for="customer"><strong>Customer</strong></label>
       <input name="customer" id="customer" type="text" value={{customer}} class="form-control" placeholder="Sample Customer"/>
-    </div> -->
+    </div>
     <div class="form-group">
       <label for="rate"><strong>Rate ({{unit}}/h)</strong></label>
       <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100" />
@@ -29,7 +29,7 @@
     {{#if currentUser.profile.enableWekan}}
     <div class="form-group">
       <label for="wekanurl"><strong>Wekan integration</strong></label>
-      <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://url.of.your.wekan.environment/" />
+      <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://wekan.url/api/boards/abcdefg.../export?authToken=abcdefg..." />
     </div>
     {{/if}} {{#unless newProject}}
     <div class="form-group">

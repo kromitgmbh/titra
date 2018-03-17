@@ -1,17 +1,16 @@
 <template name="projectlist">
   <div class="row form-group">
     <div class="col-4">
-      <a href="/create/project" class="btn btn-primary" id="next">New project</a>
-    </div>
-    <div class="col-8 text-right">
-      <!-- <input id="showArchived" type="checkbox"/>
-      <label for="showArchived">Show archived</label> -->
       {{#if hasArchivedProjects}}
       <div class="form-check">
           <input id="showArchived" type="checkbox" class="form-check-input"/>
           <label class="form-check-label"> <span class="d-none d-sm-inline">Show archived </span><i class="fa fa-archive d-inline d-sm-none"></i></label>
       </div>
       {{/if}}
+    </div>
+    <div class="col-8 text-right">
+      <!-- <input id="showArchived" type="checkbox"/>
+      <label for="showArchived">Show archived</label> -->
       <span class="badge badge-secondary" data-toggle="tooltip" data-placement="right" title="Number of projects" id="projectCount">{{projectCount}}</span>
     </div>
   </div>
@@ -100,6 +99,11 @@
         </div>
       <!-- </li> -->
       {{/each}}
+    </div>
+    <div class="row">
+      <div class="col-4 col-offset-8">
+        <a href="/create/project" class="btn btn-primary" id="next">New project</a>
+      </div>
     </div>
     <!-- </ul> -->
 </template>

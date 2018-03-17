@@ -6,18 +6,24 @@
     </div>
   </div> -->
   <div class="row mb-2 px-2">
-    <div class="col-sm-4">
+    <div class="col-sm-3">
       <label>Project</label>
       {{>projectselect allProjects = true}}
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
       <label>Time period</label>
       {{>periodpicker}}
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
       <label>Resource</label>
       {{#with project}}
         {{>resourceselect}}
+      {{/with}}
+    </div>
+    <div class="col-sm-3">
+      <label>Customer</label>
+      {{#with project}}
+        {{>customerselect}}
       {{/with}}
     </div>
   </div>
