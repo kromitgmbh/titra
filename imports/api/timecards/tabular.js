@@ -8,6 +8,7 @@ import Projects from '../projects/projects.js'
 import projectUsers from '../users/users.js'
 
 const replacer = match => emoji.emojify(match)
+
 const timecards = new Tabular.Table({
   name: 'Timecards',
   collection: Timecards,
@@ -35,10 +36,11 @@ const timecards = new Tabular.Table({
       },
       render: (_id, type, doc) => {
         if (Meteor.user()) {
+          const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
           if (Meteor.user().profile.timeunit === 'd') {
             const convertedTime = Number(doc.hours / (Meteor.user().profile.hoursToDays
-              ? Meteor.user().profile.hoursToDays : 8)).toFixed(2)
-            return convertedTime !== Number(0).toFixed(2) ? convertedTime : undefined
+              ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
+            return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
           }
         }
         return doc.hours
@@ -123,13 +125,33 @@ const timecards = new Tabular.Table({
           projectId: $('#targetProject').val(), resourceId: $('#resourceselect').val(), startDate, endDate,
         }, (error, _id) => {
           if (error) {
-            console.error(error)
+            $.notify({ message: `Dashboard creation failed (error: ${error}).` }, { type: 'danger' })
+            // console.error(error)
           } else {
             $('#dashboardURL').val(FlowRouter.url('dashboard', { _id }))
             $('.js-dashboard-modal').modal('toggle')
             // FlowRouter.go('dashboard', { _id })
           }
         })
+      },
+    },
+    {
+      text: '<i class="fa fa-upload"></i> Invoice',
+      className: 'btn-primary js-siwapp',
+      action: () => {
+        if (Meteor.user().profile.siwappurl && Meteor.user().profile.siwapptoken) {
+          Meteor.call('sendToSiwapp', {
+            projectId: $('#targetProject').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(),
+          }, (error, result) => {
+            if (error) {
+              $.notify({ message: `Export failed (error: ${error}).` }, { type: 'danger' })
+            } else {
+              $.notify(result)
+            }
+          })
+        } else {
+          $.notify({ message: 'You have to configure the Siwapp integration to use this feature.' }, { type: 'danger' })
+        }
       },
     },
   ],

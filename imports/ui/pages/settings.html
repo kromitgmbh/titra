@@ -46,20 +46,39 @@
           <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" />
         </div>
         {{/if}}
-        <div>
-          <label for="name">Cost unit</label>
+      </div>
+    </div>
+    <div class="card form-group">
+      <div class="card-header">
+        Global settings
+      </div>
+      <div class="card-block">
+        <div class="form-group">
+          <label for="unit">Cost unit</label>
           <input type="text" class="form-control" id="unit" value="{{unit}}" />
+        </div>
+        <div class="form-group">
+          <label for="precision">Decimal precision</label>
+          <input type="number" class="form-control" id="precision" value="{{precision}}" />
         </div>
       </div>
     </div>
     <div class="card form-group">
       <div class="card-header">
-        Wekan integration
+        Integrations
       </div>
       <div class="card-block">
-        <div class="form-check">
+        <div class="form-group form-check">
           <input id="enableWekan" type="checkbox" class="form-check-input" checked={{enableWekan}} />
           <label class="form-check-label">Enable Wekan integration?</label>
+        </div>
+        <div class="form-group">
+          <label for="siwappurl">Siwapp URL</label>
+          <input type="text" class="form-control" id="siwappurl" value="{{siwappurl}}" />
+        </div>
+        <div class="form-group">
+          <label for="siwapptoken">Siwapp API token</label>
+          <input type="text" class="form-control" id="siwapptoken" value="{{siwapptoken}}" />
         </div>
       </div>
     </div>

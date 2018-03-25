@@ -25,10 +25,14 @@ Template.projectchart.onCreated(function projectchartCreated() {
 })
 Template.projectchart.helpers({
   totalHours() {
+    let precision = 2
+    if (Meteor.user()) {
+      precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+    }
     return ProjectStats.findOne({ _id: Template.instance().data.projectId })
       ? Number(ProjectStats.findOne({
         _id: Template.instance().data.projectId,
-      }).totalHours).toFixed(2)
+      }).totalHours).toFixed(precision)
       : false
   },
   allTeamMembers() {

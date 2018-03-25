@@ -162,9 +162,13 @@ Template.dashboard.helpers({
   totalHours: () => {
     if (Dashboards.findOne()) {
       if (Dashboards.findOne().timeunit === 'd') {
+        let precision = 2
+        if (Meteor.user()) {
+          precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+        }
         return Dashboards.findOne().hoursToDays
-          ? Number(Template.instance().totalHours.get() / Dashboards.findOne().hoursToDays).toFixed(2)
-          : Number(Template.instance().totalHours.get() / 8).toFixed(2)
+          ? Number(Template.instance().totalHours.get() / Dashboards.findOne().hoursToDays).toFixed(precision)
+          : Number(Template.instance().totalHours.get() / 8).toFixed(precision)
       }
     }
     return Template.instance().totalHours.get()

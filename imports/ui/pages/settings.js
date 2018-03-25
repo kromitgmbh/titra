@@ -30,6 +30,14 @@ Template.settings.helpers({
     }
     return false
   },
+  precision() {
+    if (Meteor.user()) {
+      return Meteor.user().profile.precision ? Meteor.user().profile.precision : '2'
+    }
+    return false
+  },
+  siwappurl: () => (Meteor.user() ? Meteor.user().profile.siwappurl : false),
+  siwapptoken: () => (Meteor.user() ? Meteor.user().profile.siwapptoken : false),
 })
 
 Template.settings.events({
@@ -42,6 +50,9 @@ Template.settings.events({
       timetrackview: $('#timetrackview').val(),
       hoursToDays: Number($('#hoursToDays').val()),
       enableWekan: $('#enableWekan').is(':checked'),
+      precision: Number($('#precision').val()),
+      siwapptoken: $('#siwapptoken').val(),
+      siwappurl: $('#siwappurl').val(),
     }, (error) => {
       if (error) {
         $.notify({ message: error }, { type: 'danger' })

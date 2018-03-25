@@ -15,7 +15,11 @@ function pad(num, size) {
 Template.timetracker.events({
   'click .js-stop': (event, templateInstance) => {
     event.preventDefault()
-    $('#hours').val(moment.duration(moment().valueOf() - templateInstance.timer.get().valueOf()).asHours().toFixed(2))
+    let precision = 2
+    if (Meteor.user()) {
+      precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+    }
+    $('#hours').val(moment.duration(moment().valueOf() - templateInstance.timer.get().valueOf()).asHours().toFixed(precision))
     Meteor.clearTimeout(templateInstance.intervalHandle)
     Template.instance().timer.set(null)
   },
