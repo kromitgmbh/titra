@@ -64,6 +64,7 @@ const timecards = new Tabular.Table({
     targets: 5,
     orderable: false,
   }],
+  lengthMenu: [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, 'All']],
   order: [[1, 'desc']],
   responsive: true,
   autoWidth: false,
@@ -141,7 +142,7 @@ const timecards = new Tabular.Table({
       action: () => {
         if (Meteor.user().profile.siwappurl && Meteor.user().profile.siwapptoken) {
           Meteor.call('sendToSiwapp', {
-            projectId: $('#targetProject').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(),
+            projectId: $('#targetProject').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
           }, (error, result) => {
             if (error) {
               $.notify({ message: `Export failed (error: ${error}).` }, { type: 'danger' })

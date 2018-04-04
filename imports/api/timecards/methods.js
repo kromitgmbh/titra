@@ -136,10 +136,13 @@ Meteor.methods({
     Timecards.remove({ userId: this.userId, _id: timecardId })
     return true
   },
-  sendToSiwapp({ projectId, timePeriod, userId }) {
+  sendToSiwapp({
+    projectId, timePeriod, userId, customer,
+  }) {
     check(projectId, String)
     check(timePeriod, String)
     check(userId, String)
+    check(customer, String)
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -169,12 +172,23 @@ Meteor.methods({
     }
     const projectMap = new Map()
     if (projectId === 'all') {
-      Projects.find(
-        {
-          $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
-        },
-        { _id: 1, name: 1 },
-      ).forEach((project) => {
+      let projects
+      if (customer === 'all') {
+        projects = Projects.find(
+          {
+            customer, $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+          },
+          { _id: 1, name: 1 },
+        )
+      } else {
+        projects = Projects.find(
+          {
+            $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+          },
+          { _id: 1, name: 1 },
+        )
+      }
+      projects.forEach((project) => {
         const resourceMap = new Map()
         if (userId !== 'all') {
           Timecards.find({
