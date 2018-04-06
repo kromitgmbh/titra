@@ -12,7 +12,6 @@ Meteor.publish('dashboardById', function dashboardById(_id) {
     const projectList = Projects.find(
       {
         customer: dashboard.customer,
-        $or: [{ userId: this.userId }, { public: true }],
       },
       { $fields: { _id: 1 } },
     ).fetch().map(value => value._id)

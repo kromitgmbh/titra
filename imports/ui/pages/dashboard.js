@@ -26,8 +26,13 @@ Template.dashboard.onCreated(function dashboardCreated() {
       // this.subscribe('dashboardAggregation', { dashboardId: FlowRouter.getParam('_id') })
       handle = this.subscribe('dashboardById', FlowRouter.getParam('_id'))
       if (handle.ready()) {
-        this.subscribe('publicProjectName', Timecards.findOne().projectId)
-        this.subscribe('dashboardUser', { _id: Dashboards.findOne()._id })
+        if (Dashboards.findOne()) {
+          if (Dashboards.findOne().projectId !== 'all') {
+            this.subscribe('publicProjectName', Timecards.findOne().projectId)
+          } else {
+            this.subscribe('dashboardUser', { _id: Dashboards.findOne()._id })
+          }
+        }
       }
     }
   })
@@ -162,7 +167,8 @@ Template.dashboard.helpers({
   startDate: () => (Dashboards.findOne() ? moment(Dashboards.findOne().startDate).format('DD.MM.YYYY') : false),
   endDate: () => (Dashboards.findOne() ? moment(Dashboards.findOne().endDate).format('DD.MM.YYYY') : false),
   dashBoardResource: () => (Dashboards.findOne()
-    ? Meteor.users.findOne(Dashboards.findOne().resourceId).profile.name : false),
+    ? (Meteor.users.findOne(Dashboards.findOne().resourceId)
+      ? Meteor.users.findOne(Dashboards.findOne().resourceId).profile.name :false) : false),
   customer: () => (Dashboards.findOne() ? Dashboards.findOne().customer : false),
   isCustomerDashboard: () => (Dashboards.findOne() ? (Dashboards.findOne().customer && Dashboards.findOne().customer !== 'all') : false),
   timeInUnit: hours => timeInUnitHelper(hours),
