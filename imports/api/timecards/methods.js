@@ -5,6 +5,7 @@ import { HTTP } from 'meteor/http'
 import Timecards from './timecards.js'
 import Tasks from '../tasks/tasks.js'
 import Projects from '../projects/projects.js'
+import periodToDates from '../../utils/periodHelpers.js'
 
 const replacer = match => emoji.emojify(match)
 function timeInUserUnit(time, meteorUser) {
@@ -64,26 +65,7 @@ Meteor.methods({
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
-    let startDate
-    let endDate
-    switch (timePeriod) {
-      default:
-        startDate = moment().startOf('month').toDate()
-        endDate = moment().endOf('month').toDate()
-        break
-      case 'currentWeek':
-        startDate = moment().startOf('week').toDate()
-        endDate = moment().endOf('week').toDate()
-        break
-      case 'lastMonth':
-        startDate = moment().subtract(1, 'month').startOf('month').toDate()
-        endDate = moment().subtract(1, 'month').endOf('month').toDate()
-        break
-      case 'lastWeek':
-        startDate = moment().subtract(1, 'week').startOf('week').toDate()
-        endDate = moment().subtract(1, 'week').endOf('week').toDate()
-        break
-    }
+    const { startDate, endDate } = periodToDates(timePeriod)
     let timecardArray = []
     let projectList = []
     if (projectId === 'all') {
@@ -150,26 +132,7 @@ Meteor.methods({
     if (!meteorUser.profile.siwappurl || !meteorUser.profile.siwapptoken) {
       throw new Meteor.Error('You need to set the siwapp URL & token first.')
     }
-    let startDate
-    let endDate
-    switch (timePeriod) {
-      default:
-        startDate = moment().startOf('month').toDate()
-        endDate = moment().endOf('month').toDate()
-        break
-      case 'currentWeek':
-        startDate = moment().startOf('week').toDate()
-        endDate = moment().endOf('week').toDate()
-        break
-      case 'lastMonth':
-        startDate = moment().subtract(1, 'month').startOf('month').toDate()
-        endDate = moment().subtract(1, 'month').endOf('month').toDate()
-        break
-      case 'lastWeek':
-        startDate = moment().subtract(1, 'week').startOf('week').toDate()
-        endDate = moment().subtract(1, 'week').endOf('week').toDate()
-        break
-    }
+    const { startDate, endDate } = periodToDates(timePeriod)
     const projectMap = new Map()
     if (projectId === 'all') {
       let projects

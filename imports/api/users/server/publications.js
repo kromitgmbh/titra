@@ -1,5 +1,6 @@
 import Timecards from '../../timecards/timecards.js'
 import Projects from '../../projects/projects.js'
+import Dashboards from '../../dashboards/dashboards'
 
 Meteor.publish('projectUsers', function projectUsers({ projectId }) {
   check(projectId, String)
@@ -94,4 +95,10 @@ Meteor.publish('projectTeam', ({ userIds }) => {
   //       fields: { 'profile.name': 1 },
   //     },
   //   ) : false
+})
+
+Meteor.publish('dashboadUser', ({ _id }) => {
+  check(_id, String)
+  const dashboard = Dashboards.findOne({ _id })
+  return Meteor.users.find({ _id: dashboard.resourceId }, { fields: { 'profile.name': 1 } })
 })

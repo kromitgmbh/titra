@@ -1,6 +1,7 @@
 import moment from 'moment'
 import Timecards from '../timecards.js'
 import Projects from '../../projects/projects.js'
+import periodToDates from '../../../utils/periodHelpers.js'
 
 Meteor.publish('projectTimecards', function projectTimecards({ projectId, period, userId }) {
   check(projectId, String)
@@ -23,26 +24,7 @@ Meteor.publish('projectTimecards', function projectTimecards({ projectId, period
   //   return this.ready()
   // }
   if (period && period !== 'all') {
-    let startDate
-    let endDate
-    switch (period) {
-      default:
-        startDate = moment().startOf('month').toDate()
-        endDate = moment().endOf('month').toDate()
-        break
-      case 'currentWeek':
-        startDate = moment().startOf('week').toDate()
-        endDate = moment().endOf('week').toDate()
-        break
-      case 'lastMonth':
-        startDate = moment().subtract(1, 'month').startOf('month').toDate()
-        endDate = moment().subtract(1, 'month').endOf('month').toDate()
-        break
-      case 'lastWeek':
-        startDate = moment().subtract(1, 'week').startOf('week').toDate()
-        endDate = moment().subtract(1, 'week').endOf('week').toDate()
-        break
-    }
+    const { startDate, endDate } = periodToDates(period)
     if (userId === 'all') {
       return Timecards.find({
         projectId: { $in: projectList },

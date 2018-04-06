@@ -6,6 +6,7 @@ import dataTableButtons from 'datatables.net-buttons-bs4'
 import html5ExportButtons from 'datatables.net-buttons/js/buttons.html5.js'
 import dataTablesBootstrap from '../components/dataTables.bootstrap4.js'
 import Projects from '../../api/projects/projects.js'
+import periodToDates from '../../utils/periodHelpers.js'
 import '../components/dataTables.bootstrap4.scss'
 import './timecardlist.html'
 import '../components/periodpicker.js'
@@ -53,26 +54,7 @@ Template.timecardlist.helpers({
       returnSelector.projectId = { $in: projectList }
     }
     if (Template.instance().period.get() !== 'all') {
-      let startDate
-      let endDate
-      switch (Template.instance().period.get()) {
-        default:
-          startDate = moment().startOf('month').toDate()
-          endDate = moment().endOf('month').toDate()
-          break
-        case 'currentWeek':
-          startDate = moment().startOf('week').toDate()
-          endDate = moment().endOf('week').toDate()
-          break
-        case 'lastMonth':
-          startDate = moment().subtract(1, 'month').startOf('month').toDate()
-          endDate = moment().subtract(1, 'month').endOf('month').toDate()
-          break
-        case 'lastWeek':
-          startDate = moment().subtract(1, 'week').startOf('week').toDate()
-          endDate = moment().subtract(1, 'week').endOf('week').toDate()
-          break
-      }
+      const { startDate, endDate } = periodToDates(Template.instance().period.get())
       returnSelector.date = { $gte: startDate, $lte: endDate }
     }
     return returnSelector

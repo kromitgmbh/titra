@@ -98,32 +98,12 @@ const timecards = new Tabular.Table({
       text: '<i class="fa fa-link"></i> Share',
       className: 'btn-primary js-share',
       action: () => {
-        if ($('#period').val() === 'all' || $('#targetProject').val() === 'all') {
-          $.notify({ message: 'Sorry, but for your own sanity you can not share all projects/time. ' }, { type: 'danger' })
+        if ($('#period').val() === 'all' && $('#targetProject').val() === 'all' && $('#customerselect').val() === 'all') {
+          $.notify({ message: 'Sorry, but for your own sanity you can not share all time of all projects. ' }, { type: 'danger' })
           return
         }
-        let startDate
-        let endDate
-        switch ($('#period').val()) {
-          default:
-            startDate = moment().startOf('month').toDate()
-            endDate = moment().endOf('month').toDate()
-            break
-          case 'currentWeek':
-            startDate = moment().startOf('week').toDate()
-            endDate = moment().endOf('week').toDate()
-            break
-          case 'lastMonth':
-            startDate = moment().subtract(1, 'month').startOf('month').toDate()
-            endDate = moment().subtract(1, 'month').endOf('month').toDate()
-            break
-          case 'lastWeek':
-            startDate = moment().subtract(1, 'week').startOf('week').toDate()
-            endDate = moment().subtract(1, 'week').endOf('week').toDate()
-            break
-        }
         Meteor.call('addDashboard', {
-          projectId: $('#targetProject').val(), resourceId: $('#resourceselect').val(), startDate, endDate,
+          projectId: $('#targetProject').val(), resourceId: $('#resourceselect').val(), customer: $('#customerselect').val(), timePeriod: $('#period').val(),
         }, (error, _id) => {
           if (error) {
             $.notify({ message: `Dashboard creation failed (error: ${error}).` }, { type: 'danger' })

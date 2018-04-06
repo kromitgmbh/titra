@@ -27,6 +27,7 @@ Template.dashboard.onCreated(function dashboardCreated() {
       handle = this.subscribe('dashboardById', FlowRouter.getParam('_id'))
       if (handle.ready()) {
         this.subscribe('publicProjectName', Timecards.findOne().projectId)
+        this.subscribe('dashboardUser', { _id: Dashboards.findOne()._id })
       }
     }
   })
@@ -56,6 +57,7 @@ Template.dashboard.onRendered(function dashboardRendered() {
           )
           temphours += timecard.hours
         }
+        this.totalHours.set(temphours)
         if (this.linechart) {
           this.linechart.clear()
           this.linechart.destroy()
@@ -143,7 +145,6 @@ Template.dashboard.onRendered(function dashboardRendered() {
             },
           },
         })
-        this.totalHours.set(temphours)
       }
     })
   })
@@ -158,6 +159,12 @@ Template.dashboard.helpers({
     }
     return false
   },
+  startDate: () => (Dashboards.findOne() ? moment(Dashboards.findOne().startDate).format('DD.MM.YYYY') : false),
+  endDate: () => (Dashboards.findOne() ? moment(Dashboards.findOne().endDate).format('DD.MM.YYYY') : false),
+  dashBoardResource: () => (Dashboards.findOne()
+    ? Meteor.users.findOne(Dashboards.findOne().resourceId).profile.name : false),
+  customer: () => (Dashboards.findOne() ? Dashboards.findOne().customer : false),
+  isCustomerDashboard: () => (Dashboards.findOne() ? (Dashboards.findOne().customer && Dashboards.findOne().customer !== 'all') : false),
   timeInUnit: hours => timeInUnitHelper(hours),
   totalHours: () => {
     if (Dashboards.findOne()) {
@@ -167,7 +174,8 @@ Template.dashboard.helpers({
           precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
         }
         return Dashboards.findOne().hoursToDays
-          ? Number(Template.instance().totalHours.get() / Dashboards.findOne().hoursToDays).toFixed(precision)
+          ? Number(Template.instance().totalHours.get() / Dashboards.findOne().hoursToDays)
+            .toFixed(precision)
           : Number(Template.instance().totalHours.get() / 8).toFixed(precision)
       }
     }

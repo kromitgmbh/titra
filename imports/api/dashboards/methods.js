@@ -1,16 +1,18 @@
 import { Dashboards } from './dashboards'
+import periodToDates from '../../utils/periodHelpers.js'
 
 Meteor.methods({
   addDashboard({
-    projectId, startDate, endDate, resourceId,
+    projectId, resourceId, customer, timePeriod,
   }) {
     if (!this.userId) {
       throw new Meteor.Error('sorry, you have to be logged in to use this method')
     }
     check(projectId, String)
-    check(startDate, Date)
-    check(endDate, Date)
+    check(timePeriod, String)
     check(resourceId, String)
+    check(customer, String)
+    const { startDate, endDate } = periodToDates(timePeriod)
     const meteorUser = Meteor.users.findOne({ _id: this.userId })
     let timeunit = 'h'
     let hoursToDays = 8
@@ -22,7 +24,7 @@ Meteor.methods({
     }
     const _id = Random.id()
     Dashboards.insert({
-      _id, projectId, startDate, endDate, resourceId, timeunit, hoursToDays,
+      _id, projectId, customer, startDate, endDate, resourceId, timeunit, hoursToDays,
     })
     return _id
   },
