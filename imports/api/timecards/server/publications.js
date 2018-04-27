@@ -1,4 +1,3 @@
-import moment from 'moment'
 import Timecards from '../timecards.js'
 import Projects from '../../projects/projects.js'
 import periodToDates from '../../../utils/periodHelpers.js'

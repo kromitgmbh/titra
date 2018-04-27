@@ -5,10 +5,10 @@
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.42",
+    "@babel/runtime": "^7.0.0-beta.46",
     "babel-runtime": "^6.23.0",
     "bcrypt": "^1.0.3",
-    "bootstrap": "^4.0.0",
+    "bootstrap": "^4.1.0",
     "bootstrap-colorpicker": "^2.5.1",
     "chart.js": "^2.7.2",
     "datatables.net": "^1.10.15",
@@ -21,22 +21,22 @@
     "jquery-serializejson": "^2.8.1",
     "jquery-ui": "^1.12.1",
     "jszip": "^3.1.5",
-    "mathjs": "^4.0.1",
+    "mathjs": "^4.1.2",
     "meteor-node-stubs": "~0.3.2",
-    "moment": "^2.21.0",
+    "moment": "^2.22.1",
     "node-emoji": "^1.8.1",
     "npm": "^5.8.0",
-    "npm-check-updates": "^2.14.1",
-    "popper.js": "^1.14.1",
+    "npm-check-updates": "^2.14.2",
+    "popper.js": "^1.14.3",
     "randomcolor": "^0.5.3",
-    "tether": "^1.4.3"
+    "tether": "^1.4.4"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.2",
+    "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
-    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-meteor": "^4.2.1"
   }
 }

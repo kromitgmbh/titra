@@ -168,7 +168,7 @@ Template.dashboard.helpers({
   endDate: () => (Dashboards.findOne() ? moment(Dashboards.findOne().endDate).format('DD.MM.YYYY') : false),
   dashBoardResource: () => (Dashboards.findOne()
     ? (Meteor.users.findOne(Dashboards.findOne().resourceId)
-      ? Meteor.users.findOne(Dashboards.findOne().resourceId).profile.name :false) : false),
+      ? Meteor.users.findOne(Dashboards.findOne().resourceId).profile.name : false) : false),
   customer: () => (Dashboards.findOne() ? Dashboards.findOne().customer : false),
   isCustomerDashboard: () => (Dashboards.findOne() ? (Dashboards.findOne().customer && Dashboards.findOne().customer !== 'all') : false),
   timeInUnit: hours => timeInUnitHelper(hours),
