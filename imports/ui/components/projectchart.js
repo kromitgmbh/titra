@@ -117,7 +117,7 @@ Template.projectchart.onRendered(function projectchartRendered() {
     })
   })
 })
-Template.onDestroyed(() => {
+Template.projectchart.onDestroyed(() => {
   if (this.chart) {
     this.chart.destroy()
   }
