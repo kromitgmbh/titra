@@ -13,23 +13,8 @@ import '../components/calendar.js'
 import '../components/backbutton.js'
 
 Template.tracktime.onCreated(function tracktimeCreated() {
-  import('mathjs/core').then((core) => {
-    this.math = core.default.create()
-    import('mathjs/lib/expression/function').then((module) => {
-      this.math.import(module.default)
-    })
-    import('mathjs/lib/function/arithmetic/add').then((module) => {
-      this.math.import(module.default)
-    })
-    import('mathjs/lib/function/arithmetic/subtract').then((module) => {
-      this.math.import(module.default)
-    })
-    import('mathjs/lib/function/arithmetic/multiply').then((module) => {
-      this.math.import(module.default)
-    })
-    import('mathjs/lib/function/arithmetic/divide').then((module) => {
-      this.math.import(module.default)
-    })
+  import('mathjs').then((mathjs) => {
+    this.math = mathjs
   })
   this.date = new ReactiveVar(new Date())
   this.projectId = new ReactiveVar(FlowRouter.getParam('projectId'))
@@ -63,8 +48,6 @@ Template.tracktime.onCreated(function tracktimeCreated() {
 Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
-    // console.log(Template.instance().data.picker.component.item.select.obj)
-    // console.log(Template.instance().data.picker)
     if (!$('#hours').val()) {
       $.notify({ message: 'Please enter your time' }, { type: 'danger' })
       return
@@ -83,8 +66,9 @@ Template.tracktime.events({
     const task = templateInstance.$('.js-tasksearch-input').val()
     const date = new Date(Date.parse($('#date').val()))
     let hours = templateInstance.math.eval($('#hours').val())
+
     if (Meteor.user().profile.timeunit === 'd') {
-      hours = templateInstance.math.eval($('#hours').val() * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8))
+      hours = templateInstance.math.eval($('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
     }
     if (FlowRouter.getParam('tcid')) {
       Meteor.call('updateTimeCard', {
