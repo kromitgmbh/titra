@@ -1,14 +1,23 @@
 <template name="tasksearch">
   <input type="text" class="js-tasksearch-input form-control" placeholder="Enter or search for task ..."/>
   {{#if tasks}}
-    <div class="list-group js-tasksearch-results">
+    <div class="list-group js-tasksearch-results d-none">
       {{#unless Template.subscriptionsReady}}
         <div class="list-group-item">
           Searching for tasks ...
         </div>
       {{/unless}}
       {{#each tasks}}
-        <a href="#" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result">{{#if wekan}}<img src="/img/wekan.png"/>{{/if}} &nbsp;<span class="js-tasksearch-task-name">{{emojify (name)}}</span></a>
+        <a href="#" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result">
+          {{#if wekan}}<img src="/img/wekan.png"/>{{/if}}
+          &nbsp;<span class="js-tasksearch-task-name">
+            {{#if filter}}
+              {{emojify (name)}}
+            {{else}}
+              {{emojify (task)}}
+            {{/if}}
+          </span>
+        </a>
       {{/each}}
     </div>
   {{/if}}

@@ -123,11 +123,11 @@ Meteor.methods({
       { _id: 1 },
     ).fetch().map(value => value._id)
     const rawCollection = Timecards.rawCollection()
-    const aggregate = Meteor.wrapAsync(rawCollection.aggregate, rawCollection)
+    // const aggregate = Meteor.wrapAsync(rawCollection.aggregate, rawCollection)
     if (projectId === 'all') {
-      return aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: '$task', count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 3 }])
+      return rawCollection.aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: '$task', count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()
     }
-    return aggregate([{ $match: { projectId } }, { $group: { _id: '$task', count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 3 }])
+    return rawCollection.aggregate([{ $match: { projectId } }, { $group: { _id: '$task', count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()
   },
   addTeamMember({ projectId, eMail }) {
     check(projectId, String)

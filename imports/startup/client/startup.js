@@ -18,8 +18,11 @@ Template.registerHelper('unit', () => {
   return false
 })
 Template.registerHelper('emojify', (text) => {
-  const replacer = match => emoji.emojify(match)
-  return text.replace(/(:.*:)/g, replacer)
+  if (text) {
+    const replacer = match => emoji.emojify(match)
+    return text.replace(/(:.*:)/g, replacer)
+  }
+  return false
 })
 Template.registerHelper('timeunit', () => {
   if (Meteor.user()) {

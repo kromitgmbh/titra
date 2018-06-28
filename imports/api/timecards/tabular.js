@@ -144,10 +144,15 @@ const timecards = new Tabular.Table({
       }
       return typeof i === 'number' ? i : 0
     }
-    const pageTotal = api
+    let pageTotal = api
       .column(4, { page: 'current' })
       .data()
       .reduce((a, b) => intVal(a) + intVal(b), 0)
+    const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+    if (Meteor.user().profile.timeunit === 'd') {
+      pageTotal = Number(pageTotal / (Meteor.user().profile.hoursToDays
+        ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
+    }
     $('tfoot').html(`<tr><th></th><th></th><th></th><th style='text-align:right'>Sum:</th><th>${pageTotal}</th><th></th></tr>`)
   },
 })

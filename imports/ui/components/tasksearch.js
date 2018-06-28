@@ -10,11 +10,22 @@ Template.tasksearch.events({
   'click .js-tasksearch-result': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-tasksearch-input').val($(event.currentTarget).children('.js-tasksearch-task-name').text())
-    templateInstance.$('.js-tasksearch-results').hide()
+    templateInstance.$('.js-tasksearch-results').addClass('d-none')
+  },
+  'focus .js-tasksearch-input': (event, templateInstance) => {
+    // if (!templateInstance.filter.get()) {
+    templateInstance.$('.js-tasksearch-results').removeClass('d-none')
+    // }
+  },
+  'blur .js-tasksearch-input': (event, templateInstance) => {
+    // if (!templateInstance.filter.get()) {
+    templateInstance.$('.js-tasksearch-results').addClass('d-none')
+    // }
   },
   'keyup .js-tasksearch-input': (event, templateInstance) => {
     templateInstance.filter.set($(event.currentTarget).val())
-    templateInstance.$('.js-tasksearch-results').show()
+    templateInstance.$('.js-tasksearch-results').removeClass('d-none')
+    // templateInstance.$('.js-tasksearch-results').show()
   },
 })
 
@@ -44,6 +55,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             ddpcon.subscribe('board', project.wekanurl.match(/boards\/(.*)\//)[1])
           }
         }
+        this.subscribe('lastTimecards', { projectId: FlowRouter.getParam('projectId'), limit: 3 })
       }
     }
     this.subscribe('mytasks', this.filter.get() ? this.filter.get() : '')
@@ -53,7 +65,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
 Template.tasksearch.helpers({
   tasks: () => {
     if (!Template.instance().filter.get()) {
-      return false
+      return Timecards.find({ projectId: FlowRouter.getParam('projectId') }, { sort: { date: -1 }, limit: 3 })
     }
     if (Template.instance().wekanTasks) {
       const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' }, archived: false }, { limit: 5 })
@@ -64,4 +76,5 @@ Template.tasksearch.helpers({
     const result = Tasks.find({ name: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' } }, { limit: 5 })
     return result.count() > 0 ? result : false
   },
+  filter: () => Template.instance().filter.get(),
 })
