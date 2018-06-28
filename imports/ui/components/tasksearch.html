@@ -10,13 +10,7 @@
       {{#each tasks}}
         <a href="#" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result">
           {{#if wekan}}<img src="/img/wekan.png"/>{{/if}}
-          &nbsp;<span class="js-tasksearch-task-name">
-            {{#if filter}}
-              {{emojify (name)}}
-            {{else}}
-              {{emojify (task)}}
-            {{/if}}
-          </span>
+          &nbsp;<span class="js-tasksearch-task-name">{{emojify (name)}}</span>
         </a>
       {{/each}}
     </div>

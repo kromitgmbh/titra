@@ -7,7 +7,7 @@ import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
 
 Template.tasksearch.events({
-  'click .js-tasksearch-result': (event, templateInstance) => {
+  'mousedown .js-tasksearch-result': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-tasksearch-input').val($(event.currentTarget).children('.js-tasksearch-task-name').text())
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
@@ -19,6 +19,7 @@ Template.tasksearch.events({
   },
   'blur .js-tasksearch-input': (event, templateInstance) => {
     // if (!templateInstance.filter.get()) {
+    // event.stopPropagation()
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
     // }
   },
@@ -65,7 +66,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
 Template.tasksearch.helpers({
   tasks: () => {
     if (!Template.instance().filter.get()) {
-      return Timecards.find({ projectId: FlowRouter.getParam('projectId') }, { sort: { date: -1 }, limit: 3 })
+      return [...new Set(Timecards.find({ projectId: FlowRouter.getParam('projectId') }, { sort: { date: -1 }, limit: 3 }).fetch())].map(elem => ({ name: elem.task }))
     }
     if (Template.instance().wekanTasks) {
       const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' }, archived: false }, { limit: 5 })
