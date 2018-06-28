@@ -13,9 +13,7 @@ Template.tasksearch.events({
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
   'focus .js-tasksearch-input': (event, templateInstance) => {
-    // if (!templateInstance.filter.get()) {
     templateInstance.$('.js-tasksearch-results').removeClass('d-none')
-    // }
   },
   'blur .js-tasksearch-input': (event, templateInstance) => {
     // if (!templateInstance.filter.get()) {
@@ -32,6 +30,7 @@ Template.tasksearch.events({
 
 Template.tasksearch.onCreated(function tasksearchcreated() {
   this.filter = new ReactiveVar()
+  this.lastTimecards = new ReactiveVar()
   this.autorun(() => {
     if (FlowRouter.getParam('tcid')) {
       const handle = this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
@@ -56,17 +55,15 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             ddpcon.subscribe('board', project.wekanurl.match(/boards\/(.*)\//)[1])
           }
         }
-        this.subscribe('lastTimecards', { projectId: FlowRouter.getParam('projectId'), limit: 3 })
       }
     }
     this.subscribe('mytasks', this.filter.get() ? this.filter.get() : '')
   })
 })
-
 Template.tasksearch.helpers({
   tasks: () => {
     if (!Template.instance().filter.get()) {
-      return [...new Set(Timecards.find({ projectId: FlowRouter.getParam('projectId') }, { sort: { date: -1 }, limit: 3 }).fetch())].map(elem => ({ name: elem.task }))
+      return Template.instance().lastTimecards.get()
     }
     if (Template.instance().wekanTasks) {
       const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' }, archived: false }, { limit: 5 })

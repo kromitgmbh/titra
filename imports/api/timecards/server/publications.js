@@ -81,9 +81,3 @@ Meteor.publish('singleTimecard', function singleTimecard(_id) {
   }
   return Timecards.find({ _id })
 })
-
-Meteor.publish('lastTimecards', function lastTimecards({ projectId, limit }) {
-  check(projectId, String)
-  check(limit, Number)
-  return Timecards.find({ userId: this.userId, projectId }, { sort: { date: -1 }, limit })
-})
