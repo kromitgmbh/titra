@@ -77,7 +77,7 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
         } else {
-          $('.js-tasksearch-results').hide()
+          $('.js-tasksearch-results').addClass('d-none')
           $.notify('Time entry updated successfully')
           // window.history.back()
         }
@@ -90,8 +90,9 @@ Template.tracktime.events({
           console.error(error)
         } else {
           $('.js-tasksearch-input').val('')
+          $('.js-tasksearch-input').keyup()
           $('#hours').val('')
-          $('.js-tasksearch-results').hide()
+          $('.js-tasksearch-results').addClass('d-none')
           $.notify('Time entry saved successfully')
         }
       })
@@ -103,14 +104,14 @@ Template.tracktime.events({
     // templateInstance.date.set(new Date(moment(templateInstance.date.get())
     // .subtract(1, 'days').utc()))
     $('#hours').val('')
-    $('.js-tasksearch-results').hide()
+    $('.js-tasksearch-results').addClass('d-none')
   },
   'click .js-next': (event, templateInstance) => {
     event.preventDefault()
     FlowRouter.setQueryParams({ date: moment(templateInstance.date.get()).add(1, 'days').format('YYYY-MM-DD') })
     // templateInstance.date.set(new Date(moment(templateInstance.date.get()).add(1, 'days').utc()))
     $('#hours').val('')
-    $('.js-tasksearch-results').hide()
+    $('.js-tasksearch-results').addClass('d-none')
   },
   'change #targetProject': (event, templateInstance) => {
     templateInstance.projectId.set($(event.currentTarget).val())
@@ -129,6 +130,27 @@ Template.tracktime.events({
   'click .js-toggle-timecards': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-show-timecards').toggleClass('d-none')
+  },
+  'click .js-time-row': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.$(event.currentTarget).popover({
+      trigger: 'manual',
+      html: true,
+      content: templateInstance.$(event.currentTarget).children('.js-popover-content').html(),
+    })
+    templateInstance.$(event.currentTarget).popover('toggle')
+    $('.js-delete-time-entry').click((deleteEvent) => {
+      Meteor.call('deleteTimeCard', { timecardId: deleteEvent.currentTarget.dataset.timecardId }, (error, result) => {
+        if (!error) {
+          $.notify('Time entry deleted')
+        } else {
+          console.error(error)
+        }
+      })
+    })
+  },
+  'blur .js-time-row': (event, templateInstance) => {
+    templateInstance.$(event.currentTarget).popover('hide')
   },
 })
 Template.tracktime.helpers({

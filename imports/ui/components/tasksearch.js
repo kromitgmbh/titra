@@ -30,7 +30,7 @@ Template.tasksearch.events({
 
 Template.tasksearch.onCreated(function tasksearchcreated() {
   this.filter = new ReactiveVar()
-  this.lastTimecards = new ReactiveVar()
+  // this.lastTimecards = new ReactiveVar()
   this.autorun(() => {
     if (FlowRouter.getParam('tcid')) {
       const handle = this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
@@ -62,17 +62,17 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
 })
 Template.tasksearch.helpers({
   tasks: () => {
-    if (!Template.instance().filter.get()) {
-      return Template.instance().lastTimecards.get()
+    if (!Template.instance().filter.get() || Template.instance().filter.get() === '') {
+      return Tasks.find({}, { sort: { lastUsed: -1 }, limit: 3 })
+      // return Template.instance().lastTimecards.get()
     }
     if (Template.instance().wekanTasks) {
-      const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' }, archived: false }, { limit: 5 })
+      const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: 5 })
       if (wekanResult.count() > 0) {
         return wekanResult.map(elem => ({ name: elem.title, wekan: true }))
       }
     }
-    const result = Tasks.find({ name: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' } }, { limit: 5 })
+    const result = Tasks.find({ name: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' } }, { sort: { lastUsed: -1 }, limit: 5 })
     return result.count() > 0 ? result : false
   },
-  filter: () => Template.instance().filter.get(),
 })

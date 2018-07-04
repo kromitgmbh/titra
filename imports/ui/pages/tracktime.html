@@ -29,20 +29,32 @@
           {{/if}}
         </div>
         {{#if totalTime}}
-          <div class="card-block d-none js-show-timecards">
-            <div class="row">
-              <div class="col-4 col-md-4"><strong>Project</strong></div>
-              <div class="col-5 col-md-6"><strong>Task</strong></div>
-              <div class="col-3 col-md-2"><strong>Time</strong></div>
-            </div>
-              {{#each timecard in timecards}}
+        <ul class="list-group list-group-flush d-none js-show-timecards">
+            <li class="list-group-item">
               <div class="row">
-                <div class="col-4 col-md-4">{{projectName(timecard.projectId)}}</div>
-                <div class="col-5 col-md-6">{{timecard.task}}</div>
-                <div class="col-3 col-md-2">{{timeInUserUnit(timecard.hours)}}</div>
+                <div class="col-4 col-md-4"><strong>Project</strong></div>
+                <div class="col-5 col-md-6"><strong>Task</strong></div>
+                <div class="col-3 col-md-2"><strong>Time</strong></div>
               </div>
+            </li>
+              {{#each timecard in timecards}}
+              <a href="#" class="list-group-item list-group-item-action js-time-row" data-toggle="popover" data-placement="bottom" data-title="Actions">
+              <div class="d-none js-popover-content">
+                <a class="btn btn-secondary" href="/edit/timecard/{{timecard._id}}">
+                  <i class="fa fa-edit"></i>&nbsp;<span class="d-none d-md-inline-block">edit</span>
+                </a>&nbsp;
+                <button class="btn btn-secondary js-delete-time-entry" data-timecard-id="{{timecard._id}}">
+                  <i class="fa fa-trash"></i>&nbsp;<span class="d-none d-md-inline-block">delete</span>
+                </button>
+              </div>
+                <div class="row">
+                  <div class="col-4 col-md-4">{{projectName(timecard.projectId)}}</div>
+                  <div class="col-5 col-md-6">{{timecard.task}}</div>
+                  <div class="col-3 col-md-2">{{timeInUserUnit(timecard.hours)}}</div>
+                </div>
+              </a>
               {{/each}}
-          </div>
+          </ul>
         {{/if}}
       </div>
     {{/unless}}

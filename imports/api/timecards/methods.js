@@ -29,7 +29,9 @@ Meteor.methods({
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
     if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })) {
-      Tasks.insert({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })
+      Tasks.insert({ userId: this.userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, replacer) })
+    } else {
+      Tasks.update({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) }, { $set: { lastUsed: new Date() } })
     }
     Timecards.insert({
       userId: this.userId,
