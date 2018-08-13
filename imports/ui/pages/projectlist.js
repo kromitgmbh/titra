@@ -19,7 +19,9 @@ Template.projectlist.onRendered(() => {
     }, 5000)
   }
   if ($().tooltip) {
-    $('[data-toggle="tooltip"]').tooltip()
+    Meteor.setTimeout(() => {
+      $('[data-toggle="tooltip"]').tooltip()
+    }, 1000)
   }
   import('jquery-ui').then(() => {
     import('jquery-ui/ui/version.js').then(() => {

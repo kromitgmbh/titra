@@ -1,19 +1,4 @@
 <template name="projectlist">
-  <div class="row form-group">
-    <div class="col-4">
-      {{#if hasArchivedProjects}}
-      <div class="form-check">
-          <input id="showArchived" type="checkbox" class="form-check-input"/>
-          <label class="form-check-label"> <span class="d-none d-sm-inline">Show archived </span><i class="fa fa-archive d-inline d-sm-none"></i></label>
-      </div>
-      {{/if}}
-    </div>
-    <div class="col-8 text-right">
-      <!-- <input id="showArchived" type="checkbox"/>
-      <label for="showArchived">Show archived</label> -->
-      <span class="badge badge-secondary" data-toggle="tooltip" data-placement="right" title="Number of projects" id="projectCount">{{projectCount}}</span>
-    </div>
-  </div>
   {{#if moreThanOneProject}}
     <div class="card mb-3" style="background: rgba(0,112,101,0.05)">
       <div class="card-body">
@@ -101,8 +86,21 @@
       {{/each}}
     </div>
     <div class="row">
-      <div class="col-4 col-offset-8">
+      <div class="col-4">
         <a href="/create/project" class="btn btn-primary" id="next">New project</a>
+      </div>
+      <div class="col-6">
+        {{#if hasArchivedProjects}}
+        <div class="form-check pull-right">
+            <input id="showArchived" type="checkbox" class="form-check-input"/>
+            <label class="form-check-label"> <span class="d-none d-sm-inline">Show archived </span><i class="fa fa-archive d-inline d-sm-none"></i></label>
+        </div>
+        {{/if}}
+      </div>
+      <div class="col-2 text-right">
+        <!-- <input id="showArchived" type="checkbox"/>
+        <label for="showArchived">Show archived</label> -->
+        <span class="badge badge-secondary" data-toggle="tooltip" data-placement="right" title="Number of projects" id="projectCount">{{projectCount}}</span>
       </div>
     </div>
     <!-- </ul> -->

@@ -13,17 +13,18 @@ const timecards = new Tabular.Table({
   name: 'Timecards',
   collection: Timecards,
   columns: [
-    { data: 'projectId', title: 'Project', render: _id => Projects.findOne({ _id }).name },
-    { data: 'date', title: 'Date', render: val => moment(val).format('ddd DD.MM.YYYY') },
-    { data: 'task', title: 'Task', render: val => val.replace(/(:.*:)/g, replacer) },
+    { data: 'projectId', title: 'Project', render: _id => `<span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:100px" title="${Projects.findOne({ _id }).name}">${Projects.findOne({ _id }).name}</span>` },
+    { data: 'date', title: 'Date', render: val => `<span data-toggle="tooltip" data-placement="top" title="${moment(val).format('ddd DD.MM.YYYY')}">${moment(val).format('DD.MM.YYYY')}</span>` },
+    { data: 'task', title: 'Task', render: val => `<span class="d-inline-block text-truncate" style="max-width:350px;" data-toggle="tooltip" data-placement="top" title="${val.replace(/(:.*:)/g, replacer)}">${val.replace(/(:.*:)/g, replacer)}</span>` },
     {
       data: 'userId',
       title: 'Resource',
       render: (_id, type, doc) => {
         Meteor.subscribe('projectUsers', { projectId: doc.projectId })
-        return projectUsers.findOne({ _id: doc.projectId })
+        const resName = projectUsers.findOne({ _id: doc.projectId })
           ? projectUsers.findOne({ _id: doc.projectId })
             .users.find(elem => elem._id === _id).profile.name : false
+        return `<span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:100px" title="${resName}">${resName}</span>`
       },
     },
     {
@@ -47,7 +48,7 @@ const timecards = new Tabular.Table({
       },
     },
     {
-      title: 'Edit / delete',
+      title: 'Modify',
       data: 'this',
       tmpl: Meteor.isClient && Template.tablecell,
       className: 'text-right',
@@ -148,10 +149,12 @@ const timecards = new Tabular.Table({
       .column(4, { page: 'current' })
       .data()
       .reduce((a, b) => intVal(a) + intVal(b), 0)
-    const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-    if (Meteor.user().profile.timeunit === 'd') {
-      pageTotal = Number(pageTotal / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
+    if (Meteor.user()) {
+      const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+      if (Meteor.user().profile.timeunit === 'd') {
+        pageTotal = Number(pageTotal / (Meteor.user().profile.hoursToDays
+          ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
+      }
     }
     $('tfoot').html(`<tr><th></th><th></th><th></th><th style='text-align:right'>Sum:</th><th>${pageTotal}</th><th></th></tr>`)
   },

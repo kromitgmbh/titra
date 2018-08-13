@@ -1,4 +1,3 @@
-import moment from 'moment'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { $ } from 'meteor/jquery'
 import JSZip from 'jszip'
@@ -28,6 +27,9 @@ Template.timecardlist.onCreated(function createTimeCardList() {
   dataTablesBootstrap(window, $)
   dataTableButtons(window, $)
   html5ExportButtons(window, $)
+  Meteor.setTimeout(() => {
+    $('[data-toggle="tooltip"]').tooltip()
+  }, 1000)
 })
 
 // at least free up the window assignment when this template instance is removed from DOM

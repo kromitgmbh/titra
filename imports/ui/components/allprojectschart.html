@@ -9,7 +9,7 @@
       Top tasks:
       <ol>
         {{#each topTasks}}
-          <li>{{_id}}</li>
+          <li><span class="d-inline-block text-truncate" style="max-width:100%;" data-toggle="tooltip" data-placement="top" title="{{_id}}">{{_id}}</span></li>
         {{/each}}
       </ol>
       {{/if}}

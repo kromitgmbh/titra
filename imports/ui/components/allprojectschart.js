@@ -48,15 +48,15 @@ Template.allprojectschart.onRendered(function allprojectschartRendered() {
           this.$('.js-chart-container').html('<canvas class="js-hour-chart" style="width:320px;height:100px;"></canvas>')
           const stats = templateInstance.projectStats.get()
           if (Meteor.user().profile.timeunit === 'd') {
-            stats.beforePreviousMonthHours /=
-            Number(Meteor.user().profile.hoursToDays
-              ? Meteor.user().profile.hoursToDays : 8).toFixed(precision)
-            stats.previousMonthHours /=
-            Number(Meteor.user().profile.hoursToDays
-              ? Meteor.user().profile.hoursToDays : 8).toFixed(precision)
-            stats.currentMonthHours /=
-            Number(Meteor.user().profile.hoursToDays
-              ? Meteor.user().profile.hoursToDays : 8).toFixed(precision)
+            Number(stats.beforePreviousMonthHours /=
+              Meteor.user().profile.hoursToDays
+                ? Meteor.user().profile.hoursToDays : 8).toFixed(precision)
+            Number(stats.previousMonthHours /=
+              Meteor.user().profile.hoursToDays
+                ? Meteor.user().profile.hoursToDays : 8).toFixed(precision)
+            Number(stats.currentMonthHours /=
+              Meteor.user().profile.hoursToDays
+                ? Meteor.user().profile.hoursToDays : 8).toFixed(precision)
           }
           const ctx = this.$('.js-hour-chart')[0].getContext('2d')
           const chart = new Chart(ctx, {
