@@ -48,56 +48,65 @@ Template.allprojectschart.onRendered(function allprojectschartRendered() {
           this.$('.js-chart-container').html('<canvas class="js-hour-chart" style="width:320px;height:100px;"></canvas>')
           const stats = templateInstance.projectStats.get()
           if (Meteor.user().profile.timeunit === 'd') {
-            Number(stats.beforePreviousMonthHours /=
-              Meteor.user().profile.hoursToDays
+            Number(stats.beforePreviousMonthHours
+              /= Meteor.user().profile.hoursToDays
                 ? Meteor.user().profile.hoursToDays : 8).toFixed(precision)
-            Number(stats.previousMonthHours /=
-              Meteor.user().profile.hoursToDays
+            Number(stats.previousMonthHours
+              /= Meteor.user().profile.hoursToDays
                 ? Meteor.user().profile.hoursToDays : 8).toFixed(precision)
-            Number(stats.currentMonthHours /=
-              Meteor.user().profile.hoursToDays
+            Number(stats.currentMonthHours
+              /= Meteor.user().profile.hoursToDays
                 ? Meteor.user().profile.hoursToDays : 8).toFixed(precision)
           }
-          const ctx = this.$('.js-hour-chart')[0].getContext('2d')
-          const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels:
-              [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
-              datasets: [{
-                fill: true,
-                lineTension: 0.1,
-                backgroundColor: hex2rgba('#009688', 40), // 'rgba(75,192,192,0.4)',
-                borderColor: hex2rgba('#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: hex2rgba('#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                pointBackgroundColor: '#fff',
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: hex2rgba('#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                pointHoverBorderColor: 'rgba(220,220,220,1)',
-                pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
-                spanGaps: false,
-                data:
-                [stats.beforePreviousMonthHours, stats.previousMonthHours, stats.currentMonthHours],
-              }],
-            },
-            options: {
-              legend: {
-                display: false,
+          if (this.$('.js-hour-chart')[0]) {
+            const ctx = this.$('.js-hour-chart')[0].getContext('2d')
+            templateInstance.chart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels:
+                [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
+                datasets: [{
+                  fill: true,
+                  lineTension: 0.1,
+                  backgroundColor: hex2rgba('#009688', 40), // 'rgba(75,192,192,0.4)',
+                  borderColor: hex2rgba('#009688', 80), // 'rgba(0, 150, 136, 0.8)',
+                  borderCapStyle: 'butt',
+                  borderDash: [],
+                  borderDashOffset: 0.0,
+                  borderJoinStyle: 'miter',
+                  pointBorderColor: hex2rgba('#009688', 80), // 'rgba(0, 150, 136, 0.8)',
+                  pointBackgroundColor: '#fff',
+                  pointBorderWidth: 1,
+                  pointHoverRadius: 5,
+                  pointHoverBackgroundColor: hex2rgba('#009688', 80), // 'rgba(0, 150, 136, 0.8)',
+                  pointHoverBorderColor: 'rgba(220,220,220,1)',
+                  pointHoverBorderWidth: 2,
+                  pointRadius: 1,
+                  pointHitRadius: 10,
+                  spanGaps: false,
+                  data:
+                  [stats.beforePreviousMonthHours,
+                    stats.previousMonthHours,
+                    stats.currentMonthHours],
+                }],
               },
-              scales: {
-                yAxes: [{ display: false }],
+              options: {
+                legend: {
+                  display: false,
+                },
+                scales: {
+                  yAxes: [{ display: false }],
+                },
               },
-            },
-          })
+            })
+          }
         }
       }
     })
   })
+})
+Template.allprojectschart.onDestroyed(() => {
+  if (Template.instance().chart) {
+    Template.instance().chart.destroy()
+  }
 })

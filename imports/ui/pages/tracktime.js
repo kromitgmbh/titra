@@ -40,11 +40,12 @@ Template.tracktime.onCreated(function tracktimeCreated() {
         })
       }
     }
-    this.totalTime.set(Timecards.find()
-      .fetch().reduce((a, b) => (a === 0 ? b.hours : a + b.hours), 0))
+    if (this.subscriptionsReady()) {
+      this.totalTime.set(Timecards.find()
+        .fetch().reduce((a, b) => (a === 0 ? b.hours : a + b.hours), 0))
+    }
   })
 })
-
 Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
@@ -130,6 +131,7 @@ Template.tracktime.events({
   'click .js-toggle-timecards': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-show-timecards').toggleClass('d-none')
+    templateInstance.$('[data-toggle="tooltip"]').tooltip()
   },
   'click .js-time-row': (event, templateInstance) => {
     event.preventDefault()

@@ -78,54 +78,55 @@ Template.projectchart.onRendered(function projectchartRendered() {
               /= (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8))
               .toFixed(precision)
           }
-          if (!this.$('.js-hour-chart')[0]) {
-            return
+          if (this.$('.js-hour-chart')[0]) {
+            const ctx = this.$('.js-hour-chart')[0].getContext('2d')
+            this.chart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels:
+                [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
+                datasets: [{
+                  fill: true,
+                  lineTension: 0.1,
+                  backgroundColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 40), // 'rgba(75,192,192,0.4)',
+                  borderColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 80), // 'rgba(0, 150, 136, 0.8)',
+                  borderCapStyle: 'butt',
+                  borderDash: [],
+                  borderDashOffset: 0.0,
+                  borderJoinStyle: 'miter',
+                  pointBorderColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 80), // 'rgba(0, 150, 136, 0.8)',
+                  pointBackgroundColor: '#fff',
+                  pointBorderWidth: 1,
+                  pointHoverRadius: 5,
+                  pointHoverBackgroundColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 80), // 'rgba(0, 150, 136, 0.8)',
+                  pointHoverBorderColor: 'rgba(220,220,220,1)',
+                  pointHoverBorderWidth: 2,
+                  pointRadius: 1,
+                  pointHitRadius: 10,
+                  spanGaps: false,
+                  data:
+                  [stats.beforePreviousMonthHours,
+                    stats.previousMonthHours,
+                    stats.currentMonthHours],
+                }],
+              },
+              options: {
+                legend: {
+                  display: false,
+                },
+                scales: {
+                  yAxes: [{ display: false }],
+                },
+              },
+            })
           }
-          const ctx = this.$('.js-hour-chart')[0].getContext('2d')
-          this.chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels:
-              [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
-              datasets: [{
-                fill: true,
-                lineTension: 0.1,
-                backgroundColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 40), // 'rgba(75,192,192,0.4)',
-                borderColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                pointBackgroundColor: '#fff',
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                pointHoverBorderColor: 'rgba(220,220,220,1)',
-                pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
-                spanGaps: false,
-                data:
-                [stats.beforePreviousMonthHours, stats.previousMonthHours, stats.currentMonthHours],
-              }],
-            },
-            options: {
-              legend: {
-                display: false,
-              },
-              scales: {
-                yAxes: [{ display: false }],
-              },
-            },
-          })
         }
       }
     })
   })
 })
 Template.projectchart.onDestroyed(() => {
-  if (this.chart) {
-    this.chart.destroy()
+  if (Template.instance().chart) {
+    Template.instance().chart.destroy()
   }
 })
