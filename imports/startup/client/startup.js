@@ -1,6 +1,6 @@
 import { Template } from 'meteor/templating'
 import emoji from 'node-emoji'
-import Projects from '../../../imports/api/projects/projects.js'
+import Projects from '../../api/projects/projects.js'
 
 $.notifyDefaults({
   type: 'success',
