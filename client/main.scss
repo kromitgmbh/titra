@@ -80,7 +80,7 @@ $theme-colors: (
 
 //@import "{}/node_modules/fullcalendar/dist/fullcalendar.css";
 
-@import "{}/node_modules/bootstrap-colorpicker/src/sass/_colorpicker.scss";
+@import "{}/node_modules/bootstrap-colorpicker/src/sass/colorpicker.scss";
 // OVERRIDE
 $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
 @mixin bgImg($imgFilename) {
