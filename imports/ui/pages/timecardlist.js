@@ -15,10 +15,11 @@ import '../components/customerselect.js'
 import '../../api/timecards/tabular.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {
-  this.period = new ReactiveVar('currentMonth')
-  this.resource = new ReactiveVar('all')
   this.project = new ReactiveVar()
-  this.customer = new ReactiveVar('all')
+  this.resource = new ReactiveVar()
+  this.period = new ReactiveVar()
+  this.customer = new ReactiveVar()
+
   this.autorun(() => {
     this.project.set(FlowRouter.getParam('projectId'))
   })
@@ -31,7 +32,25 @@ Template.timecardlist.onCreated(function createTimeCardList() {
     $('[data-toggle="tooltip"]').tooltip()
   }, 1000)
 })
-
+Template.timecardlist.onRendered(() => {
+  Template.instance().autorun(() => {
+    if (FlowRouter.getQueryParam('resource')) {
+      Template.instance().resource.set(FlowRouter.getQueryParam('resource'))
+    } else {
+      Template.instance().resource.set('all')
+    }
+    if (FlowRouter.getQueryParam('period')) {
+      Template.instance().period.set(FlowRouter.getQueryParam('period'))
+    } else {
+      Template.instance().period.set('currentMonth')
+    }
+    if (FlowRouter.getQueryParam('customer')) {
+      Template.instance().customer.set(FlowRouter.getQueryParam('customer'))
+    } else {
+      Template.instance().customer.set('all')
+    }
+  })
+})
 // at least free up the window assignment when this template instance is removed from DOM
 Template.timecardlist.onDestroyed(() => {
   delete window.JSZip
@@ -56,7 +75,10 @@ Template.timecardlist.helpers({
       returnSelector.projectId = { $in: projectList }
     }
     if (Template.instance().period.get() !== 'all') {
-      const { startDate, endDate } = periodToDates(Template.instance().period.get())
+      let { startDate, endDate } = periodToDates('all')
+      if (Template.instance().period.get()) {
+        ({ startDate, endDate } = periodToDates(Template.instance().period.get()))
+      }
       returnSelector.date = { $gte: startDate, $lte: endDate }
     }
     return returnSelector
@@ -68,12 +90,15 @@ Template.timecardlist.helpers({
 
 Template.timecardlist.events({
   'change #period': (event, templateInstance) => {
-    templateInstance.period.set($(event.currentTarget).val())
+    FlowRouter.setQueryParams({ period: $(event.currentTarget).val() })
+    // templateInstance.period.set($(event.currentTarget).val())
   },
   'change #resourceselect': (event, templateInstance) => {
-    templateInstance.resource.set($(event.currentTarget).val())
+    FlowRouter.setQueryParams({ resource: $(event.currentTarget).val() })
+    // templateInstance.resource.set($(event.currentTarget).val())
   },
   'change #customerselect': (event, templateInstance) => {
-    templateInstance.customer.set($(event.currentTarget).val())
+    FlowRouter.setQueryParams({ customer: $(event.currentTarget).val() })
+    // templateInstance.customer.set($(event.currentTarget).val())
   },
 })

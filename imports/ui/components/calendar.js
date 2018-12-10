@@ -1,5 +1,6 @@
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
+import emoji from 'node-emoji'
 
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
@@ -12,6 +13,9 @@ Template.calendar.onCreated(function calendarCreated() {
 })
 
 Template.calendar.onRendered(function trackmonthRendered() {
+  const replacer = match => emoji.emojify(match)
+  const safeReplacer = transform => transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
+
   import('fullcalendar').then(() => {
     // import 'fullcalendar/dist/locale-all.js'
     import 'fullcalendar/dist/fullcalendar.css'
@@ -52,7 +56,7 @@ Template.calendar.onRendered(function trackmonthRendered() {
               html: true,
               placement: 'right',
               trigger: 'hover',
-              title: `<table><tr><td style="">${event.title}</td></tr><tr><td>${event.hours} hours</td></tr></table>`,
+              title: `<table><tr><td style="">${safeReplacer(event.title)}</td></tr><tr><td>${event.hours} hours</td></tr></table>`,
             })
           }
         },

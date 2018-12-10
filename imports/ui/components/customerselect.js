@@ -1,15 +1,19 @@
+import { FlowRouter } from 'meteor/kadira:flow-router'
 import './customerselect.html'
 import Customers from '../../api/customers/customers.js'
 
-Template.customerselect.onCreated(function createCustomerSelect() {
+Template.customerselect.onRendered(() => {
   // this.resources = new ReactiveVar()
-  this.autorun(() => {
-    this.subscribe('projectCustomers', { projectId: Template.currentData().get() })
+  Template.instance().autorun(() => {
+    Template.instance().subscribe('projectCustomers', { projectId: Template.currentData().get() })
   })
 })
 
 Template.customerselect.helpers({
   customers() {
     return Customers.find()
+  },
+  selected(name) {
+    return name === FlowRouter.getQueryParam('customer') ? 'selected' : false
   },
 })

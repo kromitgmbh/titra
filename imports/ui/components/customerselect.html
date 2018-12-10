@@ -1,9 +1,9 @@
 <template name="customerselect">
   <select class="form-control custom-select" id="customerselect">
     <option value="" disabled>Select a customer</option>
-    <option value="all" selected>All customers</option>
+    <option value="all" selected="{{selected 'all'}}">All customers</option>
     {{#each customers}}
-      <option value="{{name}}">{{name}}</option>
+      <option value="{{name}}" selected="{{selected(name)}}">{{name}}</option>
     {{/each}}
   </select>
 </template>

@@ -1,9 +1,9 @@
 <template name="resourceselect">
   <select class="form-control custom-select" id="resourceselect">
     <option value="" disabled>Select a resource</option>
-    <option value="all" selected>All resources</option>
+    <option value="all" selected="{{selected 'all'}}">All resources</option>
     {{#each resources}}
-      <option value="{{_id}}">{{profile.name}}</option>
+      <option value="{{_id}}" selected="{{selected(_id)}}">{{profile.name}}</option>
     {{/each}}
   </select>
 </template>

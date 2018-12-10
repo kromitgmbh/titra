@@ -8,14 +8,14 @@ import Projects from '../projects/projects.js'
 import projectUsers from '../users/users.js'
 
 const replacer = match => emoji.emojify(match)
-
+const safeReplacer = transform => transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
 const timecards = new Tabular.Table({
   name: 'Timecards',
   collection: Timecards,
   columns: [
     { data: 'projectId', title: 'Project', render: _id => `<span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:100px" title="${Projects.findOne({ _id }).name}">${Projects.findOne({ _id }).name}</span>` },
     { data: 'date', title: 'Date', render: val => `<span data-toggle="tooltip" data-placement="top" title="${moment(val).format('ddd DD.MM.YYYY')}">${moment(val).format('DD.MM.YYYY')}</span>` },
-    { data: 'task', title: 'Task', render: val => `<span class="d-inline-block text-truncate" style="max-width:350px;" data-toggle="tooltip" data-placement="top" title="${val.replace(/(:.*:)/g, replacer)}">${val.replace(/(:.*:)/g, replacer)}</span>` },
+    { data: 'task', title: 'Task', render: val => `<span class="d-inline-block text-truncate" style="max-width:350px;" data-toggle="tooltip" data-placement="top" title="${safeReplacer(val)}">${safeReplacer(val)}</span>` },
     {
       data: 'userId',
       title: 'Resource',
@@ -82,7 +82,7 @@ const timecards = new Tabular.Table({
     {
       extend: 'excelHtml5',
       text: '<i class="fa fa-download"></i> Excel',
-      title: `titra_export_${moment().format('YYYYMMDD-HHmm')}`,
+      title: `titra_export_${moment(new Date()).format('YYYYMMDD-HHmm')}`,
       exportOptions: {
         columns: [0, 1, 2, 3, 4],
       },
