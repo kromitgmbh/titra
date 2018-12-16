@@ -7,6 +7,9 @@
       {{#if totalHours}}
         Total time: {{timeInUserUnit(totalHours)}} ({{timeunit}})<br/>
       {{/if}}
+      {{#if target}}
+        Target: {{timeInUserUnit(target)}} ({{timeunit}})<br/>
+      {{/if}}
       {{#if turnOver}}
         Turnover: {{turnOver}} {{unit}}
       {{/if}}

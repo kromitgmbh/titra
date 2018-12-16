@@ -141,14 +141,14 @@ Meteor.methods({
       if (customer === 'all') {
         projects = Projects.find(
           {
-            customer, $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+            $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
           },
           { _id: 1, name: 1 },
         )
       } else {
         projects = Projects.find(
           {
-            $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+            customer, $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
           },
           { _id: 1, name: 1 },
         )

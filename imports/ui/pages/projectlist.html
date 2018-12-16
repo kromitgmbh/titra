@@ -81,6 +81,11 @@
               <!-- </div>
             </div> -->
           </div>
+          {{#if project.target}}
+            {{#with project}}
+              {{>projectProgress}}
+            {{/with}}
+          {{/if}}
         </div>
       <!-- </li> -->
       {{/each}}

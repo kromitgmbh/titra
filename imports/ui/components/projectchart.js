@@ -52,6 +52,9 @@ Template.projectchart.helpers({
           * ProjectStats.findOne({ _id: Template.instance().data.projectId }).totalHours)
         .toLocaleString() : false
   },
+  target() {
+    return Projects.findOne({ _id: Template.instance().data.projectId }).target
+  },
 })
 Template.projectchart.onRendered(function projectchartRendered() {
   const templateInstance = Template.instance()

@@ -26,6 +26,10 @@
       <label for="rate"><strong>Rate ({{unit}}/h)</strong></label>
       <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100" />
     </div>
+    <div class="form-group">
+      <label for="target"><strong>Target / Budget ({{timeunit}})</strong></label>
+      <input name="target" id="target" type="number" value="{{timeInUserUnit (target)}}" class="form-control" placeholder="1000" />
+    </div>
     {{#if currentUser.profile.enableWekan}}
     <div class="form-group">
       <label for="wekanurl"><strong>Wekan integration</strong></label>

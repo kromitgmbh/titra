@@ -5,6 +5,7 @@ import Projects from '../../api/projects/projects'
 import '../components/timetracker.js'
 import '../components/projectchart.js'
 import '../components/allprojectschart.js'
+import '../components/projectProgress.js'
 import hex2rgba from '../../utils/hex2rgba.js'
 
 Template.projectlist.onCreated(function createProjectList() {

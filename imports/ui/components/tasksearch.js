@@ -67,12 +67,12 @@ Template.tasksearch.helpers({
       // return Template.instance().lastTimecards.get()
     }
     if (Template.instance().wekanTasks) {
-      const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: 5 })
+      const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: 5 })
       if (wekanResult.count() > 0) {
         return wekanResult.map(elem => ({ name: elem.title, wekan: true }))
       }
     }
-    const result = Tasks.find({ name: { $regex: `.*${Template.instance().filter.get()}.*`, $options: 'i' } }, { sort: { lastUsed: -1 }, limit: 5 })
+    const result = Tasks.find({ name: { $regex: `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' } }, { sort: { lastUsed: -1 }, limit: 5 })
     return result.count() > 0 ? result : false
   },
 })

@@ -1,0 +1,35 @@
+import './projectProgress.html'
+
+import hex2rgba from '../../utils/hex2rgba.js'
+import { ProjectStats } from '../../api/projects/projects.js'
+
+Template.projectProgress.onCreated(function projectProgressCreated() {
+  this.autorun(() => {
+    this.subscribe('singleProject', Template.currentData()._id)
+    this.subscribe('projectStats', Template.currentData()._id)
+  })
+})
+Template.projectProgress.helpers({
+  totalHours() {
+    let precision = 2
+    if (Meteor.user()) {
+      precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+    }
+    const projectStats = ProjectStats.findOne({ _id: Template.currentData()._id })
+    return projectStats
+      ? Number(projectStats.totalHours).toFixed(precision)
+      : false
+  },
+  percentage() {
+    const projectStats = ProjectStats.findOne({ _id: Template.currentData()._id })
+    return projectStats
+      ? Number(projectStats.totalHours * 100 / Template.currentData().target)
+        .toFixed(0) : false
+  },
+  target() {
+    return Template.instance().subscriptionsReady() ? Template.currentData().target : false
+  },
+  colorOpacity(hex, op) {
+    return hex2rgba(hex || '#009688', !isNaN(op) ? op : 50)
+  },
+})

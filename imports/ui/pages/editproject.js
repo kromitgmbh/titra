@@ -44,6 +44,9 @@ Template.editproject.events({
       $('#name').addClass('is-invalid')
       return
     }
+    if (Meteor.user().profile.timeunit === 'd') {
+      templateInstance.$('#target').val(templateInstance.$('#target').val() * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8))
+    }
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {
         projectId: FlowRouter.getParam('id'),
@@ -158,4 +161,5 @@ Template.editproject.helpers({
   projectId: () => FlowRouter.getParam('id'),
   disablePublic: () => Meteor.settings.public.disablePublic,
   archived: _id => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).archived : false),
+  target: () => (Projects.findOne() ? Projects.findOne().target : false),
 })
