@@ -17,8 +17,8 @@ Template.appLayout.events({
 Template.appLayout.onRendered(function appLayoutRendered() {
   this.subscribe('mynotifications')
   this.autorun(() => {
-    if (this.subscriptionsReady() &&
-      Meteor.userId() && Notifications.findOne({ userId: Meteor.userId() })) {
+    if (this.subscriptionsReady()
+    && Meteor.userId() && Notifications.findOne({ userId: Meteor.userId() })) {
       $.notify(Notifications.findOne().message)
     }
   })

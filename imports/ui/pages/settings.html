@@ -12,7 +12,7 @@
         {{#unless isSandstorm}}
         <div class="row">
           <div class="col-6 col-md-3 mr-auto">
-            <a class="btn btn-secondary form-control" href="/changePwd">Change password</a>
+            <a class="btn btn-secondary" href="/changePwd">Change password</a>
           </div>
           <div class="col-6 col-md-3">
             <a class="btn btn-secondary js-logout form-control" href="#">Logout</a>
@@ -68,17 +68,31 @@
         Integrations
       </div>
       <div class="card-block">
-        <div class="form-group form-check">
-          <input id="enableWekan" type="checkbox" class="form-check-input" checked={{enableWekan}} />
-          <label class="form-check-label">Enable Wekan integration?</label>
+        <div class="card form-group">
+          <div class="card-header">
+            Wekan
+            </div>
+            <div class="card-block">
+              <div class="form-group form-check">
+                <input id="enableWekan" type="checkbox" class="form-check-input" checked={{enableWekan}} />
+                <label class="form-check-label">Enable Wekan integration?</label>
+              </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="siwappurl">Siwapp URL</label>
-          <input type="text" class="form-control" id="siwappurl" value="{{siwappurl}}" />
-        </div>
-        <div class="form-group">
-          <label for="siwapptoken">Siwapp API token</label>
-          <input type="text" class="form-control" id="siwapptoken" value="{{siwapptoken}}" />
+        <div class="card form-group">
+          <div class="card-header">
+            Siwapp
+            </div>
+            <div class="card-block">
+              <div class="form-group">
+                <label for="siwappurl">Siwapp URL</label>
+                <input type="text" class="form-control" id="siwappurl" value="{{siwappurl}}" />
+              </div>
+              <div class="form-group">
+                <label for="siwapptoken">Siwapp API token</label>
+                <input type="text" class="form-control" id="siwapptoken" value="{{siwapptoken}}" />
+              </div>
+            </div>
         </div>
       </div>
     </div>

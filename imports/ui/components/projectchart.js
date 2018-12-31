@@ -1,3 +1,4 @@
+import { check } from 'meteor/check'
 import './projectchart.html'
 import Projects, { ProjectStats } from '../../api/projects/projects.js'
 
@@ -53,7 +54,8 @@ Template.projectchart.helpers({
         .toLocaleString() : false
   },
   target() {
-    return Projects.findOne({ _id: Template.instance().data.projectId }).target
+    return Number(Projects.findOne({ _id: Template.instance().data.projectId }).target) > 0
+      ? Projects.findOne({ _id: Template.instance().data.projectId }).target : false
   },
 })
 Template.projectchart.onRendered(function projectchartRendered() {

@@ -27,7 +27,8 @@ Template.projectProgress.helpers({
         .toFixed(0) : false
   },
   target() {
-    return Template.instance().subscriptionsReady() ? Template.currentData().target : false
+    return Template.instance().subscriptionsReady() && Number(Template.currentData().target) > 0
+      ? Template.currentData().target : false
   },
   colorOpacity(hex, op) {
     return hex2rgba(hex || '#009688', !isNaN(op) ? op : 50)
