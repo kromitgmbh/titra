@@ -2,6 +2,9 @@ import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import moment from 'moment'
+import TinyDatePicker from 'tiny-date-picker'
+import 'tiny-date-picker/tiny-date-picker.css'
+
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
 
@@ -12,6 +15,21 @@ import '../components/timetracker.js'
 import '../components/calendar.js'
 import '../components/backbutton.js'
 
+Template.tracktime.onRendered(() => {
+  TinyDatePicker('#date', {
+    format(date) {
+      return date ? moment(date).format('ddd, DD.MM.YYYY') : moment().format('ddd, DD.MM.YYYY')
+    },
+    parse(date) {
+      return moment(date, 'ddd, DD.MM.YYYY')
+    },
+    dayOffset: 1,
+  }).on('select', (_, dp) => {
+    if (!dp.state.selectedDate) {
+      $('#date').val(moment().format('ddd, DD.MM.YYYY'))
+    }
+  })
+})
 Template.tracktime.onCreated(function tracktimeCreated() {
   import('mathjs').then((mathjs) => {
     this.math = mathjs
@@ -118,14 +136,16 @@ Template.tracktime.events({
     templateInstance.projectId.set($(event.currentTarget).val())
   },
   'change #date': (event) => {
-    let date = moment($(event.currentTarget).val())
-    if (!date.isValid()) {
-      date = moment()
-      event.currentTarget.valueAsDate = date.toDate()
+    if ($(event.currentTarget).val()) {
+      let date = moment($(event.currentTarget).val(), 'ddd, DD.MM.YYYY')
+      if (!date.isValid()) {
+        date = moment()
+        event.currentTarget.valueAsDate = date.toDate()
+      }
+      date = date.format('YYYY-MM-DD')
+      // we need this to correctly capture calender change events from the input
+      FlowRouter.setQueryParams({ date })
     }
-    date = date.format('YYYY-MM-DD')
-    // we need this to correctly capture calender change events from the input
-    FlowRouter.setQueryParams({ date })
     // templateInstance.date.set($(event.currentTarget).val())
   },
   'click .js-toggle-timecards': (event, templateInstance) => {
@@ -156,7 +176,7 @@ Template.tracktime.events({
   },
 })
 Template.tracktime.helpers({
-  date: () => moment(Template.instance().date.get()).format('YYYY-MM-DD'),
+  date: () => moment(Template.instance().date.get()).format('ddd, DD.MM.YYYY'),
   projectId: () => {
     if (FlowRouter.getParam('projectId')) {
       return FlowRouter.getParam('projectId')

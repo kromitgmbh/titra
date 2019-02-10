@@ -45,7 +45,7 @@ Template.allprojectschart.onRendered(function allprojectschartRendered() {
       if (this.subscriptionsReady()) {
         if (templateInstance.projectStats.get()) {
           this.$('.js-hour-chart').remove()
-          this.$('.js-chart-container').html('<canvas class="js-hour-chart" style="width:320px;height:100px;"></canvas>')
+          this.$('.js-chart-container').html('<canvas class="js-hour-chart"></canvas>')
           const stats = templateInstance.projectStats.get()
           if (Meteor.user().profile.timeunit === 'd') {
             stats.beforePreviousMonthHours
@@ -99,11 +99,34 @@ Template.allprojectschart.onRendered(function allprojectschartRendered() {
                 legend: {
                   display: false,
                 },
+                aspectRatio: 3.2,
                 scales: {
                   yAxes: [{ display: false }],
                 },
               },
             })
+          }
+          if (templateInstance.topTasks.get()) {
+            this.$('.js-pie-chart-top-tasks').remove()
+            this.$('.js-pie-chart-container').html('<canvas class="js-pie-chart-top-tasks"></canvas>')
+            if (this.$('.js-pie-chart-top-tasks')[0]) {
+              const ctx = this.$('.js-pie-chart-top-tasks')[0].getContext('2d')
+              this.piechart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                  labels: templateInstance.topTasks.get().map(task => task._id),
+                  datasets: [{
+                    backgroundColor: [hex2rgba('#009688', 40), 'rgba(0, 150, 136, 0.6)', '#e4e4e4'],
+                    data: templateInstance.topTasks.get().map(task => task.count),
+                  }],
+                },
+                options: {
+                  legend: {
+                    display: false,
+                  },
+                },
+              })
+            }
           }
         }
       }

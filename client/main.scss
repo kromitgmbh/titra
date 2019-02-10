@@ -158,3 +158,24 @@ $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
 .js-project-list > .card:hover {
   cursor: move;
 }
+
+.dp-selected {
+  background: map-get($theme-colors, primary) !important;
+}
+.dp-day:hover {
+  background: map-get($theme-colors, info) !important;
+}
+.dp-day-today:after {
+  content: '';
+  height: 0 !important;
+  width: 0 !important;
+  border: 7px solid map-get($theme-colors, dark) !important;
+  border-bottom-color: transparent !important;
+  border-left-color: transparent !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+}
+.dp:before {
+  background: map-get($theme-colors, primary) !important;
+}

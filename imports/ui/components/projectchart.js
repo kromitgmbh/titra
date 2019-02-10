@@ -1,4 +1,4 @@
-import { check } from 'meteor/check'
+import namedavatar from 'namedavatar'
 import './projectchart.html'
 import Projects, { ProjectStats } from '../../api/projects/projects.js'
 
@@ -36,12 +36,32 @@ Template.projectchart.helpers({
       }).totalHours).toFixed(precision)
       : false
   },
+  hourIndicator() {
+    const stats = ProjectStats.findOne({ _id: Template.instance().data.projectId })
+    if (stats.previousMonthHours > stats.currentMonthHours) {
+      return '<i class="d-md-none fa fa-arrow-circle-o-up"></i>'
+    }
+    if (stats.previousMonthHours < stats.currentMonthHours) {
+      return '<i class="d-md-none fa fa-arrow-circle-o-down"></i>'
+    }
+    return '<i class="d-md-none fa fa-minus-square-o"></i>'
+  },
   allTeamMembers() {
     // return Template.instance().resources.get()
     //   ? Template.instance().resources.get().map(res => res.profile.name).join(', ') : false
     return projectUsers.findOne({ _id: Template.instance().data.projectId })
-      ? projectUsers.findOne({ _id: Template.instance().data.projectId }).users
-        .map(user => user.profile.name) : false
+      ? projectUsers.findOne({ _id: Template.instance().data.projectId }).users : false
+  },
+  svgAvatar(name) {
+    namedavatar.config({
+      nameType: 'initials',
+      backgroundColors: [hex2rgba(Projects.findOne({ _id: Template.instance().data.projectId }).color || '#009688', 40), 'rgba(0, 150, 136, 0.6)', '#e4e4e4', '#BDBDBD', '#455A64'],
+    })
+    const rawSVG = namedavatar.getSVG(name)
+    rawSVG.classList = 'rounded'
+    rawSVG.style.width = '25px'
+    rawSVG.style.height = '25px'
+    return rawSVG.outerHTML
   },
   topTasks() {
     return Template.instance().topTasks.get()
@@ -69,7 +89,7 @@ Template.projectchart.onRendered(function projectchartRendered() {
     this.autorun(() => {
       if (this.subscriptionsReady()) {
         this.$('.js-hour-chart').remove()
-        this.$('.js-chart-container').html('<canvas class="js-hour-chart" style="width:320px;height:100px;"></canvas>')
+        this.$('.js-chart-container').html('<canvas class="js-hour-chart"></canvas>')
         const stats = ProjectStats.findOne({ _id: this.data.projectId })
         if (stats) {
           if (Meteor.user().profile.timeunit === 'd') {
@@ -124,8 +144,34 @@ Template.projectchart.onRendered(function projectchartRendered() {
                 legend: {
                   display: false,
                 },
+                aspectRatio: 3.2,
                 scales: {
                   yAxes: [{ display: false }],
+                },
+              },
+            })
+          }
+          // const totalHours = ProjectStats.findOne({ _id: Template.instance().data.projectId })
+          //   ? Number(ProjectStats.findOne({
+          //     _id: Template.instance().data.projectId,
+          //   }).totalHours).toFixed(precision)
+          //   : false
+          this.$('.js-pie-chart-top-tasks').remove()
+          this.$('.js-pie-chart-container').html('<canvas class="js-pie-chart-top-tasks"></canvas>')
+          if (this.$('.js-pie-chart-top-tasks')[0]) {
+            const ctx = this.$('.js-pie-chart-top-tasks')[0].getContext('2d')
+            this.piechart = new Chart(ctx, {
+              type: 'pie',
+              data: {
+                labels: templateInstance.topTasks.get().map(task => task._id),
+                datasets: [{
+                  backgroundColor: [hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 40), 'rgba(0, 150, 136, 0.6)', '#e4e4e4'],
+                  data: templateInstance.topTasks.get().map(task => task.count),
+                }],
+              },
+              options: {
+                legend: {
+                  display: false,
                 },
               },
             })
