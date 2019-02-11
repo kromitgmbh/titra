@@ -83,7 +83,7 @@ Template.tracktime.events({
     }
     const projectId = templateInstance.$('#targetProject').val()
     const task = templateInstance.$('.js-tasksearch-input').val()
-    const date = new Date(Date.parse($('#date').val()))
+    const date = moment.utc($('#date').val(), 'ddd, DD.MM.YYYY').toDate()
     let hours = templateInstance.math.eval($('#hours').val())
 
     if (Meteor.user().profile.timeunit === 'd') {
