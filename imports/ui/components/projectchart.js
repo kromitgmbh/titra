@@ -158,7 +158,7 @@ Template.projectchart.onRendered(function projectchartRendered() {
           //   : false
           this.$('.js-pie-chart-top-tasks').remove()
           this.$('.js-pie-chart-container').html('<canvas class="js-pie-chart-top-tasks"></canvas>')
-          if (this.$('.js-pie-chart-top-tasks')[0]) {
+          if (this.$('.js-pie-chart-top-tasks')[0] && templateInstance.topTasks.get()) {
             const ctx = this.$('.js-pie-chart-top-tasks')[0].getContext('2d')
             this.piechart = new Chart(ctx, {
               type: 'pie',
