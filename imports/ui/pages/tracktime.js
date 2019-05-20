@@ -157,23 +157,28 @@ Template.tracktime.events({
     event.preventDefault()
     templateInstance.$(event.currentTarget).popover({
       trigger: 'manual',
+      container: templateInstance.$('form'),
       html: true,
       content: templateInstance.$(event.currentTarget).children('.js-popover-content').html(),
     })
     templateInstance.$(event.currentTarget).popover('toggle')
-    $('.js-delete-time-entry').click((deleteEvent) => {
-      Meteor.call('deleteTimeCard', { timecardId: deleteEvent.currentTarget.dataset.timecardId }, (error, result) => {
-        if (!error) {
-          $.notify('Time entry deleted')
-        } else {
-          console.error(error)
-        }
-      })
+  },
+  'click .js-delete-time-entry': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.$('.js-time-row').popover('dispose')
+    const timecardId = event.currentTarget.href.split('/').pop()
+    Meteor.call('deleteTimeCard', { timecardId }, (error, result) => {
+      if (!error) {
+        $.notify('Time entry deleted')
+      } else {
+        console.error(error)
+      }
     })
   },
-  'blur .js-time-row': (event, templateInstance) => {
-    templateInstance.$(event.currentTarget).popover('hide')
-  },
+  // 'blur .js-time-row': (event, templateInstance) => {
+  //   console.log('triggered ' + event)
+  //   templateInstance.$(event.currentTarget).popover('hide')
+  // },
 })
 Template.tracktime.helpers({
   date: () => moment(Template.instance().date.get()).format('ddd, DD.MM.YYYY'),
