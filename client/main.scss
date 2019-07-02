@@ -80,30 +80,30 @@ $theme-colors: (
 
 //@import "{}/node_modules/fullcalendar/dist/fullcalendar.css";
 
-@import "{}/node_modules/bootstrap-colorpicker/src/sass/colorpicker.scss";
-// OVERRIDE
-$colorpicker-img-path: "img/bootstrap-colorpicker" !default;
-@mixin bgImg($imgFilename) {
-  background-image: url("#{$colorpicker-img-path}/#{$imgFilename}");
-}
-.colorpicker-saturation {
-  @include bgImg('saturation.png');
-}
-.colorpicker-hue {
-  @include bgImg('hue.png');
-}
-.colorpicker-alpha {
-  @include bgImg('alpha.png');
-}
-.colorpicker-color {
-  @include bgImg('alpha.png');
-}
-.colorpicker.colorpicker-horizontal .colorpicker-hue {
-  @include bgImg('hue-horizontal.png');
-}
-.colorpicker.colorpicker-horizontal .colorpicker-alpha {
-  @include bgImg('alpha-horizontal.png');
-}
+// @import "{}/node_modules/bootstrap-colorpicker/src/sass/colorpicker.scss";
+// // OVERRIDE
+// $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
+// @mixin bgImg($imgFilename) {
+//   background-image: url("#{$colorpicker-img-path}/#{$imgFilename}");
+// }
+// .colorpicker-saturation {
+//   @include bgImg('saturation.png');
+// }
+// .colorpicker-hue {
+//   @include bgImg('hue.png');
+// }
+// .colorpicker-alpha {
+//   @include bgImg('alpha.png');
+// }
+// .colorpicker-color {
+//   @include bgImg('alpha.png');
+// }
+// .colorpicker.colorpicker-horizontal .colorpicker-hue {
+//   @include bgImg('hue-horizontal.png');
+// }
+// .colorpicker.colorpicker-horizontal .colorpicker-alpha {
+//   @include bgImg('alpha-horizontal.png');
+// }
 
 // underlining feature
 .underline {
@@ -178,4 +178,8 @@ $colorpicker-img-path: "img/bootstrap-colorpicker" !default;
 }
 .dp:before {
   background: map-get($theme-colors, primary) !important;
+}
+
+.pickr .pcr-button {
+  height: 100% !important;
 }

@@ -32,3 +32,4 @@ useraccounts:bootstrap
 kadira:blaze-layout
 kadira:flow-router
 useraccounts:flow-routing
+http

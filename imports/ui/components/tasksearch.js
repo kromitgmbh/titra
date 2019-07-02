@@ -1,6 +1,7 @@
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { DDP } from 'meteor/ddp-client'
 import { Mongo } from 'meteor/mongo'
+import { HTTP } from 'meteor/http'
 import './tasksearch.html'
 import Tasks from '../../api/tasks/tasks.js'
 import Timecards from '../../api/timecards/timecards.js'
@@ -30,6 +31,7 @@ Template.tasksearch.events({
 
 Template.tasksearch.onCreated(function tasksearchcreated() {
   this.filter = new ReactiveVar()
+  this.wekanAPITasks = new ReactiveVar()
   // this.lastTimecards = new ReactiveVar()
   this.autorun(() => {
     if (FlowRouter.getParam('tcid')) {
@@ -48,11 +50,21 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
             this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
             ddpcon.subscribe('board', 'sandstorm')
-          } else {
-            const ddpcon = DDP.connect(project.wekanurl.substring(0, project.wekanurl.indexOf('/api')))
-            ddpcon.call('login', { resume: project.wekanurl.match(/authToken=(.*)/)[1] })
-            this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
-            ddpcon.subscribe('board', project.wekanurl.match(/boards\/(.*)\//)[1])
+          } else if (project.selectedWekanList) {
+            const authToken = project.wekanurl.match(/authToken=(.*)/)[1]
+            const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
+
+            try {
+              HTTP.get(`${url}lists/${project.selectedWekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }, (innerError, innerResult) => {
+                if (innerError) {
+                  console.error(innerError)
+                } else {
+                  this.wekanAPITasks.set(innerResult.data)
+                }
+              })
+            } catch (error) {
+              console.error(error)
+            }
           }
         }
       }
@@ -66,13 +78,19 @@ Template.tasksearch.helpers({
       return Tasks.find({}, { sort: { lastUsed: -1 }, limit: 3 })
       // return Template.instance().lastTimecards.get()
     }
+    const finalArray = []
+    const regex = `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`
     if (Template.instance().wekanTasks) {
-      const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: 5 })
+      const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: regex, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: 5 })
       if (wekanResult.count() > 0) {
-        return wekanResult.map(elem => ({ name: elem.title, wekan: true }))
+        finalArray.push(...wekanResult.map(elem => ({ name: elem.title, wekan: true })))
+      }
+    } else if (Template.instance().wekanAPITasks.get()) {
+      if (Template.instance().wekanAPITasks.get().length > 0) {
+        finalArray.push(...Template.instance().wekanAPITasks.get().map(elem => ({ name: elem.title, wekan: true })).filter(element => new RegExp(regex, 'i').exec(element.name)))
       }
     }
-    const result = Tasks.find({ name: { $regex: `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' } }, { sort: { lastUsed: -1 }, limit: 5 })
-    return result.count() > 0 ? result : false
+    finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { lastUsed: -1 }, limit: 5 }).fetch())
+    return finalArray.length > 0 ? finalArray.slice(0, 4) : false
   },
 })

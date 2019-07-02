@@ -1,12 +1,38 @@
 import { Meteor } from 'meteor/meteor'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import 'jquery-serializejson'
-import 'bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js'
+import '@simonwep/pickr/dist/themes/monolith.min.css'
+import Pickr from '@simonwep/pickr/dist/pickr.min'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
 
-// import 'bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css'
+function validateWekanUrl() {
+  const wekanUrl = $('#wekanurl').val()
+  const authToken = wekanUrl.match(/authToken=(.*)/)[1]
+  const url = wekanUrl.substring(0, wekanUrl.indexOf('export?'))
+  const templateInstance = Template.instance()
+  $('#wekan-status').html('<i class="fa fa-spinner fa-spin"></i>')
+  $('#wekanurl').prop('disabled', true)
+  try {
+    HTTP.get(`${url}lists`, { headers: { Authorization: `Bearer ${authToken}` } }, (error, result) => {
+      $('#wekan-status').removeClass()
+      $('#wekanurl').prop('disabled', false)
+      if (error || result.data.error) {
+        $('#wekanurl').addClass('is-invalid')
+        $('#wekan-status').html('<i class="fa fa-times"></i>')
+      } else {
+        templateInstance.wekanLists.set(result.data)
+        $('#wekanurl').removeClass('is-invalid')
+        $('#wekan-status').html('<i class="fa fa-check"></i>')
+      }
+    })
+  } catch (error) {
+    console.error(error)
+    $('#wekanurl').addClass('is-invalid')
+    $('#wekan-status').html('check')
+  }
+}
 
 Template.editproject.onCreated(function editprojectSetup() {
   this.autorun(() => {
@@ -16,17 +42,36 @@ Template.editproject.onCreated(function editprojectSetup() {
     }
     this.deletion = new ReactiveVar(false)
   })
+  this.wekanLists = new ReactiveVar()
 })
 Template.editproject.onRendered(function editprojectRendered() {
   this.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
-  $('#colpick').colorpicker({
-    format: 'hex',
-    color: this.color,
+  this.pickr = Pickr.create({
+    el: '#pickr',
+    theme: 'monolith',
+    lockOpacity: true,
+    comparison: false,
+    default: this.color,
+    position: 'left-start',
+    components: {
+      preview: true,
+      opacity: false,
+      hue: true,
+      interaction: {
+        hex: false,
+        input: false,
+        clear: false,
+        save: false,
+      },
+    },
+  })
+  this.pickr.on('change', (color, instance) => {
+    $('#color').val(color.toHEXA().toString())
   })
   this.autorun(() => {
     if (this.handle && this.handle.ready()) {
       if (Projects.findOne()) {
-        $('#colpick').colorpicker('setValue', (Projects.findOne().color ? Projects.findOne().color : this.color))
+        this.pickr.setColor(Projects.findOne().color ? Projects.findOne().color : this.color)
       } else if (FlowRouter.getRouteName() !== 'createProject' && !this.deletion) {
         FlowRouter.go('404')
       }
@@ -142,6 +187,20 @@ Template.editproject.events({
       }
     })
   },
+  'change #color': (event) => {
+    if (!Template.instance().pickr.setColor($(event.currentTarget).val())) {
+      $('#color').addClass('is-invalid')
+    } else {
+      $('#color').removeClass('is-invalid')
+    }
+  },
+  'change #wekanurl': (event) => {
+    validateWekanUrl()
+  },
+  'click #wekan-status': (event) => {
+    event.preventDefault()
+    validateWekanUrl()
+  },
 })
 Template.editproject.helpers({
   newProject: () => (!FlowRouter.getParam('id')),
@@ -151,6 +210,7 @@ Template.editproject.helpers({
   customer: () => (Projects.findOne() ? Projects.findOne().customer : false),
   rate: () => (Projects.findOne() ? Projects.findOne().rate : false),
   wekanurl: () => (Projects.findOne() ? Projects.findOne().wekanurl : false),
+  wekanLists: () => Template.instance().wekanLists.get(),
   public: () => (Projects.findOne() ? Projects.findOne().public : false),
   team: () => {
     if (Projects.findOne() && Projects.findOne().team) {

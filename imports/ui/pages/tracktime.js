@@ -89,6 +89,9 @@ Template.tracktime.events({
     if (Meteor.user().profile.timeunit === 'd') {
       hours = templateInstance.math.eval($('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
     }
+    const buttonLabel = $(event.currentTarget).text()
+    $(event.currentTarget).text('saving ...')
+    $(event.currentTarget).prop('disabled', true)
     if (FlowRouter.getParam('tcid')) {
       Meteor.call('updateTimeCard', {
         _id: FlowRouter.getParam('tcid'), projectId, date, hours, task,
@@ -98,6 +101,8 @@ Template.tracktime.events({
         } else {
           $('.js-tasksearch-results').addClass('d-none')
           $.notify('Time entry updated successfully')
+          $(event.currentTarget).text(buttonLabel)
+          $(event.currentTarget).prop('disabled', false)
           // window.history.back()
         }
       })
@@ -113,6 +118,8 @@ Template.tracktime.events({
           $('#hours').val('')
           $('.js-tasksearch-results').addClass('d-none')
           $.notify('Time entry saved successfully')
+          $(event.currentTarget).text(buttonLabel)
+          $(event.currentTarget).prop('disabled', false)
         }
       })
     }
