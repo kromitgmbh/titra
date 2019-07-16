@@ -2,6 +2,7 @@ import moment from 'moment'
 import csv from 'fast-csv'
 import emoji from 'node-emoji'
 import { HTTP } from 'meteor/http'
+import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'
 import Tasks from '../tasks/tasks.js'
 import Projects from '../projects/projects.js'
@@ -244,5 +245,253 @@ Meteor.methods({
       },
     })
     return 'Siwapp invoice created successfully.'
+  },
+  getDailyTimecards({ projectId, userId, period }) {
+    check(projectId, String)
+    check(period, String)
+    check(userId, String)
+    // console.log(projectId)
+    let projectList = []
+    if (projectId === 'all') {
+      projectList = Projects.find(
+        {
+          $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+        },
+        { $fields: { _id: 1 } },
+      ).fetch().map(value => value._id)
+    } else {
+      projectList = [Projects.findOne({ _id: projectId })._id]
+    }
+    if (period && period !== 'all') {
+      const { startDate, endDate } = periodToDates(period)
+      if (userId === 'all') {
+        return Promise.await(Timecards.rawCollection().aggregate([
+          {
+            $match: {
+              projectId: { $in: projectList },
+              date: { $gte: startDate, $lte: endDate },
+            },
+          },
+          {
+            $group: {
+              _id: { userId: '$userId', projectId: '$projectId', date: '$date' },
+              totalHours: { $sum: '$hours' },
+            },
+          },
+          {
+            $sort: {
+              date: -1,
+            },
+          },
+        ]).toArray()).map(
+          (entry => (
+            {
+              projectId: Projects.findOne({ _id: entry._id.projectId }).name,
+              userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+              date: entry._id.date,
+              totalHours: entry.totalHours,
+            })
+          ),
+        )
+      }
+      return Promise.await(Timecards.rawCollection().aggregate([
+        {
+          $match: {
+            projectId: { $in: projectList },
+            date: { $gte: startDate, $lte: endDate },
+            userId,
+          },
+        },
+        {
+          $group: {
+            _id: { userId: '$userId', projectId: '$projectId', date: '$date' },
+            totalHours: { $sum: '$hours' },
+          },
+        },
+        {
+          $sort: {
+            date: -1,
+          },
+        },
+      ]).toArray()).map(
+        (entry => (
+          {
+            projectId: Projects.findOne({ _id: entry._id.projectId }).name,
+            userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+            date: entry._id.date,
+            totalHours: entry.totalHours,
+          })
+        ),
+      )
+    }
+    if (userId === 'all') {
+      return Promise.await(Timecards.rawCollection().aggregate([
+        {
+          $match: {
+            projectId: { $in: projectList },
+          },
+        },
+        {
+          $group: {
+            _id: { userId: '$userId', projectId: '$projectId', date: '$date' },
+            totalHours: { $sum: '$hours' },
+          },
+        },
+        {
+          $sort: {
+            date: -1,
+          },
+        },
+      ]).toArray()).map(
+        (entry => (
+          {
+            projectId: Projects.findOne({ _id: entry._id.projectId }).name,
+            userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+            date: entry._id.date,
+            totalHours: entry.totalHours,
+          })
+        ),
+      )
+    }
+    return Promise.await(Timecards.rawCollection().aggregate([
+      {
+        $match: {
+          projectId: { $in: projectList },
+          userId,
+        },
+      },
+      {
+        $group: {
+          _id: { userId: '$userId', projectId: '$projectId', date: '$date' },
+          totalHours: { $sum: '$hours' },
+        },
+      },
+      {
+        $sort: {
+          date: -1,
+        },
+      },
+    ]).toArray()).map(
+      (entry => (
+        {
+          projectId: Projects.findOne({ _id: entry._id.projectId }).name,
+          userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+          date: entry._id.date,
+          totalHours: entry.totalHours,
+        })
+      ),
+    )
+  },
+  getTotalHoursForPeriod({ projectId, userId, period }) {
+    check(projectId, String)
+    check(period, String)
+    check(userId, String)
+    // console.log(projectId)
+    let projectList = []
+    if (projectId === 'all') {
+      projectList = Projects.find(
+        {
+          $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+        },
+        { $fields: { _id: 1 } },
+      ).fetch().map(value => value._id)
+    } else {
+      projectList = [Projects.findOne({ _id: projectId })._id]
+    }
+    if (period && period !== 'all') {
+      const { startDate, endDate } = periodToDates(period)
+      if (userId === 'all') {
+        return Promise.await(Timecards.rawCollection().aggregate([
+          {
+            $match: {
+              projectId: { $in: projectList },
+              date: { $gte: startDate, $lte: endDate },
+            },
+          },
+          {
+            $group: {
+              _id: { userId: '$userId', projectId: '$projectId' },
+              totalHours: { $sum: '$hours' },
+            },
+          },
+        ]).toArray()).map(
+          (entry => (
+            {
+              projectId: Projects.findOne({ _id: entry._id.projectId }).name,
+              userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+              totalHours: entry.totalHours,
+            })
+          ),
+        )
+      }
+      return Promise.await(Timecards.rawCollection().aggregate([
+        {
+          $match: {
+            projectId: { $in: projectList },
+            date: { $gte: startDate, $lte: endDate },
+            userId,
+          },
+        },
+        {
+          $group: {
+            _id: { userId: '$userId', projectId: '$projectId' },
+            totalHours: { $sum: '$hours' },
+          },
+        },
+      ]).toArray()).map(
+        (entry => (
+          {
+            projectId: Projects.findOne({ _id: entry._id.projectId }).name,
+            userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+            totalHours: entry.totalHours,
+          })
+        ),
+      )
+    }
+    if (userId === 'all') {
+      return Promise.await(Timecards.rawCollection().aggregate([
+        {
+          $match: {
+            projectId: { $in: projectList },
+          },
+        },
+        {
+          $group: {
+            _id: { userId: '$userId', projectId: '$projectId' },
+            totalHours: { $sum: '$hours' },
+          },
+        },
+      ]).toArray()).map(
+        (entry => (
+          {
+            projectId: Projects.findOne({ _id: entry._id.projectId }).name,
+            userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+            totalHours: entry.totalHours,
+          })
+        ),
+      )
+    }
+    return Promise.await(Timecards.rawCollection().aggregate([
+      {
+        $match: {
+          projectId: { $in: projectList },
+          userId,
+        },
+      },
+      {
+        $group: {
+          _id: { userId: '$userId', projectId: '$projectId' },
+          totalHours: { $sum: '$hours' },
+        },
+      },
+    ]).toArray()).map(
+      (entry => (
+        {
+          projectId: Projects.findOne({ _id: entry._id.projectId }).name,
+          userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+          totalHours: entry.totalHours,
+        })
+      ),
+    )
   },
 })

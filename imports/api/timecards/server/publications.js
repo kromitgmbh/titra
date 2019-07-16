@@ -81,3 +81,113 @@ Meteor.publish('singleTimecard', function singleTimecard(_id) {
   }
   return Timecards.find({ _id })
 })
+
+// Meteor.publish('dailyTimecards', function dailyTimecards({ projectId, userId, period }) {
+//   check(projectId, String)
+//   check(period, String)
+//   check(userId, String)
+//   let timecards = []
+//   let initializing = true
+//
+//   // console.log(projectId)
+//   let projectList = []
+//   if (projectId === 'all') {
+//     projectList = Projects.find(
+//       {
+//         $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+//       },
+//       { $fields: { _id: 1 } },
+//     ).fetch().map(value => value._id)
+//   } else {
+//     projectList = [Projects.findOne({ _id: projectId })._id]
+//   }
+//   if (period && period !== 'all') {
+//     const { startDate, endDate } = periodToDates(period)
+//     if (userId === 'all') {
+//       timecards = Promise.await(Timecards.rawCollection().aggregate([
+//         {
+//           $match: {
+//             projectId: { $in: projectList },
+//             date: { $gte: startDate, $lte: endDate },
+//           },
+//         },
+//         {
+//           $group: {
+//             _id: { userId: '$userId', projectId: '$projectId' },
+//             totalHours: { $sum: '$hours' },
+//           },
+//         },
+//       ]).toArray())
+//     }
+//     timecards = Promise.await(Timecards.rawCollection().aggregate([
+//       {
+//         $match: {
+//           projectId: { $in: projectList },
+//           date: { $gte: startDate, $lte: endDate },
+//           userId,
+//         },
+//       },
+//       {
+//         $group: {
+//           _id: { userId: '$userId', projectId: '$projectId' },
+//           totalHours: { $sum: '$hours' },
+//         },
+//       },
+//     ]).toArray())
+//   }
+//   if (userId === 'all') {
+//     timecards = Promise.await(Timecards.rawCollection().aggregate([
+//       {
+//         $match: {
+//           projectId: { $in: projectList },
+//         },
+//       },
+//       {
+//         $group: {
+//           _id: { resource: '$resource', projectId: '$projectId' },
+//           totalHours: { $sum: '$hours' },
+//         },
+//       },
+//     ]).toArray())
+//   }
+//   timecards = Promise.await(Timecards.rawCollection().aggregate([
+//     {
+//       $match: {
+//         projectId: { $in: projectList },
+//         userId,
+//       },
+//     },
+//     {
+//       $group: {
+//         _id: { userId: '$userId', projectId: '$projectId' },
+//         totalHours: { $sum: '$hours' },
+//       },
+//     },
+//   ]).toArray())
+//
+//
+//   // `observeChanges` only returns after the initial `added` callbacks have run.
+//   // Until then, we don't want to send a lot of `changed` messages—hence
+//   // tracking the `initializing` state.
+//   const handle = Timecards.find({ projectId: { $in: projectList } }).observeChanges({
+//     added: (id) => {
+//       if (!initializing) {
+//         this.changed('dailytimecards', timecards)
+//       }
+//     },
+//     removed: (id) => {
+//       this.changed('dailytimecards', timecards)
+//     },
+//   })
+//
+//   // Instead, we'll send one `added` message right after `observeChanges` has
+//   // returned, and mark the subscription as ready.
+//   initializing = false
+//   this.added('dailytimecards', timecards)
+//   this.ready()
+//
+//   // Stop observing the cursor when the client unsubscribes. Stopping a
+//   // subscription automatically takes care of sending the client any `removed`
+//   // messages.
+//   this.onStop(() => handle.stop())
+// })

@@ -1,0 +1,30 @@
+<template name ="dailytimetable">
+  <table class="table table-hover mt-5">
+    <thead>
+      <tr role="row">
+        <th>Project</th>
+        <th>Date</th>
+        <th>Resource</th>
+        <th>{{userTimeUnit}}</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each dailyTimecard in dailyTimecards}}
+      <tr role="row">
+        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:250px" title="{{dailyTimecard.projectId}}">{{dailyTimecard.projectId}}</span></td>
+        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:150px" title="{{moment dailyTimecard.date}}">{{moment dailyTimecard.date}}</span></td>
+        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:150px" title="{{dailyTimecard.userId}}">{{dailyTimecard.userId}}</span></td>
+        <td>{{timeInUserUnit dailyTimecard.totalHours}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+    <tfoot>
+      <tr role="row">
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>Sum: {{timeInUserUnit dailySum}}</th>
+      </tr>
+    </tfoot>
+  </table>
+</template>

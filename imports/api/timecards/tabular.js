@@ -8,9 +8,10 @@ import Projects from '../projects/projects.js'
 import projectUsers from '../users/users.js'
 
 const replacer = match => emoji.emojify(match)
-const safeReplacer = transform => transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
-const timecards = new Tabular.Table({
-  name: 'Timecards',
+const safeReplacer = transform => (transform ? transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;') : false)
+
+const detailed = new Tabular.Table({
+  name: 'Detailed',
   collection: Timecards,
   columns: [
     { data: 'projectId', title: 'Project', render: _id => `<span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:100px" title="${Projects.findOne({ _id }).name}">${Projects.findOne({ _id }).name}</span>` },
@@ -145,10 +146,18 @@ const timecards = new Tabular.Table({
       }
       return typeof i === 'number' ? i : 0
     }
-    let pageTotal = api
-      .column(4, { page: 'current' })
-      .data()
-      .reduce((a, b) => intVal(a) + intVal(b), 0)
+    let pageTotal
+    if ($('.show.active')[0].id === 'detailed') {
+      pageTotal = api
+        .column(4, { page: 'current' })
+        .data()
+        .reduce((a, b) => intVal(a) + intVal(b), 0)
+    } else {
+      pageTotal = api
+        .column(3, { page: 'current' })
+        .data()
+        .reduce((a, b) => intVal(a) + intVal(b), 0)
+    }
     if (Meteor.user()) {
       const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
       if (Meteor.user().profile.timeunit === 'd') {
@@ -159,5 +168,4 @@ const timecards = new Tabular.Table({
     $('tfoot').html(`<tr><th></th><th></th><th></th><th style='text-align:right'>Sum:</th><th>${pageTotal}</th><th></th></tr>`)
   },
 })
-
-export { timecards as default }
+export default detailed

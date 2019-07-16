@@ -12,6 +12,8 @@ import '../components/periodpicker.js'
 import '../components/resourceselect.js'
 import '../components/tablecell.js'
 import '../components/customerselect.js'
+import '../components/dailytimetable.js'
+import '../components/periodtimetable.js'
 import '../../api/timecards/tabular.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {
@@ -19,6 +21,7 @@ Template.timecardlist.onCreated(function createTimeCardList() {
   this.resource = new ReactiveVar()
   this.period = new ReactiveVar()
   this.customer = new ReactiveVar()
+  this.activeTab = new ReactiveVar()
 
   this.autorun(() => {
     this.project.set(FlowRouter.getParam('projectId'))
@@ -30,6 +33,7 @@ Template.timecardlist.onCreated(function createTimeCardList() {
   html5ExportButtons(window, $)
   Meteor.setTimeout(() => {
     $('[data-toggle="tooltip"]').tooltip()
+    $(`#${this.activeTab.get()}`).tab('show')
   }, 1000)
 })
 Template.timecardlist.onRendered(() => {
@@ -48,6 +52,11 @@ Template.timecardlist.onRendered(() => {
       Template.instance().customer.set(FlowRouter.getQueryParam('customer'))
     } else {
       Template.instance().customer.set('all')
+    }
+    if (FlowRouter.getQueryParam('activeTab')) {
+      Template.instance().activeTab.set(FlowRouter.getQueryParam('activeTab'))
+    } else {
+      Template.instance().activeTab.set('detailed-tab')
     }
   })
 })
@@ -86,19 +95,28 @@ Template.timecardlist.helpers({
   project() {
     return Template.instance().project
   },
+  resource() {
+    return Template.instance().resource
+  },
+  period() {
+    return Template.instance().period
+  },
+  isActive(tab) {
+    return Template.instance().activeTab.get() === tab
+  },
 })
 
 Template.timecardlist.events({
   'change #period': (event, templateInstance) => {
     FlowRouter.setQueryParams({ period: $(event.currentTarget).val() })
-    // templateInstance.period.set($(event.currentTarget).val())
   },
   'change #resourceselect': (event, templateInstance) => {
     FlowRouter.setQueryParams({ resource: $(event.currentTarget).val() })
-    // templateInstance.resource.set($(event.currentTarget).val())
   },
   'change #customerselect': (event, templateInstance) => {
     FlowRouter.setQueryParams({ customer: $(event.currentTarget).val() })
-    // templateInstance.customer.set($(event.currentTarget).val())
+  },
+  'click .nav-link[data-toggle]': (event, templateInstance) => {
+    FlowRouter.setQueryParams({ activeTab: $(event.currentTarget)[0].id })
   },
 })

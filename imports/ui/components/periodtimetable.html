@@ -1,0 +1,26 @@
+<template name="periodtimetable">
+  <table class="table table-hover mt-5">
+    <thead>
+      <tr role="row">
+        <th>Project</th>
+        <th>Resource</th>
+        <th>{{userTimeUnit}}</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each periodTimecard in periodTimecards}}
+    <tr role="row">
+        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:250px" title="{{periodTimecard.projectId}}">{{periodTimecard.projectId}}</span></td>
+        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:150px" title="{{periodTimecard.userId}}">{{periodTimecard.userId}}</span></td>
+        <td>{{timeInUserUnit periodTimecard.totalHours}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+    <tfoot>
+      <tr role="row">
+        <th></th>
+        <th></th>
+        <th>Sum: {{timeInUserUnit periodSum}}</th></tr>
+    </tfoot>
+  </table>
+</template>

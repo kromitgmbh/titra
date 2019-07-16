@@ -179,7 +179,14 @@ $theme-colors: (
 .dp:before {
   background: map-get($theme-colors, primary) !important;
 }
-
 .pickr .pcr-button {
   height: 100% !important;
+}
+.dt-buttons {
+  padding-left: 15px;
+}
+.tab-borders {
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
 }

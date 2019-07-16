@@ -1,34 +1,58 @@
 <template name="timecardlist">
-  <!-- <div class="row mb-2">
-    <div class="col-12">
-      <a href="/tracktime/{{selectedProjectId}}" class="btn btn-primary mr-2"><i class="fa fa-plus"></i> Time</a>
-      <button id="export" class="btn btn-primary"><i class="fa fa-download"></i> Export</button>
-    </div>
-  </div> -->
-  <div class="row mb-2 px-2">
-    <div class="col-sm-3">
-      <label>Project</label>
-      {{>projectselect allProjects = true}}
-    </div>
-    <div class="col-sm-3">
-      <label>Time period</label>
-      {{>periodpicker}}
-    </div>
-    <div class="col-sm-3">
-      <label>Resource</label>
-      {{#with project}}
-        {{>resourceselect}}
-      {{/with}}
-    </div>
-    <div class="col-sm-3">
-      <label>Customer</label>
-      {{#with project}}
-        {{>customerselect}}
-      {{/with}}
+  <div class="card mb-2">
+    <div class="card-header">Filter</div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-3">
+          <label>Project</label>
+          {{>projectselect allProjects = true}}
+        </div>
+        <div class="col-sm-3">
+          <label>Time period</label>
+          {{>periodpicker}}
+        </div>
+        <div class="col-sm-3">
+          <label>Resource</label>
+          {{#with project}}
+            {{>resourceselect}}
+          {{/with}}
+        </div>
+        <div class="col-sm-3">
+          <label>Customer</label>
+          {{#with project}}
+            {{>customerselect}}
+          {{/with}}
+        </div>
+      </div>
     </div>
   </div>
-  <div class="table-responsive">
-    {{> tabular table=TabularTables.Timecards selector=selector class="table table-hover"}}
+  <ul class="nav nav-tabs" id="tracked-time-display" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="detailed-tab" data-toggle="tab" href="#detailed" role="tab" aria-controls="detailed" aria-selected="true">Detailed</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Daily</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="time-period-tab" data-toggle="tab" href="#time-period" role="tab" aria-controls="time-period" aria-selected="false">Total</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="tacked-time-content">
+    <div class="tab-pane fade show active table-responsive pt-3 pb-3 tab-borders" id="detailed">
+      {{#if isActive "detailed-tab"}}
+        {{> tabular table=TabularTables.Detailed selector=selector class="table table-hover" id="detailed-tabular"}}
+      {{/if}}
+    </div>
+    <div class="tab-pane fade table-responsive tab-borders px-3" id="daily">
+      {{#if isActive "daily-tab"}}
+        {{> dailytimetable project=project resource=resource period=period}}
+      {{/if}}
+    </div>
+    <div class="tab-pane fade table-responsive tab-borders px-3" id="time-period">
+      {{#if isActive "time-period-tab"}}
+        {{> periodtimetable project=project resource=resource period=period}}
+      {{/if}}
+    </div>
   </div>
   <div class="modal fade js-dashboard-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
