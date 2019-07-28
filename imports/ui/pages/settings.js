@@ -53,6 +53,7 @@ Template.settings.events({
       precision: Number($('#precision').val()),
       siwapptoken: $('#siwapptoken').val(),
       siwappurl: $('#siwappurl').val(),
+      theme: $('#theme').val(),
     }, (error) => {
       if (error) {
         $.notify({ message: error }, { type: 'danger' })
@@ -93,6 +94,7 @@ Template.settings.onRendered(function settingsRendered() {
     if (Meteor.user()) {
       $('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h')
       $('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
+      $('#theme').val(Meteor.user().profile.theme ? Meteor.user().profile.theme : 'auto')
     }
   })
 })

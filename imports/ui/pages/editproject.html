@@ -5,9 +5,13 @@
       <label for="name"><strong>Name</strong></label>
       <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="My project" />
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label for="desc"><strong>Description</strong></label>
       <textarea name="desc" id="desc" type="text" value="{{desc}}" class="form-control" placeholder="Describe your project here ..."></textarea>
+    </div> -->
+    <div class="form-group">
+      <label for="desc"><strong>Description</strong></label>
+      <div id="richDesc"></div>
     </div>
     <div class="form-group">
       <label for="color"><strong>Color</strong></label>
@@ -36,7 +40,7 @@
       <div class="input-group" id="colpick">
         <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://wekan.url/api/boards/abcdefg.../export?authToken=abcdefg..." />
         <div class="input-group-append">
-          <button class="btn btn-secondary" id="wekan-status">check</button>
+          <button class="btn btn-secondary border" id="wekan-status">check</button>
         </div>
       </div>
       <small class="form-text text-muted">Need help with the setup? Checkout the titra <a href="https://github.com/faburem/titra/wiki/Wekan-integration" target="_blank">wiki</a>.</small>
@@ -61,7 +65,7 @@
       <div class="input-group mb-1">
         <input id="newmembermail" type="email" class="form-control" placeholder="E-mail address of team member to add" aria-label="E-mail address of team member to add">
         <div class="input-group-append">
-          <button class="btn btn-secondary" type="button" id="addNewMember">Add</button>
+          <button class="btn btn-secondary border" type="button" id="addNewMember">Add</button>
         </div>
       </div>
       <ul class="list-group mb-2">
@@ -84,21 +88,21 @@
   </form>
   <div class="row text-center">
     <div class="col-3 mr-auto">
-      <button class="btn btn-secondary js-backbutton form-control">back</button>
+      <button class="btn btn-secondary border js-backbutton form-control">back</button>
     </div>
     {{#unless newProject}} {{#if archived (projectId)}}
     <div class="col-3">
-      <button class="btn btn-secondary btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="d-none d-md-inline">Restore</span></button>
+      <button class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="d-none d-md-inline">Restore</span></button>
     </div>
     <div class="col-3">
-      <button class="btn btn-secondary btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">Delete</span></button>
+      <button class="btn btn-secondary border btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">Delete</span></button>
     </div>
     {{else}}
     <div class="col-3">
-      <a href="/list/timecards/{{projectId}}" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
+      <a href="/list/timecards/{{projectId}}" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
     </div>
     <div class="col-3">
-      <button class="btn btn-secondary btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">Archive</span></button>
+      <button class="btn btn-secondary border btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">Archive</span></button>
     </div>
     {{/if}} {{/unless}}
     <div class="col-3">

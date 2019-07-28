@@ -1,0 +1,38 @@
+// @import "{poetic:materialize-scss}/sass/components/_color.scss";
+// $primary-color-dark:   #455A64;
+// $primary-color:        #607D8B;
+// $primary-color-light:  #CFD8DC;
+// $primary-color-text:   #FFFFFF;
+// $accent-color:         #009688;
+// $primary-text-color:   #212121;
+// $secondary-text-color: #757575;
+// $divider-color:        #BDBDBD;
+//
+// @import "{poetic:materialize-scss}/sass/materialize.scss";
+//
+// button > .navbar-icon{
+//   height: 36px !important;
+//   line-height:36px !important;
+// }
+$theme-colors: (
+  primary: #009688,
+  secondary: #ffffff,
+  success: #009688,
+  info: #b2dfdb,
+  warning: #ffc107,
+  danger: #ff5722,
+  light: #BDBDBD,
+  dark: #455A64
+);
+.tab-borders {
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+}
+.custom-select {
+  background: map-get($theme-colors, secondary) !important;
+}
+.all-projects-bg {
+  background: rgba(0,112,101,0.05);
+}
+@import "{}/imports/ui/styles/general.scss";

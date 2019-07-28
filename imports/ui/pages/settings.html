@@ -12,13 +12,28 @@
         {{#unless isSandstorm}}
         <div class="row">
           <div class="col-6 col-md-3 mr-auto">
-            <a class="btn btn-secondary" href="/changePwd">Change password</a>
+            <a class="btn btn-secondary border" href="/changePwd">Change password</a>
           </div>
           <div class="col-6 col-md-3">
-            <a class="btn btn-secondary js-logout form-control" href="#">Logout</a>
+            <a class="btn btn-secondary border js-logout form-control" href="#">Logout</a>
           </div>
         </div>
         {{/unless}}
+      </div>
+    </div>
+    <div class="card form-group">
+      <div class="card-header">
+        User interface
+      </div>
+      <div class="card-block">
+        <div class="form-group">
+          <label for="theme">Theme</label>
+          <select class="form-control" id="theme">
+            <option value="auto">Auto</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="card form-group">
@@ -27,7 +42,7 @@
       </div>
       <div class="card-block">
         <div class="form-group">
-          <label for="name">Track time view</label>
+          <label for="tracktimeview">Track time view</label>
           <select class="form-control" id="timetrackview">
             <option value="d">Day</option>
             <option value="M">Month</option>

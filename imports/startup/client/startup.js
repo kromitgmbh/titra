@@ -10,7 +10,15 @@ $.notifyDefaults({
     align: 'center',
   },
 })
-
+Meteor.startup(() => {
+  if (Meteor.user().profile) {
+    if (Meteor.user().profile.theme === 'dark') {
+      import('../../ui/styles/dark.scss')
+    }
+  } else {
+    import('../../ui/styles/light.scss')
+  }
+})
 Template.registerHelper('unit', () => {
   if (Meteor.user()) {
     return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'

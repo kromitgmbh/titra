@@ -9,6 +9,7 @@ Meteor.methods({
     precision,
     siwapptoken,
     siwappurl,
+    theme,
   }) {
     check(name, String)
     check(unit, String)
@@ -19,6 +20,7 @@ Meteor.methods({
     check(precision, Number)
     check(siwapptoken, String)
     check(siwappurl, String)
+    check(theme, String)
     Meteor.users.update({ _id: this.userId }, {
       $set: {
         'profile.name': name,
@@ -30,6 +32,7 @@ Meteor.methods({
         'profile.precision': precision,
         'profile.siwapptoken': siwapptoken,
         'profile.siwappurl': siwappurl,
+        'profile.theme': theme,
       },
     })
   },

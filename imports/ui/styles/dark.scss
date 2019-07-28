@@ -1,0 +1,54 @@
+$theme-colors: (
+  primary: #009688,
+  secondary: #444,
+  success: #009688,
+  info: #b2dfdb,
+  warning: #ffc107,
+  danger: #ff5722,
+  light: #BDBDBD,
+  dark: #455A64
+);
+$gray-900: #eeeeee !default;
+$border-color: map-get($theme-colors, dark) !default;
+//** Background color for `<body>`.
+$body-bg:  #1d1e21 !default;
+//** Global text color on `<body>`.
+$card-bg: #303030 !default;
+$card-cap-bg: #404040 !default;
+$card-border-color: #404040 !default;
+$list-group-bg: #303030 !default;
+$list-group-color: $gray-900 !default;
+$input-bg: map-get($theme-colors, secondary) !default;
+$input-color: $gray-900 !default;
+$nav-tabs-link-active-color: $gray-900 !default;
+$nav-tabs-border-color: map-get($theme-colors, dark) !default;
+$nav-tabs-link-active-border-color: map-get($theme-colors, dark) map-get($theme-colors, dark) $body-bg !default;
+$nav-tabs-link-hover-border-color: map-get($theme-colors, dark) !default;
+$dropdown-bg: map-get($theme-colors, secondary) !default;
+$dropdown-color: $gray-900 !default;
+$pagination-bg: map-get($theme-colors, secondary) !default;
+$pagination-color: $gray-900 !default;
+$pagination-disabled-bg: #303030 !default;
+
+.tab-borders {
+  border-left: 1px solid map-get($theme-colors, dark);
+  border-right: 1px solid map-get($theme-colors, dark);
+  border-bottom: 1px solid map-get($theme-colors, dark);
+}
+.custom-select {
+  background: map-get($theme-colors, secondary) !important;
+}
+.all-projects-bg {
+  background: map-get($theme-colors, secondary) !important;
+}
+#cal .fc-event {
+  color: $gray-900 !important;
+}
+.fc-unthemed td.fc-today {
+  background: map-get($theme-colors, secondary) !important;
+}
+.drag.card:hover {
+    background-color: $gray-900 !important;
+    color: $body-bg !important;
+}
+@import "{}/imports/ui/styles/general.scss";

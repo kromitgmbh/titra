@@ -5,15 +5,15 @@
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.5.3",
-    "@simonwep/pickr": "^1.2.1",
+    "@babel/runtime": "^7.5.5",
+    "@simonwep/pickr": "^1.2.2",
     "bcrypt": "^3.0.6",
     "bootstrap": ">=4.3.1",
     "chart.js": "^2.8.0",
     "datatables.net": "^1.10.19",
     "datatables.net-buttons": "^1.5.6",
     "datatables.net-buttons-bs4": "^1.5.6",
-    "fast-csv": "^3.0.1",
+    "fast-csv": "^3.1.0",
     "file-saver": "^2.0.2",
     "fullcalendar": "^3.10.0",
     "jquery": "^3.4.1",
@@ -27,7 +27,7 @@
     "node-emoji": "^1.10.0",
     "popper.js": "^1.15.0",
     "randomcolor": "^0.5.4",
-    "tether": "^1.4.6",
+    "tether": "^1.4.7",
     "tiny-date-picker": "^3.2.8"
   },
   "devDependencies": {
@@ -36,7 +36,7 @@
     "eslint": "^6.0.1",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-import-resolver-meteor": "^0.4.0",
-    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-import": "^2.18.1",
     "eslint-plugin-meteor": "^5.1.0",
     "quill": "^1.3.6"
   }

@@ -1,0 +1,160 @@
+// @import "{}/node_modules/bootstrap/scss/bootstrap.scss";
+@import "{}/node_modules/bootstrap/scss/functions";
+@import "{}/node_modules/bootstrap/scss/variables";
+@import "{}/node_modules/bootstrap/scss/mixins";
+@import "{}/node_modules/bootstrap/scss/root";
+@import "{}/node_modules/bootstrap/scss/reboot";
+@import "{}/node_modules/bootstrap/scss/type";
+@import "{}/node_modules/bootstrap/scss/images";
+// @import "code";
+@import "{}/node_modules/bootstrap/scss/grid";
+@import "{}/node_modules/bootstrap/scss/tables";
+@import "{}/node_modules/bootstrap/scss/forms";
+@import "{}/node_modules/bootstrap/scss/buttons";
+// @import "transitions";
+@import "{}/node_modules/bootstrap/scss/dropdown";
+@import "{}/node_modules/bootstrap/scss/button-group";
+@import "{}/node_modules/bootstrap/scss/input-group";
+// @import "custom-forms";
+@import "{}/node_modules/bootstrap/scss/nav";
+@import "{}/node_modules/bootstrap/scss/navbar";
+@import "{}/node_modules/bootstrap/scss/card";
+// @import "breadcrumb";
+@import "{}/node_modules/bootstrap/scss/pagination";
+@import "{}/node_modules/bootstrap/scss/badge";
+// @import "jumbotron";
+@import "{}/node_modules/bootstrap/scss/alert";
+// @import "progress";
+// @import "media";
+@import "{}/node_modules/bootstrap/scss/list-group";
+@import "{}/node_modules/bootstrap/scss/close";
+// @import "toasts";
+@import "{}/node_modules/bootstrap/scss/modal";
+@import "{}/node_modules/bootstrap/scss/tooltip";
+@import "{}/node_modules/bootstrap/scss/popover";
+// @import "carousel";
+// @import "spinners";
+@import "{}/node_modules/bootstrap/scss/utilities";
+@import "{}/node_modules/bootstrap/scss/print";
+
+.custom-control-input {
+  &:active {
+   background-color: #009688;
+ }
+}
+.navbar .navbar-nav .nav-link {
+  color: white;
+}
+.navbar .navbar-nav {
+  flex-direction: row;
+}
+.navbar .navbar-nav .active {
+    border-bottom: 4px solid map-get($theme-colors, primary);
+    padding-bottom: 4px;
+}
+.navbar .navbar-nav .nav-link {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+.navbar {
+  padding-top: 0.1rem;
+  padding-bottom: 0;
+}
+.navbar-toggler {
+  padding: 0.1rem 0.3rem;
+}
+// underlining feature
+.underline {
+  padding-bottom: 5px;
+  background-position: 0 1.05em;
+  background-repeat: repeat-x;
+  background-size: 1px 5px;
+}
+
+// Fullcalender adjustments
+#cal {
+  margin-top: .5rem;
+  .fc-event {
+    color: #292b2c;
+    font-size: 80%;
+  }
+}
+.fc-event:hover {
+  color: map-get($theme-colors, primary);
+}
+
+// draggable
+.drag {
+  z-index: 1000;
+  & .card-block {
+    padding: .5rem;
+  }
+  &.card {
+    margin-top: .5rem;
+  }
+  &.card:hover {
+    background-color: #eee;
+    cursor: pointer;
+  }
+}
+
+#cal > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2 {
+  font-size: 1.5rem;
+}
+
+.card-block {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+
+.js-project-list > .card:hover {
+  cursor: move;
+}
+
+.dp-selected {
+  background: map-get($theme-colors, primary) !important;
+}
+.dp-day:hover {
+  background: map-get($theme-colors, info) !important;
+}
+.dp-day-today:after {
+  content: '';
+  height: 0 !important;
+  width: 0 !important;
+  border: 7px solid map-get($theme-colors, dark) !important;
+  border-bottom-color: transparent !important;
+  border-left-color: transparent !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+}
+.dp:before {
+  background: map-get($theme-colors, primary) !important;
+}
+.pickr .pcr-button {
+  height: 100% !important;
+}
+.dt-buttons {
+  padding-left: 15px;
+}
+.ql-container.ql-snow {
+  border-radius: 0 0 0.25rem 0.25rem !important;
+}
+.ql-toolbar.ql-snow {
+  border-radius: 0.25rem 0.25rem 0 0 !important;
+}
+.ql-container.ql-snow:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 150, 136, 0.25);
+  display: block;
+  color: #495057;
+  border: 1px solid #17ffe9;
+  border-radius: 0 0 0.25rem 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  outline-offset: -2px;
+}

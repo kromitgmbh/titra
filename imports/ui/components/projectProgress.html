@@ -2,7 +2,7 @@
   {{#if Template.subscriptionsReady}}
     {{#if target}}
       <div class="progress w-100" style="border-radius:0;">
-        <div class="progress-bar" role="progressbar" style="background-color:{{colorOpacity color 50}};width:{{percentage}}%" aria-valuenow="{{totalHours}}" aria-valuemin="0" aria-valuemax="{{target}}">{{percentage}} %</div>
+        <div class="progress-bar" role="progressbar" style="background-color:{{colorOpacity color 50}};width:{{percentage}}%;max-width:100%;" aria-valuenow="{{totalHours}}" aria-valuemin="0" aria-valuemax="{{target}}">{{percentage}} %</div>
       </div>
     {{/if}}
   {{/if}}

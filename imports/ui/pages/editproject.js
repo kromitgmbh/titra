@@ -3,6 +3,9 @@ import { FlowRouter } from 'meteor/kadira:flow-router'
 import 'jquery-serializejson'
 import '@simonwep/pickr/dist/themes/monolith.min.css'
 import Pickr from '@simonwep/pickr/dist/pickr.min'
+import 'quill/dist/quill.snow.css'
+import Quill from 'quill'
+
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
@@ -68,10 +71,18 @@ Template.editproject.onRendered(function editprojectRendered() {
   this.pickr.on('change', (color, instance) => {
     $('#color').val(color.toHEXA().toString())
   })
+  this.quill = new Quill('#richDesc', {
+    theme: 'snow',
+  })
   this.autorun(() => {
     if (this.handle && this.handle.ready()) {
       if (Projects.findOne()) {
         this.pickr.setColor(Projects.findOne().color ? Projects.findOne().color : this.color)
+        if (Projects.findOne().desc instanceof Object) {
+          this.quill.setContents(Projects.findOne().desc)
+        } else if (Projects.findOne().desc) {
+          this.quill.setText(Projects.findOne().desc)
+        }
       } else if (FlowRouter.getRouteName() !== 'createProject' && !this.deletion) {
         FlowRouter.go('404')
       }
@@ -89,13 +100,15 @@ Template.editproject.events({
       $('#name').addClass('is-invalid')
       return
     }
+    const projectArray = templateInstance.$('#editProjectForm').serializeArray()
+    projectArray.push({ name: 'desc', value: Template.instance().quill.getContents() })
     if (Meteor.user().profile.timeunit === 'd') {
       templateInstance.$('#target').val(templateInstance.$('#target').val() * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8))
     }
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {
         projectId: FlowRouter.getParam('id'),
-        projectArray: templateInstance.$('#editProjectForm').serializeArray(),
+        projectArray,
       }, (error) => {
         if (!error) {
           $('#name').removeClass('is-invalid')
@@ -106,7 +119,7 @@ Template.editproject.events({
       })
     } else {
       Meteor.call('createProject', {
-        projectArray: templateInstance.$('#editProjectForm').serializeArray(),
+        projectArray,
       }, (error, result) => {
         if (!error) {
           $.notify('Project created successfully')

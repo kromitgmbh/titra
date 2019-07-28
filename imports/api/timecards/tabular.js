@@ -75,13 +75,14 @@ const detailed = new Tabular.Table({
   buttons: [
     {
       text: '<i class="fa fa-plus"></i> Time',
-      className: 'btn-primary',
+      className: 'border',
       action: () => {
         FlowRouter.go('tracktime', { projectId: $('#targetProject').val() })
       },
     },
     {
       extend: 'excelHtml5',
+      className: 'border',
       text: '<i class="fa fa-download"></i> Excel',
       title: `titra_export_${moment(new Date()).format('YYYYMMDD-HHmm')}`,
       exportOptions: {
@@ -90,6 +91,7 @@ const detailed = new Tabular.Table({
     },
     {
       extend: 'csvHtml5',
+      className: 'border',
       text: '<i class="fa fa-download"></i> CSV',
       title: `titra_export_${moment().format('YYYYMMDD-HHmm')}`,
       exportOptions: {
@@ -98,7 +100,7 @@ const detailed = new Tabular.Table({
     },
     {
       text: '<i class="fa fa-link"></i> Share',
-      className: 'btn-primary js-share',
+      className: 'border js-share',
       action: () => {
         if ($('#period').val() === 'all' && $('#targetProject').val() === 'all' && $('#customerselect').val() === 'all') {
           $.notify({ message: 'Sorry, but for your own sanity you can not share all time of all projects. ' }, { type: 'danger' })
@@ -120,7 +122,7 @@ const detailed = new Tabular.Table({
     },
     {
       text: '<i class="fa fa-upload"></i> Invoice',
-      className: 'btn-primary js-siwapp',
+      className: 'border js-siwapp',
       action: () => {
         if (Meteor.user().profile.siwappurl && Meteor.user().profile.siwapptoken) {
           Meteor.call('sendToSiwapp', {

@@ -103,6 +103,8 @@ Template.tracktime.events({
           $.notify('Time entry updated successfully')
           $(event.currentTarget).text(buttonLabel)
           $(event.currentTarget).prop('disabled', false)
+          templateInstance.$('.js-show-timecards').removeClass('d-none')
+          templateInstance.$('[data-toggle="tooltip"]').tooltip()
           // window.history.back()
         }
       })
@@ -120,6 +122,8 @@ Template.tracktime.events({
           $.notify('Time entry saved successfully')
           $(event.currentTarget).text(buttonLabel)
           $(event.currentTarget).prop('disabled', false)
+          templateInstance.$('.js-show-timecards').removeClass('d-none')
+          templateInstance.$('[data-toggle="tooltip"]').tooltip()
         }
       })
     }

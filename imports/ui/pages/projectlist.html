@@ -1,6 +1,6 @@
 <template name="projectlist">
   {{#if moreThanOneProject}}
-    <div class="card mb-3" style="background: rgba(0,112,101,0.05)">
+    <div class="card mb-3 all-projects-bg">
       <div class="card-header">All projects</div>
       <div class="card-body">
         <!-- <h6 class="card-subtitle mb-1">All projects</h6> -->
@@ -13,7 +13,7 @@
           <hr/>
           <div class="row mt-2" id="{{project._id}}">
             <div class="col-3 col-offset-9">
-              <a href="/list/timecards/all" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
+              <a href="/list/timecards/all" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
             </div>
           </div>
           <!-- </div>
@@ -56,27 +56,27 @@
               <div class="row mt-2" id="{{project._id}}">
                 {{#if archived (project._id)}}
                   <div class="col-3">
-                    <button class="btn btn-secondary btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="d-none d-md-inline">Restore</span></button>
+                    <button class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="d-none d-md-inline">Restore</span></button>
                   </div>
                 {{else}}
                   <div class="col-3">
-                    <a href="/tracktime/{{project._id}}" class="btn btn-secondary btn-block"><i class="fa fa-plus"></i> <span class="d-none d-md-inline">Time</span></a>
+                    <a href="/tracktime/{{project._id}}" class="btn btn-secondary border btn-block"><i class="fa fa-plus"></i> <span class="d-none d-md-inline">Time</span></a>
                   </div>
                 {{/if}}
                 <div class="col-3">
-                  <a href="/list/timecards/{{project._id}}" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
+                  <a href="/list/timecards/{{project._id}}" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
                 </div>
                 {{#if isProjectOwner (project._id)}}
                   <div class="col-3">
-                    <button class="btn btn-secondary btn-block js-edit-project"><i class="fa fa-edit"></i> <span class="d-none d-md-inline">Edit</span></button>
+                    <button class="btn btn-secondary border btn-block js-edit-project"><i class="fa fa-edit"></i> <span class="d-none d-md-inline">Edit</span></button>
                   </div>
                   {{#if archived (project._id)}}
                   <div class="col-3">
-                    <button class="btn btn-secondary btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">Delete</span></button>
+                    <button class="btn btn-secondary border btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">Delete</span></button>
                   </div>
                   {{else}}
                   <div class="col-3">
-                    <button class="btn btn-secondary btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">Archive</span></button>
+                    <button class="btn btn-secondary border btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">Archive</span></button>
                   </div>
                   {{/if}}
                 {{/if}}
