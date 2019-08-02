@@ -6,32 +6,32 @@ import '../components/backbutton.js'
 Template.settings.helpers({
   name: () => (Meteor.user() ? Meteor.user().profile.name : false),
   unit() {
-    if (Meteor.user()) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
     }
     return false
   },
   timetrackview() {
-    if (Meteor.user()) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd'
     }
     return false
   },
   hoursToDays() {
-    if (Meteor.user()) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       return Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8
     }
     return false
   },
   displayHoursToDays: () => Template.instance().displayHoursToDays.get(),
   enableWekan() {
-    if (Meteor.user()) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       return Meteor.user().profile ? Meteor.user().profile.enableWekan : false
     }
     return false
   },
   precision() {
-    if (Meteor.user()) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       return Meteor.user().profile.precision ? Meteor.user().profile.precision : '2'
     }
     return false
@@ -73,7 +73,7 @@ Template.settings.events({
 Template.settings.onCreated(function settingsCreated() {
   this.displayHoursToDays = new ReactiveVar()
   this.autorun(() => {
-    if (Meteor.user()) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       if (Meteor.user().profile) {
         this.displayHoursToDays.set(Meteor.user().profile.timeunit === 'd')
       }
@@ -91,7 +91,7 @@ Template.settings.onRendered(function settingsRendered() {
     })
   })
   this.autorun(() => {
-    if (Meteor.user()) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       $('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h')
       $('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
       $('#theme').val(Meteor.user().profile.theme ? Meteor.user().profile.theme : 'auto')

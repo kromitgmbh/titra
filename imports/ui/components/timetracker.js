@@ -16,7 +16,7 @@ Template.timetracker.events({
   'click .js-stop': (event, templateInstance) => {
     event.preventDefault()
     let precision = 2
-    if (Meteor.user()) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
     }
     $('#hours').val(moment.duration(moment().valueOf() - templateInstance.timer.get().valueOf()).asHours().toFixed(precision))

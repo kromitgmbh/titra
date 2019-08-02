@@ -176,7 +176,7 @@ Template.dashboard.helpers({
     if (Dashboards.findOne()) {
       if (Dashboards.findOne().timeunit === 'd') {
         let precision = 2
-        if (Meteor.user()) {
+        if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
           precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
         }
         return Dashboards.findOne().hoursToDays

@@ -1,5 +1,6 @@
 import { Template } from 'meteor/templating'
 import emoji from 'node-emoji'
+import isDarkMode from 'is-dark'
 import Projects from '../../api/projects/projects.js'
 
 $.notifyDefaults({
@@ -11,16 +12,26 @@ $.notifyDefaults({
   },
 })
 Meteor.startup(() => {
-  if (Meteor.user().profile) {
-    if (Meteor.user().profile.theme === 'dark') {
+  Tracker.autorun(() => {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
+      if (Meteor.user().profile.theme === 'dark') {
+        import('../../ui/styles/dark.scss')
+      } else if (Meteor.user().profile.theme === 'light') {
+        import('../../ui/styles/light.scss')
+      } else if (isDarkMode()) {
+          import('../../ui/styles/dark.scss')
+      } else {
+        import('../../ui/styles/light.scss')
+      }
+    } else if (isDarkMode()) {
       import('../../ui/styles/dark.scss')
+    } else {
+      import('../../ui/styles/light.scss')
     }
-  } else {
-    import('../../ui/styles/light.scss')
-  }
+  })
 })
 Template.registerHelper('unit', () => {
-  if (Meteor.user()) {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
     return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
   }
   return false
@@ -33,19 +44,19 @@ Template.registerHelper('emojify', (text) => {
   return false
 })
 Template.registerHelper('timeunit', () => {
-  if (Meteor.user()) {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
     return Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h'
   }
   return false
 })
 Template.registerHelper('timetrackview', () => {
-  if (Meteor.user()) {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
     return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd'
   }
   return false
 })
 Template.registerHelper('timeInUserUnit', (time) => {
-  if (Meteor.user()) {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
     const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
     if (Meteor.user().profile.timeunit === 'd') {
       const convertedTime = Number(time / (Meteor.user().profile.hoursToDays

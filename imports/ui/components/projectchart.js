@@ -27,7 +27,7 @@ Template.projectchart.onCreated(function projectchartCreated() {
 Template.projectchart.helpers({
   totalHours() {
     let precision = 2
-    if (Meteor.user()) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
     }
     return ProjectStats.findOne({ _id: Template.instance().data.projectId })
@@ -81,7 +81,7 @@ Template.projectchart.helpers({
 Template.projectchart.onRendered(function projectchartRendered() {
   const templateInstance = Template.instance()
   let precision = 2
-  if (Meteor.user()) {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
     precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
   }
   import('chart.js').then((chartModule) => {

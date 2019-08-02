@@ -27,7 +27,7 @@ Template.periodtimetable.helpers({
       .reduce(((total, element) => total + element.totalHours), 0)
   },
   userTimeUnit() {
-    if (Meteor.user().profile) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       return Meteor.user().profile.timeunit === 'd' ? 'Days' : 'Hours'
     }
     return false

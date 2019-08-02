@@ -23,7 +23,7 @@ Template.dailytimetable.helpers({
     return Template.instance().dailyTimecards.get()
   },
   userTimeUnit() {
-    if (Meteor.user().profile) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       return Meteor.user().profile.timeunit === 'd' ? 'Days' : 'Hours'
     }
     return false

@@ -36,7 +36,7 @@ Template.allprojectschart.helpers({
 Template.allprojectschart.onRendered(function allprojectschartRendered() {
   const templateInstance = Template.instance()
   let precision = 2
-  if (Meteor.user()) {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
     precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
   }
   import('chart.js').then((chartModule) => {

@@ -12,7 +12,7 @@ Template.projectProgress.onCreated(function projectProgressCreated() {
 Template.projectProgress.helpers({
   totalHours() {
     let precision = 2
-    if (Meteor.user()) {
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
     }
     const projectStats = ProjectStats.findOne({ _id: Template.currentData()._id })
