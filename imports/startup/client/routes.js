@@ -15,54 +15,63 @@ if (!Meteor.settings.public.sandstorm) {
 }
 FlowRouter.route('/', {
   action() {
+    document.title = 'titra - overview'
     BlazeLayout.render('appLayout', { main: 'projectlist' })
   },
   name: 'projectlist',
 })
 FlowRouter.route('/tracktime/:projectId?', {
   action() {
+    document.title = 'titra - track time'
     BlazeLayout.render('appLayout', { main: 'tracktimemain' })
   },
   name: 'tracktime',
 })
 FlowRouter.route('/edit/timecard/:tcid', {
   action() {
+    document.title = 'titra - edit time'
     BlazeLayout.render('appLayout', { main: 'tracktime' })
   },
   name: 'edittime',
 })
 FlowRouter.route('/list/projects', {
   action() {
+    document.title = 'titra - overview'
     BlazeLayout.render('appLayout', { main: 'projectlist' })
   },
   name: 'projectlist',
 })
 FlowRouter.route('/edit/project/:id', {
   action() {
+    document.title = 'titra - edit project'
     BlazeLayout.render('appLayout', { main: 'editproject' })
   },
   name: 'editproject',
 })
 FlowRouter.route('/create/project/', {
   action() {
+    document.title = 'titra - create project'
     BlazeLayout.render('appLayout', { main: 'editproject' })
   },
   name: 'createProject',
 })
 FlowRouter.route('/list/timecards/:projectId', {
   action() {
+    document.title = 'titra - details'
     BlazeLayout.render('appLayout', { main: 'timecardlist' })
   },
   name: 'timecards',
 })
 FlowRouter.route('/settings', {
   action() {
+    document.title = 'titra - settings'
     BlazeLayout.render('appLayout', { main: 'settings' })
   },
   name: 'settings',
 })
 FlowRouter.route('/dashboard/:_id', {
   action() {
+    document.title = 'titra - dashboard'
     BlazeLayout.render('appLayout', { main: 'dashboard' })
   },
   name: 'dashboard',

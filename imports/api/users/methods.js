@@ -1,3 +1,5 @@
+import { checkAuthentication } from '../../utils/server_method_helpers.js'
+
 Meteor.methods({
   updateSettings({
     name,
@@ -21,6 +23,7 @@ Meteor.methods({
     check(siwapptoken, String)
     check(siwappurl, String)
     check(theme, String)
+    checkAuthentication(this)
     Meteor.users.update({ _id: this.userId }, {
       $set: {
         'profile.name': name,

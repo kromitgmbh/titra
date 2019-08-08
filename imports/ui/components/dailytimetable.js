@@ -4,18 +4,26 @@ import './dailytimetable.html'
 Template.dailytimetable.onCreated(function dailytimetablecreated() {
   this.dailyTimecards = new ReactiveVar([])
   Tracker.autorun(() => {
-    Meteor.call('getDailyTimecards',
-      {
-        projectId: this.data.project.get(),
-        userId: this.data.resource.get(),
-        period: this.data.period.get(),
-      }, (error, result) => {
-        if (error) {
-          console.error(error)
-        } else {
-          this.dailyTimecards.set(result)
-        }
-      })
+    if (this.data.project.get()
+      && this.data.resource.get()
+      && this.data.period.get()
+      && this.data.limit.get()
+      && this.data.customer.get()) {
+      Meteor.call('getDailyTimecards',
+        {
+          projectId: this.data.project.get(),
+          userId: this.data.resource.get(),
+          period: this.data.period.get(),
+          limit: this.data.limit.get(),
+          customer: this.data.customer.get(),
+        }, (error, result) => {
+          if (error) {
+            console.error(error)
+          } else {
+            this.dailyTimecards.set(result)
+          }
+        })
+    }
   })
 })
 Template.dailytimetable.helpers({

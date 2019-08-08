@@ -1,5 +1,6 @@
 import { Dashboards } from './dashboards'
-import periodToDates from '../../utils/periodHelpers.js'
+import { periodToDates } from '../../utils/periodHelpers.js'
+import { checkAuthentication } from '../../utils/server_method_helpers.js'
 
 Meteor.methods({
   addDashboard({
@@ -12,15 +13,16 @@ Meteor.methods({
     check(timePeriod, String)
     check(resourceId, String)
     check(customer, String)
+    checkAuthentication(this)
     const { startDate, endDate } = periodToDates(timePeriod)
     const meteorUser = Meteor.users.findOne({ _id: this.userId })
     let timeunit = 'h'
     let hoursToDays = 8
     if (meteorUser.profile.timeunit) {
-      timeunit = meteorUser.profile.timeunit
+      ({ timeunit } = meteorUser.profile.timeunit)
     }
     if (meteorUser.profile.hoursToDays) {
-      hoursToDays = meteorUser.profile.hoursToDays
+      ({ hoursToDays } = meteorUser.profile.hoursToDays)
     }
     const _id = Random.id()
     Dashboards.insert({

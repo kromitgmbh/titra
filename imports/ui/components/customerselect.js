@@ -5,7 +5,9 @@ import Customers from '../../api/customers/customers.js'
 Template.customerselect.onRendered(() => {
   // this.resources = new ReactiveVar()
   Template.instance().autorun(() => {
-    Template.instance().subscribe('projectCustomers', { projectId: Template.currentData().get() })
+    if (Template.currentData().get()) {
+      Template.instance().subscribe('projectCustomers', { projectId: Template.currentData().get() })
+    }
   })
 })
 

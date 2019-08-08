@@ -149,7 +149,7 @@ const detailed = new Tabular.Table({
       return typeof i === 'number' ? i : 0
     }
     let pageTotal
-    if ($('.show.active')[0].id === 'detailed') {
+    if (($('.show.active')[0] && $('.show.active')[0].id === 'detailed') || (FlowRouter.getQueryParam('activeTab') === 'detailed-tab')) {
       pageTotal = api
         .column(4, { page: 'current' })
         .data()

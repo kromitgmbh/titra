@@ -1,16 +1,15 @@
 import moment from 'moment'
 import emoji from 'node-emoji'
 import Timecards from '../timecards/timecards'
-import Projects from '../projects/projects'
+import Projects from './projects.js'
+import { checkAuthentication } from '../../utils/server_method_helpers.js'
 import { addNotification } from '../notifications/notifications.js'
 
 const replacer = match => emoji.emojify(match)
 
 Meteor.methods({
   getAllProjectStats() {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
+    checkAuthentication(this)
     const projectList = Projects.find(
       { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
@@ -53,9 +52,9 @@ Meteor.methods({
     }
   },
   updateProject({ projectId, projectArray }) {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
+    check(projectId, String)
+    check(projectArray, Array)
+    checkAuthentication(this)
     const updateJSON = {}
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
@@ -69,9 +68,8 @@ Meteor.methods({
     Projects.update({ userId: this.userId, _id: projectId }, { $set: updateJSON })
   },
   createProject({ projectArray }) {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
+    check(projectArray, Array)
+    checkAuthentication(this)
     const updateJSON = {}
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
@@ -88,10 +86,8 @@ Meteor.methods({
     return updateJSON._id
   },
   deleteProject({ projectId }) {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
     check(projectId, String)
+    checkAuthentication(this)
     Projects.remove({
       $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
       _id: projectId,
@@ -99,25 +95,20 @@ Meteor.methods({
     return true
   },
   archiveProject({ projectId }) {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
     check(projectId, String)
+    checkAuthentication(this)
     Projects.update({ _id: projectId }, { $set: { archived: true } })
     return true
   },
   restoreProject({ projectId }) {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
     check(projectId, String)
+    checkAuthentication(this)
     Projects.update({ _id: projectId }, { $set: { archived: false } })
     return true
   },
   getTopTasks({ projectId }) {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
+    check(projectId, String)
+    checkAuthentication(this)
     const projectList = Projects.find(
       { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
@@ -132,6 +123,7 @@ Meteor.methods({
   addTeamMember({ projectId, eMail }) {
     check(projectId, String)
     check(eMail, String)
+    checkAuthentication(this)
     if (!this.userId) {
       throw new Meteor.Error('You have to be signed in to use this method.')
     }
@@ -150,9 +142,7 @@ Meteor.methods({
   removeTeamMember({ projectId, userId }) {
     check(projectId, String)
     check(userId, String)
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
+    checkAuthentication(this)
     const targetProject = Projects.findOne({ _id: projectId })
     if (!targetProject || targetProject.userId !== this.userId) {
       throw new Meteor.Error('Only the project owner can remove team members')
@@ -163,9 +153,7 @@ Meteor.methods({
   updatePriority({ projectId, priority }) {
     check(projectId, String)
     check(priority, Number)
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
+    checkAuthentication(this)
     Projects.update({ _id: projectId }, { $set: { priority } })
     return 'Project priority updated successfully'
   },

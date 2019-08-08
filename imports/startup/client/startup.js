@@ -11,6 +11,7 @@ $.notifyDefaults({
     align: 'center',
   },
 })
+
 Meteor.startup(() => {
   Tracker.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {

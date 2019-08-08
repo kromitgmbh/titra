@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import emoji from 'node-emoji'
@@ -10,12 +11,14 @@ import hex2rgba from '../../utils/hex2rgba.js'
 
 Template.calendar.onCreated(function calendarCreated() {
   this.subscribe('myprojects')
+  this.startDate = new ReactiveVar(moment().startOf('month').toDate())
+  this.endDate = new ReactiveVar(moment().endOf('month').toDate())
 })
 
 Template.calendar.onRendered(function trackmonthRendered() {
   const replacer = match => emoji.emojify(match)
   const safeReplacer = transform => transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
-
+  const templateInstance = Template.instance()
   import('fullcalendar').then(() => {
     // import 'fullcalendar/dist/locale-all.js'
     import 'fullcalendar/dist/fullcalendar.css'
@@ -30,55 +33,70 @@ Template.calendar.onRendered(function trackmonthRendered() {
     import 'jquery-ui/ui/widgets/mouse.js'
     import 'jquery-ui/ui/widgets/draggable.js'
     //
-    this.fc = $('#cal')
-    this.autorun(() => {
-      // let periodTimecardsSub = self.subscribe('periodTimecards',
-      // {startDate: moment().startOf('month').toDate(),
-      // endDate: moment().endOf('month').toDate(), userId: 'all'})
-      this.fc.fullCalendar({
-        // header: { center: 'month,basicWeek' },
-        firstDay: 1,
-        droppable: true,
-        drop: function dropEvent(date) {
-          FlowRouter.go(`/tracktime/${$(this).data('id')}?date=${date.format()}`)
-        },
-        eventClick: (calEvent, jsEvent, view) => {
-          $('.tooltip').tooltip('dispose')
-          FlowRouter.go(`/edit/timecard/${calEvent.id}`)
-        },
-        dayClick: (date, jsEvent, view) => {
-          FlowRouter.go(`/tracktime/?date=${date.format()}&view=d`)
-        },
-        eventRender: (event, element, view) => {
-          // element.text('bala')
-          if (window.innerWidth >= 768) {
-            element.tooltip({
-              html: true,
-              placement: 'right',
-              trigger: 'hover',
-              title: `<table><tr><td style="">${safeReplacer(event.title)}</td></tr><tr><td>${event.hours} hours</td></tr></table>`,
-            })
-          }
-        },
-        events: (start, end, tz, callback) => {
-          // subscribe only to specified date range
-          this.periodTimecardsSub = this.subscribe('periodTimecards', { startDate: start.toDate(), endDate: end.toDate(), userId: Meteor.userId() })
-          // find all, because we've already subscribed to a specific range
-          const events = Timecards.find().map(it => (
-            {
-              id: it._id,
-              title: it.task,
-              start: it.date,
-              hours: it.hours,
-              color: hex2rgba(Projects.findOne({ _id: it.projectId }).color ? Projects.findOne({ _id: it.projectId }).color : '#009688', 40),
-              // url: `/edit/timecard/${it._id}`,
-              allDay: true,
-            }))
-          callback(events)
-        },
-      })
-      if (this.periodTimecardsSub.ready()) {
-        this.fc.fullCalendar('refetchEvents')
+    templateInstance.fc = $('#cal')
+
+    // let periodTimecardsSub = self.subscribe('periodTimecards',
+    // {startDate: moment().startOf('month').toDate(),
+    // endDate: moment().endOf('month').toDate(), userId: 'all'})
+    templateInstance.fc.fullCalendar({
+      // header: { center: 'month,basicWeek' },
+      firstDay: 1,
+      droppable: true,
+      defaultDate: moment(FlowRouter.getQueryParam('date')).startOf('month'),
+      drop: function dropEvent(date) {
+        FlowRouter.go(`/tracktime/${$(this).data('id')}?date=${date.format()}`)
+      },
+      eventClick: (calEvent, jsEvent, view) => {
+        $('.tooltip').tooltip('dispose')
+        FlowRouter.go(`/edit/timecard/${calEvent.id}`)
+      },
+      dayClick: (date, jsEvent, view) => {
+        FlowRouter.go(`/tracktime/?date=${date.format()}&view=d`)
+      },
+      eventRender: (event, element, view) => {
+        if (window.innerWidth >= 768) {
+          element.tooltip({
+            html: true,
+            placement: 'right',
+            trigger: 'hover',
+            title: `<span>${safeReplacer(event.title)}: ${event.hours} hours</span>`,
+          })
+        }
+      },
+      events: (start, end, tz, callback) => {
+        const events = Timecards.find(
+          {
+            date: {
+              $gte: templateInstance.startDate.get(),
+              $lte: templateInstance.endDate.get(),
+            },
+          },
+        ).map(it => (
+          {
+            id: it._id,
+            title: it.task,
+            start: it.date,
+            hours: it.hours,
+            color: hex2rgba(Projects.findOne({ _id: it.projectId }).color ? Projects.findOne({ _id: it.projectId }).color : '#009688', 40),
+            // url: `/edit/timecard/${it._id}`,
+            allDay: true,
+          }))
+        callback(events)
+      },
+      viewRender: (view) => {
+        templateInstance.startDate.set(view.start.toDate())
+        templateInstance.endDate.set(view.end.toDate())
+      },
+    })
+    templateInstance.autorun(() => {
+      this.periodTimecardsSub = templateInstance.subscribe('periodTimecards',
+        {
+          startDate: templateInstance.startDate.get(),
+          endDate: templateInstance.endDate.get(),
+          userId: Meteor.userId(),
+        })
+      if (templateInstance.periodTimecardsSub.ready()) {
+        templateInstance.fc.fullCalendar('refetchEvents')
         $('.drag').draggable({
           revert: true,
           revertDuration: 0,

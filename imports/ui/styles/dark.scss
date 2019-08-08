@@ -18,6 +18,8 @@ $card-cap-bg: #404040 !default;
 $card-border-color: #404040 !default;
 $list-group-bg: #303030 !default;
 $list-group-color: $gray-900 !default;
+$list-group-hover-bg: #404040 !default;
+$list-group-action-hover-color: $gray-900 !default;
 $input-bg: map-get($theme-colors, secondary) !default;
 $input-color: $gray-900 !default;
 $nav-tabs-link-active-color: $gray-900 !default;

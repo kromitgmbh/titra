@@ -1,9 +1,11 @@
 import Timecards from '../../timecards/timecards.js'
 import Projects from '../../projects/projects.js'
 import { Dashboards } from '../../dashboards/dashboards'
+import { checkAuthentication } from '../../../utils/server_method_helpers.js'
 
 Meteor.publish('projectUsers', function projectUsers({ projectId }) {
   check(projectId, String)
+  checkAuthentication(this)
   let userIds = []
   let handle
   let initializing = true
@@ -61,44 +63,29 @@ Meteor.publish('projectUsers', function projectUsers({ projectId }) {
     })
   }
   uniqueUsers = [...new Set(userIds)]
-  // observeChanges only returns after the initial `added` callbacks
-  // have run. Until then, we don't want to send a lot of
-  // `self.changed()` messages - hence tracking the
-  // `initializing` state.
-  // Instead, we'll send one `self.added()` message right after
-  // observeChanges has returned, and mark the subscription as
-  // ready.
+
   initializing = false
   this.added('projectUsers', projectId, { users: Meteor.users.find({ _id: { $in: uniqueUsers } }, { profile: 1 }).fetch() })
   this.ready()
-  // Stop observing the cursor when client unsubs.
-  // Stopping a subscription automatically takes
-  // care of sending the client any removed messages.
   this.onStop(() => {
     handle.stop()
   })
-  // return Meteor.users.find({ _id: { $in: uniqueUsers } })
 })
 
 Meteor.publish('projectTeam', ({ userIds }) => {
   check(userIds, Array)
+  checkAuthentication(this)
   return Meteor.users.find(
     { _id: { $in: userIds } },
     {
       fields: { 'profile.name': 1 },
     },
   )
-  // return Projects.findOne({ _id: projectId }).team
-  //   ? Meteor.users.find(
-  //     { _id: { $in: Projects.findOne({ _id: projectId }).team } },
-  //     {
-  //       fields: { 'profile.name': 1 },
-  //     },
-  //   ) : false
 })
 
 Meteor.publish('dashboardUser', ({ _id }) => {
   check(_id, String)
+  checkAuthentication(this)
   const dashboard = Dashboards.findOne({ _id })
   return Meteor.users.find({ _id: dashboard.resourceId }, { fields: { 'profile.name': 1 } })
 })

@@ -2,20 +2,17 @@ import moment from 'moment'
 import { check } from 'meteor/check'
 import Projects from '../projects'
 import Timecards from '../../timecards/timecards.js'
+import { checkAuthentication } from '../../../utils/server_method_helpers.js'
 
 Meteor.publish('myprojects', function myProjects() {
-  if (!this.userId) {
-    return this.ready()
-  }
+  checkAuthentication(this)
   return Projects.find({
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
   })
 })
 Meteor.publish('singleProject', function singleProject(projectId) {
   check(projectId, String)
-  if (!this.userId) {
-    return this.ready()
-  }
+  checkAuthentication(this)
   return Projects.find({
     $or: [{ userId: this.userId },
       { public: true },
@@ -25,6 +22,7 @@ Meteor.publish('singleProject', function singleProject(projectId) {
 })
 
 Meteor.publish('myProjectStats', function myProjectStats() {
+  checkAuthentication(this)
   let initializing = true
 
   const currentMonthStart = moment().startOf('month')
@@ -124,6 +122,7 @@ Meteor.publish('myProjectStats', function myProjectStats() {
 
 Meteor.publish('projectStats', function projectStats(projectId) {
   check(projectId, String)
+  checkAuthentication(this)
   if (!this.userId || !Projects.findOne({
     _id: projectId,
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
@@ -165,7 +164,16 @@ Meteor.publish('projectStats', function projectStats(projectId) {
           beforePreviousMonthHours += Number.parseFloat(timecard.hours)
         }
         totalHours += Number.parseFloat(timecard.hours)
-        this.changed('projectStats', projectId, { totalHours, currentMonthName, currentMonthHours, previousMonthHours, previousMonthName, beforePreviousMonthName, beforePreviousMonthHours })
+        this.changed('projectStats', projectId,
+          {
+            totalHours,
+            currentMonthName,
+            currentMonthHours,
+            previousMonthHours,
+            previousMonthName,
+            beforePreviousMonthName,
+            beforePreviousMonthHours,
+          })
       }
     },
     removed: (timecardId) => {
@@ -182,7 +190,16 @@ Meteor.publish('projectStats', function projectStats(projectId) {
           beforePreviousMonthHours += Number.parseFloat(timecard.hours)
         }
         totalHours += Number.parseFloat(timecard.hours)
-        this.changed('projectStats', projectId, { totalHours, currentMonthName, currentMonthHours, previousMonthHours, previousMonthName, beforePreviousMonthName, beforePreviousMonthHours })
+        this.changed('projectStats', projectId,
+          {
+            totalHours,
+            currentMonthName,
+            currentMonthHours,
+            previousMonthHours,
+            previousMonthName,
+            beforePreviousMonthName,
+            beforePreviousMonthHours,
+          })
       }
     },
     changed: (timecardId) => {

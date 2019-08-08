@@ -25,8 +25,8 @@
             No time tracked yet.
           {{/if}}
         </div>
-        {{#if totalTime}}
         <ul class="list-group list-group-flush d-none js-show-timecards">
+          {{#if totalTime}}
             <li class="list-group-item">
               <div class="row">
                 <div class="col-4 col-md-4"><strong>Project</strong></div>
@@ -52,8 +52,8 @@
                 </div>
               </a>
               {{/each}}
+            {{/if}}
           </ul>
-        {{/if}}
       </div>
     {{/unless}}
     <div class="form-group">

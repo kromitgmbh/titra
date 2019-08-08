@@ -6,18 +6,18 @@ import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'
 import Tasks from '../tasks/tasks.js'
 import Projects from '../projects/projects.js'
-import periodToDates from '../../utils/periodHelpers.js'
+import { periodToDates, timeInUserUnit } from '../../utils/periodHelpers.js'
+import {
+  checkAuthentication,
+  getProjectListById,
+  getProjectListByCustomer,
+  totalHoursForPeriodMapper,
+  dailyTimecardMapper,
+  buildTotalHoursForPeriodSelector,
+  buildDailyHoursSelector,
+} from '../../utils/server_method_helpers.js'
 
 const replacer = match => emoji.emojify(match)
-function timeInUserUnit(time, meteorUser) {
-  const precision = meteorUser.profile.precision ? meteorUser.profile.precision : 2
-  if (meteorUser.profile.timeunit === 'd') {
-    const convertedTime = Number(time / (meteorUser.profile.hoursToDays
-      ? meteorUser.profile.hoursToDays : 8)).toFixed(precision)
-    return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
-  }
-  return Number(time).toFixed(precision)
-}
 
 Meteor.methods({
   insertTimeCard({
@@ -26,9 +26,11 @@ Meteor.methods({
     date,
     hours,
   }) {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
+    check(projectId, String)
+    check(task, String)
+    check(date, Date)
+    check(hours, Number)
+    checkAuthentication(this)
     if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })) {
       Tasks.insert({ userId: this.userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, replacer) })
     } else {
@@ -49,9 +51,7 @@ Meteor.methods({
     date,
     hours,
   }) {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
+    checkAuthentication(this)
     if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })) {
       Tasks.insert({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })
     }
@@ -65,22 +65,11 @@ Meteor.methods({
     })
   },
   export({ projectId, timePeriod, userId }) {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
+    checkAuthentication(this)
     const { startDate, endDate } = periodToDates(timePeriod)
     let timecardArray = []
-    let projectList = []
-    if (projectId === 'all') {
-      projectList = Projects.find(
-        {
-          $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
-        },
-        { _id: 1 },
-      ).fetch().map(value => value._id)
-    } else {
-      projectList = [projectId]
-    }
+    const projectList = getProjectListById(projectId)
+
     if (userId !== 'all') {
       timecardArray = Timecards.find({
         userId,
@@ -110,16 +99,10 @@ Meteor.methods({
         }
       })
     })
-    // return new Buffer(json2xls(Timecards.find({ userId: this.userId,
-    //   projectId,
-    //   date: { $gte: startDate, $lte: endDate } }).fetch())).toString('base64')
   },
   deleteTimeCard({ timecardId }) {
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
-    Timecards.remove({ userId: this.userId, _id: timecardId })
-    return true
+    checkAuthentication(this)
+    return Timecards.remove({ userId: this.userId, _id: timecardId })
   },
   sendToSiwapp({
     projectId, timePeriod, userId, customer,
@@ -128,9 +111,7 @@ Meteor.methods({
     check(timePeriod, String)
     check(userId, String)
     check(customer, String)
-    if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
-    }
+    checkAuthentication(this)
     const meteorUser = Meteor.users.findOne({ _id: this.userId })
     if (!meteorUser.profile.siwappurl || !meteorUser.profile.siwapptoken) {
       throw new Meteor.Error('You need to set the siwapp URL & token first.')
@@ -138,22 +119,7 @@ Meteor.methods({
     const { startDate, endDate } = periodToDates(timePeriod)
     const projectMap = new Map()
     if (projectId === 'all') {
-      let projects
-      if (customer === 'all') {
-        projects = Projects.find(
-          {
-            $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
-          },
-          { _id: 1, name: 1 },
-        )
-      } else {
-        projects = Projects.find(
-          {
-            customer, $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
-          },
-          { _id: 1, name: 1 },
-        )
-      }
+      const projects = getProjectListByCustomer(customer)
       projects.forEach((project) => {
         const resourceMap = new Map()
         if (userId !== 'all') {
@@ -246,252 +212,38 @@ Meteor.methods({
     })
     return 'Siwapp invoice created successfully.'
   },
-  getDailyTimecards({ projectId, userId, period }) {
+  getDailyTimecards({
+    projectId,
+    userId,
+    period,
+    customer,
+    limit,
+  }) {
     check(projectId, String)
     check(period, String)
     check(userId, String)
-    // console.log(projectId)
-    let projectList = []
-    if (projectId === 'all') {
-      projectList = Projects.find(
-        {
-          $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
-        },
-        { $fields: { _id: 1 } },
-      ).fetch().map(value => value._id)
-    } else {
-      projectList = [Projects.findOne({ _id: projectId })._id]
-    }
-    if (period && period !== 'all') {
-      const { startDate, endDate } = periodToDates(period)
-      if (userId === 'all') {
-        return Promise.await(Timecards.rawCollection().aggregate([
-          {
-            $match: {
-              projectId: { $in: projectList },
-              date: { $gte: startDate, $lte: endDate },
-            },
-          },
-          {
-            $group: {
-              _id: { userId: '$userId', projectId: '$projectId', date: '$date' },
-              totalHours: { $sum: '$hours' },
-            },
-          },
-          {
-            $sort: {
-              date: -1,
-            },
-          },
-        ]).toArray()).map(
-          (entry => (
-            {
-              projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-              userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-              date: entry._id.date,
-              totalHours: entry.totalHours,
-            })
-          ),
-        )
-      }
-      return Promise.await(Timecards.rawCollection().aggregate([
-        {
-          $match: {
-            projectId: { $in: projectList },
-            date: { $gte: startDate, $lte: endDate },
-            userId,
-          },
-        },
-        {
-          $group: {
-            _id: { userId: '$userId', projectId: '$projectId', date: '$date' },
-            totalHours: { $sum: '$hours' },
-          },
-        },
-        {
-          $sort: {
-            date: -1,
-          },
-        },
-      ]).toArray()).map(
-        (entry => (
-          {
-            projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-            userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-            date: entry._id.date,
-            totalHours: entry.totalHours,
-          })
-        ),
-      )
-    }
-    if (userId === 'all') {
-      return Promise.await(Timecards.rawCollection().aggregate([
-        {
-          $match: {
-            projectId: { $in: projectList },
-          },
-        },
-        {
-          $group: {
-            _id: { userId: '$userId', projectId: '$projectId', date: '$date' },
-            totalHours: { $sum: '$hours' },
-          },
-        },
-        {
-          $sort: {
-            date: -1,
-          },
-        },
-      ]).toArray()).map(
-        (entry => (
-          {
-            projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-            userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-            date: entry._id.date,
-            totalHours: entry.totalHours,
-          })
-        ),
-      )
-    }
-    return Promise.await(Timecards.rawCollection().aggregate([
-      {
-        $match: {
-          projectId: { $in: projectList },
-          userId,
-        },
-      },
-      {
-        $group: {
-          _id: { userId: '$userId', projectId: '$projectId', date: '$date' },
-          totalHours: { $sum: '$hours' },
-        },
-      },
-      {
-        $sort: {
-          date: -1,
-        },
-      },
-    ]).toArray()).map(
-      (entry => (
-        {
-          projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-          userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-          date: entry._id.date,
-          totalHours: entry.totalHours,
-        })
-      ),
-    )
+    check(customer, String)
+    check(limit, Number)
+    checkAuthentication(this)
+    const aggregationSelector = buildDailyHoursSelector(projectId, period, userId, customer, limit)
+    return Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
+      .toArray()).map(dailyTimecardMapper)
   },
-  getTotalHoursForPeriod({ projectId, userId, period }) {
+  getTotalHoursForPeriod({
+    projectId,
+    userId,
+    period,
+    customer,
+    limit,
+  }) {
     check(projectId, String)
     check(period, String)
     check(userId, String)
-    // console.log(projectId)
-    let projectList = []
-    if (projectId === 'all') {
-      projectList = Projects.find(
-        {
-          $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
-        },
-        { $fields: { _id: 1 } },
-      ).fetch().map(value => value._id)
-    } else {
-      projectList = [Projects.findOne({ _id: projectId })._id]
-    }
-    if (period && period !== 'all') {
-      const { startDate, endDate } = periodToDates(period)
-      if (userId === 'all') {
-        return Promise.await(Timecards.rawCollection().aggregate([
-          {
-            $match: {
-              projectId: { $in: projectList },
-              date: { $gte: startDate, $lte: endDate },
-            },
-          },
-          {
-            $group: {
-              _id: { userId: '$userId', projectId: '$projectId' },
-              totalHours: { $sum: '$hours' },
-            },
-          },
-        ]).toArray()).map(
-          (entry => (
-            {
-              projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-              userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-              totalHours: entry.totalHours,
-            })
-          ),
-        )
-      }
-      return Promise.await(Timecards.rawCollection().aggregate([
-        {
-          $match: {
-            projectId: { $in: projectList },
-            date: { $gte: startDate, $lte: endDate },
-            userId,
-          },
-        },
-        {
-          $group: {
-            _id: { userId: '$userId', projectId: '$projectId' },
-            totalHours: { $sum: '$hours' },
-          },
-        },
-      ]).toArray()).map(
-        (entry => (
-          {
-            projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-            userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-            totalHours: entry.totalHours,
-          })
-        ),
-      )
-    }
-    if (userId === 'all') {
-      return Promise.await(Timecards.rawCollection().aggregate([
-        {
-          $match: {
-            projectId: { $in: projectList },
-          },
-        },
-        {
-          $group: {
-            _id: { userId: '$userId', projectId: '$projectId' },
-            totalHours: { $sum: '$hours' },
-          },
-        },
-      ]).toArray()).map(
-        (entry => (
-          {
-            projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-            userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-            totalHours: entry.totalHours,
-          })
-        ),
-      )
-    }
-    return Promise.await(Timecards.rawCollection().aggregate([
-      {
-        $match: {
-          projectId: { $in: projectList },
-          userId,
-        },
-      },
-      {
-        $group: {
-          _id: { userId: '$userId', projectId: '$projectId' },
-          totalHours: { $sum: '$hours' },
-        },
-      },
-    ]).toArray()).map(
-      (entry => (
-        {
-          projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-          userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-          totalHours: entry.totalHours,
-        })
-      ),
-    )
+    check(customer, String)
+    check(limit, Number)
+    checkAuthentication(this)
+    const aggregationSelector = buildTotalHoursForPeriodSelector(projectId, period, userId, customer, limit)
+    return Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
+      .toArray()).map(totalHoursForPeriodMapper)
   },
 })

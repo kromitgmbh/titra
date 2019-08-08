@@ -5,7 +5,7 @@ import dataTableButtons from 'datatables.net-buttons-bs4'
 import html5ExportButtons from 'datatables.net-buttons/js/buttons.html5.js'
 import dataTablesBootstrap from '../components/dataTables.bootstrap4.js'
 import Projects from '../../api/projects/projects.js'
-import periodToDates from '../../utils/periodHelpers.js'
+import { periodToDates } from '../../utils/periodHelpers.js'
 import '../components/dataTables.bootstrap4.scss'
 import './timecardlist.html'
 import '../components/periodpicker.js'
@@ -14,49 +14,61 @@ import '../components/tablecell.js'
 import '../components/customerselect.js'
 import '../components/dailytimetable.js'
 import '../components/periodtimetable.js'
+import '../components/limitpicker.js'
 import '../../api/timecards/tabular.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {
   this.project = new ReactiveVar()
   this.resource = new ReactiveVar()
   this.period = new ReactiveVar()
+  this.limit = new ReactiveVar(10)
   this.customer = new ReactiveVar()
   this.activeTab = new ReactiveVar()
-
   this.autorun(() => {
-    this.project.set(FlowRouter.getParam('projectId'))
+    if (window.BootstrapLoaded.get()) {
+      $(`#${this.activeTab.get()}`).tab('show')
+    }
   })
-  // super hacky, but is needed for Excel export button to show
   window.JSZip = JSZip
   dataTablesBootstrap(window, $)
   dataTableButtons(window, $)
   html5ExportButtons(window, $)
   Meteor.setTimeout(() => {
     $('[data-toggle="tooltip"]').tooltip()
-    $(`#${this.activeTab.get()}`).tab('show')
   }, 1000)
 })
 Template.timecardlist.onRendered(() => {
-  Template.instance().autorun(() => {
-    if (FlowRouter.getQueryParam('resource')) {
-      Template.instance().resource.set(FlowRouter.getQueryParam('resource'))
+  const templateInstance = Template.instance()
+  templateInstance.autorun(() => {
+    if (FlowRouter.getParam('project')) {
+      templateInstance.project.set(FlowRouter.getParam('project'))
     } else {
-      Template.instance().resource.set('all')
+      templateInstance.project.set('all')
+    }
+    if (FlowRouter.getQueryParam('resource')) {
+      templateInstance.resource.set(FlowRouter.getQueryParam('resource'))
+    } else {
+      templateInstance.resource.set('all')
     }
     if (FlowRouter.getQueryParam('period')) {
-      Template.instance().period.set(FlowRouter.getQueryParam('period'))
+      templateInstance.period.set(FlowRouter.getQueryParam('period'))
     } else {
-      Template.instance().period.set('currentMonth')
+      templateInstance.period.set('currentMonth')
     }
     if (FlowRouter.getQueryParam('customer')) {
-      Template.instance().customer.set(FlowRouter.getQueryParam('customer'))
+      templateInstance.customer.set(FlowRouter.getQueryParam('customer'))
     } else {
-      Template.instance().customer.set('all')
+      templateInstance.customer.set('all')
     }
     if (FlowRouter.getQueryParam('activeTab')) {
-      Template.instance().activeTab.set(FlowRouter.getQueryParam('activeTab'))
+      templateInstance.activeTab.set(FlowRouter.getQueryParam('activeTab'))
     } else {
-      Template.instance().activeTab.set('detailed-tab')
+      templateInstance.activeTab.set('detailed-tab')
+    }
+    if (FlowRouter.getQueryParam('limit')) {
+      templateInstance.limit.set(Number(FlowRouter.getQueryParam('limit')))
+    } else {
+      templateInstance.limit.set(25)
     }
   })
 })
@@ -100,6 +112,12 @@ Template.timecardlist.helpers({
   },
   period() {
     return Template.instance().period
+  },
+  limit() {
+    return Template.instance().limit
+  },
+  customer() {
+    return Template.instance().customer
   },
   isActive(tab) {
     return Template.instance().activeTab.get() === tab

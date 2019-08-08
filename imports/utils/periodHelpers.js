@@ -36,5 +36,13 @@ function periodToDates(period) {
   }
   return { startDate, endDate }
 }
-
-export default periodToDates
+function timeInUserUnit(time, meteorUser) {
+  const precision = meteorUser.profile.precision ? meteorUser.profile.precision : 2
+  if (meteorUser.profile.timeunit === 'd') {
+    const convertedTime = Number(time / (meteorUser.profile.hoursToDays
+      ? meteorUser.profile.hoursToDays : 8)).toFixed(precision)
+    return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
+  }
+  return Number(time).toFixed(precision)
+}
+export { periodToDates, timeInUserUnit }

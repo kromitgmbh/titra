@@ -4,18 +4,26 @@ import './periodtimetable.html'
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
   this.periodTimecards = new ReactiveVar([])
   Tracker.autorun(() => {
-    Meteor.call('getTotalHoursForPeriod',
-      {
-        projectId: this.data.project.get(),
-        userId: this.data.resource.get(),
-        period: this.data.period.get(),
-      }, (error, result) => {
-        if (error) {
-          console.error(error)
-        } else {
-          this.periodTimecards.set(result)
-        }
-      })
+    if (this.data.project.get()
+      && this.data.resource.get()
+      && this.data.period.get()
+      && this.data.limit.get()
+      && this.data.customer.get()) {
+      Meteor.call('getTotalHoursForPeriod',
+        {
+          projectId: this.data.project.get(),
+          userId: this.data.resource.get(),
+          period: this.data.period.get(),
+          customer: this.data.customer.get(),
+          limit: this.data.limit.get(),
+        }, (error, result) => {
+          if (error) {
+            console.error(error)
+          } else {
+            this.periodTimecards.set(result)
+          }
+        })
+    }
   })
 })
 Template.periodtimetable.helpers({

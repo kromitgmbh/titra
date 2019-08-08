@@ -33,6 +33,6 @@ $theme-colors: (
   background: map-get($theme-colors, secondary) !important;
 }
 .all-projects-bg {
-  background: rgba(0,112,101,0.05);
+  background: rgba(0,112,101,0.05) !important;
 }
 @import "{}/imports/ui/styles/general.scss";

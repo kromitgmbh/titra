@@ -43,31 +43,3 @@ Meteor.publish('dashboardByIdDetails', (_id) => {
   check(_id, String)
   return Dashboards.find({ _id })
 })
-
-// Meteor.publish('dashboardAggregation', ({ dashboardId }) => {
-//   check(dashboardId, String)
-//   const dashboard = Dashboards.findOne({ _id: dashboardId })
-//   if (!dashboard) {
-//     return this.ready()
-//   }
-//   // console.log(dashboard)
-//   Timecards.rawCollection().aggregate([
-//     {
-//       $match: {
-//         projectId: dashboard.projectId,
-//         date: { $gte: dashboard.startDate, $lte: dashboard.endDate },
-//       },
-//     },
-//     {
-//       $group: {
-//         _id: '$task',
-//         count: { $sum: 1 },
-//         totalHours: { $sum: '$hours' },
-//       },
-//     },
-//     {
-//       $out: 'dashboardAggregation',
-//     },
-//   ])
-//   return dashboardAggregation.find({ dashboardId })
-// })

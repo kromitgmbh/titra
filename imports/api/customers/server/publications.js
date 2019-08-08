@@ -1,8 +1,9 @@
 import Projects from '../../projects/projects.js'
-// import Customers from '../customers.js'
+import { checkAuthentication } from '../../../utils/server_method_helpers.js'
 
 Meteor.publish('projectCustomers', function projectCustomers({ projectId }) {
   check(projectId, String)
+  checkAuthentication(this)
   const customers = []
   if (projectId === 'all') {
     Projects.find(

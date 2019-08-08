@@ -122,6 +122,7 @@ Template.tracktime.events({
           $.notify('Time entry saved successfully')
           $(event.currentTarget).text(buttonLabel)
           $(event.currentTarget).prop('disabled', false)
+          console.log(templateInstance.$('.js-show-timecards'))
           templateInstance.$('.js-show-timecards').removeClass('d-none')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
         }
@@ -234,7 +235,7 @@ Template.tracktimemain.events({
     event.preventDefault()
     templateInstance.timetrackview.set('M')
     FlowRouter.setParams({ projectId: '' })
-    FlowRouter.setQueryParams({ date: null })
+    // FlowRouter.setQueryParams({ date: null })
     FlowRouter.setQueryParams({ view: 'M' })
   },
 })

@@ -5,7 +5,9 @@ import projectUsers from '../../api/users/users.js'
 Template.resourceselect.onCreated(function createResourceSelect() {
   this.resources = new ReactiveVar()
   this.autorun(() => {
-    this.subscribe('projectUsers', { projectId: Template.currentData().get() })
+    if (Template.currentData().get()) {
+      this.subscribe('projectUsers', { projectId: Template.currentData().get() })
+    }
   })
 })
 
