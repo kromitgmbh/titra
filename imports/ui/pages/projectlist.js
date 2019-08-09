@@ -24,39 +24,42 @@ Template.projectlist.onRendered(() => {
       $('[data-toggle="tooltip"]').tooltip()
     }, 1000)
   }
-  import('jquery-ui').then(() => {
-    import('jquery-ui/ui/version.js').then(() => {
-      import('jquery-ui/ui/data.js').then(() => {
-        import('jquery-ui/ui/plugin.js').then(() => {
-          import('jquery-ui/ui/scroll-parent').then(() => {
-            import('jquery-ui/ui/widgets/mouse.js').then(() => {
-              import('jquery-ui/ui/widgets/sortable').then(() => {
-                const projectList = $('.js-project-list')
-                projectList.sortable({
-                  // Only make the .panel-heading child elements support dragging.
-                  // Omit this to make then entire <li>...</li> draggable.
-                  // handle: '.card',
-                  cursor: 'move',
-                  opacity: 0.7,
-                  update: () => {
-                    $('.card', projectList).each((index, elem) => {
-                      const $listItem = $(elem)
-                      const priority = $listItem.index()
-                      const projectId = $listItem.children('.card-body').children('.row.mt-2')[0].id
-                      Meteor.call('updatePriority', { projectId, priority }, (error, result) => {
-                        if (error) {
-                          console.error(error)
-                        }
-                      })
-                      // Persist the new indices.
-                    })
-                  },
-                })
-              })
-            })
-          })
+  import('sortablejs').then((sortableImport) => {
+    const Sortable = sortableImport.default
+    const el = document.querySelector('.js-project-list')
+    Sortable.create(el, {
+      handle: '.handle',
+      onChoose: (evt) => {
+        document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
+          element.classList.add('d-none')
         })
-      })
+        document.querySelectorAll('.progress-bar').forEach((element) => {
+          element.classList.add('d-none')
+        })
+      },
+      // onUnchoose: (evt) => {
+      //   document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
+      //     element.classList.remove('d-none')
+      //   })
+      //   document.querySelectorAll('.progress-bar').forEach((element) => {
+      //     element.classList.remove('d-none')
+      //   })
+      // },
+      onEnd: (evt) => {
+        document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
+          element.classList.remove('d-none')
+        })
+        document.querySelectorAll('.progress-bar').forEach((element) => {
+          element.classList.remove('d-none')
+        })
+        const projectId = $(evt.item).children('.card-body').children('.row.mt-2')[0].id
+        const priority = evt.newIndex
+        Meteor.call('updatePriority', { projectId, priority }, (error, result) => {
+          if (error) {
+            console.error(error)
+          }
+        })
+      },
     })
   })
 })

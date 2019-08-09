@@ -7,4 +7,5 @@ Template.navbar.onRendered(() => {
 
 Template.navbar.helpers({
   isRouteActive: routename => (FlowRouter.getRouteName() === routename ? 'active' : ''),
+  displayLinkText: routename => (FlowRouter.getRouteName() === routename),
 })
