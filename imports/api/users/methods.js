@@ -12,6 +12,7 @@ Meteor.methods({
     siwapptoken,
     siwappurl,
     theme,
+    language,
   }) {
     check(name, String)
     check(unit, String)
@@ -23,6 +24,7 @@ Meteor.methods({
     check(siwapptoken, String)
     check(siwappurl, String)
     check(theme, String)
+    check(language, String)
     checkAuthentication(this)
     Meteor.users.update({ _id: this.userId }, {
       $set: {
@@ -36,6 +38,7 @@ Meteor.methods({
         'profile.siwapptoken': siwapptoken,
         'profile.siwappurl': siwappurl,
         'profile.theme': theme,
+        'profile.language': language,
       },
     })
   },

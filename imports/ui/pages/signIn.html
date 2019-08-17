@@ -1,0 +1,49 @@
+<template name="signIn">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="at-form">
+          <div class="at-title">
+            <h3>{{t "login.sign_in"}}</h3>
+          </div>
+          <div class="alert alert-danger fade notification d-none" role="alert">
+          </div>
+          <div class="at-pwd-form">
+            <form role="form" id="at-pwd-form" novalidate="">
+              <fieldset>
+                <div class="at-input form-group has-feedback">
+                  <label class="control-label" for="at-field-email">
+                    E-mail
+                  </label>
+                  <input type="email" class="form-control" id="at-field-email" name="at-field-email" placeholder="Email" autocapitalize="none" autocorrect="off">
+                  <span class="help-block hide"></span>
+                </div>
+                <div class="at-input form-group has-feedback">
+                  <label class="control-label" for="at-field-password">
+                    {{t "login.password"}}
+                  </label>
+                  <input type="password" class="form-control" id="at-field-password" name="at-field-password" placeholder="{{t 'login.password'}}" autocapitalize="none" autocorrect="off">
+                  <span class="help-block hide"></span>
+                </div>
+                <div class="at-pwd-link">
+                  <p>
+                    <a href="#" id="at-forgotPwd" class="at-link at-pwd">{{t "login.forgot_password"}}</a>
+                  </p>
+                </div>
+                <button class="btn btn-primary form-control" id="signIn">
+                  {{t "login.sign_in"}}
+                </button>
+              </fieldset>
+            </form>
+          </div>
+          <div class="at-signup-link">
+            <p>
+              {{t "login.no_account"}}
+              <a href="/join" id="at-signUp" class="at-link at-signup">{{t "login.register"}}</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

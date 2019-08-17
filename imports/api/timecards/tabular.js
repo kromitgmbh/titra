@@ -1,5 +1,6 @@
 import moment from 'moment'
 import emoji from 'node-emoji'
+import i18next from 'i18next'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { Template } from 'meteor/templating'
 import Tabular from 'meteor/aldeed:tabular'
@@ -14,12 +15,12 @@ const detailed = new Tabular.Table({
   name: 'Detailed',
   collection: Timecards,
   columns: [
-    { data: 'projectId', title: 'Project', render: _id => `<span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:100px" title="${Projects.findOne({ _id }).name}">${Projects.findOne({ _id }).name}</span>` },
-    { data: 'date', title: 'Date', render: val => `<span data-toggle="tooltip" data-placement="top" title="${moment(val).format('ddd DD.MM.YYYY')}">${moment(val).format('DD.MM.YYYY')}</span>` },
-    { data: 'task', title: 'Task', render: val => `<span class="d-inline-block text-truncate" style="max-width:350px;" data-toggle="tooltip" data-placement="top" title="${safeReplacer(val)}">${safeReplacer(val)}</span>` },
+    { data: 'projectId', titleFn: () => i18next.t('globals.project'), render: _id => `<span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:100px" title="${Projects.findOne({ _id }).name}">${Projects.findOne({ _id }).name}</span>` },
+    { data: 'date', titleFn: () => i18next.t('globals.date'), render: val => `<span data-toggle="tooltip" data-placement="top" title="${moment(val).format('ddd DD.MM.YYYY')}">${moment(val).format('DD.MM.YYYY')}</span>` },
+    { data: 'task', titleFn: () => i18next.t('globals.task'), render: val => `<span class="d-inline-block text-truncate" style="max-width:350px;" data-toggle="tooltip" data-placement="top" title="${safeReplacer(val)}">${safeReplacer(val)}</span>` },
     {
       data: 'userId',
-      title: 'Resource',
+      titleFn: () => i18next.t('globals.resource'),
       render: (_id, type, doc) => {
         Meteor.subscribe('projectUsers', { projectId: doc.projectId })
         const resName = projectUsers.findOne({ _id: doc.projectId })
@@ -32,9 +33,9 @@ const detailed = new Tabular.Table({
       data: 'hours',
       titleFn: () => {
         if (Meteor.user()) {
-          return Meteor.user().profile.timeunit === 'd' ? 'Days' : 'Hours'
+          return Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
         }
-        return 'Hours'
+        return i18next.t('globals.hour_plural')
       },
       render: (_id, type, doc) => {
         if (Meteor.user()) {
@@ -49,7 +50,7 @@ const detailed = new Tabular.Table({
       },
     },
     {
-      title: 'Modify',
+      titleFn: () => i18next.t('navigation.edit'),
       data: 'this',
       tmpl: Meteor.isClient && Template.tablecell,
       className: 'text-right',
@@ -74,7 +75,7 @@ const detailed = new Tabular.Table({
   // buttons: ['excelHtml5', 'csvHtml5'],
   buttons: [
     {
-      text: '<i class="fa fa-plus"></i> Time',
+      text: () => `<i class="fa fa-plus"></i> ${i18next.t('navigation.track')}`,
       className: 'border',
       action: () => {
         FlowRouter.go('tracktime', { projectId: $('#targetProject').val() })
@@ -99,18 +100,18 @@ const detailed = new Tabular.Table({
       },
     },
     {
-      text: '<i class="fa fa-link"></i> Share',
+      text: () => `<i class="fa fa-link"></i> ${i18next.t('navigation.share')}`,
       className: 'border js-share',
       action: () => {
         if ($('#period').val() === 'all' && $('#targetProject').val() === 'all' && $('#customerselect').val() === 'all') {
-          $.notify({ message: 'Sorry, but for your own sanity you can not share all time of all projects. ' }, { type: 'danger' })
+          $.notify({ message: i18next.t('notifications.sanity') }, { type: 'danger' })
           return
         }
         Meteor.call('addDashboard', {
           projectId: $('#targetProject').val(), resourceId: $('#resourceselect').val(), customer: $('#customerselect').val(), timePeriod: $('#period').val(),
         }, (error, _id) => {
           if (error) {
-            $.notify({ message: `Dashboard creation failed (error: ${error}).` }, { type: 'danger' })
+            $.notify({ message: i18next.t('notifications.dashboard_creation_failed', { error }) }, { type: 'danger' })
             // console.error(error)
           } else {
             $('#dashboardURL').val(FlowRouter.url('dashboard', { _id }))
@@ -121,7 +122,7 @@ const detailed = new Tabular.Table({
       },
     },
     {
-      text: '<i class="fa fa-upload"></i> Invoice',
+      text: () => `<i class="fa fa-upload"></i> ${i18next.t('navigation.invoice')}`,
       className: 'border js-siwapp',
       action: () => {
         if (Meteor.user().profile.siwappurl && Meteor.user().profile.siwapptoken) {
@@ -129,13 +130,13 @@ const detailed = new Tabular.Table({
             projectId: $('#targetProject').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
           }, (error, result) => {
             if (error) {
-              $.notify({ message: `Export failed (error: ${error}).` }, { type: 'danger' })
+              $.notify({ message: i18next.t('notifications.export_failed', { error }) }, { type: 'danger' })
             } else {
               $.notify(result)
             }
           })
         } else {
-          $.notify({ message: 'You have to configure the Siwapp integration to use this feature.' }, { type: 'danger' })
+          $.notify({ message: i18next.t('notifications.siwapp_configuration') }, { type: 'danger' })
         }
       },
     },
@@ -167,7 +168,8 @@ const detailed = new Tabular.Table({
           ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
       }
     }
-    $('tfoot').html(`<tr><th></th><th></th><th></th><th style='text-align:right'>Sum:</th><th>${pageTotal}</th><th></th></tr>`)
+    $('tfoot').html(`<tr><th></th><th></th><th></th><th style='text-align:right'>${i18next.t('globals.sum')}:</th><th>${pageTotal}</th><th></th></tr>`)
   },
 })
+
 export default detailed

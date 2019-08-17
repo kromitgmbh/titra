@@ -47,7 +47,7 @@ $pagination-disabled-bg: #303030 !default;
   color: $gray-900 !important;
 }
 .fc-unthemed td.fc-today {
-  background: map-get($theme-colors, secondary) !important;
+  background: rgba(0, 150, 136, 0.5) !important;
 }
 .drag.card:hover {
     background-color: $gray-900 !important;

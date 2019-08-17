@@ -35,4 +35,7 @@ $theme-colors: (
 .all-projects-bg {
   background: rgba(0,112,101,0.05) !important;
 }
+.fc-unthemed td.fc-today {
+  background: rgba(0, 150, 136, 0.5) !important;
+}
 @import "{}/imports/ui/styles/general.scss";

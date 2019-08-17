@@ -1,6 +1,7 @@
 import moment from 'moment'
 import csv from 'fast-csv'
 import emoji from 'node-emoji'
+import i18next from 'i18next'
 import { HTTP } from 'meteor/http'
 import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'
@@ -114,7 +115,7 @@ Meteor.methods({
     checkAuthentication(this)
     const meteorUser = Meteor.users.findOne({ _id: this.userId })
     if (!meteorUser.profile.siwappurl || !meteorUser.profile.siwapptoken) {
-      throw new Meteor.Error('You need to set the siwapp URL & token first.')
+      throw new Meteor.Error(i18next.t('notifications.siwapp_configuration'))
     }
     const { startDate, endDate } = periodToDates(timePeriod)
     const projectMap = new Map()

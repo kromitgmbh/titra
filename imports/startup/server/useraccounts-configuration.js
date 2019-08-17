@@ -6,6 +6,8 @@ Accounts.onCreateUser((options, user) => {
   const localUser = user
   if (options.profile) {
     localUser.profile = options.profile
+    delete localUser.profile.currentLanguageProject
+    delete localUser.profile.currentLanguageProjectDesc
   }
   return localUser
 })

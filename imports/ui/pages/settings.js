@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import moment from 'moment'
+import i18next from 'i18next'
 import './settings.html'
 import '../components/backbutton.js'
 
@@ -54,11 +55,12 @@ Template.settings.events({
       siwapptoken: $('#siwapptoken').val(),
       siwappurl: $('#siwappurl').val(),
       theme: $('#theme').val(),
+      language: $('#language').val(),
     }, (error) => {
       if (error) {
-        $.notify({ message: error }, { type: 'danger' })
+        $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
       } else {
-        $.notify('Settings saved successfully')
+        $.notify(i18next.t('notifications.settings_saved_success'))
       }
     })
   },
@@ -95,6 +97,8 @@ Template.settings.onRendered(function settingsRendered() {
       $('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h')
       $('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
       $('#theme').val(Meteor.user().profile.theme ? Meteor.user().profile.theme : 'auto')
+      $('#language').val(Meteor.user().profile.language ? Meteor.user().profile.language : 'auto')
+
     }
   })
 })

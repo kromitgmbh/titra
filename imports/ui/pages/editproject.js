@@ -3,15 +3,17 @@ import { FlowRouter } from 'meteor/kadira:flow-router'
 import 'jquery-serializejson'
 import '@simonwep/pickr/dist/themes/monolith.min.css'
 import Pickr from '@simonwep/pickr/dist/pickr.min'
-import 'quill/dist/quill.snow.css'
-import Quill from 'quill'
-
+import i18next from 'i18next'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
 
 function validateWekanUrl() {
   const wekanUrl = $('#wekanurl').val()
+  if (!wekanUrl) {
+    $('#wekanurl').addClass('is-invalid')
+    return
+  }
   const authToken = wekanUrl.match(/authToken=(.*)/)[1]
   const url = wekanUrl.substring(0, wekanUrl.indexOf('export?'))
   const templateInstance = Template.instance()
@@ -48,8 +50,9 @@ Template.editproject.onCreated(function editprojectSetup() {
   this.wekanLists = new ReactiveVar()
 })
 Template.editproject.onRendered(function editprojectRendered() {
-  this.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
-  this.pickr = Pickr.create({
+  const templateInstance = Template.instance()
+  templateInstance.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
+  templateInstance.pickr = Pickr.create({
     el: '#pickr',
     theme: 'monolith',
     lockOpacity: true,
@@ -68,28 +71,38 @@ Template.editproject.onRendered(function editprojectRendered() {
       },
     },
   })
-  this.pickr.on('change', (color, instance) => {
+  templateInstance.pickr.on('change', (color, instance) => {
     $('#color').val(color.toHEXA().toString())
   })
-  this.quill = new Quill('#richDesc', {
-    theme: 'snow',
+  import('quill').then((quillImport) => {
+    import('quill/dist/quill.snow.css')
+    templateInstance.quill = new quillImport.default('#richDesc', {
+      theme: 'snow',
+    })
+    if (Projects.findOne().desc instanceof Object && templateInstance.quill) {
+      templateInstance.quill.setContents(Projects.findOne().desc)
+    } else if (Projects.findOne().desc && templateInstance.quill) {
+      templateInstance.quill.setText(Projects.findOne().desc)
+    }
   })
-  this.autorun(() => {
-    if (this.handle && this.handle.ready()) {
+
+  templateInstance.autorun(() => {
+    if (templateInstance.handle && templateInstance.handle.ready()) {
       if (Projects.findOne()) {
-        this.pickr.setColor(Projects.findOne().color ? Projects.findOne().color : this.color)
-        if (Projects.findOne().desc instanceof Object) {
-          this.quill.setContents(Projects.findOne().desc)
-        } else if (Projects.findOne().desc) {
-          this.quill.setText(Projects.findOne().desc)
+        templateInstance.pickr.setColor(Projects.findOne().color
+          ? Projects.findOne().color : this.color)
+        if (Projects.findOne().desc instanceof Object && templateInstance.quill) {
+          templateInstance.quill.setContents(Projects.findOne().desc)
+        } else if (Projects.findOne().desc && templateInstance.quill) {
+          templateInstance.quill.setText(Projects.findOne().desc)
         }
-      } else if (FlowRouter.getRouteName() !== 'createProject' && !this.deletion) {
+      } else if (FlowRouter.getRouteName() !== 'createProject' && !templateInstance.deletion) {
         FlowRouter.go('404')
       }
     }
     if (Projects.findOne()) {
       const userIds = Projects.findOne().team ? Projects.findOne().team : []
-      this.subscribe('projectTeam', { userIds })
+      templateInstance.subscribe('projectTeam', { userIds })
     }
   })
 })
@@ -112,7 +125,7 @@ Template.editproject.events({
       }, (error) => {
         if (!error) {
           $('#name').removeClass('is-invalid')
-          $.notify('Project updated successfully')
+          $.notify(i18next.t('notifications.project_update_success'))
         } else {
           console.error(error)
         }
@@ -122,7 +135,7 @@ Template.editproject.events({
         projectArray,
       }, (error, result) => {
         if (!error) {
-          $.notify('Project created successfully')
+          $.notify(i18next.t('notifications.project_create_success'))
           FlowRouter.go('editproject', { id: result })
         } else {
           console.error(error)
@@ -141,10 +154,10 @@ Template.editproject.events({
     if (newmembermail && emailRegex.test(newmembermail)) {
       Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: $('#newmembermail').val() }, (error, result) => {
         if (error) {
-          $.notify({ message: error.error }, { type: 'danger' })
+          $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
         } else {
           $('#newmembermail').val('')
-          $.notify(result)
+          $.notify(i18next.t(result))
         }
       })
       $('#newmembermail').removeClass('is-invalid')
@@ -157,21 +170,21 @@ Template.editproject.events({
     const userId = event.currentTarget.parentElement.parentElement.id
     Meteor.call('removeTeamMember', { projectId: FlowRouter.getParam('id'), userId }, (error, result) => {
       if (error) {
-        $.notify({ message: error }, { type: 'danger' })
+        $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
       } else {
-        $.notify(result)
+        $.notify(i18next.t(result))
       }
     })
   },
   'click .js-delete-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
-    if (confirm('Do you really want to delete this project?')) {
+    if (confirm(i18next.t('notifications.project_delete_confirm'))) {
       Template.instance().deletion.set(true)
       Meteor.call('deleteProject', { projectId: FlowRouter.getParam('id') }, (error) => {
         if (!error) {
           FlowRouter.go('projectlist')
-          $.notify('Project deleted successfully')
+          $.notify(i18next.t('notifications.project_delete_success'))
         } else {
           console.error(error)
         }
@@ -183,7 +196,7 @@ Template.editproject.events({
     event.stopPropagation()
     Meteor.call('archiveProject', { projectId: FlowRouter.getParam('id') }, (error) => {
       if (!error) {
-        $.notify('Project archived successfully')
+        $.notify(i18next.t('notifications.project_archive_success'))
       } else {
         console.error(error)
       }
@@ -194,7 +207,7 @@ Template.editproject.events({
     event.stopPropagation()
     Meteor.call('restoreProject', { projectId: FlowRouter.getParam('id') }, (error) => {
       if (!error) {
-        $.notify('Project restored successfully')
+        $.notify(i18next.t('notifications.project_restore_success'))
       } else {
         console.error(error)
       }

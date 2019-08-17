@@ -1,6 +1,5 @@
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { BlazeLayout } from 'meteor/kadira:blaze-layout'
-import { AccountsTemplates } from 'meteor/useraccounts:core'
 import '../../ui/layouts/appLayout.js'
 import '../../ui/pages/tracktime.js'
 import '../../ui/pages/projectlist.js'
@@ -8,10 +7,17 @@ import '../../ui/pages/timecardlist.js'
 import '../../ui/pages/editproject.js'
 import '../../ui/pages/settings.js'
 import '../../ui/pages/dashboard.js'
+import '../../ui/pages/signIn.js'
+import '../../ui/pages/register.js'
+import '../../ui/pages/changePassword.js'
 import '../../ui/pages/404.html'
 
 if (!Meteor.settings.public.sandstorm) {
-  FlowRouter.triggers.enter([AccountsTemplates.ensureSignedIn], { except: ['dashboard'] })
+  FlowRouter.triggers.enter([(context, redirect) => {
+    if (!Meteor.loggingIn() && !Meteor.user()) {
+      redirect('/signIn')
+    }
+  }], { except: ['dashboard', 'signIn', 'changePassword', 'register', 'reset-password'] })
 }
 FlowRouter.route('/', {
   action() {
@@ -76,6 +82,24 @@ FlowRouter.route('/dashboard/:_id', {
   },
   name: 'dashboard',
 })
+FlowRouter.route('/join', {
+  action() {
+    BlazeLayout.render('appLayout', { main: 'register' })
+  },
+  name: 'register',
+})
+FlowRouter.route('/signIn', {
+  action() {
+    BlazeLayout.render('appLayout', { main: 'signIn' })
+  },
+  name: 'signIn',
+})
+FlowRouter.route('/changePwd/:token?', {
+  action() {
+    BlazeLayout.render('appLayout', { main: 'changePassword' })
+  },
+  name: 'changePassword',
+})
 FlowRouter.route('/404', {
   action() {
     BlazeLayout.render('appLayout', { main: '404' })
@@ -87,15 +111,15 @@ FlowRouter.notFound = {
     BlazeLayout.render('appLayout', { main: '404' })
   },
 }
-AccountsTemplates.configureRoute('signIn', {
-  name: 'signin',
-  path: '/signin',
-})
-AccountsTemplates.configureRoute('signUp', {
-  name: 'join',
-  path: '/join',
-})
-AccountsTemplates.configureRoute('changePwd', {
-  name: 'changePwd',
-  path: '/changePwd',
-})
+// AccountsTemplates.configureRoute('signIn', {
+//   name: 'signin',
+//   path: '/signin',
+// })
+// AccountsTemplates.configureRoute('signUp', {
+//   name: 'join',
+//   path: '/join',
+// })
+// AccountsTemplates.configureRoute('changePwd', {
+//   name: 'changePwd',
+//   path: '/changePwd',
+// })

@@ -28,7 +28,7 @@
 // @import "media";
 @import "{}/node_modules/bootstrap/scss/list-group";
 @import "{}/node_modules/bootstrap/scss/close";
-// @import "toasts";
+// @import "{}/node_modules/bootstrap/scss/toasts";
 @import "{}/node_modules/bootstrap/scss/modal";
 @import "{}/node_modules/bootstrap/scss/tooltip";
 @import "{}/node_modules/bootstrap/scss/popover";
@@ -157,4 +157,8 @@
   border-radius: 0 0 0.25rem 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   outline-offset: -2px;
+}
+
+#cal > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2 {
+  font-weight: lighter;
 }

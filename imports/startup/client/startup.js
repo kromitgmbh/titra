@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating'
 import emoji from 'node-emoji'
 import isDarkMode from 'is-dark'
+import i18next from 'i18next'
 import Projects from '../../api/projects/projects.js'
 
 $.notifyDefaults({
@@ -11,6 +12,11 @@ $.notifyDefaults({
     align: 'center',
   },
 })
+const i18nextReady = new ReactiveVar(false)
+const i18nextDebugMode = window.location.href.indexOf('localhost') > 0
+let globalT
+
+Template.registerHelper('t', param => (i18nextReady.get() ? globalT(param) : 'Loading ...'))
 
 Meteor.startup(() => {
   Tracker.autorun(() => {
@@ -29,8 +35,63 @@ Meteor.startup(() => {
     } else {
       import('../../ui/styles/light.scss')
     }
+    let language = navigator.language.substring(0, 2)
+    if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.language) {
+      language = Meteor.user().profile.language === 'auto' ? navigator.language.substring(0, 2) : Meteor.user().profile.language
+    }
+    switch (language) {
+      default:
+        import('../../ui/translations/en.json').then((en) => {
+          i18next.init({
+            lng: 'en',
+            debug: i18nextDebugMode,
+            resources: {
+              en: {
+                translation: en.default,
+              },
+            },
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        })
+        break
+      case 'en':
+        import('../../ui/translations/en.json').then((en) => {
+          i18next.init({
+            lng: 'en',
+            debug: i18nextDebugMode,
+            resources: {
+              en: {
+                translation: en.default,
+              },
+            },
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        })
+        break
+      case 'de':
+        import('../../ui/translations/de.json').then((de) => {
+          i18next.init({
+            lng: 'de',
+            debug: i18nextDebugMode,
+            resources: {
+              de: {
+                translation: de.default,
+              },
+            },
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        })
+        break
+    }
   })
 })
+Template.registerHelper('i18nextReady', () => i18nextReady.get())
 Template.registerHelper('unit', () => {
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
     return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
@@ -45,8 +106,15 @@ Template.registerHelper('emojify', (text) => {
   return false
 })
 Template.registerHelper('timeunit', () => {
-  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    return Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h'
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && i18nextReady.get()) {
+    switch (Meteor.user().profile.timeunit) {
+      case 'h':
+        return i18next.t('globals.unit_hour_short')
+      case 'd':
+        return i18next.t('globals.unit_day_short')
+      default:
+        return i18next.t('globals.unit_hour_short')
+    }
   }
   return false
 })
@@ -77,3 +145,5 @@ Template.registerHelper('projectColor', (_id) => {
   return '#d9d9d9'
 })
 Template.registerHelper('isSandstorm', () => Meteor.settings.public.sandstorm)
+
+export default i18nextReady

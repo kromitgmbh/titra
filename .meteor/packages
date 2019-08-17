@@ -28,8 +28,6 @@ dynamic-import@0.5.1
 ostrio:loggerconsole
 faburem:client-server-logger
 email@1.2.3
-useraccounts:bootstrap
 kadira:blaze-layout
 kadira:flow-router
-useraccounts:flow-routing
 http

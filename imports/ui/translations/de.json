@@ -1,0 +1,227 @@
+{
+  "globals": {
+    "unit_day_short": "T",
+    "unit_hour_short": "S",
+    "name": "Name",
+    "description": "Beschreibung",
+    "day": "Tag",
+    "day_plural": "Tage",
+    "month": "Monat",
+    "hour": "Stunde",
+    "hour_plural": "Stunden",
+    "loading": "Lade Daten ...",
+    "project": "Projekt",
+    "task": "Tätigkeit",
+    "time": "Zeit",
+    "date": "Datum",
+    "resource": "Ressource",
+    "customer": "Kunde",
+    "sum": "Summe",
+    "not_found": "Es tut uns leid aber entweder unser Server brennt oder wir können die gewünschte Seite nicht finden.",
+    "color": "Farbe",
+    "email": "E-mail"
+  },
+  "navigation": {
+    "track": "Erfassen",
+    "overview": "Übersicht",
+    "details": "Details",
+    "settings": "Einstellungen",
+    "save": "Speichern",
+    "back": "Zurück",
+    "edit": "Bearbeiten",
+    "archive": "Archivieren",
+    "delete": "Löschen",
+    "restore": "Wiederherstellen",
+    "show_archived": "Archivierte Projekte anzeigen",
+    "change_password": "Passwort ändern",
+    "logout": "Abmelden",
+    "new_project": "Neues Projekt",
+    "close": "Schließen",
+    "share": "Teilen",
+    "invoice": "Rechnung"
+  },
+  "tracktime": {
+    "no_time": "Keine Zeiten erfasst.",
+    "task_placeholder": "Tätigkeit eingeben oder suchen ...",
+    "working_time": "Arbeitszeit ",
+    "time_tracked": "Zeit erfasst: ",
+    "month_drag_help_text": "Sie können ein Projekt auf ein Datum ziehen um Zeiten zu erfassen",
+    "today": "Heute",
+    "actions": "Aktionen",
+    "start_timer": "Stoppuhr starten"
+  },
+  "overview": {
+    "all_projects": "Alle Projekte",
+    "total_time_tracked": "Gesamt erfasste Zeit:",
+    "top_tasks": "Top Tätigkeiten",
+    "three_month_history": "3-Monats-Ansicht",
+    "details_button": "Details",
+    "project_information": "Projekt Informationen",
+    "team": "Team: ",
+    "total_time": "Gesamte Zeit: ",
+    "target": "Ziel: ",
+    "turnover": "Umsatz: ",
+    "number_projects": "Anzahl Projekte"
+  },
+  "project": {
+    "title": "Projekt Bearbeiten",
+    "first_project_desc": "Dieses Projekt wurde automatisch erstellt, Sie können es nach Belieben bearbeiten. Wussten Sie, dass Sie Emojis wie 💰 ⏱ 👍 überall verwenden können?",
+    "customer_placeholder": "Beispiel Kunde",
+    "rate": "Rate",
+    "target": "Ziel / Budget",
+    "wekan_integration": "Wekan Integration",
+    "wekan_help": "Benötigen Sie Hilfe bei der Konfiguration? Werfen Sie einen Blick in unser titra ",
+    "wekan_list": "Bitte wählen Sie die Wekan Liste für die Zeiterfassung aus:",
+    "access_rights": "Berechtigungen",
+    "check": "Prüfen",
+    "add": "Hinzufügen",
+    "access_rights_placeholder": "E-mail Addresse des neuen Team Mitglieds",
+    "public_project": "Öffentliches Projekt (für alle sichtbar)",
+    "owner": "Ersteller",
+    "project_placeholder": "Projekt auswählen",
+    "my_project_placeholder": "Mein Projekt"
+  },
+  "settings": {
+    "user_profile": "Benutzer Profil",
+    "language": "Sprache",
+    "de": "Deutsch",
+    "en": "Englisch",
+    "user_interface": "Benutzeroberfläche",
+    "theme": "Darstellung",
+    "auto_detect": "Automatisch",
+    "light_theme": "Hell",
+    "dark_theme": "Dunkel",
+    "time_tracking": "Zeiterfassung",
+    "track_time_view": "Standardansicht",
+    "time_unit": "Zeiteinheit",
+    "hours_per_day": "Stunden pro Tag",
+    "global_settings": "Globale Einstellungen",
+    "cost_unit": "Leistungseinheit",
+    "decimal_precision": "Nachkommastellen",
+    "integrations": "Schnittstellen",
+    "enable_wekan_integration": "Wekan Schnittstelle aktivieren?",
+    "siwapp_url": "Siwapp URL",
+    "siwapp_api_token": "Siwapp API token",
+    "titra_changelog": "titra Änderungsprotokoll",
+    "titra_changelog_error": "Beim Abrufen des Änderungsprotokolls von Github ist ein Fehler aufgetreten."
+  },
+  "customer": {
+    "select_customer": "Kunde auswählen",
+    "all": "Alle Kunden"
+  },
+  "limit": {
+    "entries": "Einträge anzeigen",
+    "show": "",
+    "all": "Alle"
+  },
+  "period": {
+    "time_period": "Periode",
+    "currentMonth": "Aktueller Monat",
+    "currentWeek": "Aktuelle Woche",
+    "currentYear": "Aktuelles Jahr",
+    "lastMonth": "Letztes Monat",
+    "last3months": "Die letzten 3 Monate",
+    "lastWeek": "Letzte Woche",
+    "lastYear": "Letztes Jahr",
+    "all": "Alles anzeigen"
+  },
+  "resource": {
+    "select": "Ressource auswählen",
+    "all": "Alle Ressourcen"
+  },
+  "task": {
+    "searching": "Nach Tätigkeit suchen ..."
+  },
+  "details": {
+    "filter": "Filter",
+    "detailed": "Detailliert",
+    "daily": "Tage",
+    "total": "Gesamt",
+    "search": "Suchen:"
+  },
+  "dashboard": {
+    "share": "Projekt Dashboard teilen",
+    "copy_instructions": "Den Link oben kopieren um die Projekt Informationen zu teilen.",
+    "security_notice": "Dieses Dashboard ist für jeden über das Internet zugänglich der den Link kennt.",
+    "time_per_date": "Zeit pro Tag",
+    "time_distribution_task": "Zeitverteilung nach Task",
+    "detailed_working_time": "Detaillierte Arbeitszeit"
+  },
+  "tabular": {
+    "sEmptyTable":   	"Keine Daten in der Tabelle vorhanden",
+  	"sInfo":         	"_START_ bis _END_ von _TOTAL_ Einträgen",
+  	"sInfoEmpty":    	"Keine Daten vorhanden",
+  	"sInfoFiltered": 	"(gefiltert von _MAX_ Einträgen)",
+  	"sInfoPostFix":  	"",
+  	"sInfoThousands":  	".",
+  	"sLengthMenu":   	"_MENU_ Einträge anzeigen",
+  	"sLoadingRecords": 	"Wird geladen ..",
+  	"sProcessing":   	"Bitte warten ..",
+  	"sSearch":       	"Suchen",
+  	"sZeroRecords":  	"Keine Einträge vorhanden",
+  	"oPaginate": {
+  		"sFirst":    	"Erste",
+  		"sPrevious": 	"Zurück",
+  		"sNext":     	"Nächste",
+  		"sLast":     	"Letzte"
+  	},
+  	"oAria": {
+  		"sSortAscending":  ": aktivieren, um Spalte aufsteigend zu sortieren",
+  		"sSortDescending": ": aktivieren, um Spalte absteigend zu sortieren"
+  	},
+  	"select": {
+      	"rows": {
+  			"_": "%d Zeilen ausgewählt",
+  			"0": "",
+  			"1": "1 Zeile ausgewählt"
+  	    }
+  	}
+  },
+  "notifications": {
+    "sanity": "Zu Ihrer Sicherheit ist es nicht möglich alle Daten über den gesamten Zeitraum zu teilen.",
+    "dashboard_creation_failed": "Die Erstellung des Dashboards ist fehlgeschlagen (Fehlermeldung: {{error}}).",
+    "export_failed": "Der Export ist fehlgeschlagen (Fehlermeldung: {{error}}).",
+    "siwapp_configuration": "Sie müssen zunächst die Siwapp Schnittstelle konfigurieren um diese Funktion zu verwenden.",
+    "time_entry_deleted": "Eintrag gelöscht",
+    "time_entry_updated": "Eintrag aktualisiert",
+    "time_entry_saved": "Eintrag gespeichert",
+    "project_update_success": "Projekt aktualisiert",
+    "project_create_success": "Projekt erstellt",
+    "project_delete_success": "Projekt gelöscht",
+    "project_archive_success": "Projekt archiviert",
+    "project_restore_success": "Projekt wiederhergestellt",
+    "settings_saved_success": "Einstellungen gespeichert",
+    "enter_time": "Bitte die Arbeitszeit eintragen",
+    "select_project": "Bitte ein Projekt auswählen",
+    "check_time_input": "Bitte überprüfen Sie die eingetragene Zeit",
+    "project_delete_confirm": "Möchten Sie das Projekt wirklich entgültig löschen?",
+    "auth_error_method": "Sie müssen angemeldet sein um diese Funktion zu verwenden.",
+    "only_owner_can_add_team_members": "Nur der Projekt Ersteller kann Team Mitglieder hinzufügen.",
+    "only_owner_can_remove_team_members": "Nur der Projekt Ersteller kann Team Mitglieder entfernen.",
+    "team_member_added_success": "Team Mitglied hinzugefügt.",
+    "team_member_removed_success": "Team Mitglied entfernt.",
+    "user_not_found": "Wir konnten keinen Benutzer mit dieser E-mail Adresse finden, bitte stellen Sie sicher dass der Benutzer existiert.",
+    "project_priority_success": "Projekt Priorität aktualisiert",
+    "password_changed": "Ihr Passwort wurde erfolgreich geändert."
+
+  },
+  "login": {
+    "password": "Passwort",
+    "forgot_password": "Passwort vergessen?",
+    "no_account": "Noch kein Benutzerkonto?",
+    "register": "Registrieren",
+    "sign_in": "Anmelden",
+    "login_or_signup": "Bitte melden Sie sich an um fortzufahren.",
+    "login_failed": "Anmeldung fehlgeschlagen, bitte überprüfen Sie Benutzername und Passwort.",
+    "fullname_placholder": "Vorname und Nachname",
+    "create_account": "Benutzerkonto erstellen",
+    "password_again": "Passwort (wiederholen)",
+    "already_have_account": "Sie haben bereits ein Benutzerkonto? ",
+    "403": "Anmeldung fehlgeschlagen, bitte überprüfen Sie die Zugangsdaten.",
+    "400": "Anmeldung fehlgeschlagen, bitte versuchen Sie es erneut.",
+    "reset_password_mail": "Die weiteren Schritte zum Zurücksetzen des Passworts haben Sie per E-mail erhalten.",
+    "change_password": "Passwort ändern",
+    "current_password": "Aktuelles Passwort",
+    "password_mismatch": "Die eingegebenen Passwörter stimmen nicht überein. Bitte überprüfen Sie Ihre Eingabe."
+  }
+}

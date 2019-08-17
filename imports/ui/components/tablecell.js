@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import './tablecell.html'
 
 Template.tablecell.helpers({
@@ -13,7 +14,7 @@ Template.tablecell.events({
     event.preventDefault()
     Meteor.call('deleteTimeCard', { timecardId: Template.instance().data._id }, (error, result) => {
       if (!error) {
-        $.notify('Time entry deleted')
+        $.notify(i18next.t('notifications.time_entry_deleted'))
       } else {
         console.error(error)
       }

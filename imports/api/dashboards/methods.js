@@ -6,9 +6,6 @@ Meteor.methods({
   addDashboard({
     projectId, resourceId, customer, timePeriod,
   }) {
-    if (!this.userId) {
-      throw new Meteor.Error('sorry, you have to be logged in to use this method')
-    }
     check(projectId, String)
     check(timePeriod, String)
     check(resourceId, String)

@@ -1,7 +1,7 @@
 <template name="customerselect">
   <select class="form-control custom-select" id="customerselect">
-    <option value="" disabled>Select a customer</option>
-    <option value="all" selected="{{selected 'all'}}">All customers</option>
+    <option value="" disabled>{{t "customer.select_customer"}}</option>
+    <option value="all" selected="{{selected 'all'}}">{{t "customer.all"}}</option>
     {{#each customers}}
       <option value="{{name}}" selected="{{selected(name)}}">{{name}}</option>
     {{/each}}

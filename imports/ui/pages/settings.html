@@ -2,20 +2,20 @@
   <form>
     <div class="card form-group">
       <div class="card-header">
-        User profile
+        {{t "settings.user_profile"}}
       </div>
       <div class="card-block">
         <div class="form-group">
-          <label for="name">Name</label>
+          <label for="name">{{t "globals.name"}}</label>
           <input type="text" class="form-control" id="name" value="{{name}}" />
         </div>
         {{#unless isSandstorm}}
         <div class="row">
           <div class="col-6 col-md-3 mr-auto">
-            <a class="btn btn-secondary border" href="/changePwd">Change password</a>
+            <a class="btn btn-secondary border" href="/changePwd">{{t "navigation.change_password"}}</a>
           </div>
           <div class="col-6 col-md-3">
-            <a class="btn btn-secondary border js-logout form-control" href="#">Logout</a>
+            <a class="btn btn-secondary border js-logout form-control" href="#">{{t "navigation.logout"}}</a>
           </div>
         </div>
         {{/unless}}
@@ -23,42 +23,50 @@
     </div>
     <div class="card form-group">
       <div class="card-header">
-        User interface
+        {{t "settings.user_interface"}}
       </div>
       <div class="card-block">
         <div class="form-group">
-          <label for="theme">Theme</label>
+          <label for="theme">{{t "settings.theme"}}</label>
           <select class="form-control" id="theme">
-            <option value="auto">Auto detect</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
+            <option value="auto">{{t "settings.auto_detect"}}</option>
+            <option value="light">{{t "settings.light_theme"}}</option>
+            <option value="dark">{{t "settings.dark_theme"}}</option>
           </select>
           <small class="form-text text-muted">Auto detect only works in supported browsers, please check <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">here</a> if it works for you.</small>
+        </div>
+        <div class="form-group">
+          <label for="theme">{{t "settings.language"}}</label>
+          <select class="form-control" id="language">
+            <option value="auto">{{t "settings.auto_detect"}}</option>
+            <option value="en">{{t "settings.en"}}</option>
+            <option value="de">{{t "settings.de"}}</option>
+          </select>
         </div>
       </div>
     </div>
     <div class="card form-group">
       <div class="card-header">
-        Time tracking
+        {{t "settings.time_tracking"}}
       </div>
       <div class="card-block">
         <div class="form-group">
-          <label for="tracktimeview">Track time view</label>
+          <label for="tracktimeview">{{t "settings.track_time_view"}}</label>
           <select class="form-control" id="timetrackview">
-            <option value="d">Day</option>
-            <option value="M">Month</option>
+            <option value="d">{{t "globals.day"}}</option>
+            <option value="M">{{t "globals.month"}}</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="name">Time unit</label>
+          <label for="name">{{t "settings.time_unit"}}</label>
           <select class="form-control" id="timeunit">
-            <option value="h">Hours</option>
-            <option value="d">Days</option>
+            <option value="h">{{t "globals.hour"}}</option>
+            <option value="d">{{t "globals.day"}}</option>
           </select>
         </div>
         {{#if displayHoursToDays}}
         <div class="form-group">
-          <label for="name">Hours per day</label>
+          <label for="name">{{t "settings.hours_per_day"}}</label>
           <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" />
         </div>
         {{/if}}
@@ -66,22 +74,22 @@
     </div>
     <div class="card form-group">
       <div class="card-header">
-        Global settings
+        {{t "settings.global_settings"}}
       </div>
       <div class="card-block">
         <div class="form-group">
-          <label for="unit">Cost unit</label>
+          <label for="unit">{{t "settings.cost_unit"}}</label>
           <input type="text" class="form-control" id="unit" value="{{unit}}" />
         </div>
         <div class="form-group">
-          <label for="precision">Decimal precision</label>
+          <label for="precision">{{t "settings.decimal_precision"}}</label>
           <input type="number" class="form-control" id="precision" value="{{precision}}" />
         </div>
       </div>
     </div>
     <div class="card form-group">
       <div class="card-header">
-        Integrations
+        {{t "settings.integrations"}}
       </div>
       <div class="card-block">
         <div class="card form-group">
@@ -91,7 +99,7 @@
             <div class="card-block">
               <div class="form-group form-check">
                 <input id="enableWekan" type="checkbox" class="form-check-input" checked={{enableWekan}} />
-                <label class="form-check-label">Enable Wekan integration?</label>
+                <label class="form-check-label">{{t "settings.enable_wekan_integration"}}</label>
               </div>
           </div>
         </div>
@@ -101,11 +109,11 @@
             </div>
             <div class="card-block">
               <div class="form-group">
-                <label for="siwappurl">Siwapp URL</label>
+                <label for="siwappurl">{{t "settings.siwapp_url"}}</label>
                 <input type="text" class="form-control" id="siwappurl" value="{{siwappurl}}" />
               </div>
               <div class="form-group">
-                <label for="siwapptoken">Siwapp API token</label>
+                <label for="siwapptoken">{{t "settings.siwapp_api_token"}}</label>
                 <input type="text" class="form-control" id="siwapptoken" value="{{siwapptoken}}" />
               </div>
             </div>
@@ -114,11 +122,11 @@
     </div>
     <div class="card form-group">
       <div class="card-header">
-        Titra changelog
+        {{t "settings.titra_changelog"}}
       </div>
       <div class="card-block">
         <div>
-          <p class="card-text" id="titra-changelog" style="white-space:pre-wrap;">Loading data ...</p>
+          <p class="card-text" id="titra-changelog" style="white-space:pre-wrap;">{{t "globals.loading"}}</p>
         </div>
       </div>
     </div>
@@ -128,7 +136,7 @@
       {{>backbutton}}
     </div>
     <div class="col-6 col-md-3">
-      <button class="btn btn-primary form-control js-save">save</button>
+      <button class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
     </div>
   </div>
 </template>

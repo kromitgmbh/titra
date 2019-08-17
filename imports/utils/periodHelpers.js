@@ -17,6 +17,10 @@ function periodToDates(period) {
       startDate = moment().subtract(1, 'month').startOf('month').toDate()
       endDate = moment().subtract(1, 'month').endOf('month').toDate()
       break
+    case 'last3months':
+      startDate = moment().subtract(3, 'month').startOf('month').toDate()
+      endDate = moment().subtract(1, 'month').endOf('month').toDate()
+      break
     case 'lastWeek':
       startDate = moment().subtract(1, 'week').startOf('week').toDate()
       endDate = moment().subtract(1, 'week').endOf('week').toDate()

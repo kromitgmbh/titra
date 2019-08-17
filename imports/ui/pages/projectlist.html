@@ -1,7 +1,7 @@
 <template name="projectlist">
   {{#if moreThanOneProject}}
     <div class="card mb-3 all-projects-bg">
-      <div class="card-header">All projects</div>
+      <div class="card-header">{{t "overview.all_projects"}}</div>
       <div class="card-body">
         <!-- <h6 class="card-subtitle mb-1">All projects</h6> -->
         <!-- <span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span> -->
@@ -13,7 +13,7 @@
           <hr/>
           <div class="row mt-2" id="{{project._id}}">
             <div class="col-3 col-offset-9">
-              <a href="/list/timecards/all" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
+              <a href="/list/timecards/all" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
             </div>
           </div>
           <!-- </div>
@@ -56,27 +56,27 @@
               <div class="row mt-2" id="{{project._id}}">
                 {{#if archived (project._id)}}
                   <div class="col-3">
-                    <button class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="d-none d-md-inline">Restore</span></button>
+                    <button class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="d-none d-md-inline">{{t "navigation.restore"}}</span></button>
                   </div>
                 {{else}}
                   <div class="col-3">
-                    <a href="/tracktime/{{project._id}}" class="btn btn-secondary border btn-block"><i class="fa fa-plus"></i> <span class="d-none d-md-inline">Time</span></a>
+                    <a href="/tracktime/{{project._id}}" class="btn btn-secondary border btn-block"><i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></a>
                   </div>
                 {{/if}}
                 <div class="col-3">
-                  <a href="/list/timecards/{{project._id}}" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
+                  <a href="/list/timecards/{{project._id}}" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
                 </div>
                 {{#if isProjectOwner (project._id)}}
                   <div class="col-3">
-                    <button class="btn btn-secondary border btn-block js-edit-project"><i class="fa fa-edit"></i> <span class="d-none d-md-inline">Edit</span></button>
+                    <button class="btn btn-secondary border btn-block js-edit-project"><i class="fa fa-edit"></i> <span class="d-none d-md-inline">{{t "navigation.edit"}}</span></button>
                   </div>
                   {{#if archived (project._id)}}
                   <div class="col-3">
-                    <button class="btn btn-secondary border btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">Delete</span></button>
+                    <button class="btn btn-secondary border btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">{{t "navigation.delete"}}</span></button>
                   </div>
                   {{else}}
                   <div class="col-3">
-                    <button class="btn btn-secondary border btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">Archive</span></button>
+                    <button class="btn btn-secondary border btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">{{t "navigation.archive"}}</span></button>
                   </div>
                   {{/if}}
                 {{/if}}
@@ -95,20 +95,20 @@
     </div>
     <div class="row">
       <div class="col-md-4 col-6">
-        <a href="/create/project" class="btn btn-primary" id="next">New project</a>
+        <a href="/create/project" class="btn btn-primary" id="next">{{t "navigation.new_project"}}</a>
       </div>
       <div class="col-md-6 col-4">
         {{#if hasArchivedProjects}}
         <div class="form-check pull-right">
             <input id="showArchived" type="checkbox" class="form-check-input"/>
-            <label class="form-check-label"> <span class="d-none d-sm-inline">Show archived </span><i class="fa fa-archive d-inline d-sm-none"></i></label>
+            <label class="form-check-label"> <span class="d-none d-sm-inline">{{t "navigation.show_archived"}} </span><i class="fa fa-archive d-inline d-sm-none"></i></label>
         </div>
         {{/if}}
       </div>
       <div class="col-2 text-right">
         <!-- <input id="showArchived" type="checkbox"/>
         <label for="showArchived">Show archived</label> -->
-        <span class="badge badge-secondary" data-toggle="tooltip" data-placement="right" title="Number of projects" id="projectCount">{{projectCount}}</span>
+        <span class="badge badge-secondary" data-toggle="tooltip" data-placement="right" title="{{t 'overview.number_projects'}}" id="projectCount">{{projectCount}}</span>
       </div>
     </div>
     <!-- </ul> -->

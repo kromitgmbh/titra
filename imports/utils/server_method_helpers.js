@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import Projects from '../api/projects/projects.js'
 import { periodToDates } from './periodHelpers.js'
 
@@ -17,7 +18,7 @@ function getProjectListById(projectId) {
 }
 function checkAuthentication(context) {
   if (!context.userId) {
-    throw new Meteor.Error('You have to be signed in to use this method.')
+    throw new Meteor.Error(i18next.t('notifications.auth_error_method'))
   }
 }
 function getProjectListByCustomer(customer) {

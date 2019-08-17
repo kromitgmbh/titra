@@ -1,25 +1,25 @@
 <template name="projectchart">
   <div class="row">
     <div class="col-12 col-md-4">
-      <p>Project information</p>
+      <p>{{t "overview.project_information"}}</p>
       {{#if allTeamMembers}}
-        <i class="fa fa-users" style="width:18px;"></i> Team: {{#each teamMember in allTeamMembers}}
+        <i class="fa fa-users" style="width:18px;"></i> {{t "overview.team"}} {{#each teamMember in allTeamMembers}}
         {{{svgAvatar(teamMember.profile.name)}}}
         {{/each}}<br/>
       {{/if}}
       {{#if totalHours}}
-        <i class="fa fa-clock-o" style="width:18px;"></i> Total time: {{timeInUserUnit(totalHours)}} ({{timeunit}}) {{{hourIndicator}}}<br/>
+        <i class="fa fa-clock-o" style="width:18px;"></i> {{t "overview.total_time"}} {{timeInUserUnit(totalHours)}} ({{timeunit}}) {{{hourIndicator}}}<br/>
       {{/if}}
       {{#if target}}
-        <i class="fa fa-bullseye" style="width:18px;"></i> Target: {{timeInUserUnit(target)}} ({{timeunit}})<br/>
+        <i class="fa fa-bullseye" style="width:18px;"></i> {{t "overview.target"}}: {{timeInUserUnit(target)}} ({{timeunit}})<br/>
       {{/if}}
       {{#if turnOver}}
-        <i class="fa fa-money" style="width:18px;"></i> Turnover: {{turnOver}} {{unit}}
+        <i class="fa fa-money" style="width:18px;"></i> {{t "overview.turnover"}}: {{turnOver}} {{unit}}
       {{/if}}
     </div>
     <div class="d-none d-md-block col-md-3 text-center">
       {{#if topTasks}}
-        <p>Top tasks</p>
+        <p>{{t "overview.top_tasks"}}</p>
       {{/if}}
       <div class="js-pie-chart-container"></div>
       <!-- <ol>
@@ -30,7 +30,7 @@
       <!-- Top tasks: {{topTasks}} -->
     </div>
     <div class="d-none d-md-block col-md-5 text-center">
-      <p>3-month history</p>
+      <p>{{t "overview.three_month_history"}}</p>
       <div class="js-chart-container p-3">
       </div>
     </div>

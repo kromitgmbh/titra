@@ -125,19 +125,19 @@ Meteor.methods({
     check(eMail, String)
     checkAuthentication(this)
     if (!this.userId) {
-      throw new Meteor.Error('You have to be signed in to use this method.')
+      throw new Meteor.Error('notifications.auth_error_method')
     }
     const targetProject = Projects.findOne({ _id: projectId })
     if (!targetProject || targetProject.userId !== this.userId) {
-      throw new Meteor.Error('Only the project owner can add new team members')
+      throw new Meteor.Error(getMessageInUserLangauge(this.userId, 'notifications.only_owner_can_add_team_members'))
     }
     const targetUser = Meteor.users.findOne({ 'emails.0.address': eMail })
     if (targetUser) {
       Projects.update({ _id: targetProject._id }, { $addToSet: { team: targetUser._id } })
       addNotification(`You have been invited to collaborate on the titra project '${targetProject.name}'`, targetUser._id)
-      return 'Team member added successfully.'
+      return 'notifications.team_member_added_success'
     }
-    throw new Meteor.Error('No user with this e-mail address could be found, please create the corresponding user account first.')
+    throw new Meteor.Error('notifications.user_not_found')
   },
   removeTeamMember({ projectId, userId }) {
     check(projectId, String)
@@ -145,16 +145,16 @@ Meteor.methods({
     checkAuthentication(this)
     const targetProject = Projects.findOne({ _id: projectId })
     if (!targetProject || targetProject.userId !== this.userId) {
-      throw new Meteor.Error('Only the project owner can remove team members')
+      throw new Meteor.Error('notifications.only_owner_can_remove_team_members')
     }
     Projects.update({ _id: targetProject._id }, { $pull: { team: userId } })
-    return 'Team member removed successfully'
+    return 'notifications.team_member_removed_success'
   },
   updatePriority({ projectId, priority }) {
     check(projectId, String)
     check(priority, Number)
     checkAuthentication(this)
     Projects.update({ _id: projectId }, { $set: { priority } })
-    return 'Project priority updated successfully'
+    return 'notifications.project_priority_success'
   },
 })

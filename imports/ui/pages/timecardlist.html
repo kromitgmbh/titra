@@ -1,24 +1,24 @@
 <template name="timecardlist">
   <div class="card mb-2">
-    <div class="card-header">Filter</div>
+    <div class="card-header">{{t "details.filter"}}</div>
     <div class="card-body">
       <div class="row">
         <div class="col-sm-3">
-          <label>Project</label>
+          <label>{{t "globals.project"}}</label>
           {{>projectselect allProjects = true}}
         </div>
         <div class="col-sm-3">
-          <label>Time period</label>
+          <label>{{t "period.time_period"}}</label>
           {{>periodpicker}}
         </div>
         <div class="col-sm-3">
-          <label>Resource</label>
+          <label>{{t "globals.resource"}}</label>
           {{#with project}}
             {{>resourceselect}}
           {{/with}}
         </div>
         <div class="col-sm-3">
-          <label>Customer</label>
+          <label>{{t "globals.customer"}}</label>
           {{#with project}}
             {{>customerselect}}
           {{/with}}
@@ -28,19 +28,21 @@
   </div>
   <ul class="nav nav-tabs" id="tracked-time-display" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id="detailed-tab" data-toggle="tab" href="#detailed" role="tab" aria-controls="detailed" aria-selected="true">Detailed</a>
+      <a class="nav-link active" id="detailed-tab" data-toggle="tab" href="#detailed" role="tab" aria-controls="detailed" aria-selected="true">{{t "details.detailed"}}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">Daily</a>
+      <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">{{t "details.daily"}}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="time-period-tab" data-toggle="tab" href="#time-period" role="tab" aria-controls="time-period" aria-selected="false">Total</a>
+      <a class="nav-link" id="time-period-tab" data-toggle="tab" href="#time-period" role="tab" aria-controls="time-period" aria-selected="false">{{t "details.total"}}</a>
     </li>
   </ul>
   <div class="tab-content" id="tacked-time-content">
     <div class="tab-pane fade show active table-responsive py-3 tab-borders" id="detailed">
       {{#if isActive "detailed-tab"}}
-        {{> tabular table=TabularTables.Detailed selector=selector class="table table-hover" id="detailed-tabular"}}
+        {{#if i18nextReady}}
+          {{> tabular table=TabularTables.Detailed selector=selector class="table table-hover" id="detailed-tabular"}}
+        {{/if}}
       {{/if}}
     </div>
     <div class="tab-pane fade table-responsive tab-borders p-3" id="daily">
@@ -60,7 +62,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Share project dashboard</h5>
+          <h5 class="modal-title">{{t "dashboard.share"}}</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -69,11 +71,11 @@
           <div class="form-group">
             <input class="form-control" type="text" id="dashboardURL"/>
           </div>
-          <p>Copy &amp; paste the link above to share your project information with someone.<br/>
-            <small class="text-muted">This dashboard is accessible to everybody on the web through this link.</small></p>
+          <p>{{t "dashboard.copy_instructions"}}<br/>
+            <small class="text-muted">{{t "dashboard.security_notice"}}</small></p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary border" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary border" data-dismiss="modal">{{t "navigation.close"}}</button>
           <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
         </div>
       </div>

@@ -72,7 +72,7 @@ Meteor.publish('projectUsers', function projectUsers({ projectId }) {
   })
 })
 
-Meteor.publish('projectTeam', ({ userIds }) => {
+Meteor.publish('projectTeam', function projectTeam({ userIds }) {
   check(userIds, Array)
   checkAuthentication(this)
   return Meteor.users.find(
@@ -83,7 +83,7 @@ Meteor.publish('projectTeam', ({ userIds }) => {
   )
 })
 
-Meteor.publish('dashboardUser', ({ _id }) => {
+Meteor.publish('dashboardUser', function dashboardUser({ _id }) {
   check(_id, String)
   checkAuthentication(this)
   const dashboard = Dashboards.findOne({ _id })

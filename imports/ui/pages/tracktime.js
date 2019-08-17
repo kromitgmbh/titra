@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import moment from 'moment'
+import i18next from 'i18next'
 import TinyDatePicker from 'tiny-date-picker'
 import 'tiny-date-picker/tiny-date-picker.css'
 
@@ -68,17 +69,17 @@ Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
     if (!$('#hours').val()) {
-      $.notify({ message: 'Please enter your time' }, { type: 'danger' })
+      $.notify({ message: i18next.t('notifications.enter_time') }, { type: 'danger' })
       return
     }
     if (!templateInstance.$('#targetProject').val()) {
-      $.notify({ message: 'Please select a project.' }, { type: 'danger' })
+      $.notify({ message: i18next.t('notifications.select_project') }, { type: 'danger' })
       return
     }
     try {
       templateInstance.math.eval($('#hours').val())
     } catch (exception) {
-      $.notify({ message: 'Please check your time input' }, { type: 'danger' })
+      $.notify({ message: i18next.t('notifications.check_time_input') }, { type: 'danger' })
       return
     }
     const projectId = templateInstance.$('#targetProject').val()
@@ -100,7 +101,7 @@ Template.tracktime.events({
           console.error(error)
         } else {
           $('.js-tasksearch-results').addClass('d-none')
-          $.notify('Time entry updated successfully')
+          $.notify(i18next.t('notifications.time_entry_updated'))
           $(event.currentTarget).text(buttonLabel)
           $(event.currentTarget).prop('disabled', false)
           templateInstance.$('.js-show-timecards').removeClass('d-none')
@@ -119,10 +120,9 @@ Template.tracktime.events({
           $('.js-tasksearch-input').keyup()
           $('#hours').val('')
           $('.js-tasksearch-results').addClass('d-none')
-          $.notify('Time entry saved successfully')
+          $.notify(i18next.t('notifications.time_entry_saved'))
           $(event.currentTarget).text(buttonLabel)
           $(event.currentTarget).prop('disabled', false)
-          console.log(templateInstance.$('.js-show-timecards'))
           templateInstance.$('.js-show-timecards').removeClass('d-none')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
         }
@@ -181,16 +181,12 @@ Template.tracktime.events({
     const timecardId = event.currentTarget.href.split('/').pop()
     Meteor.call('deleteTimeCard', { timecardId }, (error, result) => {
       if (!error) {
-        $.notify('Time entry deleted')
+        $.notify(i18next.t('notifications.time_entry_deleted'))
       } else {
         console.error(error)
       }
     })
   },
-  // 'blur .js-time-row': (event, templateInstance) => {
-  //   console.log('triggered ' + event)
-  //   templateInstance.$(event.currentTarget).popover('hide')
-  // },
 })
 Template.tracktime.helpers({
   date: () => moment(Template.instance().date.get()).format('ddd, DD.MM.YYYY'),
@@ -207,6 +203,8 @@ Template.tracktime.helpers({
   hours: () => (Timecards.findOne({ _id: FlowRouter.getParam('tcid') }) ? Timecards.findOne({ _id: FlowRouter.getParam('tcid') }).hours : false),
   showTracker: () => (Meteor.user() ? (Meteor.user().profile.timeunit !== 'd') : false),
   totalTime: () => Template.instance().totalTime.get(),
+  previousDay: () => moment(Template.instance().date.get()).subtract(1, 'day').format('ddd, DD.MM.YYYY'),
+  nextDay: () => moment(Template.instance().date.get()).add(1, 'day').format('ddd, DD.MM.YYYY'),
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

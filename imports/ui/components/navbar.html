@@ -8,12 +8,12 @@
       </button>
       <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item"><a class="nav-link {{isRouteActive 'tracktime'}}" href="/tracktime"><i class="fa fa-plus"></i> {{#if displayLinkText 'tracktime'}}<span>Track time</span>{{else}}<span class="d-none d-md-inline">Track time</span>{{/if}}</a></li>
-          <li class="nav-item"><a class="nav-link {{isRouteActive 'projectlist'}}" href="/list/projects"><i class="fa fa-pie-chart"></i> {{#if displayLinkText 'projectlist'}}<span>Overview</span>{{else}}<span class="d-none d-md-inline">Overview</span>{{/if}}</a></li>
-          <li class="nav-item"><a class="nav-link {{isRouteActive 'timecards'}}" href="/list/timecards/all"><i class="fa fa-list"></i> {{#if displayLinkText 'timecards'}}<span>Details</span>{{else}}<span class="d-none d-md-inline">Details</span>{{/if}}</a></li>
+          <li class="nav-item"><a class="nav-link {{isRouteActive 'tracktime'}}" href="/tracktime"><i class="fa fa-plus"></i> {{#if displayLinkText 'tracktime'}}<span>{{t "navigation.track"}}</span>{{else}}<span class="d-none d-md-inline">{{t "navigation.track"}}</span>{{/if}}</a></li>
+          <li class="nav-item"><a class="nav-link {{isRouteActive 'projectlist'}}" href="/list/projects"><i class="fa fa-pie-chart"></i> {{#if displayLinkText 'projectlist'}}<span>{{t "navigation.overview"}}</span>{{else}}<span class="d-none d-md-inline">{{t "navigation.overview"}}</span>{{/if}}</a></li>
+          <li class="nav-item"><a class="nav-link {{isRouteActive 'timecards'}}" href="/list/timecards/all"><i class="fa fa-list"></i> {{#if displayLinkText 'timecards'}}<span>{{t "navigation.details"}}</span>{{else}}<span class="d-none d-md-inline">{{t "navigation.details"}}</span>{{/if}}</a></li>
         </ul>
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link {{isRouteActive 'settings'}}" href="/settings"><i class="fa fa-cogs"></i> {{#if displayLinkText 'settings'}}<span>Settings</span>{{else}}<span class="d-none d-md-inline">Settings</span>{{/if}}</a></li>
+          <li class="nav-item"><a class="nav-link {{isRouteActive 'settings'}}" href="/settings"><i class="fa fa-cogs"></i> {{#if displayLinkText 'settings'}}<span>{{t "navigation.settings"}}</span>{{else}}<span class="d-none d-md-inline">{{t "navigation.settings"}}</span>{{/if}}</a></li>
         </ul>
       </div>
       {{/if}}

@@ -1,20 +1,20 @@
 <template name="editproject">
-  <h5 class="text-center">{{#if newProject}}Create a new{{else}}Edit{{/if}} project</h5>
+  <h5 class="text-center">{{#if newProject}}{{t "navigation.new_project"}}{{else}}{{t "navigation.edit"}}{{/if}}</h5>
   <form id="editProjectForm">
     <div class="form-group">
-      <label for="name"><strong>Name</strong></label>
-      <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="My project" />
+      <label for="name"><strong>{{t "globals.name"}}</strong></label>
+      <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="{{t 'project.my_project_placeholder'}}" />
     </div>
     <!-- <div class="form-group">
       <label for="desc"><strong>Description</strong></label>
       <textarea name="desc" id="desc" type="text" value="{{desc}}" class="form-control" placeholder="Describe your project here ..."></textarea>
     </div> -->
     <div class="form-group">
-      <label for="desc"><strong>Description</strong></label>
+      <label for="desc"><strong>{{t "globals.description"}}</strong></label>
       <div id="richDesc"></div>
     </div>
     <div class="form-group">
-      <label for="color"><strong>Color</strong></label>
+      <label for="color"><strong>{{t "globals.color"}}</strong></label>
       <div class="input-group" id="colpick">
         <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
         <div class="input-group-append">
@@ -23,15 +23,15 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="customer"><strong>Customer</strong></label>
-      <input name="customer" id="customer" type="text" value={{customer}} class="form-control" placeholder="Sample Customer"/>
+      <label for="customer"><strong>{{t "globals.customer"}}</strong></label>
+      <input name="customer" id="customer" type="text" value={{customer}} class="form-control" placeholder="{{t 'project.customer_placeholder'}}"/>
     </div>
     <div class="form-group">
-      <label for="rate"><strong>Rate ({{unit}}/h)</strong></label>
+      <label for="rate"><strong>{{t "project.rate"}} ({{unit}}/h)</strong></label>
       <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100" />
     </div>
     <div class="form-group">
-      <label for="target"><strong>Target / Budget ({{timeunit}})</strong></label>
+      <label for="target"><strong>{{t "project.target"}} ({{timeunit}})</strong></label>
       <input name="target" id="target" type="number" value="{{timeInUserUnit (target)}}" class="form-control" placeholder="1000" />
     </div>
     {{#if currentUser.profile.enableWekan}}
@@ -40,14 +40,14 @@
       <div class="input-group" id="colpick">
         <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://wekan.url/api/boards/abcdefg.../export?authToken=abcdefg..." />
         <div class="input-group-append">
-          <button class="btn btn-secondary border" id="wekan-status">check</button>
+          <button class="btn btn-secondary border" id="wekan-status">{{t "project.check"}}</button>
         </div>
       </div>
-      <small class="form-text text-muted">Need help with the setup? Checkout the titra <a href="https://github.com/faburem/titra/wiki/Wekan-integration" target="_blank">wiki</a>.</small>
+      <small class="form-text text-muted">{{t "project.wekan_help"}} <a href="https://github.com/faburem/titra/wiki/Wekan-integration" target="_blank">wiki</a>.</small>
     </div>
     {{#if wekanLists}}
       <div class="form-group">
-        <small class="form-text text-muted">Please select the wekan list you want to use for time tracking:</small>
+        <small class="form-text text-muted">{{t "project.wekan_list"}}</small>
           {{#each listItem in wekanLists}}
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="selectedWekanList" value="{{listItem._id}}">
@@ -60,12 +60,12 @@
     {{/if}}
     {{/if}} {{#unless newProject}}
     <div class="form-group">
-      <label><strong>Access rights</strong></label>
+      <label><strong>{{t "project.access_rights"}}</strong></label>
       <br/> {{#unless public}}
       <div class="input-group mb-1">
-        <input id="newmembermail" type="email" class="form-control" placeholder="E-mail address of team member to add" aria-label="E-mail address of team member to add">
+        <input id="newmembermail" type="email" class="form-control" placeholder="{{t 'project.access_rights_placeholder'}}" aria-label="{{t 'project.access_rights_placeholder'}}">
         <div class="input-group-append">
-          <button class="btn btn-secondary border" type="button" id="addNewMember">Add</button>
+          <button class="btn btn-secondary border" type="button" id="addNewMember">{{t "project.add"}}</button>
         </div>
       </div>
       <ul class="list-group mb-2">
@@ -79,7 +79,7 @@
         {{#if public}}
         <input name="public" id="public" type="checkbox" checked class="form-check-input" /> {{else}}
         <input name="public" id="public" type="checkbox" class="form-check-input" /> {{/if}}
-        <label class="form-check-label">Public project (visible to all users)</label>
+        <label class="form-check-label">{{t "project.public_project"}}</label>
       </div>
       {{/unless}}
       <!-- <input name="public" id="public" type="hidden" value={{public}} class="form-control"/> -->
@@ -88,25 +88,25 @@
   </form>
   <div class="row text-center">
     <div class="col-3 mr-auto">
-      <button class="btn btn-secondary border js-backbutton form-control">back</button>
+      <button class="btn btn-secondary border js-backbutton form-control">{{t "navigation.back"}}</button>
     </div>
     {{#unless newProject}} {{#if archived (projectId)}}
     <div class="col-3">
-      <button class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="d-none d-md-inline">Restore</span></button>
+      <button class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="d-none d-md-inline">{{t "navigation.back"}}</span></button>
     </div>
     <div class="col-3">
-      <button class="btn btn-secondary border btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">Delete</span></button>
+      <button class="btn btn-secondary border btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">{{t "navigation.delete"}}</span></button>
     </div>
     {{else}}
     <div class="col-3">
-      <a href="/list/timecards/{{projectId}}" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">List</span></a>
+      <a href="/list/timecards/{{projectId}}" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
     </div>
     <div class="col-3">
-      <button class="btn btn-secondary border btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">Archive</span></button>
+      <button class="btn btn-secondary border btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">{{t "navigation.archive"}}</span></button>
     </div>
     {{/if}} {{/unless}}
     <div class="col-3">
-      <button class="btn btn-primary form-control" id="save">save</button>
+      <button class="btn btn-primary form-control" id="save">{{t "navigation.save"}}</button>
     </div>
   </div>
 </template>

@@ -6,16 +6,16 @@ export default function initNewUser(userId, info) {
       Projects.insert({
         _id: 'sandstorm',
         userId,
-        name: `👋 ${info.profile.name}'s Project`,
-        desc: 'This project has been automatically created for you, feel free to change it!',
+        name: `👋 ${info.profile.name}'s ${info.profile.currentLanguageProject}`,
+        desc: info.profile.currentLanguageProjectDesc,
         public: true,
       })
     }
   } else {
     Projects.insert({
       userId,
-      name: `👋 ${info.profile.name}'s Project`,
-      desc: 'This project has been automatically created for you, feel free to change it! Did you know that you can use emojis like 💰 ⏱ 👍 everywhere?',
+      name: `👋 ${info.profile.name}'s ${info.profile.currentLanguageProject}`,
+      desc: info.profile.currentLanguageProjectDesc,
     })
   }
 }

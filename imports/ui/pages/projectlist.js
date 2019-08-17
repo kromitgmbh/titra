@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { FlowRouter } from 'meteor/kadira:flow-router'
+import i18next from 'i18next'
 import './projectlist.html'
 import Projects from '../../api/projects/projects'
 import '../components/timetracker.js'
@@ -37,14 +38,6 @@ Template.projectlist.onRendered(() => {
           element.classList.add('d-none')
         })
       },
-      // onUnchoose: (evt) => {
-      //   document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
-      //     element.classList.remove('d-none')
-      //   })
-      //   document.querySelectorAll('.progress-bar').forEach((element) => {
-      //     element.classList.remove('d-none')
-      //   })
-      // },
       onEnd: (evt) => {
         document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
           element.classList.remove('d-none')
@@ -99,11 +92,11 @@ Template.projectlist.events({
   'click .js-delete-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
-    if (confirm('Do you really want to delete this project?')) {
+    if (confirm(i18next.t('notifications.project_delete_confirm'))) {
       const projectId = event.currentTarget.parentElement.parentElement.id
       Meteor.call('deleteProject', { projectId }, (error) => {
         if (!error) {
-          $.notify('Project deleted successfully')
+          $.notify(i18next.t('notifications.project_delete_success'))
         } else {
           console.error(error)
         }
@@ -116,7 +109,7 @@ Template.projectlist.events({
     const projectId = event.currentTarget.parentElement.parentElement.id
     Meteor.call('archiveProject', { projectId }, (error) => {
       if (!error) {
-        $.notify('Project archived successfully')
+        $.notify(i18next.t('notifications.project_archive_success'))
       } else {
         console.error(error)
       }
@@ -128,7 +121,7 @@ Template.projectlist.events({
     const projectId = event.currentTarget.parentElement.parentElement.id
     Meteor.call('restoreProject', { projectId }, (error) => {
       if (!error) {
-        $.notify('Project restored successfully')
+        $.notify(i18next.t('notifications.project_restore_success'))
       } else {
         console.error(error)
       }

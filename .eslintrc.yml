@@ -8,6 +8,7 @@ parserOptions:
 # register plugins
 plugins:
   - meteor
+  - i18next
 
 # use the rules of eslint-config-airbnb
 # and the recommended rules of eslint-plugin-meteor
@@ -35,7 +36,8 @@ rules:
   import/no-extraneous-dependencies: 0
   import/no-unresolved: [2, { ignore: ['^meteor'] }]
   no-console: [2, { allow: ['warn', 'error'] }]
-  'no-restricted-syntax': [2, 'DebuggerStatement', 'LabeledStatement', 'WithStatement']
+  no-restricted-syntax: [2, 'DebuggerStatement', 'LabeledStatement', 'WithStatement']
+  i18next/no-literal-string: 1
   # eslint-plugin-meteor
   # meteor/no-session: [1] # allow Session
   # meteor/prefer-session-equals: [2] # prefer Session.equals instead

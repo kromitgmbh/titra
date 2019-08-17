@@ -1,11 +1,13 @@
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { $ } from 'meteor/jquery'
 import JSZip from 'jszip'
+import i18next from 'i18next'
 import dataTableButtons from 'datatables.net-buttons-bs4'
 import html5ExportButtons from 'datatables.net-buttons/js/buttons.html5.js'
 import dataTablesBootstrap from '../components/dataTables.bootstrap4.js'
 import Projects from '../../api/projects/projects.js'
 import { periodToDates } from '../../utils/periodHelpers.js'
+import i18nextReady from '../../startup/client/startup.js'
 import '../components/dataTables.bootstrap4.scss'
 import './timecardlist.html'
 import '../components/periodpicker.js'
@@ -69,6 +71,32 @@ Template.timecardlist.onRendered(() => {
       templateInstance.limit.set(Number(FlowRouter.getQueryParam('limit')))
     } else {
       templateInstance.limit.set(25)
+    }
+    if (i18nextReady.get()) {
+      const language = {
+        sEmptyTable: i18next.t('tabular.sEmptyTable'),
+        sInfo: i18next.t('tabular.sInfo'),
+        sInfoEmpty: i18next.t('tabular.sInfoEmpty'),
+        sInfoFiltered: i18next.t('tabular.sInfoFiltered'),
+        sInfoPostFix: i18next.t('tabular.sInfoPostFix'),
+        sInfoThousands: i18next.t('tabular.sInfoThousands'),
+        sLengthMenu: i18next.t('tabular.sLengthMenu'),
+        sLoadingRecords: i18next.t('tabular.sLoadingRecords'),
+        sProcessing: i18next.t('tabular.sProcessing'),
+        sSearch: i18next.t('tabular.sSearch'),
+        sZeroRecords: i18next.t('tabular.sZeroRecords'),
+        oPaginate: {
+          sFirst: i18next.t('tabular.oPaginate.sFirst'),
+          sLast: i18next.t('tabular.oPaginate.sLast'),
+          sNext: i18next.t('tabular.oPaginate.sNext'),
+          sPrevious: i18next.t('tabular.oPaginate.sPrevious'),
+        },
+        oAria: {
+          sSortAscending: i18next.t('tabular.oAria.sSortAscending'),
+          sSortDescending: i18next.t('tabular.oAria.sSortDescending'),
+        },
+      }
+      $.extend(true, $.fn.dataTable.defaults, { language })
     }
   })
 })
