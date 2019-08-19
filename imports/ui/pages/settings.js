@@ -86,10 +86,13 @@ Template.settings.onRendered(function settingsRendered() {
   import('node-emoji').then((emojiImport) => {
     const emoji = emojiImport.default
     const replacer = match => emoji.emojify(match)
-    $.getJSON('https://api.github.com/repos/faburem/titra/commits/master', (data) => {
-      $('#titra-changelog').html(`${moment(data.commit.committer.date).format('DD.MM.YYYY')}: <a href="https://github.com/faburem/titra" target="_blank">${data.sha.substring(0, 7)}</a><br/>${data.commit.message.replace(/(:.*:)/g, replacer)}`)
+    $.getJSON('https://api.github.com/repos/faburem/titra/tags', (data) => {
+      const tag = data[2]
+      $.getJSON(tag.commit.url, (commitData) => {
+        $('#titra-changelog').html(`Version <a href="https://github.com/faburem/titra/tags" target="_blank">${tag.name}</a> (${moment(commitData.commit.committer.date).format('DD.MM.YYYY')}) :<br/>${commitData.commit.message.replace(/(:.*:)/g, replacer)}`)
+      })
     }).fail(() => {
-      $('#titra-changelog').html('Could not retrieve changelog from Github.')
+      $('#titra-changelog').html(i18next.t('settings.titra_changelog_error'))
     })
   })
   this.autorun(() => {

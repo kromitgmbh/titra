@@ -42,8 +42,8 @@ Template.timecardlist.onCreated(function createTimeCardList() {
 Template.timecardlist.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
-    if (FlowRouter.getParam('project')) {
-      templateInstance.project.set(FlowRouter.getParam('project'))
+    if (FlowRouter.getParam('projectId')) {
+      templateInstance.project.set(FlowRouter.getParam('projectId'))
     } else {
       templateInstance.project.set('all')
     }
