@@ -1,0 +1,18 @@
+version: "2.0"
+services:
+  titra:
+    image: kromit/titra
+    container_name: titra
+    depends_on:
+      - mongodb
+    environment:
+      - ROOT_URL=${ROOT_URL}
+      - MONGO_URL=mongodb://mongodb/titra
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    restart: always
+  mongodb:
+    image: mongo:4.0
+    container_name: mongodb
+    restart: always

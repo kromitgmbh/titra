@@ -2,27 +2,31 @@
 
 
 # ![titra logo](public/favicons/favicon-32x32.png) titra
-modern open source time tracking for small companies
+Modern open source project time tracking for freelancers and small teams
 
-titra has been orginally designed for [sandstorm](https://sandstorm.io). Unfortunately that platform is not going where we expected, so we are shipping titra exclusively as Docker image now - get it [here](https://hub.docker.com/r/kromit/titra/).
-A great companion for titra is [Wekan](https://wekan.io), where you can plan your tasks and track your time against later on.
+We believe in the philosophy ("Do One Thing And Do It Well.")[https://en.wikipedia.org/wiki/Unix_philosophy#Do_One_Thing_and_Do_It_Well] and try to follow it in the design and implementation of titra. A great companion for titra is [Wekan](https://wekan.io), where you can plan your tasks and track your time against later on.
 
+## No risk, no fun, just time tracking
+According to the philosophy described above, titra has been built to be the easiest, most convenient and modern way to track your time spent on projects. We want you to get started tracking your time as fast and with the least distractions as possible. After tracking your time, the second most important aspect is the ability to report and export your tracked time efficiently.
 
-## Deploying with Docker
-You will need a MongoDB container to use titra. Here is an example to get started:
+## Try it!
+We are providing a hosted version of titra free of charge at [app.titra.io](https://app.titra.io). Create an account in seconds and start tracking your time!
+
+There is no better time to get started, titra just got a dark mode 🌑 and it is 🔥!
+
+## Running with Docker Compose
+Here is a one-line example on how to get started with titra locally if you have [docker-compose](https://docs.docker.com/compose/) installed:
 ```
-docker run --name mongodb -p 27017:27017 mongo
+ROOT_URL=http://localhost:3000 curl https://github.com/faburem/titra/raw/master/docker-compose.yml | docker-compose -f - up
 ```
-titra needs to be aware of that container, an easy way to achieve this is using --link
-```
-docker run --name titra -p 3000:3000 --link mongodb -e MONGO_URL=mongodb://mongodb/titra -e ROOT_URL=http://localhost:3000 kromit/titra
-```
-Congratulations! titra should now be available at http://localhost:3000
+
+This will pull in the latest titra release and spin up a local Mongodb v4.0 instance and link them together.
+Congratulations! titra should now be up and running at http://localhost:3000
 
 
-## Wekan integration
-Checkout our [wiki](https://github.com/faburem/titra/wiki/Wekan-integration) for more information!
+## Documentation and more
+Checkout our [wiki](https://github.com/faburem/titra/wiki/) for best practices and to learn how to setup interfaces with external tools like Wekan.
 
 
 
-Built with :heart: by [kromit](https://kromit.at) in 🇦🇹
+Built with ❤️by [kromit](https://kromit.at) in 🇦🇹
