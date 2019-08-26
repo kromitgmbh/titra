@@ -17,7 +17,7 @@ There is no better time to get started, titra just got a dark mode 🌑 and it i
 ## Running with Docker Compose
 Here is a one-line example on how to get started with titra locally if you have [docker-compose](https://docs.docker.com/compose/) installed:
 ```
-ROOT_URL=http://localhost:3000 curl https://github.com/faburem/titra/raw/master/docker-compose.yml | docker-compose -f - up
+curl -L https://github.com/faburem/titra/raw/master/docker-compose.yml | ROOT_URL=http://localhost:3000 docker-compose -f - up
 ```
 
 This will pull in the latest titra release and spin up a local Mongodb v4.0 instance and link them together.
