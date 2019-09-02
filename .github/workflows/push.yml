@@ -1,0 +1,12 @@
+on: push
+name: automatically tag pushes
+jobs:
+  autotag:
+    name: Autotag
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Autotag
+      uses: author/action-autotag@1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
