@@ -1,4 +1,5 @@
 <template name="periodtimetable">
+  {{#if periodTimecards}}
   <table class="table table-hover mt-5">
     <thead>
       <tr role="row">
@@ -23,4 +24,7 @@
         <th>{{t "globals.sum"}}: {{timeInUserUnit periodSum}}</th></tr>
     </tfoot>
   </table>
+  {{else}}
+    <h5 class="text-center">{{t "tabular.sZeroRecords"}}</h5>
+  {{/if}}
 </template>

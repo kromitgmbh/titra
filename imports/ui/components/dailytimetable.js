@@ -20,7 +20,7 @@ Template.dailytimetable.onCreated(function dailytimetablecreated() {
           if (error) {
             console.error(error)
           } else {
-            this.dailyTimecards.set(result)
+            this.dailyTimecards.set(result.sort((a, b) => b.date - a.date))
           }
         })
     }

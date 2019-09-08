@@ -103,7 +103,11 @@
     "siwapp_url": "Siwapp URL",
     "siwapp_api_token": "Siwapp API token",
     "titra_changelog": "titra Änderungsprotokoll",
-    "titra_changelog_error": "Beim Abrufen des Änderungsprotokolls von Github ist ein Fehler aufgetreten."
+    "titra_changelog_error": "Beim Abrufen des Änderungsprotokolls von Github ist ein Fehler aufgetreten.",
+    "daily_start_time": "Beginn der Arbeitszeit",
+    "break_start_time": "Beginn der täglichen Pause",
+    "break_duration": "Dauer der täglichen Pause (in Stunden)",
+    "auto_detect_help": "Die automatische Erkennung funktioniert nicht in allen Browsern, nähere Informationen finden Sie auf "
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -137,7 +141,14 @@
     "detailed": "Detailliert",
     "daily": "Tage",
     "total": "Gesamt",
-    "search": "Suchen:"
+    "search": "Suchen:",
+    "startTime": "Beginn",
+    "breakStartTime": "Pausenbeginn",
+    "breakEndTime": "Pausenende",
+    "endTime": "Ende",
+    "totalTime": "Gesamt",
+    "regularWorkingTime": "Normalarbeitszeit",
+    "regularWorkingTimeDifference": "Differenz"
   },
   "dashboard": {
     "share": "Projekt Dashboard teilen",

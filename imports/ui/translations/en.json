@@ -103,7 +103,11 @@
     "siwapp_url": "Siwapp URL",
     "siwapp_api_token": "Siwapp API token",
     "titra_changelog": "titra changelog",
-    "titra_changelog_error": "Could not retrieve changelog from Github."
+    "titra_changelog_error": "Could not retrieve changelog from Github.",
+    "daily_start_time": "Daily start of working time",
+    "break_start_time": "Daily break time",
+    "break_duration": "Default break duration (in hours)",
+    "auto_detect_help": "Auto detect only works in supported browsers, please check if it works for you at "
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -137,7 +141,14 @@
     "detailed": "Detailed",
     "daily": "Daily",
     "total": "Total",
-    "search": "Search:"
+    "search": "Search:",
+    "startTime": "Start",
+    "breakStartTime": "Break start",
+    "breakEndTime": "Break end",
+    "endTime": "End",
+    "totalTime": "Total",
+    "regularWorkingTime": "Regular work time",
+    "regularWorkingTimeDifference": "Difference"
   },
   "dashboard": {
     "share": "Share project dashboard",

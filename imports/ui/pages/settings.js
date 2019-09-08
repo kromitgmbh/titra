@@ -39,6 +39,10 @@ Template.settings.helpers({
   },
   siwappurl: () => (Meteor.user() ? Meteor.user().profile.siwappurl : false),
   siwapptoken: () => (Meteor.user() ? Meteor.user().profile.siwapptoken : false),
+  dailyStartTime: () => (Meteor.user() ? Meteor.user().profile.dailyStartTime : '09:00'),
+  breakStartTime: () => (Meteor.user() ? Meteor.user().profile.breakStartTime : '12:00'),
+  breakDuration: () => (Meteor.user() ? Meteor.user().profile.breakDuration : 0.5),
+  regularWorkingTime: () => (Meteor.user() ? Meteor.user().profile.regularWorkingTime : 8),
 })
 
 Template.settings.events({
@@ -56,6 +60,10 @@ Template.settings.events({
       siwappurl: $('#siwappurl').val(),
       theme: $('#theme').val(),
       language: $('#language').val(),
+      dailyStartTime: $('#dailyStartTime').val(),
+      breakStartTime: $('#breakStartTime').val(),
+      breakDuration: $('#breakDuration').val(),
+      regularWorkingTime: $('#regularWorkingTime').val(),
     }, (error) => {
       if (error) {
         $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
@@ -85,7 +93,7 @@ Template.settings.onCreated(function settingsCreated() {
 Template.settings.onRendered(function settingsRendered() {
   import('node-emoji').then((emojiImport) => {
     const emoji = emojiImport.default
-    const replacer = match => emoji.emojify(match)
+    const replacer = (match) => emoji.emojify(match)
     $.getJSON('https://api.github.com/repos/faburem/titra/tags', (data) => {
       const tag = data[2]
       $.getJSON(tag.commit.url, (commitData) => {
@@ -101,7 +109,10 @@ Template.settings.onRendered(function settingsRendered() {
       $('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
       $('#theme').val(Meteor.user().profile.theme ? Meteor.user().profile.theme : 'auto')
       $('#language').val(Meteor.user().profile.language ? Meteor.user().profile.language : 'auto')
-
+      $('#dailyStartTime').val(Meteor.user().profile.dailyStartTime ? Meteor.user().profile.dailyStartTime : '09:00')
+      $('#breakStartTime').val(Meteor.user().profile.breakStartTime ? Meteor.user().profile.breakStartTime : '12:00')
+      $('#breakDuration').val(Meteor.user().profile.breakDuration ? Meteor.user().profile.breakDuration : 0.5)
+      $('#regularWorkingTime').val(Meteor.user().profile.regularWorkingTime ? Meteor.user().profile.regularWorkingTime : 8)
     }
   })
 })

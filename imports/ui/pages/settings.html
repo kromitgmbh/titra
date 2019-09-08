@@ -33,7 +33,7 @@
             <option value="light">{{t "settings.light_theme"}}</option>
             <option value="dark">{{t "settings.dark_theme"}}</option>
           </select>
-          <small class="form-text text-muted">Auto detect only works in supported browsers, please check <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">here</a> if it works for you.</small>
+          <small class="form-text text-muted">{{t "settings.auto_detect_help"}} <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">caniuse.com</a>.</small>
         </div>
         <div class="form-group">
           <label for="theme">{{t "settings.language"}}</label>
@@ -58,7 +58,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="name">{{t "settings.time_unit"}}</label>
+          <label for="timeunit">{{t "settings.time_unit"}}</label>
           <select class="form-control" id="timeunit">
             <option value="h">{{t "globals.hour"}}</option>
             <option value="d">{{t "globals.day"}}</option>
@@ -66,10 +66,26 @@
         </div>
         {{#if displayHoursToDays}}
         <div class="form-group">
-          <label for="name">{{t "settings.hours_per_day"}}</label>
+          <label for="hoursToDays">{{t "settings.hours_per_day"}}</label>
           <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" />
         </div>
         {{/if}}
+        <div class="form-group">
+          <label for="dailyStartTime">{{t "settings.daily_start_time"}}</label>
+          <input type="time" class="form-control" id="dailyStartTime" value="{{dailyStartTime}}" />
+        </div>
+        <div class="form-group">
+          <label for="breakStartTime">{{t "settings.break_start_time"}}</label>
+          <input type="time" class="form-control" id="breakStartTime" value="{{breakStartTime}}" />
+        </div>
+        <div class="form-group">
+          <label for="breakDuration">{{t "settings.break_duration"}}</label>
+          <input type="number" class="form-control" id="breakDuration" value="{{breakDuration}}" />
+        </div>
+        <div class="form-group">
+          <label for="regularWorkingTime">{{t "settings.regular_working_time"}}</label>
+          <input type="number" class="form-control" id="regularWorkingTime" value="{{regularWorkingTime}}" />
+        </div>
       </div>
     </div>
     <div class="card form-group">

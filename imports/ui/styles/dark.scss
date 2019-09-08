@@ -31,7 +31,8 @@ $dropdown-color: $gray-900 !default;
 $pagination-bg: map-get($theme-colors, secondary) !default;
 $pagination-color: $gray-900 !default;
 $pagination-disabled-bg: #303030 !default;
-
+$popover-bg: map-get($theme-colors, secondary);
+$modal-content-bg: map-get($theme-colors, secondary);
 .tab-borders {
   border-left: 1px solid map-get($theme-colors, dark);
   border-right: 1px solid map-get($theme-colors, dark);

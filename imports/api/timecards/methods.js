@@ -3,6 +3,7 @@ import csv from 'fast-csv'
 import emoji from 'node-emoji'
 import i18next from 'i18next'
 import { HTTP } from 'meteor/http'
+import { check, Match } from 'meteor/check'
 import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'
 import Tasks from '../tasks/tasks.js'
@@ -16,9 +17,11 @@ import {
   dailyTimecardMapper,
   buildTotalHoursForPeriodSelector,
   buildDailyHoursSelector,
+  buildworkingTimeSelector,
+  workingTimeEntriesMapper,
 } from '../../utils/server_method_helpers.js'
 
-const replacer = match => emoji.emojify(match)
+const replacer = (match) => emoji.emojify(match)
 
 Meteor.methods({
   insertTimeCard({
@@ -246,5 +249,29 @@ Meteor.methods({
     const aggregationSelector = buildTotalHoursForPeriodSelector(projectId, period, userId, customer, limit)
     return Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
       .toArray()).map(totalHoursForPeriodMapper)
+  },
+  getWorkingHoursForPeriod({
+    projectId,
+    userId,
+    period,
+    limit,
+    page,
+  }) {
+    check(projectId, String)
+    check(period, String)
+    check(userId, String)
+    check(limit, Number)
+    check(page, Match.Maybe(Number))
+    const aggregationSelector = buildworkingTimeSelector(projectId, period, userId, limit)
+    const totalEntries = Promise.await(
+      Timecards.rawCollection()
+        .aggregate(buildworkingTimeSelector(projectId, period, userId, 0)).toArray(),
+    ).length
+    const workingHoursObject = {}
+    workingHoursObject.totalEntries = totalEntries
+    const workingHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
+      .toArray()).map(workingTimeEntriesMapper)
+    workingHoursObject.workingHours = workingHours
+    return workingHoursObject
   },
 })

@@ -16,6 +16,7 @@ import '../components/tablecell.js'
 import '../components/customerselect.js'
 import '../components/dailytimetable.js'
 import '../components/periodtimetable.js'
+import '../components/workingtimetable.js'
 import '../components/limitpicker.js'
 import '../../api/timecards/tabular.js'
 

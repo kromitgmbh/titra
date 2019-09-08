@@ -13,6 +13,10 @@ Meteor.methods({
     siwappurl,
     theme,
     language,
+    dailyStartTime,
+    breakStartTime,
+    breakDuration,
+    regularWorkingTime,
   }) {
     check(name, String)
     check(unit, String)
@@ -25,6 +29,10 @@ Meteor.methods({
     check(siwappurl, String)
     check(theme, String)
     check(language, String)
+    check(dailyStartTime, String)
+    check(breakStartTime, String)
+    check(breakDuration, String)
+    check(regularWorkingTime, String)
     checkAuthentication(this)
     Meteor.users.update({ _id: this.userId }, {
       $set: {
@@ -39,6 +47,10 @@ Meteor.methods({
         'profile.siwappurl': siwappurl,
         'profile.theme': theme,
         'profile.language': language,
+        'profile.dailyStartTime': dailyStartTime,
+        'profile.breakStartTime': breakStartTime,
+        'profile.breakDuration': breakDuration,
+        'profile.regularWorkingTime': regularWorkingTime,
       },
     })
   },

@@ -1,4 +1,5 @@
 import i18next from 'i18next'
+import moment from 'moment'
 import Projects from '../api/projects/projects.js'
 import { periodToDates } from './periodHelpers.js'
 
@@ -109,7 +110,7 @@ function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, l
 function buildDailyHoursSelector(projectId, period, userId, customer, limit) {
   let projectList = []
   if (customer !== 'all') {
-    projectList = getProjectListByCustomer(customer).fetch().map(value => value._id)
+    projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
   } else {
     projectList = getProjectListById(projectId)
   }
@@ -169,6 +170,85 @@ function buildDailyHoursSelector(projectId, period, userId, customer, limit) {
   }
   return dailyArray
 }
+function buildworkingTimeSelector(projectId, period, userId, limit) {
+  let projectList = []
+  projectList = getProjectListById(projectId)
+  const workingTimeArray = []
+  let matchSelector = {}
+  const sortSelector = {
+    $sort: {
+      date: -1,
+    },
+  }
+  const groupSelector = {
+    $group: {
+      _id: { userId: '$userId', date: '$date' },
+      totalTime: { $sum: '$hours' },
+    },
+  }
+  const limitSelector = {
+    $limit: limit,
+  }
+  if (period && period !== 'all') {
+    const { startDate, endDate } = periodToDates(period)
+    if (userId === 'all') {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: startDate, $lte: endDate },
+        },
+      }
+    } else {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: startDate, $lte: endDate },
+          userId,
+        },
+      }
+    }
+  } else if (userId === 'all') {
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+      },
+    }
+  } else {
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+        userId,
+      },
+    }
+  }
+  workingTimeArray.push(matchSelector)
+  workingTimeArray.push(groupSelector)
+  workingTimeArray.push(sortSelector)
+  if (limit > 0) {
+    workingTimeArray.push(limitSelector)
+  }
+  return workingTimeArray
+}
+function workingTimeEntriesMapper(entry) {
+  const meteorUser = Meteor.users.findOne({ _id: entry._id.userId })
+  const userBreakStartTime = moment(meteorUser.profile.breakStartTime ? meteorUser.profile.breakStartTime : '12:00', 'HH:mm')
+  const userBreakDuration = meteorUser.profile.breakDuration ? meteorUser.profile.breakDuration : '0.5'
+  const userBreakEndTime = moment(userBreakStartTime, 'HH:mm').add(userBreakDuration, 'Hours')
+  const userRegularWorkingTime = meteorUser.profile.regularWorkingTime ? meteorUser.profile.regularWorkingTime : '8'
+  const userStartTime = meteorUser.profile.dailyStartTime ? meteorUser.profile.dailyStartTime : '09:00'
+  const userEndTime = moment(userStartTime, 'HH:mm').add(entry.totalTime, 'Hours')
+  return {
+    date: entry._id.date,
+    resource: meteorUser.profile.name,
+    startTime: userStartTime,
+    breakStartTime: userEndTime.isAfter(userBreakStartTime) ? userBreakStartTime.format('HH:mm') : '',
+    breakEndTime: userEndTime.isAfter(userBreakStartTime) ? userBreakEndTime.format('HH:mm') : '',
+    endTime: userEndTime.format('HH:mm'),
+    totalTime: entry.totalTime,
+    regularWorkingTime: Number(userRegularWorkingTime),
+    regularWorkingTimeDifference: entry.totalTime - userRegularWorkingTime,
+  }
+}
 export {
   checkAuthentication,
   getProjectListById,
@@ -177,4 +257,6 @@ export {
   dailyTimecardMapper,
   buildTotalHoursForPeriodSelector,
   buildDailyHoursSelector,
+  workingTimeEntriesMapper,
+  buildworkingTimeSelector,
 }
