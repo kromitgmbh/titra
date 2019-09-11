@@ -1,5 +1,8 @@
-on: push
-name: automatically tag pushes
+on:
+  push:
+    branches:
+    - master
+name: automatically tag pushes and create releases
 jobs:
   autotag:
     name: Autotag
@@ -8,5 +11,7 @@ jobs:
     - uses: actions/checkout@master
     - name: Autotag
       uses: author/action-autotag@1.0.1
+    - name: Release
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
