@@ -1,12 +1,18 @@
-on: push
-name: automatically tag pushes
+on:
+  push:
+    branches:
+    - master
+name: automatically tag pushes and create releases
 jobs:
   autotag:
     name: Autotag
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Autotag
-      uses: author/action-autotag@1.0.1
-      env:
+    - uses: butlerlogic/action-autotag@1.0.2
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
