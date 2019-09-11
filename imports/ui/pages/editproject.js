@@ -51,13 +51,16 @@ Template.editproject.onCreated(function editprojectSetup() {
 })
 Template.editproject.onRendered(function editprojectRendered() {
   const templateInstance = Template.instance()
-  templateInstance.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
+  if (!FlowRouter.getParam('id')) {
+    templateInstance.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
+    $('#color').val(templateInstance.color)
+  }
   templateInstance.pickr = Pickr.create({
     el: '#pickr',
     theme: 'monolith',
     lockOpacity: true,
     comparison: false,
-    default: this.color,
+    default: templateInstance.color,
     position: 'left-start',
     components: {
       preview: true,
@@ -112,6 +115,9 @@ Template.editproject.events({
     if (!$('#name').val()) {
       $('#name').addClass('is-invalid')
       return
+    }
+    if (Meteor.user().profile.timeunit === 'd') {
+      templateInstance.$('#target').val(Number(templateInstance.$('#target').val()) * 8)
     }
     const projectArray = templateInstance.$('#editProjectForm').serializeArray()
     projectArray.push({ name: 'desc', value: Template.instance().quill.getContents() })
