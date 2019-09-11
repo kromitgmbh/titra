@@ -10,10 +10,10 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Autotag
-      uses: author/action-autotag@1.0.1
-      env:
+      uses: butlerlogic/action-autotag@1.0.2
+      with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Release
       uses: softprops/action-gh-release@v1
-      env:
+      with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
