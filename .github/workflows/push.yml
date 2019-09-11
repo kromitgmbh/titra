@@ -9,11 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Autotag
-      uses: butlerlogic/action-autotag@1.0.2
+    - uses: butlerlogic/action-autotag@1.0.2
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Release
-      uses: softprops/action-gh-release@v1
+    - uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
