@@ -49,18 +49,13 @@ Template.editproject.onCreated(function editprojectSetup() {
   })
   this.wekanLists = new ReactiveVar()
 })
-Template.editproject.onRendered(function editprojectRendered() {
+Template.editproject.onRendered(() => {
   const templateInstance = Template.instance()
-  if (!FlowRouter.getParam('id')) {
-    templateInstance.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
-    $('#color').val(templateInstance.color)
-  }
-  templateInstance.pickr = Pickr.create({
+  const pickrOptions = {
     el: '#pickr',
     theme: 'monolith',
     lockOpacity: true,
     comparison: false,
-    default: templateInstance.color,
     position: 'left-start',
     components: {
       preview: true,
@@ -73,8 +68,14 @@ Template.editproject.onRendered(function editprojectRendered() {
         save: false,
       },
     },
-  })
-  templateInstance.pickr.on('change', (color, instance) => {
+  }
+  if (!FlowRouter.getParam('id')) {
+    templateInstance.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
+    $('#color').val(templateInstance.color)
+    pickrOptions.default = templateInstance.color
+  }
+  templateInstance.pickr = Pickr.create(pickrOptions)
+  templateInstance.pickr.on('change', (color) => {
     $('#color').val(color.toHEXA().toString())
   })
   import('quill').then((quillImport) => {
@@ -82,9 +83,9 @@ Template.editproject.onRendered(function editprojectRendered() {
     templateInstance.quill = new quillImport.default('#richDesc', {
       theme: 'snow',
     })
-    if (Projects.findOne().desc instanceof Object && templateInstance.quill) {
+    if (Projects.findOne() && Projects.findOne().desc instanceof Object && templateInstance.quill) {
       templateInstance.quill.setContents(Projects.findOne().desc)
-    } else if (Projects.findOne().desc && templateInstance.quill) {
+    } else if (Projects.findOne() && Projects.findOne().desc && templateInstance.quill) {
       templateInstance.quill.setText(Projects.findOne().desc)
     }
   })
@@ -93,7 +94,7 @@ Template.editproject.onRendered(function editprojectRendered() {
     if (templateInstance.handle && templateInstance.handle.ready()) {
       if (Projects.findOne()) {
         templateInstance.pickr.setColor(Projects.findOne().color
-          ? Projects.findOne().color : this.color)
+          ? Projects.findOne().color : templateInstance.color)
         if (Projects.findOne().desc instanceof Object && templateInstance.quill) {
           templateInstance.quill.setContents(Projects.findOne().desc)
         } else if (Projects.findOne().desc && templateInstance.quill) {
@@ -155,7 +156,7 @@ Template.editproject.events({
   },
   'click #addNewMember': (event) => {
     event.preventDefault()
-    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     const newmembermail = $('#newmembermail').val()
     if (newmembermail && emailRegex.test(newmembermail)) {
       Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: $('#newmembermail').val() }, (error, result) => {
@@ -227,6 +228,7 @@ Template.editproject.events({
     }
   },
   'change #wekanurl': (event) => {
+    event.preventDefault()
     validateWekanUrl()
   },
   'click #wekan-status': (event) => {
@@ -252,6 +254,6 @@ Template.editproject.helpers({
   },
   projectId: () => FlowRouter.getParam('id'),
   disablePublic: () => Meteor.settings.public.disablePublic,
-  archived: _id => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).archived : false),
+  archived: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).archived : false),
   target: () => (Projects.findOne() ? Projects.findOne().target : false),
 })

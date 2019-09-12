@@ -108,20 +108,19 @@ Template.timecardlist.onDestroyed(() => {
 Template.timecardlist.helpers({
   selector() {
     const returnSelector = {}
-    if (Template.instance().project.get() !== 'all') {
-      returnSelector.projectId = Template.instance().project.get()
-    }
     if (Template.instance().resource.get() !== 'all') {
       returnSelector.userId = Template.instance().resource.get()
     }
-    if (Template.instance().customer.get() !== 'all') {
+    if (Template.instance().project.get() !== 'all') {
+      returnSelector.projectId = Template.instance().project.get()
+    } else if (Template.instance().customer.get() !== 'all') {
       const projectList = Projects.find(
         {
           customer: Template.instance().customer.get(),
           $or: [{ userId: Meteor.userId() }, { public: true }, { team: Meteor.userId() }],
         },
         { $fields: { _id: 1 } },
-      ).fetch().map(value => value._id)
+      ).fetch().map((value) => value._id)
       returnSelector.projectId = { $in: projectList }
     }
     if (Template.instance().period.get() !== 'all') {
