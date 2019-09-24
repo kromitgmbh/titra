@@ -40,7 +40,7 @@ Template.dashboard.onCreated(function dashboardCreated() {
 Template.dashboard.onRendered(function dashboardRendered() {
   import('chart.js').then((chartModule) => {
     const Chart = chartModule.default
-    const replacer = match => emoji.emojify(match)
+    const replacer = (match) => emoji.emojify(match)
     this.autorun(() => {
       if (this.subscriptionsReady()) {
         let temphours = 0
@@ -157,7 +157,7 @@ Template.dashboard.onRendered(function dashboardRendered() {
 Template.dashboard.helpers({
   timecards: () => Timecards.find(),
   projectName: () => (Projects.findOne() ? Projects.findOne().name : false),
-  formatDate: date => moment(date).format('ddd DD.MM.YYYY'),
+  formatDate: (date) => moment(date).format('ddd DD.MM.YYYY'),
   timeunit: () => {
     if (Dashboards.findOne()) {
       return Dashboards.findOne().timeunit === 'd' ? 'Days' : 'Hours'
@@ -171,7 +171,7 @@ Template.dashboard.helpers({
       ? Meteor.users.findOne(Dashboards.findOne().resourceId).profile.name : false) : false),
   customer: () => (Dashboards.findOne() ? Dashboards.findOne().customer : false),
   isCustomerDashboard: () => (Dashboards.findOne() ? (Dashboards.findOne().customer && Dashboards.findOne().customer !== 'all') : false),
-  timeInUnit: hours => timeInUnitHelper(hours),
+  timeInUnit: (hours) => timeInUnitHelper(hours),
   totalHours: () => {
     if (Dashboards.findOne()) {
       if (Dashboards.findOne().timeunit === 'd') {

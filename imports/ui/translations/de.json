@@ -48,7 +48,7 @@
     "month_drag_help_text": "Sie können ein Projekt auf ein Datum ziehen um Zeiten zu erfassen",
     "today": "Heute",
     "actions": "Aktionen",
-    "start_timer": "Stoppuhr starten"
+    "start_timer": "Starten"
   },
   "overview": {
     "all_projects": "Alle Projekte",
@@ -189,7 +189,7 @@
   	}
   },
   "notifications": {
-    "sanity": "Zu Ihrer Sicherheit ist es nicht möglich alle Daten über den gesamten Zeitraum zu teilen.",
+    "sanity": "Zu Ihrer Sicherheit ist es nicht möglich alle Daten über den gesamten Zeitraum zu teilen. Bitte wählen Sie ein Projekt aus.",
     "dashboard_creation_failed": "Die Erstellung des Dashboards ist fehlgeschlagen (Fehlermeldung: {{error}}).",
     "export_failed": "Der Export ist fehlgeschlagen (Fehlermeldung: {{error}}).",
     "siwapp_configuration": "Sie müssen zunächst die Siwapp Schnittstelle konfigurieren um diese Funktion zu verwenden.",
@@ -233,6 +233,8 @@
     "reset_password_mail": "Die weiteren Schritte zum Zurücksetzen des Passworts haben Sie per E-mail erhalten.",
     "change_password": "Passwort ändern",
     "current_password": "Aktuelles Passwort",
-    "password_mismatch": "Die eingegebenen Passwörter stimmen nicht überein. Bitte überprüfen Sie Ihre Eingabe."
+    "password_mismatch": "Die eingegebenen Passwörter stimmen nicht überein. Bitte überprüfen Sie Ihre Eingabe.",
+    "permanent_account": "Permanenten Zugang erstellen",
+    "anonymous_account_warning": "Sie verwenden aktuell einen temporären Account. Wenn Sie titra auf einem anderen Gerät verwenden möchten, erstellen Sie bitte einen Benutzer mit E-mail Addresse und Passwort."
   }
 }

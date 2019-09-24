@@ -31,3 +31,5 @@ email@1.2.3
 kadira:blaze-layout
 kadira:flow-router
 http
+brettle:accounts-anonymous
+brettle:accounts-add-service

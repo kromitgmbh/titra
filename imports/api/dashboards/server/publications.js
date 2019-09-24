@@ -14,7 +14,7 @@ Meteor.publish('dashboardById', function dashboardById(_id) {
         customer: dashboard.customer,
       },
       { $fields: { _id: 1 } },
-    ).fetch().map(value => value._id)
+    ).fetch().map((value) => value._id)
     if (dashboard.resourceId === 'all') {
       return Timecards.find({
         projectId: { $in: projectList },

@@ -8,16 +8,16 @@ import Timecards from './timecards.js'
 import Projects from '../projects/projects.js'
 import projectUsers from '../users/users.js'
 
-const replacer = match => emoji.emojify(match)
-const safeReplacer = transform => (transform ? transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;') : false)
+const replacer = (match) => emoji.emojify(match)
+const safeReplacer = (transform) => (transform ? transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;') : false)
 
 const detailed = new Tabular.Table({
   name: 'Detailed',
   collection: Timecards,
   columns: [
-    { data: 'projectId', titleFn: () => i18next.t('globals.project'), render: _id => `<span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:100px" title="${Projects.findOne({ _id }).name}">${Projects.findOne({ _id }).name}</span>` },
-    { data: 'date', titleFn: () => i18next.t('globals.date'), render: val => `<span data-toggle="tooltip" data-placement="top" title="${moment(val).format('ddd DD.MM.YYYY')}">${moment(val).format('DD.MM.YYYY')}</span>` },
-    { data: 'task', titleFn: () => i18next.t('globals.task'), render: val => `<span class="d-inline-block text-truncate" style="max-width:350px;" data-toggle="tooltip" data-placement="top" title="${safeReplacer(val)}">${safeReplacer(val)}</span>` },
+    { data: 'projectId', titleFn: () => i18next.t('globals.project'), render: (_id) => `<span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:100px" title="${Projects.findOne({ _id }).name}">${Projects.findOne({ _id }).name}</span>` },
+    { data: 'date', titleFn: () => i18next.t('globals.date'), render: (val) => `<span data-toggle="tooltip" data-placement="top" title="${moment(val).format('ddd DD.MM.YYYY')}">${moment(val).format('DD.MM.YYYY')}</span>` },
+    { data: 'task', titleFn: () => i18next.t('globals.task'), render: (val) => `<span class="d-inline-block text-truncate" style="max-width:350px;" data-toggle="tooltip" data-placement="top" title="${safeReplacer(val)}">${safeReplacer(val)}</span>` },
     {
       data: 'userId',
       titleFn: () => i18next.t('globals.resource'),
@@ -25,7 +25,7 @@ const detailed = new Tabular.Table({
         Meteor.subscribe('projectUsers', { projectId: doc.projectId })
         const resName = projectUsers.findOne({ _id: doc.projectId })
           ? projectUsers.findOne({ _id: doc.projectId })
-            .users.find(elem => elem._id === _id).profile.name : false
+            .users.find((elem) => elem._id === _id).profile.name : false
         return `<span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:100px" title="${resName}">${resName}</span>`
       },
     },
@@ -60,7 +60,7 @@ const detailed = new Tabular.Table({
     const projectList = Projects.find(
       { $or: [{ userId }, { public: true }, { team: userId }] },
       { $fields: { _id: 1 } },
-    ).fetch().map(value => value._id)
+    ).fetch().map((value) => value._id)
     return { projectId: { $in: projectList } }
   },
   columnDefs: [{
@@ -75,7 +75,7 @@ const detailed = new Tabular.Table({
   // buttons: ['excelHtml5', 'csvHtml5'],
   buttons: [
     {
-      text: () => `<i class="fa fa-plus"></i> ${i18next.t('navigation.track')}`,
+      text: () => `<i class="fa fa-plus"></i> <span class="d-none d-md-inline">${i18next.t('navigation.track')}</span>`,
       className: 'border',
       action: () => {
         FlowRouter.go('tracktime', { projectId: $('#targetProject').val() })
@@ -84,7 +84,7 @@ const detailed = new Tabular.Table({
     {
       extend: 'excelHtml5',
       className: 'border',
-      text: '<i class="fa fa-download"></i> Excel',
+      text: '<i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span>',
       title: `titra_export_${moment(new Date()).format('YYYYMMDD-HHmm')}`,
       exportOptions: {
         columns: [0, 1, 2, 3, 4],
@@ -93,17 +93,17 @@ const detailed = new Tabular.Table({
     {
       extend: 'csvHtml5',
       className: 'border',
-      text: '<i class="fa fa-download"></i> CSV',
+      text: '<i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span>',
       title: `titra_export_${moment().format('YYYYMMDD-HHmm')}`,
       exportOptions: {
         columns: [0, 1, 2, 3, 4],
       },
     },
     {
-      text: () => `<i class="fa fa-link"></i> ${i18next.t('navigation.share')}`,
+      text: () => `<i class="fa fa-link"></i> <span class="d-none d-md-inline">${i18next.t('navigation.share')}</span>`,
       className: 'border js-share',
       action: () => {
-        if ($('#period').val() === 'all' && $('#targetProject').val() === 'all' && $('#customerselect').val() === 'all') {
+        if ($('#period').val() === 'all' || $('#targetProject').val() === 'all') {
           $.notify({ message: i18next.t('notifications.sanity') }, { type: 'danger' })
           return
         }
@@ -122,7 +122,7 @@ const detailed = new Tabular.Table({
       },
     },
     {
-      text: () => `<i class="fa fa-upload"></i> ${i18next.t('navigation.invoice')}`,
+      text: () => `<i class="fa fa-upload"></i> <span class="d-none d-md-inline">${i18next.t('navigation.invoice')}</span>`,
       className: 'border js-siwapp',
       action: () => {
         if (Meteor.user().profile.siwappurl && Meteor.user().profile.siwapptoken) {

@@ -19,10 +19,11 @@ Template.register.events({
         profile: {
           name: $('#at-field-name').val(),
           currentLanguageProject: i18next.t('globals.project'),
-          currentLanguageProjectDesc: i18next.t('project.first_project_desc')
+          currentLanguageProjectDesc: i18next.t('project.first_project_desc'),
         },
       }, (error) => {
-        if (error) {
+        console.error(error)
+        if (error && error.error !== 145546287) {
           $('.notification').text(i18next.t(`login.${error.error}`))
           document.querySelector('.notification').classList.toggle('d-none')
         } else {

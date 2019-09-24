@@ -1,5 +1,6 @@
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { BlazeLayout } from 'meteor/kadira:blaze-layout'
+import { AccountsAnonymous } from 'meteor/brettle:accounts-anonymous'
 import '../../ui/layouts/appLayout.js'
 import '../../ui/pages/tracktime.js'
 import '../../ui/pages/projectlist.js'
@@ -17,7 +18,7 @@ if (!Meteor.settings.public.sandstorm) {
     if (!Meteor.loggingIn() && !Meteor.user()) {
       redirect('/signIn')
     }
-  }], { except: ['dashboard', 'signIn', 'changePassword', 'register', 'reset-password'] })
+  }], { except: ['dashboard', 'signIn', 'changePassword', 'register', 'reset-password', 'try'] })
 }
 FlowRouter.route('/', {
   action() {
@@ -99,6 +100,22 @@ FlowRouter.route('/changePwd/:token?', {
     BlazeLayout.render('appLayout', { main: 'changePassword' })
   },
   name: 'changePassword',
+})
+FlowRouter.route('/try', {
+  action() {
+    if (Meteor.userId()) {
+      FlowRouter.go('/')
+    } else {
+      AccountsAnonymous.login((error) => {
+        if (!error) {
+          FlowRouter.go('/')
+        } else {
+          console.error(error)
+        }
+      })
+    }
+  },
+  name: 'try',
 })
 FlowRouter.route('/404', {
   action() {

@@ -48,7 +48,7 @@
     "month_drag_help_text": "You can drag projects on a date to track time",
     "today": "Today",
     "actions": "Actions",
-    "start_timer": "Start timer"
+    "start_timer": "Start"
   },
   "overview": {
     "all_projects": "All projects",
@@ -182,7 +182,7 @@
   	}
   },
   "notifications": {
-    "sanity": "Sorry, but for your own sanity you can not share all time of all projects.",
+    "sanity": "Sorry, but for your own sanity you can not share all time of all projects. Please select a single project to share.",
     "dashboard_creation_failed": "Dashboard creation failed (error: {{error}}).",
     "export_failed": "Export failed (error: {{error}}).",
     "siwapp_configuration": "You have to configure the Siwapp integration to use this feature.",
@@ -225,6 +225,8 @@
     "reset_password_mail": "We have sent you an E-mail with instructions on how to reset your password. Please check your inbox.",
     "change_password": "Change password",
     "current_password": "Current password",
-    "password_mismatch": "The provided passwords do not match, please try again."
+    "password_mismatch": "The provided passwords do not match, please try again.",
+    "permanent_account": "Create permanent account",
+    "anonymous_account_warning": "You are currently logged in using a temporary account which can only be used on this device. If you want to use titra on other devices, please create a regular user with an e-mail address and password below."
   }
 }

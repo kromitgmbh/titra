@@ -162,3 +162,10 @@
 #cal > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2 {
   font-weight: lighter;
 }
+@include media-breakpoint-down(sm) {
+  .nav-tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+  }
+}

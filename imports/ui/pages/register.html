@@ -31,20 +31,22 @@
                   <input type="password" class="form-control" id="at-field-password-again" name="at-field-password-again" placeholder="{{t 'login.password_again'}}" autocapitalize="none" autocorrect="off">
                   <span class="help-block hide"></span>
                 </div>
-                <div class="at-input form-group has-feedback">
-                  <label class="control-label" for="at-field-name">
-                    {{t "globals.name"}}
-                  </label>
-                  <input type="text" class="form-control" id="at-field-name" name="at-field-name" placeholder="{{t 'login.fullname_placholder'}}" autocapitalize="none" autocorrect="off">
-                  <span class="help-block hide"></span>
-                </div>
+                {{#unless currentUser}}
+                  <div class="at-input form-group has-feedback">
+                    <label class="control-label" for="at-field-name">
+                      {{t "globals.name"}}
+                    </label>
+                    <input type="text" class="form-control" id="at-field-name" name="at-field-name" placeholder="{{t 'login.fullname_placholder'}}" autocapitalize="none" autocorrect="off">
+                    <span class="help-block hide"></span>
+                  </div>
+                {{/unless}}
                 <button class="btn btn-primary form-control" id="register">
                   {{t "login.register"}}
                 </button>
               </fieldset>
             </form>
           </div>
-          <div class="at-signin-link">
+          <div class="at-signin-link mt-2">
             <p>
               {{t "login.already_have_account"}}
               <a href="/signin" id="at-signIn" class="at-link at-signin">{{t "login.sign_in"}}</a>
