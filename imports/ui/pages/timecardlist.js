@@ -24,7 +24,7 @@ Template.timecardlist.onCreated(function createTimeCardList() {
   this.project = new ReactiveVar()
   this.resource = new ReactiveVar()
   this.period = new ReactiveVar()
-  this.limit = new ReactiveVar(10)
+  this.limit = new ReactiveVar(25)
   this.customer = new ReactiveVar()
   this.activeTab = new ReactiveVar()
   this.autorun(() => {

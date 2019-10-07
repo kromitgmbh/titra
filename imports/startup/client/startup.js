@@ -8,15 +8,15 @@ $.notifyDefaults({
   type: 'success',
   delay: 2000,
   placement: {
-    from: 'bottom',
-    align: 'center',
+    from: 'top',
+    align: 'right',
   },
 })
 const i18nextReady = new ReactiveVar(false)
 const i18nextDebugMode = window.location.href.indexOf('localhost') > 0
 let globalT
 
-Template.registerHelper('t', param => (i18nextReady.get() ? globalT(param) : 'Loading ...'))
+Template.registerHelper('t', (param) => (i18nextReady.get() ? globalT(param) : 'Loading ...'))
 
 Meteor.startup(() => {
   Tracker.autorun(() => {
@@ -100,7 +100,7 @@ Template.registerHelper('unit', () => {
 })
 Template.registerHelper('emojify', (text) => {
   if (text) {
-    const replacer = match => emoji.emojify(match)
+    const replacer = (match) => emoji.emojify(match)
     return text.replace(/(:.*:)/g, replacer)
   }
   return false

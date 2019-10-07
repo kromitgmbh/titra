@@ -77,7 +77,7 @@ Template.tracktime.events({
       return
     }
     try {
-      templateInstance.math.eval($('#hours').val())
+      templateInstance.math.evaluate($('#hours').val())
     } catch (exception) {
       $.notify({ message: i18next.t('notifications.check_time_input') }, { type: 'danger' })
       return
@@ -85,10 +85,10 @@ Template.tracktime.events({
     const projectId = templateInstance.$('#targetProject').val()
     const task = templateInstance.$('.js-tasksearch-input').val()
     const date = moment.utc($('#date').val(), 'ddd, DD.MM.YYYY').toDate()
-    let hours = templateInstance.math.eval($('#hours').val())
+    let hours = templateInstance.math.evaluate($('#hours').val())
 
     if (Meteor.user().profile.timeunit === 'd') {
-      hours = templateInstance.math.eval($('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
+      hours = templateInstance.math.evaluate($('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
     }
     const buttonLabel = $(event.currentTarget).text()
     $(event.currentTarget).text('saving ...')

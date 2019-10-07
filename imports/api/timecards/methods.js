@@ -1,5 +1,4 @@
 import moment from 'moment'
-import csv from 'fast-csv'
 import emoji from 'node-emoji'
 import i18next from 'i18next'
 import { HTTP } from 'meteor/http'
@@ -11,7 +10,6 @@ import Projects from '../projects/projects.js'
 import { periodToDates, timeInUserUnit } from '../../utils/periodHelpers.js'
 import {
   checkAuthentication,
-  getProjectListById,
   getProjectListByCustomer,
   totalHoursForPeriodMapper,
   dailyTimecardMapper,
@@ -66,42 +64,6 @@ Meteor.methods({
         hours,
         task: task.replace(/(:.*:)/g, replacer),
       },
-    })
-  },
-  export({ projectId, timePeriod, userId }) {
-    checkAuthentication(this)
-    const { startDate, endDate } = periodToDates(timePeriod)
-    let timecardArray = []
-    const projectList = getProjectListById(projectId)
-
-    if (userId !== 'all') {
-      timecardArray = Timecards.find({
-        userId,
-        projectId: { $in: projectList },
-        date: { $gte: startDate, $lte: endDate },
-      }).fetch()
-    } else {
-      timecardArray = Timecards.find({
-        projectId: { $in: projectList },
-        date: { $gte: startDate, $lte: endDate },
-      }).fetch()
-    }
-    for (const timecard of timecardArray) {
-      timecard.date = moment(timecard.date).format('DD.MM.YYYY')
-      timecard.Resource = Meteor.users.findOne({ _id: timecard.userId }).profile.name
-      timecard.Project = Projects.findOne({ _id: timecard.projectId }).name
-      delete timecard.userId
-      delete timecard.projectId
-      delete timecard._id
-    }
-    return new Promise((resolve, reject) => {
-      csv.writeToString(timecardArray, { headers: true, delimiter: '\t' }, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
-      })
     })
   },
   deleteTimeCard({ timecardId }) {
@@ -222,16 +184,25 @@ Meteor.methods({
     period,
     customer,
     limit,
+    page,
   }) {
     check(projectId, String)
     check(period, String)
     check(userId, String)
     check(customer, String)
     check(limit, Number)
+    check(page, Match.Maybe(Number))
     checkAuthentication(this)
-    const aggregationSelector = buildDailyHoursSelector(projectId, period, userId, customer, limit)
-    return Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
+    const aggregationSelector = buildDailyHoursSelector(projectId, period, userId, customer, limit, page)
+    const dailyHoursObject = {}
+    const totalEntries = Promise.await(Timecards.rawCollection()
+      .aggregate(buildDailyHoursSelector(projectId, period, userId, customer, 0))
+      .toArray()).length
+    const dailyHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
       .toArray()).map(dailyTimecardMapper)
+    dailyHoursObject.dailyHours = dailyHours
+    dailyHoursObject.totalEntries = totalEntries
+    return dailyHoursObject
   },
   getTotalHoursForPeriod({
     projectId,
@@ -239,16 +210,25 @@ Meteor.methods({
     period,
     customer,
     limit,
+    page,
   }) {
     check(projectId, String)
     check(period, String)
     check(userId, String)
     check(customer, String)
     check(limit, Number)
+    check(page, Match.Maybe(Number))
     checkAuthentication(this)
-    const aggregationSelector = buildTotalHoursForPeriodSelector(projectId, period, userId, customer, limit)
-    return Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
+    const aggregationSelector = buildTotalHoursForPeriodSelector(projectId, period, userId, customer, limit, page)
+    const totalHoursObject = {}
+    const totalEntries = Promise.await(Timecards.rawCollection()
+      .aggregate(buildTotalHoursForPeriodSelector(projectId, period, userId, customer, 0))
+      .toArray()).length
+    const totalHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
       .toArray()).map(totalHoursForPeriodMapper)
+    totalHoursObject.totalHours = totalHours
+    totalHoursObject.totalEntries = totalEntries
+    return totalHoursObject
   },
   getWorkingHoursForPeriod({
     projectId,
@@ -262,7 +242,7 @@ Meteor.methods({
     check(userId, String)
     check(limit, Number)
     check(page, Match.Maybe(Number))
-    const aggregationSelector = buildworkingTimeSelector(projectId, period, userId, limit)
+    const aggregationSelector = buildworkingTimeSelector(projectId, period, userId, limit, page)
     const totalEntries = Promise.await(
       Timecards.rawCollection()
         .aggregate(buildworkingTimeSelector(projectId, period, userId, 0)).toArray(),

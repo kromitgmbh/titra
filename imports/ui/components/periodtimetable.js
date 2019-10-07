@@ -1,8 +1,15 @@
-import moment from 'moment'
+import i18next from 'i18next'
+import DataTable from 'frappe-datatable'
+import { saveAs } from 'file-saver'
+import 'frappe-datatable/dist/frappe-datatable.css'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import i18nextReady from '../../startup/client/startup.js'
 import './periodtimetable.html'
+import './pagination.js'
 
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
   this.periodTimecards = new ReactiveVar([])
+  this.totalPeriodTimeCards = new ReactiveVar()
   Tracker.autorun(() => {
     if (this.data.project.get()
       && this.data.resource.get()
@@ -16,13 +23,38 @@ Template.periodtimetable.onCreated(function periodtimetableCreated() {
           period: this.data.period.get(),
           customer: this.data.customer.get(),
           limit: this.data.limit.get(),
+          page: Number(FlowRouter.getQueryParam('page')),
         }, (error, result) => {
           if (error) {
             console.error(error)
           } else {
-            this.periodTimecards.set(result)
+            this.periodTimecards.set(result.totalHours)
+            this.totalPeriodTimeCards.set(result.totalEntries)
           }
         })
+    }
+  })
+})
+Template.periodtimetable.onRendered(() => {
+  Template.instance().autorun(() => {
+    if (Template.instance().subscriptionsReady() && i18nextReady.get()) {
+      const columns = [
+        { name: i18next.t('globals.project'), editable: false },
+        { name: i18next.t('globals.resource'), editable: false },
+        { name: Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'), editable: false },
+      ]
+      Template.instance().datatable = new DataTable('#datatable-container', {
+        columns,
+        serialNoColumn: false,
+        clusterize: false,
+        layout: 'ratio',
+        showTotalRow: true,
+        noDataMessage: i18next.t('tabular.sZeroRecords'),
+      })
+      Template.instance().datatable
+        .refresh(Template.instance().periodTimecards.get()
+          .map((entry) => Object.entries(entry)
+            .map((key) => key[1])), columns)
     }
   })
 })
@@ -30,17 +62,20 @@ Template.periodtimetable.helpers({
   periodTimecards() {
     return Template.instance().periodTimecards.get()
   },
-  periodSum() {
-    return Template.instance().periodTimecards.get()
-      .reduce(((total, element) => total + element.totalHours), 0)
+  totalPeriodTimeCards() {
+    return Template.instance().totalPeriodTimeCards
   },
-  userTimeUnit() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.timeunit === 'd' ? 'Days' : 'Hours'
+})
+Template.periodtimetable.events({
+  'click .js-export-csv': (event, templateInstance) => {
+    event.preventDefault()
+    const csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.resource')},${Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}\r\n`]
+    for (const timeEntry of templateInstance.periodTimecards.get()) {
+      csvArray.push(`${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
-    return false
+    saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_total_time_${templateInstance.data.period.get()}.csv`)
   },
-  moment(date) {
-    return moment(date).format('ddd DD.MM.YYYY')
-  },
+})
+Template.periodtimetable.onDestroyed(() => {
+  FlowRouter.setQueryParams({ page: null })
 })

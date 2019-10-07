@@ -119,8 +119,8 @@
 .dp-selected {
   background: map-get($theme-colors, primary) !important;
 }
-.dp-day:hover {
-  background: map-get($theme-colors, info) !important;
+.dp-day:hover, .dp-prev:hover, .dp-cal-month:hover, .dp-cal-year:hover, .dp-next:hover, .dp-today:hover, .dp-clear:hover, .dp-close:hover {
+  background: map-get($theme-colors, primary) !important;
 }
 .dp-day-today:after {
   content: '';
@@ -135,6 +135,22 @@
 }
 .dp:before {
   background: map-get($theme-colors, primary) !important;
+}
+.dp-modal {
+  background: rgba(0, 0, 0, 0.75);
+}
+.dp {
+  background: $body-bg;
+}
+.dp-cal-header {
+  background: map-get($theme-colors, secondary);
+  color: $gray-900;
+}
+.dp-cal-month, .dp-cal-year, .dp-day, .dp-month, .dp-year {
+  color: $gray-900;
+}
+.dp-cal-footer {
+  background: map-get($theme-colors, secondary);
 }
 .pickr .pcr-button {
   height: 100% !important;
@@ -168,4 +184,8 @@
     overflow-y: hidden;
     flex-wrap: nowrap;
   }
+}
+
+.dt-scrollable {
+   height: 144.15vw;
 }

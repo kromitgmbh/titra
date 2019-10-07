@@ -38,4 +38,15 @@ $theme-colors: (
 .fc-unthemed td.fc-today {
   background: rgba(0, 150, 136, 0.5) !important;
 }
+.datatable {
+    --dt-border-color: #d1d8dd;
+    --dt-light-bg: #f5f7fa;
+    --dt-text-color: #000000;
+    --dt-text-light: #dfe2e5;
+    --dt-cell-bg: #fff;
+    --dt-focus-border-width: 1px;
+    --dt-selection-highlight-color: var(--dt-light-yellow);
+    --dt-toast-message-border: none;
+    --dt-header-cell-bg: var(--dt-cell-bg);
+}
 @import "{}/imports/ui/styles/general.scss";

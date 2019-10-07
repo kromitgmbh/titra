@@ -43,7 +43,7 @@
   "tracktime": {
     "no_time": "No time tracked yet.",
     "task_placeholder": "Enter or search for task ...",
-    "working_time": "Working time ",
+    "working_time": "Workingtime ",
     "time_tracked": "Time tracked: ",
     "month_drag_help_text": "You can drag projects on a date to track time",
     "today": "Today",

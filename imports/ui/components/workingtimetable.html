@@ -1,49 +1,11 @@
 <template name="workingtimetable">
+  <div class="btn-group mt-2 mb-0">
+    <button class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> CSV</button>
+  </div>
+  <div id="datatable-container" class="mt-3 mb-3"></div>
   {{#if workingTimeEntries}}
-  <table class="table table-hover mt-5">
-    <thead>
-      <tr role="row">
-        <th>{{t "globals.date"}}</th>
-        <th>{{t "globals.resource"}}</th>
-        <th>{{t "details.startTime"}}</th>
-        <th>{{t "details.breakStartTime"}}</th>
-        <th>{{t "details.breakEndTime"}}</th>
-        <th>{{t "details.endTime"}}</th>
-        <th>{{t "details.totalTime"}}</th>
-        <th>{{t "details.regularWorkingTime"}}</th>
-        <th>{{t "details.regularWorkingTimeDifference"}}</th>
-      </tr>
-    </thead>
-    <tbody>
-    {{#each workingTime in workingTimeEntries}}
-      <tr role="row">
-        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:250px" title="{{moment workingTime.date}}">{{moment workingTime.date}}</span></td>
-        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:250px" title="{{workingTime.resource}}">{{workingTime.resource}}</span></td>
-        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:250px" title="{{workingTime.startTime}}">{{workingTime.startTime}}</span></td>
-        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:150px" title="{{workingTime.breakStartTime}}">{{workingTime.breakStartTime}}</span></td>
-        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:150px" title="{{workingTime.breakEndTime}}">{{workingTime.breakEndTime}}</span></td>
-        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:250px" title="{{workingTime.endTime}}">{{workingTime.endTime}}</span></td>
-        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:150px" title="{{workingTime.totalTime}}">{{workingTime.totalTime}}</span></td>
-        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:150px" title="{{workingTime.regularWorkingTime}}">{{workingTime.regularWorkingTime}}</span></td>
-        <td><span class="d-inline-block text-truncate" data-toggle="tooltip" data-placement="top" style="max-width:150px" title="{{workingTime.regularWorkingTimeDifference}}">{{workingTime.regularWorkingTimeDifference}}</span></td>
-      </tr>
-    {{/each}}
-    </tbody>
-    <tfoot>
-      <tr role="row">
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th>{{t "globals.sum"}}:</th>
-        <th>{{workingTimeSum}}</th>
-        <th>{{regularWorkingTimeSum}}</th>
-        <th>{{regularWorkingTimeDifferenceSum}}</th>
-      </tr>
-    </tfoot>
-  </table>
+    {{>pagination totalEntries=totalWorkingTimeEntries limit=limit}}
   {{else}}
-  <h5 class="text-center">{{t "tabular.sZeroRecords"}}</h5>
+    <h5 class="text-center">{{t "tabular.sZeroRecords"}}</h5>
   {{/if}}
 </template>

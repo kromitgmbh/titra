@@ -11,7 +11,7 @@ function getProjectListById(projectId) {
         $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
       },
       { $fields: { _id: 1 } },
-    ).fetch().map(value => value._id)
+    ).fetch().map((value) => value._id)
   } else {
     projectList = [projectId]
   }
@@ -52,13 +52,13 @@ function totalHoursForPeriodMapper(entry) {
 
 function dailyTimecardMapper(entry) {
   return {
+    date: entry._id.date,
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
     userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-    date: entry._id.date,
     totalHours: entry.totalHours,
   }
 }
-function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, limit) {
+function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, limit, page) {
   let projectList = []
   const periodArray = []
   let matchSelector = {}
@@ -68,11 +68,22 @@ function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, l
       totalHours: { $sum: '$hours' },
     },
   }
+  const sortSelector = {
+    $sort: {
+      date: -1,
+    },
+  }
+  const skipSelector = {
+    $skip: 0,
+  }
+  if (page) {
+    skipSelector.$skip = (page - 1) * limit
+  }
   const limitSelector = {
     $limit: limit,
   }
   if (customer !== 'all') {
-    projectList = getProjectListByCustomer(customer).fetch().map(value => value._id)
+    projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
   } else {
     projectList = getProjectListById(projectId)
   }
@@ -102,12 +113,14 @@ function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, l
   }
   periodArray.push(matchSelector)
   periodArray.push(groupSelector)
+  periodArray.push(sortSelector)
+  periodArray.push(skipSelector)
   if (limit > 0) {
     periodArray.push(limitSelector)
   }
   return periodArray
 }
-function buildDailyHoursSelector(projectId, period, userId, customer, limit) {
+function buildDailyHoursSelector(projectId, period, userId, customer, limit, page) {
   let projectList = []
   if (customer !== 'all') {
     projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
@@ -116,6 +129,12 @@ function buildDailyHoursSelector(projectId, period, userId, customer, limit) {
   }
   const dailyArray = []
   let matchSelector = {}
+  const skipSelector = {
+    $skip: 0,
+  }
+  if (page) {
+    skipSelector.$skip = (page - 1) * limit
+  }
   const sortSelector = {
     $sort: {
       date: -1,
@@ -165,15 +184,22 @@ function buildDailyHoursSelector(projectId, period, userId, customer, limit) {
   dailyArray.push(matchSelector)
   dailyArray.push(groupSelector)
   dailyArray.push(sortSelector)
+  dailyArray.push(skipSelector)
   if (limit > 0) {
     dailyArray.push(limitSelector)
   }
   return dailyArray
 }
-function buildworkingTimeSelector(projectId, period, userId, limit) {
+function buildworkingTimeSelector(projectId, period, userId, limit, page) {
   let projectList = []
   projectList = getProjectListById(projectId)
   const workingTimeArray = []
+  const skipSelector = {
+    $skip: 0,
+  }
+  if (page) {
+    skipSelector.$skip = (page - 1) * limit
+  }
   let matchSelector = {}
   const sortSelector = {
     $sort: {
@@ -223,6 +249,7 @@ function buildworkingTimeSelector(projectId, period, userId, limit) {
   }
   workingTimeArray.push(matchSelector)
   workingTimeArray.push(groupSelector)
+  workingTimeArray.push(skipSelector)
   workingTimeArray.push(sortSelector)
   if (limit > 0) {
     workingTimeArray.push(limitSelector)

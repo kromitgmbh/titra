@@ -68,6 +68,7 @@ const detailed = new Tabular.Table({
     orderable: false,
   }],
   lengthMenu: [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, 'All']],
+  pageLength: 25,
   order: [[1, 'desc']],
   responsive: true,
   autoWidth: false,
