@@ -162,7 +162,7 @@ Template.tracktime.events({
   },
   'click .js-toggle-timecards': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.$('.js-show-timecards').toggleClass('d-none')
+    templateInstance.$('.js-show-timecards').slideToggle('fast')
     templateInstance.$('[data-toggle="tooltip"]').tooltip()
   },
   'click .js-time-row': (event, templateInstance) => {

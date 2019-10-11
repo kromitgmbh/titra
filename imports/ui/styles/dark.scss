@@ -22,6 +22,7 @@ $list-group-hover-bg: #404040 !default;
 $list-group-action-hover-color: $gray-900 !default;
 $input-bg: map-get($theme-colors, secondary) !default;
 $input-color: $gray-900 !default;
+$input-border-color: #5B5B5B;
 $nav-tabs-link-active-color: $gray-900 !default;
 $nav-tabs-border-color: map-get($theme-colors, dark) !default;
 $nav-tabs-link-active-border-color: map-get($theme-colors, dark) map-get($theme-colors, dark) $body-bg !default;
@@ -33,6 +34,7 @@ $pagination-color: $gray-900 !default;
 $pagination-disabled-bg: #303030 !default;
 $popover-bg: map-get($theme-colors, secondary);
 $modal-content-bg: map-get($theme-colors, secondary);
+
 .tab-borders {
   border-left: 1px solid map-get($theme-colors, dark);
   border-right: 1px solid map-get($theme-colors, dark);

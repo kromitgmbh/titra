@@ -31,6 +31,9 @@ Template.projectselect.helpers({
   projects() {
     return Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] })
   },
+  selectedId() {
+    return Template.instance().selectedId.get()
+  },
 })
 
 Template.projectselect.events({

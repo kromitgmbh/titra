@@ -75,6 +75,7 @@ Template.allprojectschart.onRendered(function allprojectschartRendered() {
                   lineTension: 0.1,
                   backgroundColor: hex2rgba('#009688', 40), // 'rgba(75,192,192,0.4)',
                   borderColor: hex2rgba('#009688', 80), // 'rgba(0, 150, 136, 0.8)',
+                  borderWidth: 0,
                   borderCapStyle: 'butt',
                   borderDash: [],
                   borderDashOffset: 0.0,
@@ -114,10 +115,11 @@ Template.allprojectschart.onRendered(function allprojectschartRendered() {
               this.piechart = new Chart(ctx, {
                 type: 'pie',
                 data: {
-                  labels: templateInstance.topTasks.get().map(task => task._id),
+                  labels: templateInstance.topTasks.get().map((task) => task._id),
                   datasets: [{
                     backgroundColor: [hex2rgba('#009688', 40), 'rgba(0, 150, 136, 0.6)', '#e4e4e4'],
-                    data: templateInstance.topTasks.get().map(task => task.count),
+                    borderWidth: 0,
+                    data: templateInstance.topTasks.get().map((task) => task.count),
                   }],
                 },
                 options: {

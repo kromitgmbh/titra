@@ -16,6 +16,9 @@ Template.tasksearch.events({
   'focus .js-tasksearch-input': (event, templateInstance) => {
     templateInstance.$('.js-tasksearch-results').removeClass('d-none')
   },
+  'keydown .js-tasksearch-input': (event, templateInstance) => {
+    console.log(event.keyCode)
+  },
   'blur .js-tasksearch-input': (event, templateInstance) => {
     // if (!templateInstance.filter.get()) {
     // event.stopPropagation()

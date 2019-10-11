@@ -1,7 +1,7 @@
 <template name="tasksearch">
   <input type="text" class="js-tasksearch-input form-control" placeholder="{{t "tracktime.task_placeholder"}}"/>
   {{#if tasks}}
-    <div class="list-group js-tasksearch-results d-none">
+    <div class="list-group js-tasksearch-results position-fixed d-none" style="z-index:999;">
       {{#unless Template.subscriptionsReady}}
         <div class="list-group-item">
           {{t "task.searching"}}

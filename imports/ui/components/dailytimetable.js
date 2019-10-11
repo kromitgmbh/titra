@@ -48,7 +48,13 @@ Template.dailytimetable.onRendered(() => {
         },
         { name: i18next.t('globals.project'), editable: false, width: 2 },
         { name: i18next.t('globals.resource'), editable: false, width: 2 },
-        { name: Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'), editable: false, width: 1 },
+        {
+          name: Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
+          editable: false,
+          width: 1,
+          format: (value) => value.toFixed(Meteor.user().profile.precision
+            ? Meteor.user().profile.precision : 2),
+        },
       ]
       Template.instance().datatable = new DataTable('#datatable-container', {
         columns,

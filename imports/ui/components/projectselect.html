@@ -1,5 +1,5 @@
 <template name ="projectselect">
-  <select id="targetProject" class="custom-select form-control" style="border-color: {{projectColor (_id)}}">
+  <select id="targetProject" class="custom-select form-control" style="border-left-color: {{projectColor (selectedId)}}; border-left-width:thick;">
     <option value="" disabled selected>{{t "project.project_placeholder"}}</option>
     {{#if allProjects}}
       <option value="all">{{t "overview.all_projects"}}</option>

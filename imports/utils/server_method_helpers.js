@@ -43,19 +43,35 @@ function getProjectListByCustomer(customer) {
 }
 
 function totalHoursForPeriodMapper(entry) {
+  let { totalHours } = entry
+  if (Meteor.user()) {
+    // const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+    if (Meteor.user().profile.timeunit === 'd') {
+      totalHours = Number(entry.totalHours / (Meteor.user().profile.hoursToDays
+        ? Meteor.user().profile.hoursToDays : 8))
+    }
+  }
   return {
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
     userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-    totalHours: entry.totalHours,
+    totalHours,
   }
 }
 
 function dailyTimecardMapper(entry) {
+  let { totalHours } = entry
+  if (Meteor.user()) {
+    // const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+    if (Meteor.user().profile.timeunit === 'd') {
+      totalHours = Number(entry.totalHours / (Meteor.user().profile.hoursToDays
+        ? Meteor.user().profile.hoursToDays : 8))
+    }
+  }
   return {
     date: entry._id.date,
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
     userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
-    totalHours: entry.totalHours,
+    totalHours,
   }
 }
 function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, limit, page) {
