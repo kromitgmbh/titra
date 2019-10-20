@@ -62,6 +62,13 @@ Template.tracktime.onCreated(function tracktimeCreated() {
     if (this.subscriptionsReady()) {
       this.totalTime.set(Timecards.find()
         .fetch().reduce((a, b) => (a === 0 ? b.hours : a + b.hours), 0))
+      if (FlowRouter.getParam('projectId') && !FlowRouter.getQueryParam('date')) {
+        if (FlowRouter.getParam('projectId') !== 'all') {
+          if ($('.js-tasksearch-input')) {
+            $('.js-tasksearch-input').focus()
+          }
+        }
+      }
     }
   })
 })

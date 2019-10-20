@@ -1,17 +1,17 @@
 <template name="tasksearch">
   <input type="text" class="js-tasksearch-input form-control" placeholder="{{t "tracktime.task_placeholder"}}"/>
   {{#if tasks}}
-    <div class="list-group js-tasksearch-results position-fixed d-none" style="z-index:999;">
+    <div class="list-group js-tasksearch-results position-absolute d-none" style="z-index:999;">
       {{#unless Template.subscriptionsReady}}
         <div class="list-group-item">
           {{t "task.searching"}}
         </div>
       {{/unless}}
       {{#each tasks}}
-        <a href="#" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result">
+        <button type="button" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result" tabindex="{{@index}}">
           {{#if wekan}}<img src="/img/wekan.png"/>{{/if}}
           &nbsp;<span class="js-tasksearch-task-name">{{emojify (name)}}</span>
-        </a>
+        </button>
       {{/each}}
     </div>
   {{/if}}

@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-3 d-none d-md-block">
       {{#each project in projects}}
-        <div class="card drag" data-id="{{project._id}}"><div class="card-block "><span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{projectColor(project._id)}} 40%);">{{project.name}} </span>
+        <div class="card drag" data-id="{{project._id}}" style="border-left-color: {{project.color}}; border-left-width:thick;"><div class="card-block "><span>{{project.name}}</span>
         <span class="float-right text-muted"><i class="fa fa-arrows-alt"></i></span></div></div>
       {{/each}}
       <div class="alert alert-secondary alert-dismissible fade show mt-4" role="alert">

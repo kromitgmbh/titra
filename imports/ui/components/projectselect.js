@@ -40,5 +40,8 @@ Template.projectselect.events({
   'change #targetProject': (event, templateInstance) => {
     templateInstance.selectedId.set($(event.currentTarget).val())
     FlowRouter.setParams({ projectId: $(event.currentTarget).val() })
+    if ($('.js-tasksearch-input')) {
+      $('.js-tasksearch-input').focus()
+    }
   },
 })

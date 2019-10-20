@@ -139,9 +139,7 @@ Template.registerHelper('timeInUserUnit', (time) => {
   return false
 })
 Template.registerHelper('projectColor', (_id) => {
-  console.log(_id)
   if (Projects.findOne({ _id })) {
-    console.log(Projects.findOne({ _id }).color)
     return Projects.findOne({ _id }).color ? Projects.findOne({ _id }).color : '#009688'
   }
   return '#d9d9d9'

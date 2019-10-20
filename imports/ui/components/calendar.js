@@ -16,8 +16,8 @@ Template.calendar.onCreated(function calendarCreated() {
 })
 
 Template.calendar.onRendered(function trackmonthRendered() {
-  const replacer = match => emoji.emojify(match)
-  const safeReplacer = transform => transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
+  const replacer = (match) => emoji.emojify(match)
+  const safeReplacer = (transform) => transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
   const templateInstance = Template.instance()
   import('fullcalendar').then(() => {
     // import 'fullcalendar/dist/locale-all.js'
@@ -77,7 +77,7 @@ Template.calendar.onRendered(function trackmonthRendered() {
             title: it.task,
             start: it.date,
             hours: it.hours,
-            color: hex2rgba(Projects.findOne({ _id: it.projectId }).color ? Projects.findOne({ _id: it.projectId }).color : '#009688', 40),
+            color: hex2rgba(Projects.findOne({ _id: it.projectId }).color ? Projects.findOne({ _id: it.projectId }).color : '#009688', 100),
             // url: `/edit/timecard/${it._id}`,
             allDay: true,
           }))

@@ -16,19 +16,47 @@ Template.tasksearch.events({
   'focus .js-tasksearch-input': (event, templateInstance) => {
     templateInstance.$('.js-tasksearch-results').removeClass('d-none')
   },
-  'keydown .js-tasksearch-input': (event, templateInstance) => {
-    console.log(event.keyCode)
-  },
   'blur .js-tasksearch-input': (event, templateInstance) => {
+    if (!event.relatedTarget) {
+      templateInstance.$('.js-tasksearch-results').addClass('d-none')
+    }
     // if (!templateInstance.filter.get()) {
     // event.stopPropagation()
-    templateInstance.$('.js-tasksearch-results').addClass('d-none')
+    // templateInstance.$('.js-tasksearch-results').addClass('d-none')
     // }
   },
   'keyup .js-tasksearch-input': (event, templateInstance) => {
-    templateInstance.filter.set($(event.currentTarget).val())
-    templateInstance.$('.js-tasksearch-results').removeClass('d-none')
+    if (event.keyCode === 40) {
+      event.preventDefault()
+      templateInstance.$('.js-tasksearch-results').removeClass('d-none')
+      templateInstance.$($('.js-tasksearch-result')[0]).focus()
+    } else if (event.keyCode === 27) {
+      templateInstance.$('.js-tasksearch-results').addClass('d-none')
+    } else {
+      templateInstance.filter.set($(event.currentTarget).val())
+      templateInstance.$('.js-tasksearch-results').removeClass('d-none')
+    }
     // templateInstance.$('.js-tasksearch-results').show()
+  },
+  'keyup .js-tasksearch-result': (event, templateInstance) => {
+    event.preventDefault()
+    event.stopPropagation()
+    // enter key
+    if (event.keyCode === 13) {
+      templateInstance.$('.js-tasksearch-input').val($(event.currentTarget).children('.js-tasksearch-task-name').text())
+      templateInstance.$('.js-tasksearch-results').addClass('d-none')
+      if ($('#hours')) {
+        $('#hours').focus()
+      }
+    } else if ((event.keyCode === 40 || event.keyCode === 9) // tab or down key
+      && event.currentTarget.nextElementSibling) {
+      $(event.currentTarget.nextElementSibling).focus()
+    } else if (event.keyCode === 38 && event.currentTarget.previousElementSibling) { // up key
+      $(event.currentTarget.previousElementSibling).focus()
+    } else if (event.keyCode === 27) { // escape key
+      templateInstance.$('.js-tasksearch-results').addClass('d-none')
+      templateInstance.$('.js-tasksearch-input').focus()
+    }
   },
 })
 
@@ -86,11 +114,11 @@ Template.tasksearch.helpers({
     if (Template.instance().wekanTasks) {
       const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: regex, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: 5 })
       if (wekanResult.count() > 0) {
-        finalArray.push(...wekanResult.map(elem => ({ name: elem.title, wekan: true })))
+        finalArray.push(...wekanResult.map((elem) => ({ name: elem.title, wekan: true })))
       }
     } else if (Template.instance().wekanAPITasks.get()) {
       if (Template.instance().wekanAPITasks.get().length > 0) {
-        finalArray.push(...Template.instance().wekanAPITasks.get().map(elem => ({ name: elem.title, wekan: true })).filter(element => new RegExp(regex, 'i').exec(element.name)))
+        finalArray.push(...Template.instance().wekanAPITasks.get().map((elem) => ({ name: elem.title, wekan: true })).filter((element) => new RegExp(regex, 'i').exec(element.name)))
       }
     }
     finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { lastUsed: -1 }, limit: 5 }).fetch())
