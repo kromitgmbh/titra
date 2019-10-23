@@ -1,5 +1,5 @@
 <template name="tracktime">
-  <form class="p-3 tab-borders">
+  <form class="p-3 {{borderClass}}">
     <div class="row pb-3">
       {{#unless isEdit}}
         <div class="col-2">
@@ -12,7 +12,15 @@
         </div>
       {{/unless}}
       <div class="col">
-        <input id="date" type="text" class="form-control pl-2 pr-2 text-center bg-primary text-white" value="{{date}}">
+        {{#if isEdit}}
+        <label>{{t "globals.date"}}</label>
+        {{/if}}
+        <div class="input-group">
+          <input id="date" type="text" class="form-control text-center bg-primary text-white" value="{{date}}">
+          <div class="input-group-append">
+            <span class="input-group-text bg-primary js-open-calendar" style="cursor:pointer"><i class="fa fa-calendar"></i></span>
+          </div>
+        </div>
       </div>
       {{#unless isEdit}}
         <div class="col d-none d-lg-block text-left">

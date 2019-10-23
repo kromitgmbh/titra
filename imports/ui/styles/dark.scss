@@ -52,6 +52,9 @@ $modal-content-bg: map-get($theme-colors, secondary);
 .fc-unthemed td.fc-today {
   background: rgba(0, 150, 136, 0.5) !important;
 }
+.fc-unthemed th, .fc-unthemed td, .fc-unthemed thead, .fc-unthemed tbody, .fc-unthemed .fc-divider, .fc-unthemed .fc-row, .fc-unthemed .fc-content, .fc-unthemed .fc-popover, .fc-unthemed .fc-list-view, .fc-unthemed .fc-list-heading td {
+    border-color: #5B5B5B !important;
+}
 .drag.card:hover {
     background-color: $gray-900 !important;
     color: $body-bg !important;

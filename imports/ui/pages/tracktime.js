@@ -17,13 +17,14 @@ import '../components/calendar.js'
 import '../components/backbutton.js'
 
 Template.tracktime.onRendered(() => {
-  TinyDatePicker('#date', {
+  Template.instance().tinydatepicker = TinyDatePicker('#date', {
     format(date) {
       return date ? moment(date).format('ddd, DD.MM.YYYY') : moment().format('ddd, DD.MM.YYYY')
     },
     parse(date) {
       return moment(date, 'ddd, DD.MM.YYYY')
     },
+    mode: 'dp-modal',
     dayOffset: 1,
   }).on('select', (_, dp) => {
     if (!dp.state.selectedDate) {
@@ -194,6 +195,10 @@ Template.tracktime.events({
       }
     })
   },
+  'click .js-open-calendar': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.tinydatepicker.open()
+  },
 })
 Template.tracktime.helpers({
   date: () => moment(Template.instance().date.get()).format('ddd, DD.MM.YYYY'),
@@ -203,7 +208,7 @@ Template.tracktime.helpers({
     }
     return Timecards.findOne({ _id: FlowRouter.getParam('tcid') }) ? Timecards.findOne({ _id: FlowRouter.getParam('tcid') }).projectId : false
   },
-  projectName: _id => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false),
+  projectName: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false),
   timecards: () => Timecards.find(),
   isEdit: () => FlowRouter.getParam('tcid'),
   task: () => (Timecards.findOne({ _id: FlowRouter.getParam('tcid') }) ? Timecards.findOne({ _id: FlowRouter.getParam('tcid') }).task : false),
@@ -212,6 +217,7 @@ Template.tracktime.helpers({
   totalTime: () => Template.instance().totalTime.get(),
   previousDay: () => moment(Template.instance().date.get()).subtract(1, 'day').format('ddd, DD.MM.YYYY'),
   nextDay: () => moment(Template.instance().date.get()).add(1, 'day').format('ddd, DD.MM.YYYY'),
+  borderClass: () => (FlowRouter.getParam('tcid') ? '' : 'tab-borders'),
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

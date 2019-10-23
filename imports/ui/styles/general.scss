@@ -178,11 +178,24 @@
 #cal > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2 {
   font-weight: lighter;
 }
+.fc-button-primary {
+  background-color: map-get($theme-colors, primary)
+}
 @include media-breakpoint-down(sm) {
   .nav-tabs {
     overflow-x: auto;
     overflow-y: hidden;
     flex-wrap: nowrap;
+  }
+  #cal > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2 {
+    font-weight: lighter;
+    font-size: medium;
+  }
+  .js-previous {
+    padding: 0;
+  }
+  .js-next {
+    padding: 0;
   }
 }
 .dt-scrollable {

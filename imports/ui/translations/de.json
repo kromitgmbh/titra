@@ -38,7 +38,8 @@
     "new_project": "Neues Projekt",
     "close": "Schließen",
     "share": "Teilen",
-    "invoice": "Rechnung"
+    "invoice": "Rechnung",
+    "retry": "Erneut versuchen"
   },
   "tracktime": {
     "no_time": "Keine Zeiten erfasst.",
@@ -213,8 +214,8 @@
     "team_member_removed_success": "Team Mitglied entfernt.",
     "user_not_found": "Wir konnten keinen Benutzer mit dieser E-mail Adresse finden, bitte stellen Sie sicher dass der Benutzer existiert.",
     "project_priority_success": "Projekt Priorität aktualisiert",
-    "password_changed": "Ihr Passwort wurde erfolgreich geändert."
-
+    "password_changed": "Ihr Passwort wurde erfolgreich geändert.",
+    "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch in "
   },
   "login": {
     "password": "Passwort",

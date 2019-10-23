@@ -1,12 +1,15 @@
 {
   "name": "titra",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
     "@babel/runtime": "^7.6.3",
+    "@fullcalendar/core": "^4.3.1",
+    "@fullcalendar/daygrid": "^4.3.0",
+    "@fullcalendar/interaction": "^4.3.0",
     "@simonwep/pickr": "^1.4.5",
     "bcrypt": "^3.0.6",
     "bootstrap": ">=4.3.1",
@@ -16,12 +19,11 @@
     "datatables.net-buttons-bs4": "^1.6.1",
     "docker-names": "^1.1.1",
     "file-saver": "^2.0.2",
-    "fullcalendar": "^3.10.1",
-    "i18next": "^17.2.0",
+    "frappe-datatable": "^1.15.0",
+    "i18next": "^17.3.0",
     "is-dark": "^1.0.4",
     "jquery": "^3.4.1",
     "jquery-serializejson": "^2.9.0",
-    "jquery-ui": "^1.12.1",
     "jszip": "^3.2.2",
     "mathjs": "^6.2.3",
     "meteor-node-stubs": "~0.4.1",
@@ -33,15 +35,14 @@
     "randomcolor": "^0.5.4",
     "sortablejs": "^1.10.1",
     "tether": "^1.4.7",
-    "tiny-date-picker": "^3.2.8",
-    "frappe-datatable": "^1.15.0"
+    "tiny-date-picker": "^3.2.8"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
-    "eslint-plugin-i18next": "^2.3.0",
+    "eslint-plugin-i18next": "^3.2.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-meteor": "^6.0.0"
   }
