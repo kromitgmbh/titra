@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor'
+import { Random } from 'meteor/random'
 import moment from 'moment'
 import i18next from 'i18next'
 import './settings.html'
@@ -39,6 +40,7 @@ Template.settings.helpers({
   },
   siwappurl: () => (Meteor.user() ? Meteor.user().profile.siwappurl : false),
   siwapptoken: () => (Meteor.user() ? Meteor.user().profile.siwapptoken : false),
+  titraAPItoken: () => (Meteor.user() ? Meteor.user().profile.APItoken : false),
   dailyStartTime: () => (Meteor.user() ? Meteor.user().profile.dailyStartTime : '09:00'),
   breakStartTime: () => (Meteor.user() ? Meteor.user().profile.breakStartTime : '12:00'),
   breakDuration: () => (Meteor.user() ? Meteor.user().profile.breakDuration : 0.5),
@@ -58,6 +60,7 @@ Template.settings.events({
       precision: Number($('#precision').val()),
       siwapptoken: $('#siwapptoken').val(),
       siwappurl: $('#siwappurl').val(),
+      APItoken: $('#titraAPItoken').val(),
       theme: $('#theme').val(),
       language: $('#language').val(),
       dailyStartTime: $('#dailyStartTime').val(),
@@ -78,6 +81,10 @@ Template.settings.events({
   'click .js-logout': (event) => {
     event.preventDefault()
     Meteor.logout()
+  },
+  'click #generateToken': (event) => {
+    event.preventDefault()
+    $('#titraAPItoken').val(Random.id())
   },
 })
 Template.settings.onCreated(function settingsCreated() {

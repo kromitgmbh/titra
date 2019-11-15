@@ -114,7 +114,4 @@ Template.calendar.helpers({
       { sort: { name: 1 } },
     )
   },
-  colorOpacity(hex, op) {
-    return hex2rgba(hex || '#009688', !isNaN(op) ? op : 50)
-  },
 })

@@ -17,6 +17,7 @@ Meteor.methods({
     breakStartTime,
     breakDuration,
     regularWorkingTime,
+    APItoken,
   }) {
     check(name, String)
     check(unit, String)
@@ -33,6 +34,7 @@ Meteor.methods({
     check(breakStartTime, String)
     check(breakDuration, String)
     check(regularWorkingTime, String)
+    check(APItoken, String)
     checkAuthentication(this)
     Meteor.users.update({ _id: this.userId }, {
       $set: {
@@ -45,6 +47,7 @@ Meteor.methods({
         'profile.precision': precision,
         'profile.siwapptoken': siwapptoken,
         'profile.siwappurl': siwappurl,
+        'profile.APItoken': APItoken,
         'profile.theme': theme,
         'profile.language': language,
         'profile.dailyStartTime': dailyStartTime,

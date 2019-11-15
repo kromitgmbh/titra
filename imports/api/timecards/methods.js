@@ -21,6 +21,21 @@ import {
 
 const replacer = (match) => emoji.emojify(match)
 
+function insertTimeCard(projectId, task, date, hours, userId) {
+  if (!Tasks.findOne({ userId, name: task.replace(/(:.*:)/g, replacer) })) {
+    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, replacer) })
+  } else {
+    Tasks.update({ userId, name: task.replace(/(:.*:)/g, replacer) }, { $set: { lastUsed: new Date() } })
+  }
+  return Timecards.insert({
+    userId,
+    projectId,
+    date,
+    hours,
+    task: task.replace(/(:.*:)/g, replacer),
+  })
+}
+
 Meteor.methods({
   insertTimeCard({
     projectId,
@@ -33,18 +48,7 @@ Meteor.methods({
     check(date, Date)
     check(hours, Number)
     checkAuthentication(this)
-    if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })) {
-      Tasks.insert({ userId: this.userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, replacer) })
-    } else {
-      Tasks.update({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) }, { $set: { lastUsed: new Date() } })
-    }
-    Timecards.insert({
-      userId: this.userId,
-      projectId,
-      date,
-      hours,
-      task: task.replace(/(:.*:)/g, replacer),
-    })
+    insertTimeCard(projectId, task, date, hours, this.userId)
   },
   updateTimeCard({
     projectId,
@@ -255,3 +259,5 @@ Meteor.methods({
     return workingHoursObject
   },
 })
+
+export { insertTimeCard }
