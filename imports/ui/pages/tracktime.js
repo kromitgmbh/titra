@@ -233,6 +233,7 @@ Template.tracktimemain.onCreated(function tracktimeCreated() {
 
 Template.tracktimemain.helpers({
   showDay: () => (Template.instance().timetrackview.get() === 'd' ? 'active' : ''),
+  showWeek: () => (Template.instance().timetrackview.get() === 'w' ? 'active' : ''),
   showMonth: () => (Template.instance().timetrackview.get() === 'M' ? 'active' : ''),
 })
 
@@ -241,6 +242,11 @@ Template.tracktimemain.events({
     event.preventDefault()
     templateInstance.timetrackview.set('d')
     FlowRouter.setQueryParams({ view: 'd' })
+  },
+  'click .js-week': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.timetrackview.set('w')
+    FlowRouter.setQueryParams({ view: 'w' })
   },
   'click .js-month': (event, templateInstance) => {
     event.preventDefault()

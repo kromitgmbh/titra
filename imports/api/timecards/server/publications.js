@@ -1,3 +1,4 @@
+import { ReactiveAggregate } from 'meteor/tunguska:reactive-aggregate'
 import Timecards from '../timecards.js'
 import Projects from '../../projects/projects.js'
 import { periodToDates } from '../../../utils/periodHelpers.js'
@@ -38,7 +39,7 @@ Meteor.publish('periodTimecards', function periodTimecards({ startDate, endDate,
   const projectList = Projects.find(
     { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
     { $fields: { _id: 1 } },
-  ).fetch().map(value => value._id)
+  ).fetch().map((value) => value._id)
 
   if (userId === 'all') {
     return Timecards.find({
@@ -52,7 +53,27 @@ Meteor.publish('periodTimecards', function periodTimecards({ startDate, endDate,
     date: { $gte: startDate, $lte: endDate },
   })
 })
-
+Meteor.publish('userTimeCardsForPeriodByProjectByTask', function periodTimecards({ projectId, startDate, endDate }) {
+  check(startDate, Date)
+  check(endDate, Date)
+  check(projectId, String)
+  checkAuthentication(this)
+  return ReactiveAggregate(this, Timecards, [
+    {
+      $match: {
+        projectId,
+        userId: this.userId,
+        date: { $gte: startDate, $lte: endDate },
+      },
+    },
+    {
+      $group: {
+        _id: '$task',
+        entries: { $push: '$$ROOT' },
+      },
+    },
+  ], { clientCollection: 'clientTimecards' })
+})
 Meteor.publish('myTimecardsForDate', function myTimecardsForDate({ date }) {
   check(date, String)
   checkAuthentication(this)

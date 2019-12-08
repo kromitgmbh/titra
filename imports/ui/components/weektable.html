@@ -1,0 +1,37 @@
+<template name="weektable">
+  <div class="tab-borders p-3">
+    <div class="row form-group">
+      <div class="col-2"><button class="btn btn-secondary border js-previous"><i class="fa fa-chevron-left"></i> {{t "navigation.lastWeek"}}</button></div>
+      <div class="col text-center"><button class="btn btn-primary js-save">{{t "navigation.save"}}</button></div>
+      <div class="col-2 text-right"><button class="btn btn-secondary border js-next"><i class="fa fa-chevron-right"></i> {{t "navigation.nextWeek"}}</button></div>
+    </div>
+    <table class="table table-responsive table-hover">
+      <tr>
+        <th style="min-width:300px">{{t "globals.task"}}</th>
+        {{#each weekday in weekDays}}
+          <th>{{weekday}}</th>
+        {{/each}}
+      </tr>
+        {{#each project in projects}}
+          {{>weektablerow projectName=project.name projectId=project._id startDate=startDate endDate=endDate}}
+        {{/each}}
+    </table>
+  </div>
+</template>
+
+<template name="weektablerow">
+  <tbody>
+    <tr>
+      <th colspan="8" scope="row">{{projectName}}</th>
+    </tr>
+    {{#each task in tasks}}
+      <tr>
+        <td>{{>tasksearch task=task._id}}</td>
+        {{#each weekday in weekDays}}
+          <td><input type="number" value="{{getHoursForDay weekday task}}" id="hours{{@index}}"  class="form-control" placeholder="0.00"/></td>
+        {{/each}}
+      </tr>
+    {{/each}}
+    <tr><td colspan="8"><button class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> {{t "navigation.newLine"}}</button></td></tr>
+  </tbody>
+</template>

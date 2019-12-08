@@ -33,3 +33,4 @@ kadira:flow-router
 http@1.4.2
 brettle:accounts-anonymous
 brettle:accounts-add-service
+tunguska:reactive-aggregate

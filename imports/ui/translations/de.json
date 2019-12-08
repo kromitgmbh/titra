@@ -5,6 +5,7 @@
     "name": "Name",
     "description": "Beschreibung",
     "day": "Tag",
+    "week": "Woche",
     "day_plural": "Tage",
     "month": "Monat",
     "hour": "Stunde",

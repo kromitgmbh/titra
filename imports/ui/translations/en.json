@@ -5,6 +5,7 @@
     "name": "Name",
     "description": "Description",
     "day": "Day",
+    "week": "Week",
     "day_plural": "Days",
     "month": "Month",
     "hour": "Hour",
