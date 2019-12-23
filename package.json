@@ -6,13 +6,13 @@
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.7.4",
+    "@babel/runtime": "^7.7.7",
     "@fullcalendar/core": "^4.3.1",
     "@fullcalendar/daygrid": "^4.3.0",
     "@fullcalendar/interaction": "^4.3.0",
-    "@simonwep/pickr": "^1.4.7",
+    "@simonwep/pickr": "^1.4.8",
     "bcrypt": "^3.0.7",
-    "bootstrap": ">=4.3.1",
+    "bootstrap": ">=4.4.1",
     "chart.js": "^2.9.3",
     "content-type": "^1.0.4",
     "datatables.net": "^1.10.20",
@@ -20,8 +20,8 @@
     "datatables.net-buttons-bs4": "^1.6.1",
     "docker-names": "^1.1.1",
     "file-saver": "^2.0.2",
-    "frappe-datatable": "^1.15.0",
-    "i18next": "^19.0.1",
+    "frappe-datatable": "^1.15.1",
+    "i18next": "^19.0.2",
     "is-dark": "^1.0.4",
     "jquery": "^3.4.1",
     "jquery-serializejson": "^2.9.0",
@@ -41,11 +41,11 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
-    "eslint": "^6.7.0",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^3.2.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-meteor": "^6.0.0"
   },
   "apidoc": {

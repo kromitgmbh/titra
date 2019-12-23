@@ -24,6 +24,9 @@ $theme-colors: (
   light: #BDBDBD,
   dark: #455A64
 );
+.list-group-item {
+  color: #495057;
+}
 .tab-borders {
   border-left: 1px solid #dee2e6;
   border-right: 1px solid #dee2e6;

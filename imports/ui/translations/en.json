@@ -40,7 +40,10 @@
     "close": "Close",
     "share": "Share",
     "invoice": "Invoice",
-    "retry": "Retry now"
+    "retry": "Retry now",
+    "lastWeek": "Last week",
+    "nextWeek": "Next week",
+    "newLine": "New line"
   },
   "tracktime": {
     "no_time": "No time tracked yet.",
