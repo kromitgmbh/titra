@@ -5,6 +5,7 @@
     "name": "Name",
     "description": "Beschreibung",
     "day": "Tag",
+    "week": "Woche",
     "day_plural": "Tage",
     "month": "Monat",
     "hour": "Stunde",
@@ -39,7 +40,10 @@
     "close": "Schließen",
     "share": "Teilen",
     "invoice": "Rechnung",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "lastWeek": "Letzte Woche",
+    "nextWeek": "Nächste Woche",
+    "newLine": "Neue Zeile"
   },
   "tracktime": {
     "no_time": "Keine Zeiten erfasst.",

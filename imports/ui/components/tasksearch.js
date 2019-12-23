@@ -124,4 +124,5 @@ Template.tasksearch.helpers({
     finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { lastUsed: -1 }, limit: 5 }).fetch())
     return finalArray.length > 0 ? finalArray.slice(0, 4) : false
   },
+  task: () => Template.instance().data.task,
 })

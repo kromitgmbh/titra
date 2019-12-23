@@ -18,6 +18,7 @@ import '../components/dailytimetable.js'
 import '../components/periodtimetable.js'
 import '../components/workingtimetable.js'
 import '../components/limitpicker.js'
+import '../components/weektable.js'
 import '../../api/timecards/tabular.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {

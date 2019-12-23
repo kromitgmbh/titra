@@ -35,6 +35,48 @@ function insertTimeCard(projectId, task, date, hours, userId) {
     task: task.replace(/(:.*:)/g, replacer),
   })
 }
+function upsertTimecard(projectId, task, date, hours, userId) {
+  if (!Tasks.findOne({ userId, name: task.replace(/(:.*:)/g, replacer) })) {
+    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, replacer) })
+  } else {
+    Tasks.update({ userId, name: task.replace(/(:.*:)/g, replacer) }, { $set: { lastUsed: new Date() } })
+  }
+  if (hours === 0) {
+    Timecards.remove({
+      userId,
+      projectId,
+      date,
+      task: task.replace(/(:.*:)/g, replacer),
+    })
+  } else if (Timecards.find({
+    userId,
+    projectId,
+    date,
+    task: task.replace(/(:.*:)/g, replacer),
+  }).count() > 1) {
+    // if there are more time entries with the same task description for one day,
+    // we remove all of them and create a new entry for the total sum
+    Timecards.remove({
+      userId,
+      projectId,
+      date,
+      task: task.replace(/(:.*:)/g, replacer),
+    })
+  }
+  return Timecards.update({
+    userId,
+    projectId,
+    date,
+    task: task.replace(/(:.*:)/g, replacer),
+  },
+  {
+    userId,
+    projectId,
+    date,
+    hours,
+    task: task.replace(/(:.*:)/g, replacer),
+  }, { upsert: true })
+}
 
 Meteor.methods({
   insertTimeCard({
@@ -49,6 +91,17 @@ Meteor.methods({
     check(hours, Number)
     checkAuthentication(this)
     insertTimeCard(projectId, task, date, hours, this.userId)
+  },
+  upsertWeek(weekArray) {
+    checkAuthentication(this)
+    check(weekArray, Array)
+    weekArray.forEach((element) => {
+      check(element.projectId, String)
+      check(element.task, String)
+      check(element.date, Date)
+      check(element.hours, Number)
+      upsertTimecard(element.projectId, element.task, element.date, element.hours, this.userId)
+    })
   },
   updateTimeCard({
     projectId,

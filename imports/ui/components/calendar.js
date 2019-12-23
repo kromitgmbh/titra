@@ -37,6 +37,7 @@ Template.calendar.onRendered(() => {
           droppable: true,
           aspectRatio: 2,
           height: 'auto',
+          firstDay: 1,
           themeSystem: 'bootstrap',
           events: (fetchInfo, successCallback) => {
             templateInstance.startDate.set(fetchInfo.start)
