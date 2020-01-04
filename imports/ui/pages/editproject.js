@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor'
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import 'jquery-serializejson'
 import '@simonwep/pickr/dist/themes/monolith.min.css'
 import Pickr from '@simonwep/pickr/dist/pickr.min'
@@ -256,4 +256,9 @@ Template.editproject.helpers({
   disablePublic: () => Meteor.settings.public.disablePublic,
   archived: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).archived : false),
   target: () => (Projects.findOne() ? Projects.findOne().target : false),
+})
+
+Template.editproject.onDestroyed(function editprojectDestroyed() {
+  this.pickr.destroyAndRemove()
+  delete this.pickr
 })

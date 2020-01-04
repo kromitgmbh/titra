@@ -1,7 +1,7 @@
 import moment from 'moment'
 import i18next from 'i18next'
 import { Mongo } from 'meteor/mongo'
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './weektable.html'
 import './tasksearch'
 import Projects from '../../api/projects/projects'

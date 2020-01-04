@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { Template } from 'meteor/templating'
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import emoji from 'node-emoji'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
@@ -30,7 +30,7 @@ Template.calendar.onRendered(() => {
           itemSelector: '.drag',
         })
         const calendarEl = document.getElementById('cal')
-
+        calendarEl.innerHTML = ''
         templateInstance.calendar = new Calendar(calendarEl, {
           plugins: [dayGridPlugin.default, interactionPlugin],
           defaultView: 'dayGridMonth',
@@ -115,4 +115,8 @@ Template.calendar.helpers({
       { sort: { name: 1 } },
     )
   },
+})
+
+Template.calendar.onDestroyed(function calendarDestroyed() {
+  delete this.calendar
 })

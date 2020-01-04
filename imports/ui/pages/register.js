@@ -1,5 +1,5 @@
 import i18next from 'i18next'
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './register.html'
 
 Template.register.events({

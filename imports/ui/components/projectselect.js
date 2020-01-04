@@ -1,4 +1,4 @@
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import Projects from '../../api/projects/projects.js'
 import Timecards from '../../api/timecards/timecards.js'
 import './projectselect.html'

@@ -1,13 +1,6 @@
-import { FlowRouter } from 'meteor/kadira:flow-router'
-import { BlazeLayout } from 'meteor/kadira:blaze-layout'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { AccountsAnonymous } from 'meteor/brettle:accounts-anonymous'
 import '../../ui/layouts/appLayout.js'
-import '../../ui/pages/tracktime.js'
-import '../../ui/pages/projectlist.js'
-import '../../ui/pages/timecardlist.js'
-import '../../ui/pages/editproject.js'
-import '../../ui/pages/settings.js'
-import '../../ui/pages/dashboard.js'
 import '../../ui/pages/signIn.js'
 import '../../ui/pages/register.js'
 import '../../ui/pages/changePassword.js'
@@ -20,84 +13,116 @@ if (!Meteor.settings.public.sandstorm) {
     }
   }], { except: ['dashboard', 'signIn', 'changePassword', 'register', 'reset-password', 'try'] })
 }
+FlowRouter.route('*', {
+  action: () => {
+    this.render('appLayout', '404')
+  },
+})
 FlowRouter.route('/', {
+  waitOn() {
+    return import('../../ui/pages/projectlist.js')
+  },
   action() {
     document.title = 'titra - overview'
-    BlazeLayout.render('appLayout', { main: 'projectlist' })
+    this.render('appLayout', 'projectlist')
   },
   name: 'projectlist',
 })
 FlowRouter.route('/tracktime/:projectId?', {
+  waitOn() {
+    return import('../../ui/pages/tracktime.js')
+  },
   action() {
     document.title = 'titra - track time'
-    BlazeLayout.render('appLayout', { main: 'tracktimemain' })
+    this.render('appLayout', 'tracktimemain')
   },
   name: 'tracktime',
 })
 FlowRouter.route('/edit/timecard/:tcid', {
+  waitOn() {
+    return import('../../ui/pages/tracktime.js')
+  },
   action() {
     document.title = 'titra - edit time'
-    BlazeLayout.render('appLayout', { main: 'tracktime' })
+    this.render('appLayout', 'tracktime')
   },
   name: 'edittime',
 })
 FlowRouter.route('/list/projects', {
+  waitOn() {
+    return [import('../../api/timecards/tabular.js'), import('../../ui/pages/projectlist.js')]
+  },
   action() {
     document.title = 'titra - overview'
-    BlazeLayout.render('appLayout', { main: 'projectlist' })
+    this.render('appLayout', 'projectlist')
   },
   name: 'projectlist',
 })
 FlowRouter.route('/edit/project/:id', {
+  waitOn() {
+    return import('../../ui/pages/editproject.js')
+  },
   action() {
     document.title = 'titra - edit project'
-    BlazeLayout.render('appLayout', { main: 'editproject' })
+    this.render('appLayout', 'editproject')
   },
   name: 'editproject',
 })
 FlowRouter.route('/create/project/', {
+  waitOn() {
+    return import('../../ui/pages/editproject.js')
+  },
   action() {
     document.title = 'titra - create project'
-    BlazeLayout.render('appLayout', { main: 'editproject' })
+    this.render('appLayout', 'editproject')
   },
   name: 'createProject',
 })
 FlowRouter.route('/list/timecards/:projectId', {
+  waitOn() {
+    return import('../../ui/pages/timecardlist.js')
+  },
   action() {
     document.title = 'titra - details'
-    BlazeLayout.render('appLayout', { main: 'timecardlist' })
+    this.render('appLayout', 'timecardlist')
   },
   name: 'timecards',
 })
 FlowRouter.route('/settings', {
+  waitOn() {
+    return import('../../ui/pages/settings.js')
+  },
   action() {
     document.title = 'titra - settings'
-    BlazeLayout.render('appLayout', { main: 'settings' })
+    this.render('appLayout', 'settings')
   },
   name: 'settings',
 })
 FlowRouter.route('/dashboard/:_id', {
+  waitOn() {
+    return import('../../ui/pages/dashboard.js')
+  },
   action() {
     document.title = 'titra - dashboard'
-    BlazeLayout.render('appLayout', { main: 'dashboard' })
+    this.render('appLayout', 'dashboard')
   },
   name: 'dashboard',
 })
 FlowRouter.route('/join', {
   action() {
-    BlazeLayout.render('appLayout', { main: 'register' })
+    this.render('appLayout', 'register')
   },
   name: 'register',
 })
 FlowRouter.route('/signIn', {
   action() {
-    BlazeLayout.render('appLayout', { main: 'signIn' })
+    this.render('appLayout', 'signIn')
   },
   name: 'signIn',
 })
 FlowRouter.route('/changePwd/:token?', {
   action() {
-    BlazeLayout.render('appLayout', { main: 'changePassword' })
+    this.render('appLayout', 'changePassword')
   },
   name: 'changePassword',
 })
@@ -119,24 +144,7 @@ FlowRouter.route('/try', {
 })
 FlowRouter.route('/404', {
   action() {
-    BlazeLayout.render('appLayout', { main: '404' })
+    this.render('appLayout', '404')
   },
   name: '404',
 })
-FlowRouter.notFound = {
-  action: () => {
-    BlazeLayout.render('appLayout', { main: '404' })
-  },
-}
-// AccountsTemplates.configureRoute('signIn', {
-//   name: 'signin',
-//   path: '/signin',
-// })
-// AccountsTemplates.configureRoute('signUp', {
-//   name: 'join',
-//   path: '/join',
-// })
-// AccountsTemplates.configureRoute('changePwd', {
-//   name: 'changePwd',
-//   path: '/changePwd',
-// })

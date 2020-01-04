@@ -112,7 +112,12 @@
     "daily_start_time": "Daily start of working time",
     "break_start_time": "Daily break time",
     "break_duration": "Default break duration (in hours)",
-    "auto_detect_help": "Auto detect only works in supported browsers, please check if it works for you at "
+    "auto_detect_help": "Auto detect only works in supported browsers, please check if it works for you at ",
+    "avatar": "Avatar",
+    "preview": "Preview",
+    "reset": "Reset",
+    "custom_avatar": "Upload custom avatar",
+    "current": "Current"
   },
   "customer": {
     "select_customer": "Select a customer",

@@ -28,9 +28,8 @@ dynamic-import@0.5.1
 ostrio:loggerconsole
 faburem:client-server-logger
 email@1.2.3
-kadira:blaze-layout
-kadira:flow-router
 http@1.4.2
 brettle:accounts-anonymous
 brettle:accounts-add-service
 tunguska:reactive-aggregate
+ostrio:flow-router-extra

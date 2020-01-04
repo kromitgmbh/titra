@@ -112,7 +112,12 @@
     "daily_start_time": "Beginn der Arbeitszeit",
     "break_start_time": "Beginn der täglichen Pause",
     "break_duration": "Dauer der täglichen Pause (in Stunden)",
-    "auto_detect_help": "Die automatische Erkennung funktioniert nicht in allen Browsern, nähere Informationen finden Sie auf "
+    "auto_detect_help": "Die automatische Erkennung funktioniert nicht in allen Browsern, nähere Informationen finden Sie auf ",
+    "avatar": "Avatar",
+    "preview": "Vorschau",
+    "reset": "Zurücksetzen",
+    "custom_avatar": "Eigenes Bild hochladen",
+    "current": "Aktueller Avatar"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

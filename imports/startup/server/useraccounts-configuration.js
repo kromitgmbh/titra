@@ -9,6 +9,7 @@ Accounts.onCreateUser((options, user) => {
       name: dockerNames.getRandomName(),
       currentLanguageProject: 'Projekt',
       currentLanguageProjectDesc: 'Dieses Projekt wurde automatisch erstellt, Sie können es nach Belieben bearbeiten. Wussten Sie, dass Sie Emojis wie 💰 ⏱ 👍 überall verwenden können?',
+      avatarColor: `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`,
     }
   }
   initNewUser(user._id, options)

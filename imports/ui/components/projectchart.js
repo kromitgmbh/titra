@@ -52,15 +52,21 @@ Template.projectchart.helpers({
     return projectUsers.findOne({ _id: Template.instance().data.projectId })
       ? projectUsers.findOne({ _id: Template.instance().data.projectId }).users : false
   },
-  svgAvatar(name) {
+  avatarImg(avatar, name, avatarColor) {
+    if (avatar) {
+      return `<img src="${avatar}" alt="${name}" style="height:25px" class="rounded" data-toggle="tooltip" data-placement="top" title="${name}"/>`
+    }
     namedavatar.config({
       nameType: 'initials',
-      backgroundColors: [hex2rgba(Projects.findOne({ _id: Template.instance().data.projectId }).color || '#009688', 40), 'rgba(0, 150, 136, 0.6)', '#e4e4e4', '#BDBDBD', '#455A64'],
+      backgroundColors: [avatarColor || '#455A64'],
     })
     const rawSVG = namedavatar.getSVG(name)
     rawSVG.classList = 'rounded'
     rawSVG.style.width = '25px'
     rawSVG.style.height = '25px'
+    rawSVG.setAttribute('title', name)
+    rawSVG.setAttribute('data-toggle', 'tooltip')
+    rawSVG.setAttribute('data-placement', 'top')
     return rawSVG.outerHTML
   },
   topTasks() {

@@ -1,4 +1,4 @@
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { DDP } from 'meteor/ddp-client'
 import { Mongo } from 'meteor/mongo'
 import { HTTP } from 'meteor/http'

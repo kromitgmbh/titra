@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import moment from 'moment'
 import i18next from 'i18next'
 import TinyDatePicker from 'tiny-date-picker'
@@ -13,6 +13,7 @@ import './tracktime.html'
 import '../components/projectselect.js'
 import '../components/tasksearch.js'
 import '../components/timetracker.js'
+import '../components/weektable.js'
 import '../components/calendar.js'
 import '../components/backbutton.js'
 
@@ -154,6 +155,7 @@ Template.tracktime.events({
   },
   'change #targetProject': (event, templateInstance) => {
     templateInstance.projectId.set($(event.currentTarget).val())
+    $('.js-tasksearch').focus()
   },
   'change #date': (event) => {
     if ($(event.currentTarget).val()) {
@@ -238,21 +240,17 @@ Template.tracktimemain.helpers({
 })
 
 Template.tracktimemain.events({
-  'click .js-day': (event, templateInstance) => {
+  'click .js-day': (event) => {
     event.preventDefault()
-    templateInstance.timetrackview.set('d')
     FlowRouter.setQueryParams({ view: 'd' })
   },
-  'click .js-week': (event, templateInstance) => {
+  'click .js-week': (event) => {
     event.preventDefault()
-    templateInstance.timetrackview.set('w')
     FlowRouter.setQueryParams({ view: 'w' })
   },
-  'click .js-month': (event, templateInstance) => {
+  'click .js-month': (event) => {
     event.preventDefault()
-    templateInstance.timetrackview.set('M')
     FlowRouter.setParams({ projectId: '' })
-    // FlowRouter.setQueryParams({ date: null })
     FlowRouter.setQueryParams({ view: 'M' })
   },
 })

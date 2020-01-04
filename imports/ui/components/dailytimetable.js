@@ -1,6 +1,6 @@
 import moment from 'moment'
 import i18next from 'i18next'
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { saveAs } from 'file-saver'
 import DataTable from 'frappe-datatable'
 import 'frappe-datatable/dist/frappe-datatable.css'

@@ -9,6 +9,50 @@
           <label for="name">{{t "globals.name"}}</label>
           <input type="text" class="form-control" id="name" value="{{name}}" />
         </div>
+        <div class="card form-group">
+          <div class="card-header">
+            {{t "settings.avatar"}}
+          </div>
+          <div class="card-block">
+            <div class="row">
+              <div class="col-lg-2">
+              <label class="d-block">{{t "settings.current"}}</label>
+              {{#if currentUser.profile.avatar}}
+                <img id="avatar" src="{{currentUser.profile.avatar}}" alt='{{t "settings.avatar"}}' class="img-responsive"/>
+                <button class="btn btn-secondary d-block" id="removeAvatar">{{t "settings.reset"}}</button>
+              {{else}}
+                {{{svgAvatar}}}
+              {{/if}}
+              </div>
+              <div class="col-lg-3">
+                {{#unless currentUser.profile.avatar}}
+                <div class="form-group">
+                  <label for="color">{{t "globals.color"}}</label>
+                  <div class="input-group" id="colpick">
+                    <input name="avatarColor" id="avatarColor" type="text" value="{{avatarColor}}" data-color="{{avatarColor}}" class="form-control" />
+                    <div class="input-group-append">
+                      <button class="btn" id="avatarColorPickr" type="button"></button>
+                    </div>
+                  </div>
+                </div>
+                  <div class="form-group">
+                    <label class="d-block">{{t "settings.custom_avatar"}}</label>
+                    <input type="file" name="avatarImage" id="avatarImage" accept="image/gif,image/jpeg,image/png"/>
+                  </div>
+                {{/unless}}
+                <input type="hidden" name="avatarData" id="avatarData" value="{{currentUser.profile.avatarData}}"/>
+              </div>
+              <div class="col-lg-3">
+                {{#unless currentUser.profile.avatar}}
+                <div id="imagePreview" style="display:none;">
+                  <p>{{t "settings.preview"}}:</p>
+                  <img class="img-responsive img-thumbnail" style="max-height:200px;" alt="avatar upload preview"/>
+                </div>
+                {{/unless}}
+              </div>
+            </div>
+          </div>
+        </div>
         {{#if currentUser.emails}}
           {{#unless isSandstorm}}
           <div class="row">
