@@ -259,6 +259,6 @@ Template.editproject.helpers({
 })
 
 Template.editproject.onDestroyed(function editprojectDestroyed() {
-  this.pickr.destroyAndRemove()
+  this.pickr.destroy()
   delete this.pickr
 })

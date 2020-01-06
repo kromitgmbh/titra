@@ -59,6 +59,7 @@ Template.projectchart.helpers({
     namedavatar.config({
       nameType: 'initials',
       backgroundColors: [avatarColor || '#455A64'],
+      minFontSize: 2,
     })
     const rawSVG = namedavatar.getSVG(name)
     rawSVG.classList = 'rounded'

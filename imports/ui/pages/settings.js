@@ -47,13 +47,12 @@ Template.settings.helpers({
       backgroundColors:
         [(Meteor.user() && Meteor.user().profile.avatarColor
           ? Meteor.user().profile.avatarColor : Template.instance().selectedAvatarColor.get())],
-      maxFontSize: 200,
       minFontSize: 2,
     })
     const rawSVG = namedavatar.getSVG(Meteor.user() ? Meteor.user().profile.name : false)
     rawSVG.classList = 'rounded'
-    rawSVG.style.width = '125px'
-    rawSVG.style.height = '125px'
+    rawSVG.style.width = '100px'
+    rawSVG.style.height = '100px'
     return rawSVG.outerHTML
   },
   siwappurl: () => (Meteor.user() ? Meteor.user().profile.siwappurl : false),
@@ -68,27 +67,27 @@ Template.settings.helpers({
 })
 
 Template.settings.events({
-  'click .js-save': (event) => {
+  'click .js-save': (event, templateInstance) => {
     event.preventDefault()
     Meteor.call('updateSettings', {
-      name: $('#name').val(),
-      unit: $('#unit').val(),
-      timeunit: $('#timeunit').val(),
-      timetrackview: $('#timetrackview').val(),
-      hoursToDays: Number($('#hoursToDays').val()),
-      enableWekan: $('#enableWekan').is(':checked'),
-      precision: Number($('#precision').val()),
-      siwapptoken: $('#siwapptoken').val(),
-      siwappurl: $('#siwappurl').val(),
-      APItoken: $('#titraAPItoken').val(),
-      theme: $('#theme').val(),
-      language: $('#language').val(),
-      dailyStartTime: $('#dailyStartTime').val(),
-      breakStartTime: $('#breakStartTime').val(),
-      breakDuration: $('#breakDuration').val(),
-      regularWorkingTime: $('#regularWorkingTime').val(),
-      avatar: $('#avatarData').val(),
-      avatarColor: $('#avatarColor').val(),
+      name: templateInstance.$('#name').val(),
+      unit: templateInstance.$('#unit').val(),
+      timeunit: templateInstance.$('#timeunit').val(),
+      timetrackview: templateInstance.$('#timetrackview').val(),
+      hoursToDays: Number(templateInstance.$('#hoursToDays').val()),
+      enableWekan: templateInstance.$('#enableWekan').is(':checked'),
+      precision: Number(templateInstance.$('#precision').val()),
+      siwapptoken: templateInstance.$('#siwapptoken').val(),
+      siwappurl: templateInstance.$('#siwappurl').val(),
+      APItoken: templateInstance.$('#titraAPItoken').val(),
+      theme: templateInstance.$('#theme').val(),
+      language: templateInstance.$('#language').val(),
+      dailyStartTime: templateInstance.$('#dailyStartTime').val(),
+      breakStartTime: templateInstance.$('#breakStartTime').val(),
+      breakDuration: templateInstance.$('#breakDuration').val(),
+      regularWorkingTime: templateInstance.$('#regularWorkingTime').val(),
+      avatar: templateInstance.$('#avatarData').val(),
+      avatarColor: templateInstance.$('#avatarColor').val(),
     }, (error) => {
       if (error) {
         $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
@@ -98,18 +97,18 @@ Template.settings.events({
       }
     })
   },
-  'change #timeunit': () => {
-    Template.instance().displayHoursToDays.set($('#timeunit').val() === 'd')
+  'change #timeunit': (event, templateInstance) => {
+    Template.instance().displayHoursToDays.set(templateInstance.$('#timeunit').val() === 'd')
   },
   'click .js-logout': (event) => {
     event.preventDefault()
     Meteor.logout()
   },
-  'click #generateToken': (event) => {
+  'click #generateToken': (event, templateInstance) => {
     event.preventDefault()
-    $('#titraAPItoken').val(Random.id())
+    templateInstance.$('#titraAPItoken').val(Random.id())
   },
-  'change #avatarImage': (event) => {
+  'change #avatarImage': (event, templateInstance) => {
     if (event.currentTarget.files && event.currentTarget.files[0]) {
       const reader = new FileReader()
       reader.onloadend = (callbackresult) => {
@@ -129,9 +128,9 @@ Template.settings.events({
             resizeCanvas.height = image.height * ratio
             resizeCanvas.getContext('2d').drawImage(image, 0, 0, resizeCanvas.width, resizeCanvas.height)
             const dataURL = resizeCanvas.toDataURL('image/png')
-            $('#imagePreview img').attr('src', dataURL)
-            $('#avatarData').val(dataURL)
-            $('#imagePreview').show()
+            templateInstance.$('#imagePreview img').attr('src', dataURL)
+            templateInstance.$('#avatarData').val(dataURL)
+            templateInstance.$('#imagePreview').show()
           } else {
             console.error('unable to create Canvas')
           }
@@ -141,10 +140,10 @@ Template.settings.events({
       reader.readAsDataURL(event.currentTarget.files[0])
     }
   },
-  'click #removeAvatar': (event) => {
+  'click #removeAvatar': (event, templateInstance) => {
     event.preventDefault()
-    $('#avatarData').val('')
-    $('.js-save').click()
+    templateInstance.$('#avatarData').val('')
+    templateInstance.$('.js-save').click()
   },
 })
 Template.settings.onCreated(function settingsCreated() {
@@ -184,10 +183,10 @@ Template.settings.onRendered(function settingsRendered() {
       $('#regularWorkingTime').val(Meteor.user().profile.regularWorkingTime ? Meteor.user().profile.regularWorkingTime : 8)
       $('#avatarData').val(Meteor.user().profile.avatar)
       if (this.pickr) {
-        this.pickr.destroyAndRemove()
+        this.pickr.destroy()
         delete this.pickr
       }
-      if (!Meteor.user().profile.avatar) {
+      if (!Meteor.user().profile.avatar && $('#avatarColorPickr').length) {
         const pickrOptions = {
           el: '#avatarColorPickr',
           theme: 'monolith',
@@ -218,6 +217,6 @@ Template.settings.onRendered(function settingsRendered() {
   })
 })
 Template.settings.onDestroyed(function settingsDestroyed() {
-  this.pickr.destroyAndRemove()
+  this.pickr.destroy()
   delete this.pickr
 })

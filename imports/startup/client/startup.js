@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating'
 import emoji from 'node-emoji'
 import isDarkMode from 'is-dark'
 import i18next from 'i18next'
+import * as bs4notify from 'bootstrap4-notify'
 import Projects from '../../api/projects/projects.js'
 
 $.notifyDefaults({

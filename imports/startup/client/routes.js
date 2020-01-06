@@ -80,7 +80,7 @@ FlowRouter.route('/create/project/', {
 })
 FlowRouter.route('/list/timecards/:projectId', {
   waitOn() {
-    return import('../../ui/pages/timecardlist.js')
+    return [import('../../ui/components/tablecell.js'), import('../../ui/pages/timecardlist.js')]
   },
   action() {
     document.title = 'titra - details'

@@ -21,7 +21,6 @@ fourseven:scss@4.5.0
 accounts-password@1.5.2
 check@1.3.1
 fortawesome:fontawesome
-mouse0270:bootstrap-notify
 random@1.1.0
 aldeed:tabular
 dynamic-import@0.5.1
@@ -33,3 +32,4 @@ brettle:accounts-anonymous
 brettle:accounts-add-service
 tunguska:reactive-aggregate
 ostrio:flow-router-extra
+jquery

@@ -155,15 +155,15 @@ Template.timecardlist.helpers({
 
 Template.timecardlist.events({
   'change #period': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ period: $(event.currentTarget).val() })
+    FlowRouter.setQueryParams({ period: templateInstance.$(event.currentTarget).val() })
   },
   'change #resourceselect': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ resource: $(event.currentTarget).val() })
+    FlowRouter.setQueryParams({ resource: templateInstance.$(event.currentTarget).val() })
   },
   'change #customerselect': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ customer: $(event.currentTarget).val() })
+    FlowRouter.setQueryParams({ customer: templateInstance.$(event.currentTarget).val() })
   },
   'click .nav-link[data-toggle]': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ activeTab: $(event.currentTarget)[0].id })
+    FlowRouter.setQueryParams({ activeTab: templateInstance.$(event.currentTarget)[0].id })
   },
 })

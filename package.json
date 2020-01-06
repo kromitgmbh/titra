@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -13,6 +13,7 @@
     "@simonwep/pickr": "^1.4.8",
     "bcrypt": "^3.0.7",
     "bootstrap": ">=4.4.1",
+    "bootstrap4-notify": "^4.0.3",
     "chart.js": "^2.9.3",
     "content-type": "^1.0.4",
     "datatables.net": "^1.10.20",

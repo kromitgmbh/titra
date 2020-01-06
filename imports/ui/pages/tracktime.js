@@ -246,6 +246,7 @@ Template.tracktimemain.events({
   },
   'click .js-week': (event) => {
     event.preventDefault()
+    FlowRouter.setParams({ projectId: '' })
     FlowRouter.setQueryParams({ view: 'w' })
   },
   'click .js-month': (event) => {
