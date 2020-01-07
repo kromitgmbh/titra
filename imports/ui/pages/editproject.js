@@ -9,33 +9,33 @@ import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
 
 function validateWekanUrl() {
-  const wekanUrl = $('#wekanurl').val()
+  const templateInstance = Template.instance()
+  const wekanUrl = templateInstance.$('#wekanurl').val()
   if (!wekanUrl) {
-    $('#wekanurl').addClass('is-invalid')
+    templateInstance.$('#wekanurl').addClass('is-invalid')
     return
   }
   const authToken = wekanUrl.match(/authToken=(.*)/)[1]
   const url = wekanUrl.substring(0, wekanUrl.indexOf('export?'))
-  const templateInstance = Template.instance()
-  $('#wekan-status').html('<i class="fa fa-spinner fa-spin"></i>')
-  $('#wekanurl').prop('disabled', true)
+  templateInstance.$('#wekan-status').html('<i class="fa fa-spinner fa-spin"></i>')
+  templateInstance.$('#wekanurl').prop('disabled', true)
   try {
     HTTP.get(`${url}lists`, { headers: { Authorization: `Bearer ${authToken}` } }, (error, result) => {
-      $('#wekan-status').removeClass()
-      $('#wekanurl').prop('disabled', false)
+      templateInstance.$('#wekan-status').removeClass()
+      templateInstance.$('#wekanurl').prop('disabled', false)
       if (error || result.data.error) {
-        $('#wekanurl').addClass('is-invalid')
-        $('#wekan-status').html('<i class="fa fa-times"></i>')
+        templateInstance.$('#wekanurl').addClass('is-invalid')
+        templateInstance.$('#wekan-status').html('<i class="fa fa-times"></i>')
       } else {
         templateInstance.wekanLists.set(result.data)
-        $('#wekanurl').removeClass('is-invalid')
-        $('#wekan-status').html('<i class="fa fa-check"></i>')
+        templateInstance.$('#wekanurl').removeClass('is-invalid')
+        templateInstance.$('#wekan-status').html('<i class="fa fa-check"></i>')
       }
     })
   } catch (error) {
     console.error(error)
-    $('#wekanurl').addClass('is-invalid')
-    $('#wekan-status').html('check')
+    templateInstance.$('#wekanurl').addClass('is-invalid')
+    templateInstance.$('#wekan-status').html('check')
   }
 }
 
@@ -113,8 +113,8 @@ Template.editproject.onRendered(() => {
 Template.editproject.events({
   'click #save': (event, templateInstance) => {
     event.preventDefault()
-    if (!$('#name').val()) {
-      $('#name').addClass('is-invalid')
+    if (!templateInstance.$('#name').val()) {
+      templateInstance.$('#name').addClass('is-invalid')
       return
     }
     if (Meteor.user().profile.timeunit === 'd') {
@@ -131,7 +131,7 @@ Template.editproject.events({
         projectArray,
       }, (error) => {
         if (!error) {
-          $('#name').removeClass('is-invalid')
+          templateInstance.$('#name').removeClass('is-invalid')
           $.notify(i18next.t('notifications.project_update_success'))
         } else {
           console.error(error)
@@ -154,22 +154,22 @@ Template.editproject.events({
     event.preventDefault()
     FlowRouter.go('/list/projects')
   },
-  'click #addNewMember': (event) => {
+  'click #addNewMember': (event, templateInstance) => {
     event.preventDefault()
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    const newmembermail = $('#newmembermail').val()
+    const newmembermail = templateInstance.$('#newmembermail').val()
     if (newmembermail && emailRegex.test(newmembermail)) {
-      Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: $('#newmembermail').val() }, (error, result) => {
+      Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: templateInstance.$('#newmembermail').val() }, (error, result) => {
         if (error) {
           $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
         } else {
-          $('#newmembermail').val('')
+          templateInstance.$('#newmembermail').val('')
           $.notify(i18next.t(result))
         }
       })
-      $('#newmembermail').removeClass('is-invalid')
+      templateInstance.$('#newmembermail').removeClass('is-invalid')
     } else {
-      $('#newmembermail').addClass('is-invalid')
+      templateInstance.$('#newmembermail').addClass('is-invalid')
     }
   },
   'click #removeTeamMember': (event) => {
@@ -220,11 +220,11 @@ Template.editproject.events({
       }
     })
   },
-  'change #color': (event) => {
-    if (!Template.instance().pickr.setColor($(event.currentTarget).val())) {
-      $('#color').addClass('is-invalid')
+  'change #color': (event, templateInstance) => {
+    if (!Template.instance().pickr.setColor(templateInstance.$(event.currentTarget).val())) {
+      templateInstance.$('#color').addClass('is-invalid')
     } else {
-      $('#color').removeClass('is-invalid')
+      templateInstance.$('#color').removeClass('is-invalid')
     }
   },
   'change #wekanurl': (event) => {

@@ -207,10 +207,35 @@
     -webkit-transform: rotateZ(90deg);
     -moz-transform: rotateZ(90deg);
     transform: rotateZ(90deg);
+    transition: 0.25s ease-in-out;
   }
 }
-.fa-chevron-right:hover {
-  -webkit-transform: rotateZ(90deg);
-  -moz-transform: rotateZ(90deg);
-  transform: rotateZ(90deg);
+.btn:hover {
+  .fa-chevron-right {
+    -webkit-transform: translateX(5px);
+    -moz-transform: translateX(5px);
+    transform: translateX(5px);
+    transition: 0.25s ease-in-out;
+  }
+  .fa-chevron-left {
+    -webkit-transform: translateX(-5px);
+    -moz-transform: translateX(-5px);
+    transform: translateX(-5px);
+    transition: 0.25s ease-in-out;
+  }
+  .fa-circle {
+    transform: scale(1.4);
+    transition: 0.25s ease-in-out;
+  }
+}
+.js-toggle-timecards:hover {
+  .fa-chevron-down {
+    transform: translateY(5px);
+    transition: 0.25s ease-in-out;
+  }
+}
+.input-group-append:hover {
+  .fa-calendar {
+    color: map-get($theme-colors, secondary)
+  }
 }

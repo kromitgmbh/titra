@@ -97,11 +97,11 @@ Template.tracktime.events({
     let hours = templateInstance.math.evaluate($('#hours').val())
 
     if (Meteor.user().profile.timeunit === 'd') {
-      hours = templateInstance.math.evaluate($('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
+      hours = templateInstance.math.evaluate(templateInstance.$('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
     }
     const buttonLabel = $(event.currentTarget).text()
-    $(event.currentTarget).text('saving ...')
-    $(event.currentTarget).prop('disabled', true)
+    templateInstance.$(event.currentTarget).text('saving ...')
+    templateInstance.$(event.currentTarget).prop('disabled', true)
     if (FlowRouter.getParam('tcid')) {
       Meteor.call('updateTimeCard', {
         _id: FlowRouter.getParam('tcid'), projectId, date, hours, task,
@@ -109,10 +109,10 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
         } else {
-          $('.js-tasksearch-results').addClass('d-none')
+          templateInstance.$('.js-tasksearch-results').addClass('d-none')
           $.notify(i18next.t('notifications.time_entry_updated'))
-          $(event.currentTarget).text(buttonLabel)
-          $(event.currentTarget).prop('disabled', false)
+          templateInstance.$(event.currentTarget).text(buttonLabel)
+          templateInstance.$(event.currentTarget).prop('disabled', false)
           templateInstance.$('.js-show-timecards').removeClass('d-none')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
           // window.history.back()
@@ -125,13 +125,13 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
         } else {
-          $('.js-tasksearch-input').val('')
-          $('.js-tasksearch-input').keyup()
-          $('#hours').val('')
-          $('.js-tasksearch-results').addClass('d-none')
+          templateInstance.$('.js-tasksearch-input').val('')
+          templateInstance.$('.js-tasksearch-input').keyup()
+          templateInstance.$('#hours').val('')
+          templateInstance.$('.js-tasksearch-results').addClass('d-none')
           $.notify(i18next.t('notifications.time_entry_saved'))
-          $(event.currentTarget).text(buttonLabel)
-          $(event.currentTarget).prop('disabled', false)
+          templateInstance.$(event.currentTarget).text(buttonLabel)
+          templateInstance.$(event.currentTarget).prop('disabled', false)
           templateInstance.$('.js-show-timecards').removeClass('d-none')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
         }
@@ -143,23 +143,23 @@ Template.tracktime.events({
     FlowRouter.setQueryParams({ date: moment(templateInstance.date.get()).subtract(1, 'days').format('YYYY-MM-DD') })
     // templateInstance.date.set(new Date(moment(templateInstance.date.get())
     // .subtract(1, 'days').utc()))
-    $('#hours').val('')
-    $('.js-tasksearch-results').addClass('d-none')
+    templateInstance.$('#hours').val('')
+    templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
   'click .js-next': (event, templateInstance) => {
     event.preventDefault()
     FlowRouter.setQueryParams({ date: moment(templateInstance.date.get()).add(1, 'days').format('YYYY-MM-DD') })
     // templateInstance.date.set(new Date(moment(templateInstance.date.get()).add(1, 'days').utc()))
-    $('#hours').val('')
-    $('.js-tasksearch-results').addClass('d-none')
+    templateInstance.$('#hours').val('')
+    templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
   'change #targetProject': (event, templateInstance) => {
-    templateInstance.projectId.set($(event.currentTarget).val())
-    $('.js-tasksearch').focus()
+    templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
+    templateInstance.$('.js-tasksearch').focus()
   },
-  'change #date': (event) => {
+  'change #date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
-      let date = moment($(event.currentTarget).val(), 'ddd, DD.MM.YYYY')
+      let date = moment(templateInstance.$(event.currentTarget).val(), 'ddd, DD.MM.YYYY')
       if (!date.isValid()) {
         date = moment()
         event.currentTarget.valueAsDate = date.toDate()

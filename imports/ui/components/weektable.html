@@ -23,11 +23,11 @@
 </template>
 
 <template name="weektablerow">
-    <tr class="thead-dark">
+    <tr class="thead">
       <th scope="row"><a href="#" style="color:inherit" class="week-row" data-toggle="collapse" data-target="#{{projectId}}" aria-expanded="false">{{projectName}} <i class="fa fa-chevron-right"></i></a></th>
       {{#if weekDays}}
         {{#each weekday in weekDays}}
-          <td class="table-dark pl-3">{{getTotalForDayPerProject projectId weekday}}</td>
+          <td class="pl-3">{{getTotalForDayPerProject projectId weekday}}</td>
         {{/each}}
       {{/if}}
       <th class="text-center">{{#if tasks}}Σ{{/if}}</th>
@@ -47,7 +47,7 @@
             <input type="number" value="{{getHoursForDay weekday task}}" data-task="{{task._id}}" data-project-id="{{projectId}}" data-week-day="{{@index}}" class="form-control js-hours" placeholder="0.00"/>
           </td>
         {{/each}}
-        <td class="pt-2 table-dark">{{getTotalForTask(task)}}</td>
+        <td class="pt-2">{{getTotalForTask(task)}}</td>
       </tr>
     {{/each}}
     <tr class="js-new-line-placeholder"></tr>

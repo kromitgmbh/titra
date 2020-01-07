@@ -14,12 +14,15 @@ const clientTimecards = new Mongo.Collection('clientTimecards')
 
 Template.weektable.onCreated(function weekTableCreated() {
   this.subscribe('myprojects')
-  this.startDate = new ReactiveVar(moment(moment().startOf('week')))
-  this.endDate = new ReactiveVar(moment(moment().endOf('week')))
+  // attention: this is a workaround because we are currently hard coding the european week format
+  // where weeks start on Monday - in the future this needs to be updated based on a user specific
+  // 'start of the week' setting
+  this.startDate = new ReactiveVar(moment(moment().startOf('week').add(1, 'day')))
+  this.endDate = new ReactiveVar(moment(moment().endOf('week').add(1, 'day')))
   this.autorun(() => {
     if (FlowRouter.getQueryParam('date')) {
-      this.startDate.set(moment(moment(FlowRouter.getQueryParam('date')).startOf('week')), 'YYYY-MM-DD')
-      this.endDate.set(moment(moment(FlowRouter.getQueryParam('date')).endOf('week')), 'YYYY-MM-DD')
+      this.startDate.set(moment(moment(FlowRouter.getQueryParam('date')).startOf('week').add(1, 'day')), 'YYYY-MM-DD')
+      this.endDate.set(moment(moment(FlowRouter.getQueryParam('date')).endOf('week').add(1, 'day')), 'YYYY-MM-DD')
     }
   })
 })

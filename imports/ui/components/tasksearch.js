@@ -10,8 +10,11 @@ import Projects from '../../api/projects/projects.js'
 Template.tasksearch.events({
   'mousedown .js-tasksearch-result': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.$('.js-tasksearch-input').val($(event.currentTarget).children('.js-tasksearch-task-name').text())
+    templateInstance.$('.js-tasksearch-input').val(templateInstance.$(event.currentTarget).children('.js-tasksearch-task-name').text())
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
+    if ($('#hours')) {
+      $('#hours').focus()
+    }
   },
   'focus .js-tasksearch-input': (event, templateInstance) => {
     templateInstance.$('.js-tasksearch-results').removeClass('d-none')
@@ -29,11 +32,11 @@ Template.tasksearch.events({
     if (event.keyCode === 40) {
       event.preventDefault()
       templateInstance.$('.js-tasksearch-results').removeClass('d-none')
-      templateInstance.$($('.js-tasksearch-result')[0]).focus()
+      templateInstance.$(templateInstance.$('.js-tasksearch-result')[0]).focus()
     } else if (event.keyCode === 27) {
       templateInstance.$('.js-tasksearch-results').addClass('d-none')
     } else {
-      templateInstance.filter.set($(event.currentTarget).val())
+      templateInstance.filter.set(templateInstance.$(event.currentTarget).val())
       templateInstance.$('.js-tasksearch-results').removeClass('d-none')
     }
     // templateInstance.$('.js-tasksearch-results').show()
@@ -43,16 +46,16 @@ Template.tasksearch.events({
     event.stopPropagation()
     // enter key
     if (event.keyCode === 13) {
-      templateInstance.$('.js-tasksearch-input').val($(event.currentTarget).children('.js-tasksearch-task-name').text())
+      templateInstance.$('.js-tasksearch-input').val(templateInstance.$(event.currentTarget).children('.js-tasksearch-task-name').text())
       templateInstance.$('.js-tasksearch-results').addClass('d-none')
       if ($('#hours')) {
         $('#hours').focus()
       }
     } else if ((event.keyCode === 40 || event.keyCode === 9) // tab or down key
       && event.currentTarget.nextElementSibling) {
-      $(event.currentTarget.nextElementSibling).focus()
+      templateInstance.$(event.currentTarget.nextElementSibling).focus()
     } else if (event.keyCode === 38 && event.currentTarget.previousElementSibling) { // up key
-      $(event.currentTarget.previousElementSibling).focus()
+      templateInstance.$(event.currentTarget.previousElementSibling).focus()
     } else if (event.keyCode === 27) { // escape key
       templateInstance.$('.js-tasksearch-results').addClass('d-none')
       templateInstance.$('.js-tasksearch-input').focus()

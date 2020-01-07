@@ -58,7 +58,7 @@ Template.projectlist.onRendered(() => {
 })
 Template.projectlist.helpers({
   projects() {
-    return Template.instance().data.showArchived.get()
+    return Template.instance().data.showArchived && Template.instance().data.showArchived.get()
       ? Projects.find({}, { sort: { priority: 1, name: 1 } })
       : Projects.find(
         { $or: [{ archived: { $exists: false } }, { archived: false }] },
@@ -66,7 +66,7 @@ Template.projectlist.helpers({
       )
   },
   moreThanOneProject() {
-    return Template.instance().data.showArchived.get()
+    return Template.instance().data.showArchived && Template.instance().data.showArchived.get()
       ? Projects.find({}).count() > 1
       : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count() > 1
   },

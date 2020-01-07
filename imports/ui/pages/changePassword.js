@@ -3,29 +3,29 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './changePassword.html'
 
 Template.changePassword.events({
-  'click #changePassword': (event) => {
+  'click #changePassword': (event, templateInstance) => {
     event.preventDefault()
-    if ($('#at-field-password').val() !== $('#at-field-password-again').val()) {
-      $('#at-field-password').addClass('is-invalid')
-      $('#at-field-password-again').addClass('is-invalid')
-      $('.notification').text(i18next.t('login.password_mismatch'))
+    if (templateInstance.$('#at-field-password').val() !== templateInstance.$('#at-field-password-again').val()) {
+      templateInstance.$('#at-field-password').addClass('is-invalid')
+      templateInstance.$('#at-field-password-again').addClass('is-invalid')
+      templateInstance.$('.notification').text(i18next.t('login.password_mismatch'))
       document.querySelector('.notification').classList.toggle('d-none')
       return
     }
-    if (FlowRouter.getParam('token') && $('#at-field-password').val() && $('#at-field-password-again').val()) {
-      Accounts.resetPassword(FlowRouter.getParam('token'), $('#at-field-password').val(), (error) => {
+    if (FlowRouter.getParam('token') && templateInstance.$('#at-field-password').val() && templateInstance.$('#at-field-password-again').val()) {
+      Accounts.resetPassword(FlowRouter.getParam('token'), templateInstance.$('#at-field-password').val(), (error) => {
         if (error) {
-          $('.notification').text(i18next.t(`login.${error.error}`))
+          templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
           document.querySelector('.notification').classList.toggle('d-none')
         } else {
           $.notify(i18next.t('notifications.password_changed'))
           FlowRouter.go('projectlist')
         }
       })
-    } else if (Meteor.user() && $('#at-field-current-password').val() && $('#at-field-password').val() && $('#at-field-password-again').val()) {
-      Accounts.changePassword($('#at-field-current-password').val(), $('#at-field-password').val(), (error) => {
+    } else if (Meteor.user() && templateInstance.$('#at-field-current-password').val() && templateInstance.$('#at-field-password').val() && templateInstance.$('#at-field-password-again').val()) {
+      Accounts.changePassword(templateInstance.$('#at-field-current-password').val(), templateInstance.$('#at-field-password').val(), (error) => {
         if (error) {
-          $('.notification').text(i18next.t(`login.${error.error}`))
+          templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
           document.querySelector('.notification').classList.toggle('d-none')
         } else {
           $.notify(i18next.t('notifications.password_changed'))
