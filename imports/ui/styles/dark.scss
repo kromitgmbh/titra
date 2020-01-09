@@ -58,6 +58,15 @@ $modal-content-bg: map-get($theme-colors, secondary);
 .drag.card:hover {
     background-color: $gray-900 !important;
     color: $body-bg !important;
+    background-color: #353535 !important;   
+}
+.alert-secondary {
+    color: #a0a0a0 !important;
+    background-color: #1e1e1e !important;
+    border-color: #353535 !important;
+}
+.close {
+    color: #c1c1c1 !important;
 }
 .datatable {
     --dt-border-color: #424242;
