@@ -56,8 +56,6 @@ $modal-content-bg: map-get($theme-colors, secondary);
     border-color: #5B5B5B !important;
 }
 .drag.card:hover {
-    background-color: $gray-900 !important;
-    color: $body-bg !important;
     background-color: #353535 !important;   
 }
 .alert-secondary {
