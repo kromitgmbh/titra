@@ -1,5 +1,4 @@
-import { FlowRouter } from 'meteor/kadira:flow-router'
-import { $ } from 'meteor/jquery'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import JSZip from 'jszip'
 import i18next from 'i18next'
 import dataTableButtons from 'datatables.net-buttons-bs4'
@@ -10,15 +9,17 @@ import { periodToDates } from '../../utils/periodHelpers.js'
 import i18nextReady from '../../startup/client/startup.js'
 import '../components/dataTables.bootstrap4.scss'
 import './timecardlist.html'
+import '../../api/timecards/tabular.js'
 import '../components/periodpicker.js'
 import '../components/resourceselect.js'
 import '../components/tablecell.js'
 import '../components/customerselect.js'
+import '../components/projectselect.js'
 import '../components/dailytimetable.js'
 import '../components/periodtimetable.js'
 import '../components/workingtimetable.js'
 import '../components/limitpicker.js'
-import '../../api/timecards/tabular.js'
+import '../components/weektable.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {
   this.project = new ReactiveVar()
@@ -28,7 +29,7 @@ Template.timecardlist.onCreated(function createTimeCardList() {
   this.customer = new ReactiveVar()
   this.activeTab = new ReactiveVar()
   this.autorun(() => {
-    if (window.BootstrapLoaded.get()) {
+    if (window && window.BootstrapLoaded && window.BootstrapLoaded.get()) {
       $(`#${this.activeTab.get()}`).tab('show')
     }
   })
@@ -154,15 +155,15 @@ Template.timecardlist.helpers({
 
 Template.timecardlist.events({
   'change #period': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ period: $(event.currentTarget).val() })
+    FlowRouter.setQueryParams({ period: templateInstance.$(event.currentTarget).val() })
   },
   'change #resourceselect': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ resource: $(event.currentTarget).val() })
+    FlowRouter.setQueryParams({ resource: templateInstance.$(event.currentTarget).val() })
   },
   'change #customerselect': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ customer: $(event.currentTarget).val() })
+    FlowRouter.setQueryParams({ customer: templateInstance.$(event.currentTarget).val() })
   },
   'click .nav-link[data-toggle]': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ activeTab: $(event.currentTarget)[0].id })
+    FlowRouter.setQueryParams({ activeTab: templateInstance.$(event.currentTarget)[0].id })
   },
 })

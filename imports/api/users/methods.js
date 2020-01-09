@@ -1,3 +1,4 @@
+import { check, Match } from 'meteor/check'
 import { checkAuthentication } from '../../utils/server_method_helpers.js'
 
 Meteor.methods({
@@ -18,6 +19,8 @@ Meteor.methods({
     breakDuration,
     regularWorkingTime,
     APItoken,
+    avatar,
+    avatarColor,
   }) {
     check(name, String)
     check(unit, String)
@@ -35,6 +38,11 @@ Meteor.methods({
     check(breakDuration, String)
     check(regularWorkingTime, String)
     check(APItoken, String)
+    check(avatar, Match.Maybe(String))
+    check(avatarColor, Match.Maybe(String))
+    if (!avatar) {
+      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.avatar': '' } })
+    }
     checkAuthentication(this)
     Meteor.users.update({ _id: this.userId }, {
       $set: {
@@ -54,6 +62,8 @@ Meteor.methods({
         'profile.breakStartTime': breakStartTime,
         'profile.breakDuration': breakDuration,
         'profile.regularWorkingTime': regularWorkingTime,
+        'profile.avatar': avatar,
+        'profile.avatarColor': avatarColor,
       },
     })
   },

@@ -1,0 +1,56 @@
+<template name="weektable">
+  <div class="tab-borders p-3">
+    <div class="row form-group">
+      <div class="col-3"><button class="btn btn-secondary border js-previous-week"><i class="fa fa-chevron-left"></i><span class="d-none d-lg-inline"> {{t "navigation.lastWeek"}}</span></button></div>
+      <div class="col text-center"><button class="btn btn-primary js-save">{{t "navigation.save"}}</button></div>
+      <div class="col-3 text-right"><button class="btn btn-secondary border js-next-week"><span class="d-none d-lg-inline">{{t "navigation.nextWeek"}} </span><i class="fa fa-chevron-right"></i></button></div>
+    </div>
+    <div class="row">
+      <table class="table table-responsive-md table-sm">
+        <tr>
+          <th style="min-width:300px">{{t "globals.project"}} / {{t "globals.task"}}</th>
+          {{#each weekday in weekDays}}
+            <th>{{weekday}}</th>
+          {{/each}}
+          <th></th>
+        </tr>
+          {{#each project in projects}}
+            {{>weektablerow projectName=project.name projectId=project._id startDate=startDate endDate=endDate}}
+          {{/each}}
+      </table>
+    </div>
+  </div>
+</template>
+
+<template name="weektablerow">
+    <tr class="thead">
+      <th scope="row"><a href="#" style="color:inherit" class="week-row" data-toggle="collapse" data-target="#{{projectId}}" aria-expanded="false">{{projectName}} <i class="fa fa-chevron-right"></i></a></th>
+      {{#if weekDays}}
+        {{#each weekday in weekDays}}
+          <td class="pl-3">{{getTotalForDayPerProject projectId weekday}}</td>
+        {{/each}}
+      {{/if}}
+      <th class="text-center">{{#if tasks}}Σ{{/if}}</th>
+    </tr>
+  <tbody id="{{projectId}}" class="collapse">
+    {{#each task in tasks}}
+      <tr>
+        <td>
+          {{#if task._id}}
+            <div class="card form-control" style="overflow:hidden" data-toggle="tooltip" data-placement="bottom" title="{{task._id}}">{{task._id}}</div>
+          {{else}}
+            {{>tasksearch}}
+          {{/if}}
+        </td>
+        {{#each weekday in weekDays}}
+          <td>
+            <input type="number" value="{{getHoursForDay weekday task}}" data-task="{{task._id}}" data-project-id="{{projectId}}" data-week-day="{{@index}}" class="form-control js-hours" placeholder="0.00"/>
+          </td>
+        {{/each}}
+        <td class="pt-2">{{getTotalForTask(task)}}</td>
+      </tr>
+    {{/each}}
+    <tr class="js-new-line-placeholder"></tr>
+    <tr><td colspan="9"><button class="btn btn-sm btn-primary js-newline"><i class="fa fa-plus"></i> {{t "navigation.newLine"}}</button></td></tr>
+  </tbody>
+</template>

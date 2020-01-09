@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import moment from 'moment'
 import i18next from 'i18next'
 import TinyDatePicker from 'tiny-date-picker'
@@ -13,6 +13,7 @@ import './tracktime.html'
 import '../components/projectselect.js'
 import '../components/tasksearch.js'
 import '../components/timetracker.js'
+import '../components/weektable.js'
 import '../components/calendar.js'
 import '../components/backbutton.js'
 
@@ -96,11 +97,11 @@ Template.tracktime.events({
     let hours = templateInstance.math.evaluate($('#hours').val())
 
     if (Meteor.user().profile.timeunit === 'd') {
-      hours = templateInstance.math.evaluate($('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
+      hours = templateInstance.math.evaluate(templateInstance.$('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
     }
     const buttonLabel = $(event.currentTarget).text()
-    $(event.currentTarget).text('saving ...')
-    $(event.currentTarget).prop('disabled', true)
+    templateInstance.$(event.currentTarget).text('saving ...')
+    templateInstance.$(event.currentTarget).prop('disabled', true)
     if (FlowRouter.getParam('tcid')) {
       Meteor.call('updateTimeCard', {
         _id: FlowRouter.getParam('tcid'), projectId, date, hours, task,
@@ -108,10 +109,10 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
         } else {
-          $('.js-tasksearch-results').addClass('d-none')
+          templateInstance.$('.js-tasksearch-results').addClass('d-none')
           $.notify(i18next.t('notifications.time_entry_updated'))
-          $(event.currentTarget).text(buttonLabel)
-          $(event.currentTarget).prop('disabled', false)
+          templateInstance.$(event.currentTarget).text(buttonLabel)
+          templateInstance.$(event.currentTarget).prop('disabled', false)
           templateInstance.$('.js-show-timecards').removeClass('d-none')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
           // window.history.back()
@@ -124,13 +125,13 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
         } else {
-          $('.js-tasksearch-input').val('')
-          $('.js-tasksearch-input').keyup()
-          $('#hours').val('')
-          $('.js-tasksearch-results').addClass('d-none')
+          templateInstance.$('.js-tasksearch-input').val('')
+          templateInstance.$('.js-tasksearch-input').keyup()
+          templateInstance.$('#hours').val('')
+          templateInstance.$('.js-tasksearch-results').addClass('d-none')
           $.notify(i18next.t('notifications.time_entry_saved'))
-          $(event.currentTarget).text(buttonLabel)
-          $(event.currentTarget).prop('disabled', false)
+          templateInstance.$(event.currentTarget).text(buttonLabel)
+          templateInstance.$(event.currentTarget).prop('disabled', false)
           templateInstance.$('.js-show-timecards').removeClass('d-none')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
         }
@@ -142,22 +143,23 @@ Template.tracktime.events({
     FlowRouter.setQueryParams({ date: moment(templateInstance.date.get()).subtract(1, 'days').format('YYYY-MM-DD') })
     // templateInstance.date.set(new Date(moment(templateInstance.date.get())
     // .subtract(1, 'days').utc()))
-    $('#hours').val('')
-    $('.js-tasksearch-results').addClass('d-none')
+    templateInstance.$('#hours').val('')
+    templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
   'click .js-next': (event, templateInstance) => {
     event.preventDefault()
     FlowRouter.setQueryParams({ date: moment(templateInstance.date.get()).add(1, 'days').format('YYYY-MM-DD') })
     // templateInstance.date.set(new Date(moment(templateInstance.date.get()).add(1, 'days').utc()))
-    $('#hours').val('')
-    $('.js-tasksearch-results').addClass('d-none')
+    templateInstance.$('#hours').val('')
+    templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
   'change #targetProject': (event, templateInstance) => {
-    templateInstance.projectId.set($(event.currentTarget).val())
+    templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
+    templateInstance.$('.js-tasksearch').focus()
   },
-  'change #date': (event) => {
+  'change #date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
-      let date = moment($(event.currentTarget).val(), 'ddd, DD.MM.YYYY')
+      let date = moment(templateInstance.$(event.currentTarget).val(), 'ddd, DD.MM.YYYY')
       if (!date.isValid()) {
         date = moment()
         event.currentTarget.valueAsDate = date.toDate()
@@ -233,20 +235,23 @@ Template.tracktimemain.onCreated(function tracktimeCreated() {
 
 Template.tracktimemain.helpers({
   showDay: () => (Template.instance().timetrackview.get() === 'd' ? 'active' : ''),
+  showWeek: () => (Template.instance().timetrackview.get() === 'w' ? 'active' : ''),
   showMonth: () => (Template.instance().timetrackview.get() === 'M' ? 'active' : ''),
 })
 
 Template.tracktimemain.events({
-  'click .js-day': (event, templateInstance) => {
+  'click .js-day': (event) => {
     event.preventDefault()
-    templateInstance.timetrackview.set('d')
     FlowRouter.setQueryParams({ view: 'd' })
   },
-  'click .js-month': (event, templateInstance) => {
+  'click .js-week': (event) => {
     event.preventDefault()
-    templateInstance.timetrackview.set('M')
     FlowRouter.setParams({ projectId: '' })
-    // FlowRouter.setQueryParams({ date: null })
+    FlowRouter.setQueryParams({ view: 'w' })
+  },
+  'click .js-month': (event) => {
+    event.preventDefault()
+    FlowRouter.setParams({ projectId: '' })
     FlowRouter.setQueryParams({ view: 'M' })
   },
 })

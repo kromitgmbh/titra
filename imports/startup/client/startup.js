@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating'
 import emoji from 'node-emoji'
 import isDarkMode from 'is-dark'
 import i18next from 'i18next'
+import * as bs4notify from 'bootstrap4-notify'
 import Projects from '../../api/projects/projects.js'
 
 $.notifyDefaults({
@@ -18,9 +19,63 @@ let globalT
 
 Template.registerHelper('t', (param) => (i18nextReady.get() ? globalT(param) : 'Loading ...'))
 
+function loadLanguage(language) {
+  switch (language) {
+    default:
+      import('../../ui/translations/en.json').then((en) => {
+        i18next.init({
+          lng: 'en',
+          debug: i18nextDebugMode,
+          resources: {
+            en: {
+              translation: en.default,
+            },
+          },
+        }).then((t) => {
+          globalT = t
+          i18nextReady.set(true)
+        })
+      })
+      break
+    case 'en':
+      import('../../ui/translations/en.json').then((en) => {
+        i18next.init({
+          lng: 'en',
+          debug: i18nextDebugMode,
+          resources: {
+            en: {
+              translation: en.default,
+            },
+          },
+        }).then((t) => {
+          globalT = t
+          i18nextReady.set(true)
+        })
+      })
+      break
+    case 'de':
+      import('../../ui/translations/de.json').then((de) => {
+        i18next.init({
+          lng: 'de',
+          debug: i18nextDebugMode,
+          resources: {
+            de: {
+              translation: de.default,
+            },
+          },
+        }).then((t) => {
+          globalT = t
+          i18nextReady.set(true)
+        })
+      })
+      break
+  }
+}
 Meteor.startup(() => {
+  let language = navigator.language.substring(0, 2)
   Tracker.autorun(() => {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
+    if (!Meteor.loggingIn() && Meteor.user()
+      && Meteor.user().profile) {
       if (Meteor.user().profile.theme === 'dark') {
         import('../../ui/styles/dark.scss')
       } else if (Meteor.user().profile.theme === 'light') {
@@ -35,59 +90,22 @@ Meteor.startup(() => {
     } else {
       import('../../ui/styles/light.scss')
     }
-    let language = navigator.language.substring(0, 2)
-    if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.language) {
-      language = Meteor.user().profile.language === 'auto' ? navigator.language.substring(0, 2) : Meteor.user().profile.language
-    }
-    switch (language) {
-      default:
-        import('../../ui/translations/en.json').then((en) => {
-          i18next.init({
-            lng: 'en',
-            debug: i18nextDebugMode,
-            resources: {
-              en: {
-                translation: en.default,
-              },
-            },
-          }).then((t) => {
-            globalT = t
-            i18nextReady.set(true)
-          })
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
+      if (Meteor.user().profile.language) {
+        language = Meteor.user().profile.language === 'auto' ? navigator.language.substring(0, 2) : Meteor.user().profile.language
+      }
+      loadLanguage(language)
+      window.BootstrapLoaded = new ReactiveVar(false)
+      import('popper.js').then((Popper) => {
+        // window.Tether = Tether.default
+        window.Popper = Popper.default
+        import('bootstrap').then(() => {
+          $('[data-toggle="tooltip"]').tooltip()
+          window.BootstrapLoaded.set(true)
         })
-        break
-      case 'en':
-        import('../../ui/translations/en.json').then((en) => {
-          i18next.init({
-            lng: 'en',
-            debug: i18nextDebugMode,
-            resources: {
-              en: {
-                translation: en.default,
-              },
-            },
-          }).then((t) => {
-            globalT = t
-            i18nextReady.set(true)
-          })
-        })
-        break
-      case 'de':
-        import('../../ui/translations/de.json').then((de) => {
-          i18next.init({
-            lng: 'de',
-            debug: i18nextDebugMode,
-            resources: {
-              de: {
-                translation: de.default,
-              },
-            },
-          }).then((t) => {
-            globalT = t
-            i18nextReady.set(true)
-          })
-        })
-        break
+      })
+    } else if (!Meteor.user() && !Meteor.loggingIn()) {
+      loadLanguage(language)
     }
   })
 })

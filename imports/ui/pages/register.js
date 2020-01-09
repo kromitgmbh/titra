@@ -1,30 +1,30 @@
 import i18next from 'i18next'
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './register.html'
 
 Template.register.events({
-  'click #register': (event) => {
+  'click #register': (event, templateInstance) => {
     event.preventDefault()
-    if ($('#at-field-password').val() !== $('#at-field-password-again').val()) {
-      $('#at-field-password').addClass('is-invalid')
-      $('#at-field-password-again').addClass('is-invalid')
-      $('.notification').text(i18next.t('login.password_mismatch'))
+    if (templateInstance.$('#at-field-password').val() !== templateInstance.$('#at-field-password-again').val()) {
+      templateInstance.$('#at-field-password').addClass('is-invalid')
+      templateInstance.$('#at-field-password-again').addClass('is-invalid')
+      templateInstance.$('.notification').text(i18next.t('login.password_mismatch'))
       document.querySelector('.notification').classList.toggle('d-none')
       return
     }
-    if ($('#at-field-email').val() && $('#at-field-password').val() && $('#at-field-password-again').val()) {
+    if (templateInstance.$('#at-field-email').val() && templateInstance.$('#at-field-password').val() && templateInstance.$('#at-field-password-again').val()) {
       Accounts.createUser({
-        email: $('#at-field-email').val(),
-        password: $('#at-field-password').val(),
+        email: templateInstance.$('#at-field-email').val(),
+        password: templateInstance.$('#at-field-password').val(),
         profile: {
-          name: $('#at-field-name').val(),
+          name: templateInstance.$('#at-field-name').val(),
           currentLanguageProject: i18next.t('globals.project'),
           currentLanguageProjectDesc: i18next.t('project.first_project_desc'),
         },
       }, (error) => {
         console.error(error)
         if (error && error.error !== 145546287) {
-          $('.notification').text(i18next.t(`login.${error.error}`))
+          templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
           document.querySelector('.notification').classList.toggle('d-none')
         } else {
           FlowRouter.go('projectlist')

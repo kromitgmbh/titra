@@ -1,4 +1,4 @@
-import { FlowRouter } from 'meteor/kadira:flow-router'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './limitpicker.html'
 
 Template.limitpicker.onCreated(function createLimitPicker() {

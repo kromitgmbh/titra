@@ -19,7 +19,7 @@ Template.timetracker.events({
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
     }
-    $('#hours').val(moment.duration(moment().valueOf() - templateInstance.timer.get().valueOf()).asHours().toFixed(precision))
+    templateInstance.$('#hours').val(moment.duration(moment().valueOf() - templateInstance.timer.get().valueOf()).asHours().toFixed(precision))
     Meteor.clearTimeout(templateInstance.intervalHandle)
     Template.instance().timer.set(null)
   },

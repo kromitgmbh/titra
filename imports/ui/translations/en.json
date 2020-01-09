@@ -5,6 +5,7 @@
     "name": "Name",
     "description": "Description",
     "day": "Day",
+    "week": "Week",
     "day_plural": "Days",
     "month": "Month",
     "hour": "Hour",
@@ -39,7 +40,10 @@
     "close": "Close",
     "share": "Share",
     "invoice": "Invoice",
-    "retry": "Retry now"
+    "retry": "Retry now",
+    "lastWeek": "Last week",
+    "nextWeek": "Next week",
+    "newLine": "New line"
   },
   "tracktime": {
     "no_time": "No time tracked yet.",
@@ -108,7 +112,12 @@
     "daily_start_time": "Daily start of working time",
     "break_start_time": "Daily break time",
     "break_duration": "Default break duration (in hours)",
-    "auto_detect_help": "Auto detect only works in supported browsers, please check if it works for you at "
+    "auto_detect_help": "Auto detect only works in supported browsers, please check if it works for you at ",
+    "avatar": "Avatar",
+    "preview": "Preview",
+    "reset": "Reset",
+    "custom_avatar": "Upload custom avatar",
+    "current": "Current"
   },
   "customer": {
     "select_customer": "Select a customer",

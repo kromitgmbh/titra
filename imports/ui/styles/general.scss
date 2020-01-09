@@ -11,7 +11,7 @@
 @import "{}/node_modules/bootstrap/scss/tables";
 @import "{}/node_modules/bootstrap/scss/forms";
 @import "{}/node_modules/bootstrap/scss/buttons";
-// @import "transitions";
+@import "{}/node_modules/bootstrap/scss/transitions";
 @import "{}/node_modules/bootstrap/scss/dropdown";
 @import "{}/node_modules/bootstrap/scss/button-group";
 @import "{}/node_modules/bootstrap/scss/input-group";
@@ -200,4 +200,42 @@
 }
 .dt-scrollable {
    height: 144.15vw;
+}
+.week-row:hover {
+  text-decoration: none;
+  i.fa-chevron-right {
+    -webkit-transform: rotateZ(90deg);
+    -moz-transform: rotateZ(90deg);
+    transform: rotateZ(90deg);
+    transition: 0.25s ease-in-out;
+  }
+}
+.btn:hover {
+  .fa-chevron-right {
+    -webkit-transform: translateX(5px);
+    -moz-transform: translateX(5px);
+    transform: translateX(5px);
+    transition: 0.25s ease-in-out;
+  }
+  .fa-chevron-left {
+    -webkit-transform: translateX(-5px);
+    -moz-transform: translateX(-5px);
+    transform: translateX(-5px);
+    transition: 0.25s ease-in-out;
+  }
+  .fa-circle {
+    transform: scale(1.4);
+    transition: 0.25s ease-in-out;
+  }
+}
+.js-toggle-timecards:hover {
+  .fa-chevron-down {
+    transform: translateY(5px);
+    transition: 0.25s ease-in-out;
+  }
+}
+.input-group-append:hover {
+  .fa-calendar {
+    color: map-get($theme-colors, secondary)
+  }
 }

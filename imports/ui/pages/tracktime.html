@@ -38,7 +38,7 @@
         <div class="card-header js-toggle-timecards">
           {{#if totalTime}}
             {{t "tracktime.time_tracked"}} {{timeInUserUnit(totalTime)}} {{timeunit}}
-            <a href="#" class="text-dark"><i class="fa fa-chevron-down float-right"></i></a>
+            <a href="#" class="text-body"><i class="fa fa-chevron-down float-right"></i></a>
             {{else}}
             {{t "tracktime.no_time"}}
           {{/if}}
@@ -120,11 +120,17 @@
       <a class="nav-link {{showDay}} js-day" href="#">{{t "globals.day"}}</a>
     </li>
     <li class="nav-item">
+      <a class="nav-link {{showWeek}} js-week" href="#">{{t "globals.week"}}</a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link {{showMonth}} js-month" href="#">{{t "globals.month"}}</a>
     </li>
   </ul>
   {{#if showDay}}
     {{>tracktime}}
+  {{/if}}
+  {{#if showWeek}}
+    {{>weektable}}
   {{/if}}
   {{#if showMonth}}
     <div class="tab-borders p-3">
