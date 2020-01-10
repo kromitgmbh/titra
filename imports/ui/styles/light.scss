@@ -14,6 +14,10 @@
 //   height: 36px !important;
 //   line-height:36px !important;
 // }
+
+
+//++++ [theme colors] ++++
+
 $theme-colors: (
   primary: #009688,
   secondary: #ffffff,
@@ -24,6 +28,9 @@ $theme-colors: (
   light: #BDBDBD,
   dark: #455A64
 );
+
+//++++ [custom] ++++
+
 .list-group-item {
   color: #495057;
 }
@@ -40,6 +47,21 @@ $theme-colors: (
 }
 .fc-unthemed td.fc-today {
   background: rgba(0, 150, 136, 0.5) !important;
+}
+.alert-secondary {
+    color: #7b7b7b !important;
+    background-color: #ffffff !important;
+    border-color: #e8e8e8 !important;
+}
+.fc-button-primary {
+    color: #000000 !important;
+    background-color: map-get($theme-colors, secondary) !important;
+    border-color: map-get($theme-colors, light) !important;
+} 
+.fc-button-primary:hover {
+    color: #000000 !important;
+    background-color: #eee !important;
+    border-color: map-get($theme-colors, light) !important;
 }
 .datatable {
     --dt-border-color: #d1d8dd;

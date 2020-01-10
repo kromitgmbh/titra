@@ -178,9 +178,7 @@
 #cal > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2 {
   font-weight: lighter;
 }
-.fc-button-primary {
-  background-color: map-get($theme-colors, primary)
-}
+
 @include media-breakpoint-down(sm) {
   .nav-tabs {
     overflow-x: auto;
@@ -238,4 +236,8 @@
   .fa-calendar {
     color: map-get($theme-colors, secondary)
   }
+}
+.dp-current:focus {
+    outline: none !important;
+    background: #006d626c !important;
 }
