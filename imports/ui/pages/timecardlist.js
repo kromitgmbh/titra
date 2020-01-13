@@ -37,13 +37,13 @@ Template.timecardlist.onCreated(function createTimeCardList() {
   dataTablesBootstrap(window, $)
   dataTableButtons(window, $)
   html5ExportButtons(window, $)
-  Meteor.setTimeout(() => {
-    $('[data-toggle="tooltip"]').tooltip()
-  }, 1000)
 })
 Template.timecardlist.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady() && window.BootstrapLoaded.get()) {
+      $('[data-toggle="tooltip"]').tooltip()
+    }
     if (FlowRouter.getParam('projectId')) {
       templateInstance.project.set(FlowRouter.getParam('projectId'))
     } else {

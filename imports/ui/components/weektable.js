@@ -50,11 +50,16 @@ Template.weektable.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
     const weekArray = []
-    $('.js-hours').each((index, element) => {
+    templateInstance.$('.js-hours').each((index, element) => {
       const startDate = templateInstance.startDate.get().clone().startOf('week')
-      const value = $(element).val()
+      const value = templateInstance.$(element).val()
       if (value) {
-        const task = $(element).data('task') ? $(element).data('task') : $(element.parentElement.parentElement).find('.js-tasksearch-input').val()
+        const newTaskInput = templateInstance.$(element.parentElement.parentElement).find('.js-tasksearch-input').val()
+        const task = templateInstance.$(element).data('task') ? templateInstance.$(element).data('task') : newTaskInput
+        if (!task) {
+          $.notify({ message: i18next.t('notifications.enter_task') }, { type: 'danger' })
+          return
+        }
         let hours = Number(value)
         if (Meteor.user().profile.timeunit === 'd') {
           hours *= (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
@@ -62,20 +67,23 @@ Template.weektable.events({
         weekArray.push({
           projectId: $(element).data('project-id'),
           task,
-          date: moment.utc(startDate.add(Number($(element).data('week-day')) + 1, 'day').format('YYYY-MM-DD')).toDate(),
+          date: moment.utc(startDate.add(Number(templateInstance.$(element).data('week-day')) + 1, 'day').format('YYYY-MM-DD')).toDate(),
           hours,
         })
       }
     })
-    Meteor.call('upsertWeek', weekArray, (error) => {
-      if (error) {
-        console.error(error)
-      } else {
-        $('.js-tasksearch-input').val('')
-        $('.js-tasksearch-input').parent().parent().find('.js-hours').val('')
-        $.notify(i18next.t('notifications.time_entry_updated'))
-      }
-    })
+    if (weekArray.length > 0) {
+      Meteor.call('upsertWeek', weekArray, (error) => {
+        if (error) {
+          console.error(error)
+        } else {
+          templateInstance.$('.js-tasksearch-input').val('')
+          templateInstance.$('.js-tasksearch-input').parent().parent().find('.js-hours')
+            .val('')
+          $.notify(i18next.t('notifications.time_entry_updated'))
+        }
+      })
+    }
   },
 })
 

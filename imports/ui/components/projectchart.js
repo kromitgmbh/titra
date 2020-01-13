@@ -186,6 +186,9 @@ Template.projectchart.onRendered(function projectchartRendered() {
             })
           }
         }
+        if (window.BootstrapLoaded.get()) {
+          $('[data-toggle="tooltip"]').tooltip()
+        }
       }
     })
   })

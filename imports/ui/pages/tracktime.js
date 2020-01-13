@@ -85,6 +85,10 @@ Template.tracktime.events({
       $.notify({ message: i18next.t('notifications.select_project') }, { type: 'danger' })
       return
     }
+    if (!templateInstance.$('.js-tasksearch-input').val()) {
+      $.notify({ message: i18next.t('notifications.enter_task') }, { type: 'danger' })
+      return
+    }
     try {
       templateInstance.math.evaluate($('#hours').val())
     } catch (exception) {
@@ -115,7 +119,6 @@ Template.tracktime.events({
           templateInstance.$(event.currentTarget).prop('disabled', false)
           templateInstance.$('.js-show-timecards').removeClass('d-none')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
-          // window.history.back()
         }
       })
     } else {

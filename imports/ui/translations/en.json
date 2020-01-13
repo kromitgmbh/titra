@@ -206,6 +206,7 @@
     "project_restore_success": "Project restored",
     "settings_saved_success": "Settings saved",
     "enter_time": "Please enter your time",
+    "enter_task": "Please enter a task",
     "select_project": "Please select a project.",
     "check_time_input": "Please check your time input",
     "project_delete_confirm": "Do you really want to delete this project?",

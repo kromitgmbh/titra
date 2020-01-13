@@ -72,6 +72,7 @@ function loadLanguage(language) {
   }
 }
 Meteor.startup(() => {
+  window.BootstrapLoaded = new ReactiveVar(false)
   let language = navigator.language.substring(0, 2)
   Tracker.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
@@ -85,7 +86,7 @@ Meteor.startup(() => {
       } else {
         import('../../ui/styles/light.scss')
       }
-    } else if (isDarkMode()) {
+    } else if (!Meteor.loggingIn() && isDarkMode()) {
       import('../../ui/styles/dark.scss')
     } else {
       import('../../ui/styles/light.scss')
@@ -95,13 +96,12 @@ Meteor.startup(() => {
         language = Meteor.user().profile.language === 'auto' ? navigator.language.substring(0, 2) : Meteor.user().profile.language
       }
       loadLanguage(language)
-      window.BootstrapLoaded = new ReactiveVar(false)
       import('popper.js').then((Popper) => {
         // window.Tether = Tether.default
         window.Popper = Popper.default
         import('bootstrap').then(() => {
-          $('[data-toggle="tooltip"]').tooltip()
           window.BootstrapLoaded.set(true)
+          $('[data-toggle="tooltip"]').tooltip()
         })
       })
     } else if (!Meteor.user() && !Meteor.loggingIn()) {

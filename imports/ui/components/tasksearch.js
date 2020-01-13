@@ -18,15 +18,15 @@ Template.tasksearch.events({
   },
   'focus .js-tasksearch-input': (event, templateInstance) => {
     templateInstance.$('.js-tasksearch-results').removeClass('d-none')
+    templateInstance.$('.js-tasksearch-input').removeClass('is-invalid')
   },
   'blur .js-tasksearch-input': (event, templateInstance) => {
     if (!event.relatedTarget) {
       templateInstance.$('.js-tasksearch-results').addClass('d-none')
     }
-    // if (!templateInstance.filter.get()) {
-    // event.stopPropagation()
-    // templateInstance.$('.js-tasksearch-results').addClass('d-none')
-    // }
+    if (!$(event.currentTarget).val()) {
+      templateInstance.$('.js-tasksearch-input').addClass('is-invalid')
+    }
   },
   'keyup .js-tasksearch-input': (event, templateInstance) => {
     if (event.keyCode === 40) {

@@ -6,7 +6,12 @@ Template.tablecell.helpers({
     return this.userId === Meteor.userId()
   },
 })
-Template.tablecell.onCreated(() => {
+Template.tablecell.onRendered(function tablecellRendered() {
+  this.autorun(() => {
+    if (window.BootstrapLoaded.get()) {
+      $('[data-toggle="tooltip"]').tooltip()
+    }
+  })
 })
 
 Template.tablecell.events({

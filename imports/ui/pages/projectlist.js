@@ -20,11 +20,6 @@ Template.projectlist.onRendered(() => {
       (adsbygoogle = window.adsbygoogle || []).push({})
     }, 5000)
   }
-  if ($().tooltip) {
-    Meteor.setTimeout(() => {
-      $('[data-toggle="tooltip"]').tooltip()
-    }, 1000)
-  }
   import('sortablejs').then((sortableImport) => {
     const Sortable = sortableImport.default
     const el = document.querySelector('.js-project-list')

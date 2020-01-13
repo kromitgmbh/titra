@@ -213,6 +213,7 @@
     "project_restore_success": "Projekt wiederhergestellt",
     "settings_saved_success": "Einstellungen gespeichert",
     "enter_time": "Bitte die Arbeitszeit eintragen",
+    "enter_task": "Bitte die Tätigkeit eintragen",
     "select_project": "Bitte ein Projekt auswählen",
     "check_time_input": "Bitte überprüfen Sie die eingetragene Zeit",
     "project_delete_confirm": "Möchten Sie das Projekt wirklich entgültig löschen?",
