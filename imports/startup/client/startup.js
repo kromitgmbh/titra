@@ -85,7 +85,7 @@ Meteor.startup(() => {
       } else {
         import('../../ui/styles/light.scss')
       }
-    } else if (isDarkMode()) {
+    } else if (!Meteor.loggingIn() && isDarkMode()) {
       import('../../ui/styles/dark.scss')
     } else {
       import('../../ui/styles/light.scss')

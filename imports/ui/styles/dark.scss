@@ -1,3 +1,4 @@
+//++++ [theme colors] ++++
 $theme-colors: (
   primary: #009688,
   secondary: #444,
@@ -8,37 +9,71 @@ $theme-colors: (
   light: #BDBDBD,
   dark: #455A64
 );
+
+//++++ [changed variables] ++++
 $gray-900: #eeeeee !default;
+$titra-dark: #006d62 !default;
+
 $border-color: map-get($theme-colors, dark) !default;
-//** Background color for `<body>`.
+
 $body-bg:  #1d1e21 !default;
-//** Global text color on `<body>`.
+$body-font-weight: 200;
+$body-color: #f0f0f0;
+
 $card-bg: #303030 !default;
 $card-cap-bg: #404040 !default;
 $card-border-color: #404040 !default;
+
 $list-group-bg: #303030 !default;
 $list-group-color: $gray-900 !default;
 $list-group-hover-bg: #404040 !default;
 $list-group-action-hover-color: $gray-900 !default;
+
 $input-bg: map-get($theme-colors, secondary) !default;
 $input-color: $gray-900 !default;
 $input-border-color: #5B5B5B;
+
 $nav-tabs-link-active-color: $gray-900 !default;
 $nav-tabs-border-color: map-get($theme-colors, dark) !default;
 $nav-tabs-link-active-border-color: map-get($theme-colors, dark) map-get($theme-colors, dark) $body-bg !default;
 $nav-tabs-link-hover-border-color: map-get($theme-colors, dark) !default;
+
 $dropdown-bg: map-get($theme-colors, secondary) !default;
 $dropdown-color: $gray-900 !default;
+
 $pagination-bg: map-get($theme-colors, secondary) !default;
 $pagination-color: $gray-900 !default;
+$pagination-border-color: map-get($theme-colors, dark) !default;
+$pagination-hover-bg: $titra-dark !default;
+$pagination-hover-color: $gray-900 !default;
+$pagination-hover-border-color: map-get($theme-colors, dark) !default;
+$pagination-active-bg: map-get($theme-colors, primary) !default;
+$pagination-disabled-border-color: map-get($theme-colors, dark) !default;
 $pagination-disabled-bg: #303030 !default;
+
 $popover-bg: map-get($theme-colors, secondary);
 $modal-content-bg: map-get($theme-colors, secondary);
 
+
+//++++ [custom] ++++
+.btn-secondary:hover {
+    color: $gray-900 !important;
+    background-color: $titra-dark !important;
+    border-color: map-get($theme-colors, dark) !important;
+}
+.page-link:focus {
+    z-index: 0;
+    outline: 0;
+    box-shadow: none !important;
+}   
 .tab-borders {
+  background-color: #303030 !important;
   border-left: 1px solid map-get($theme-colors, dark);
   border-right: 1px solid map-get($theme-colors, dark);
   border-bottom: 1px solid map-get($theme-colors, dark);
+}
+.tab-content {
+    background-color: #303030 !important;
 }
 .custom-select {
   background: map-get($theme-colors, secondary) !important;
@@ -56,8 +91,38 @@ $modal-content-bg: map-get($theme-colors, secondary);
     border-color: #5B5B5B !important;
 }
 .drag.card:hover {
-    background-color: $gray-900 !important;
-    color: $body-bg !important;
+    background-color: #2b2b2b !important;   
+}
+.drag.card {
+    background-color: #404044 !important;   
+}
+.alert-secondary {
+    color: #a0a0a0 !important;
+    background-color: #2b2b2b !important;
+    border-color: #353535 !important;
+}
+.fc-button-primary {
+    color: #eee !important;
+    background-color: map-get($theme-colors, secondary) !important;
+    border-color: map-get($theme-colors, dark) !important;
+} 
+.fc-button-primary:hover {
+    color: #eee !important;
+    background-color: $titra-dark !important;
+    border-color: map-get($theme-colors, dark) !important;
+}
+.close {
+    color: #c1c1c1 !important;
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: #f0f0f0 !important ;
+    background-color: #404040 !important;
+    border-color:#455A64 #455A64 $titra-dark !important;
+}
+.nav-tabs .nav-link:hover {
+    color: #f0f0f0 !important ;
+    background-color: #303030 !important;
+    border-color: #455A64 #455A64 $titra-dark !important;
 }
 .datatable {
     --dt-border-color: #424242;
