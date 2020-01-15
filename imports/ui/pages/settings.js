@@ -8,6 +8,14 @@ import Pickr from '@simonwep/pickr/dist/pickr.min'
 import './settings.html'
 import '../components/backbutton.js'
 
+// Shortcuts - check https://keycode.info/ for keycodes
+document.onkeyup = (e) => {
+  if (e.which === 83 && e.ctrlKey && e.shiftKey) {
+    $('.js-save').click()
+    // location.reload()
+  }
+}
+
 Template.settings.helpers({
   name: () => (Meteor.user() ? Meteor.user().profile.name : false),
   unit() {
@@ -60,11 +68,12 @@ Template.settings.helpers({
   titraAPItoken: () => (Meteor.user() ? Meteor.user().profile.APItoken : false),
   dailyStartTime: () => (Meteor.user() ? Meteor.user().profile.dailyStartTime : '09:00'),
   breakStartTime: () => (Meteor.user() ? Meteor.user().profile.breakStartTime : '12:00'),
-  breakDuration: () => (Meteor.user() ? Meteor.user().profile.breakDuration : 0.5),
+  breakDuration: () => (Meteor.user() ? Meteor.user().profile.breakDuration : 1),
   regularWorkingTime: () => (Meteor.user() ? Meteor.user().profile.regularWorkingTime : 8),
   avatarColor: () => (Meteor.user() && Meteor.user().profile.avatarColor
     ? Meteor.user().profile.avatarColor : Template.instance().selectedAvatarColor.get()),
 })
+
 
 Template.settings.events({
   'click .js-save': (event, templateInstance) => {
@@ -88,7 +97,8 @@ Template.settings.events({
       regularWorkingTime: templateInstance.$('#regularWorkingTime').val(),
       avatar: templateInstance.$('#avatarData').val(),
       avatarColor: templateInstance.$('#avatarColor').val(),
-    }, (error) => {
+    },
+    (error) => {
       if (error) {
         $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
       } else {
@@ -98,7 +108,9 @@ Template.settings.events({
     })
   },
   'change #timeunit': (event, templateInstance) => {
-    Template.instance().displayHoursToDays.set(templateInstance.$('#timeunit').val() === 'd')
+    Template.instance().displayHoursToDays.set(
+      templateInstance.$('#timeunit').val() === 'd',
+    )
   },
   'click .js-logout': (event) => {
     event.preventDefault()
@@ -126,7 +138,9 @@ Template.settings.events({
           if (resizeCanvas) {
             resizeCanvas.width = image.width * ratio
             resizeCanvas.height = image.height * ratio
-            resizeCanvas.getContext('2d').drawImage(image, 0, 0, resizeCanvas.width, resizeCanvas.height)
+            resizeCanvas
+              .getContext('2d')
+              .drawImage(image, 0, 0, resizeCanvas.width, resizeCanvas.height)
             const dataURL = resizeCanvas.toDataURL('image/png')
             templateInstance.$('#imagePreview img').attr('src', dataURL)
             templateInstance.$('#avatarData').val(dataURL)
@@ -164,7 +178,7 @@ Template.settings.onRendered(function settingsRendered() {
     $.getJSON('https://api.github.com/repos/kromitgmbh/titra/tags', (data) => {
       const tag = data[2]
       $.getJSON(tag.commit.url, (commitData) => {
-        $('#titra-changelog').html(`Version <a href="https://github.com/kromitgmbh/titra/tags" target="_blank">${tag.name}</a> (${moment(commitData.commit.committer.date).format('DD.MM.YYYY')}) :<br/>${commitData.commit.message.replace(/(:.*:)/g, replacer)}`)
+        $('#titra-changelog').html(`Version <a href='https://github.com/kromitgmbh/titra/tags' target='_blank'>${tag.name}</a> (${moment(commitData.commit.committer.date).format('DD.MM.YYYY')}) :<br/>${commitData.commit.message.replace(/(:.*:)/g, replacer)}`)
       })
     }).fail(() => {
       $('#titra-changelog').html(i18next.t('settings.titra_changelog_error'))

@@ -8,6 +8,13 @@ import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
 
+// Shortcuts - check https://keycode.info/ for keycodes
+document.onkeyup = (e) => {
+  if (e.which === 83 && e.ctrlKey && e.shiftKey) {
+    $('#save').click()
+  }
+}
+
 function validateWekanUrl() {
   const templateInstance = Template.instance()
   const wekanUrl = templateInstance.$('#wekanurl').val()
