@@ -4,6 +4,7 @@ import isDarkMode from 'is-dark'
 import i18next from 'i18next'
 import * as bs4notify from 'bootstrap4-notify'
 import Projects from '../../api/projects/projects.js'
+import { timeInUserUnit } from '../../utils/frontend_helpers.js'
 
 $.notifyDefaults({
   type: 'success',
@@ -143,18 +144,7 @@ Template.registerHelper('timetrackview', () => {
   return false
 })
 Template.registerHelper('timeInUserUnit', (time) => {
-  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-    if (Meteor.user().profile.timeunit === 'd') {
-      const convertedTime = Number(time / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
-      return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
-    }
-    if (time) {
-      return Number(time).toFixed(precision)
-    }
-  }
-  return false
+  return timeInUserUnit(time)
 })
 Template.registerHelper('projectColor', (_id) => {
   if (Projects.findOne({ _id })) {

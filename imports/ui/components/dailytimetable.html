@@ -1,6 +1,14 @@
 <template name ="dailytimetable">
-  <div class="btn-group mt-2 mb-0">
-    <button class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> CSV</button>
+  <div class="row">
+    <div class="col-lg-3 col-sm-6">
+      <div class="btn-group">
+        <button class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> CSV</button>
+        <button class="btn btn-secondary border js-export-xlsx"><i class="fa fa-download"></i> Excel</button>
+      </div>
+    </div>
+    <div class="offset-lg-6 col-lg-3 col-sm-6">
+      {{>limitpicker}}
+    </div>
   </div>
   <div id="datatable-container" class="mt-3 mb-3"></div>
   {{#if dailyTimecards}}

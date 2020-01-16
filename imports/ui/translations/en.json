@@ -199,6 +199,7 @@
     "time_entry_deleted": "Time entry deleted",
     "time_entry_updated": "Time entry updated",
     "time_entry_saved": "Time entry saved",
+    "delete_confirm": "Deletion cannot be undone, do you want to proceed?",
     "project_update_success": "Project updated",
     "project_create_success": "Project created",
     "project_delete_success": "Project deleted",

@@ -1,16 +1,10 @@
 import moment from 'moment'
 import i18next from 'i18next'
-import { Mongo } from 'meteor/mongo'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './weektable.html'
 import './tasksearch'
 import Projects from '../../api/projects/projects'
-
-function getWeekDays(date) {
-  const calendar = date.clone().startOf('week')
-  return new Array(7).fill(0).map(() => (calendar.add(1, 'day').format('ddd, DD.MM')))
-}
-const clientTimecards = new Mongo.Collection('clientTimecards')
+import { clientTimecards, getWeekDays, timeInUserUnit } from '../../utils/frontend_helpers'
 
 Template.weektable.onCreated(function weekTableCreated() {
   this.subscribe('myprojects')
@@ -36,6 +30,22 @@ Template.weektable.helpers({
   },
   startDate() { return Template.instance().startDate },
   endDate() { return Template.instance().endDate },
+  getTotalForDay(day) {
+    let total = 0
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
+      clientTimecards.find().fetch().forEach((element) => {
+        if (element.entries) {
+          total += element.entries.filter((entry) => moment(entry.date).format('ddd, DD.MM') === day)
+            .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
+        }
+      })
+      return total !== 0 ? timeInUserUnit(total) : false
+    }
+    return false
+  },
+  hasData() {
+    return clientTimecards.find().fetch().length > 0
+  },
 })
 
 Template.weektable.events({
@@ -119,21 +129,14 @@ Template.weektablerow.helpers({
           },
         },
       },
-    ).fetch().concat(Template.instance().tempTimeEntries.get())
+    ).fetch().map((entry) => ({ _id: entry._id.split('|')[1], entries: entry.entries })).concat(Template.instance().tempTimeEntries.get())
   },
   getHoursForDay(day, task) {
     if (task.entries) {
       const entryForDay = task.entries
-        .find((entry) => moment(entry.date).format('ddd, DD.MM') === day)
-      if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && entryForDay) {
-        const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-        if (Meteor.user().profile.timeunit === 'd') {
-          const convertedTime = Number(entryForDay.hours / (Meteor.user().profile.hoursToDays
-            ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
-          return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
-        }
-        return Number(entryForDay.hours).toFixed(precision)
-      }
+        .filter((entry) => moment(entry.date).format('ddd, DD.MM') === day)
+        .reduce(((total, element) => total + element.hours), 0)
+      return entryForDay !== 0 ? timeInUserUnit(entryForDay) : ''
     }
     return ''
   },
@@ -142,13 +145,7 @@ Template.weektablerow.helpers({
       if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
         const total = task.entries
           .reduce((tempTotal, amount) => tempTotal + Number(amount.hours), 0)
-        const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-        if (Meteor.user().profile.timeunit === 'd') {
-          const convertedTotal = Number(total / (Meteor.user().profile.hoursToDays
-            ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
-          return convertedTotal !== Number(0).toFixed(precision) ? convertedTotal : undefined
-        }
-        return Number(total).toFixed(precision)
+        return total !== 0 ? timeInUserUnit(total) : ''
       }
     }
     return ''
@@ -172,13 +169,7 @@ Template.weektablerow.helpers({
             .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
         }
       })
-      const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-      if (Meteor.user().profile.timeunit === 'd') {
-        const convertedTotal = Number(total / (Meteor.user().profile.hoursToDays
-          ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
-        return convertedTotal !== Number(0).toFixed(precision) ? convertedTotal : undefined
-      }
-      return Number(total).toFixed(precision)
+      return total !== 0 ? timeInUserUnit(total) : false
     }
     return false
   },

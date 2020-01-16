@@ -50,7 +50,7 @@ FlowRouter.route('/edit/timecard/:tcid', {
 })
 FlowRouter.route('/list/projects', {
   waitOn() {
-    return [import('../../api/timecards/tabular.js'), import('../../ui/pages/projectlist.js')]
+    return import('../../ui/pages/projectlist.js')
   },
   action() {
     document.title = 'titra - overview'
@@ -80,7 +80,7 @@ FlowRouter.route('/create/project/', {
 })
 FlowRouter.route('/list/timecards/:projectId', {
   waitOn() {
-    return [import('../../ui/components/tablecell.js'), import('../../ui/pages/timecardlist.js')]
+    return import('../../ui/pages/timecardlist.js')
   },
   action() {
     document.title = 'titra - details'

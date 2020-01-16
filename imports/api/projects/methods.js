@@ -5,7 +5,7 @@ import Projects from './projects.js'
 import { checkAuthentication } from '../../utils/server_method_helpers.js'
 import { addNotification } from '../notifications/notifications.js'
 
-const replacer = match => emoji.emojify(match)
+const replacer = (match) => emoji.emojify(match)
 
 Meteor.methods({
   getAllProjectStats() {
@@ -13,7 +13,7 @@ Meteor.methods({
     const projectList = Projects.find(
       { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
-    ).fetch().map(value => value._id)
+    ).fetch().map((value) => value._id)
     let totalHours = 0
     let currentMonthHours = 0
     let previousMonthHours = 0
@@ -112,7 +112,7 @@ Meteor.methods({
     const projectList = Projects.find(
       { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
-    ).fetch().map(value => value._id)
+    ).fetch().map((value) => value._id)
     const rawCollection = Timecards.rawCollection()
     // const aggregate = Meteor.wrapAsync(rawCollection.aggregate, rawCollection)
     if (projectId === 'all') {
@@ -129,7 +129,7 @@ Meteor.methods({
     }
     const targetProject = Projects.findOne({ _id: projectId })
     if (!targetProject || targetProject.userId !== this.userId) {
-      throw new Meteor.Error(getMessageInUserLangauge(this.userId, 'notifications.only_owner_can_add_team_members'))
+      throw new Meteor.Error('notifications.only_owner_can_add_team_members')
     }
     const targetUser = Meteor.users.findOne({ 'emails.0.address': eMail })
     if (targetUser) {

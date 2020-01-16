@@ -3,9 +3,11 @@ import DataTable from 'frappe-datatable'
 import { saveAs } from 'file-saver'
 import 'frappe-datatable/dist/frappe-datatable.css'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import { NullXlsx } from '@neovici/nullxlsx'
 import i18nextReady from '../../startup/client/startup.js'
 import './periodtimetable.html'
 import './pagination.js'
+import './limitpicker.js'
 
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
   this.periodTimecards = new ReactiveVar([])
@@ -79,6 +81,14 @@ Template.periodtimetable.events({
       csvArray.push(`${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_total_time_${templateInstance.data.period.get()}.csv`)
+  },
+  'click .js-export-xlsx': (event, templateInstance) => {
+    event.preventDefault()
+    const data = [[i18next.t('globals.project'), i18next.t('globals.resource'), Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')]]
+    for (const timeEntry of templateInstance.periodTimecards.get()) {
+      data.push([timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
+    }
+    saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'total time').createDownloadUrl(), `titra_total_time_${templateInstance.data.period.get()}.xlsx`)
   },
 })
 Template.periodtimetable.onDestroyed(() => {

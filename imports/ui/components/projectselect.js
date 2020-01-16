@@ -38,6 +38,7 @@ Template.projectselect.helpers({
 
 Template.projectselect.events({
   'change #targetProject': (event, templateInstance) => {
+    templateInstance.$(event.currentTarget).removeClass('is-invalid')
     templateInstance.selectedId.set($(event.currentTarget).val())
     FlowRouter.setParams({ projectId: $(event.currentTarget).val() })
     if ($('.js-tasksearch-input')) {

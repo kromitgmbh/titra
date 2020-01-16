@@ -1,24 +1,13 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import JSZip from 'jszip'
-import i18next from 'i18next'
-import dataTableButtons from 'datatables.net-buttons-bs4'
-import html5ExportButtons from 'datatables.net-buttons/js/buttons.html5.js'
-import dataTablesBootstrap from '../components/dataTables.bootstrap4.js'
-import Projects from '../../api/projects/projects.js'
-import { periodToDates } from '../../utils/periodHelpers.js'
-import i18nextReady from '../../startup/client/startup.js'
-import '../components/dataTables.bootstrap4.scss'
 import './timecardlist.html'
-import '../../api/timecards/tabular.js'
 import '../components/periodpicker.js'
 import '../components/resourceselect.js'
-import '../components/tablecell.js'
 import '../components/customerselect.js'
 import '../components/projectselect.js'
 import '../components/dailytimetable.js'
 import '../components/periodtimetable.js'
 import '../components/workingtimetable.js'
-import '../components/limitpicker.js'
+import '../components/detailtimetable'
 import '../components/weektable.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {
@@ -33,10 +22,6 @@ Template.timecardlist.onCreated(function createTimeCardList() {
       $(`#${this.activeTab.get()}`).tab('show')
     }
   })
-  window.JSZip = JSZip
-  dataTablesBootstrap(window, $)
-  dataTableButtons(window, $)
-  html5ExportButtons(window, $)
 })
 Template.timecardlist.onRendered(() => {
   const templateInstance = Template.instance()
@@ -74,65 +59,9 @@ Template.timecardlist.onRendered(() => {
     } else {
       templateInstance.limit.set(25)
     }
-    if (i18nextReady.get()) {
-      const language = {
-        sEmptyTable: i18next.t('tabular.sEmptyTable'),
-        sInfo: i18next.t('tabular.sInfo'),
-        sInfoEmpty: i18next.t('tabular.sInfoEmpty'),
-        sInfoFiltered: i18next.t('tabular.sInfoFiltered'),
-        sInfoPostFix: i18next.t('tabular.sInfoPostFix'),
-        sInfoThousands: i18next.t('tabular.sInfoThousands'),
-        sLengthMenu: i18next.t('tabular.sLengthMenu'),
-        sLoadingRecords: i18next.t('tabular.sLoadingRecords'),
-        sProcessing: i18next.t('tabular.sProcessing'),
-        sSearch: i18next.t('tabular.sSearch'),
-        sZeroRecords: i18next.t('tabular.sZeroRecords'),
-        oPaginate: {
-          sFirst: i18next.t('tabular.oPaginate.sFirst'),
-          sLast: i18next.t('tabular.oPaginate.sLast'),
-          sNext: i18next.t('tabular.oPaginate.sNext'),
-          sPrevious: i18next.t('tabular.oPaginate.sPrevious'),
-        },
-        oAria: {
-          sSortAscending: i18next.t('tabular.oAria.sSortAscending'),
-          sSortDescending: i18next.t('tabular.oAria.sSortDescending'),
-        },
-      }
-      $.extend(true, $.fn.dataTable.defaults, { language })
-    }
   })
 })
-// at least free up the window assignment when this template instance is removed from DOM
-Template.timecardlist.onDestroyed(() => {
-  delete window.JSZip
-})
 Template.timecardlist.helpers({
-  selector() {
-    const returnSelector = {}
-    if (Template.instance().resource.get() !== 'all') {
-      returnSelector.userId = Template.instance().resource.get()
-    }
-    if (Template.instance().project.get() !== 'all') {
-      returnSelector.projectId = Template.instance().project.get()
-    } else if (Template.instance().customer.get() !== 'all') {
-      const projectList = Projects.find(
-        {
-          customer: Template.instance().customer.get(),
-          $or: [{ userId: Meteor.userId() }, { public: true }, { team: Meteor.userId() }],
-        },
-        { $fields: { _id: 1 } },
-      ).fetch().map((value) => value._id)
-      returnSelector.projectId = { $in: projectList }
-    }
-    if (Template.instance().period.get() !== 'all') {
-      let { startDate, endDate } = periodToDates('all')
-      if (Template.instance().period.get()) {
-        ({ startDate, endDate } = periodToDates(Template.instance().period.get()))
-      }
-      returnSelector.date = { $gte: startDate, $lte: endDate }
-    }
-    return returnSelector
-  },
   project() {
     return Template.instance().project
   },
