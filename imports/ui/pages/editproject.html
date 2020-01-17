@@ -1,19 +1,27 @@
 <template name="editproject">
-  <h5 class="text-center">{{#if newProject}}{{t "navigation.new_project"}}{{else}}{{t "navigation.edit"}}{{/if}}</h5>
   <form id="editProjectForm">
-    <div class="form-group">
-      <label for="name"><strong>{{t "globals.name"}}</strong></label>
-      <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="{{t 'project.my_project_placeholder'}}" />
-    </div>
-    <!-- <div class="form-group">
+    <div class="card form-group">
+      <div class="card-header">{{#if newProject}}{{t "navigation.new_project"}}{{else}}{{t "navigation.edit"}}:{{/if}}
+        <label for="placeholder">{{name}}</label>
+      </div>
+        <div class="card-block">
+          <label for="name"><strong>{{t "globals.prj_name"}}</strong></label>
+          <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="{{t 'project.my_project_placeholder'}}" />
+      </div>
+    
+    <!-- <div class="card form-group">
       <label for="desc"><strong>Description</strong></label>
       <textarea name="desc" id="desc" type="text" value="{{desc}}" class="form-control" placeholder="Describe your project here ..."></textarea>
     </div> -->
-    <div class="form-group">
+  
+    <div class="card-block">
       <label for="desc"><strong>{{t "globals.description"}}</strong></label>
-      <div id="richDesc"></div>
+      <div id="richDesc">
+      </div>
     </div>
-    <div class="form-group">
+  
+  
+    <div class="card-block">
       <label for="color"><strong>{{t "globals.color"}}</strong></label>
       <div class="input-group" id="colpick">
         <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
@@ -22,20 +30,21 @@
         </div>
       </div>
     </div>
-    <div class="form-group">
+
+    <div class="card-block">
       <label for="customer"><strong>{{t "globals.customer"}}</strong></label>
       <input name="customer" id="customer" type="text" value={{customer}} class="form-control" placeholder="{{t 'project.customer_placeholder'}}"/>
     </div>
-    <div class="form-group">
+    <div class="card-block">
       <label for="rate"><strong>{{t "project.rate"}} ({{unit}}/h)</strong></label>
       <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100" />
     </div>
-    <div class="form-group">
+    <div class="card-block">
       <label for="target"><strong>{{t "project.target"}} ({{timeunit}})</strong></label>
       <input name="target" id="target" type="number" value="{{timeInUserUnit (target)}}" class="form-control" placeholder="1000" />
     </div>
     {{#if currentUser.profile.enableWekan}}
-    <div class="form-group">
+    <div class="card-block">
       <label for="wekanurl"><strong>Wekan integration</strong></label>
       <div class="input-group" id="colpick">
         <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://wekan.url/api/boards/abcdefg.../export?authToken=abcdefg..." />
@@ -46,7 +55,7 @@
       <small class="form-text text-muted">{{t "project.wekan_help"}} <a href="https://github.com/faburem/titra/wiki/Wekan-integration" target="_blank">wiki</a>.</small>
     </div>
     {{#if wekanLists}}
-      <div class="form-group">
+      <div class="card-block">
         <small class="form-text text-muted">{{t "project.wekan_list"}}</small>
           {{#each listItem in wekanLists}}
             <div class="form-check form-check-inline">
@@ -59,7 +68,8 @@
       </div>
     {{/if}}
     {{/if}} {{#unless newProject}}
-    <div class="form-group">
+  <!-- <div class="card form-group"> -->
+      <div class="card-block">
       <label><strong>{{t "project.access_rights"}}</strong></label>
       <br/> {{#unless public}}
       <div class="input-group mb-1">
@@ -83,8 +93,10 @@
       </div>
       {{/unless}}
       <!-- <input name="public" id="public" type="hidden" value={{public}} class="form-control"/> -->
-    </div>
+      </div>
+    <!-- </div> -->
     {{/unless}}
+  </div>
   </form>
   <div class="row text-center">
     <div class="col-3 mr-auto">
@@ -106,7 +118,7 @@
     </div>
     {{/if}} {{/unless}}
     <div class="col-3">
-      <button class="btn btn-primary form-control" id="save">{{t "navigation.save"}}</button>
+      <button class="btn btn-primary form-control js-save" id="save">{{t "navigation.save"}}</button>
     </div>
   </div>
 </template>

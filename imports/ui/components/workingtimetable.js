@@ -1,15 +1,18 @@
 import moment from 'moment'
 import i18next from 'i18next'
-import DataTable from 'frappe-datatable'
 import 'frappe-datatable/dist/frappe-datatable.css'
+import DataTable from 'frappe-datatable'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import { NullXlsx } from '@neovici/nullxlsx'
 import i18nextReady from '../../startup/client/startup.js'
+import { addToolTipToTableCell } from '../../utils/frontend_helpers'
 import './workingtimetable.html'
 import './pagination.js'
+import './limitpicker.js'
 
 Template.workingtimetable.onCreated(function workingtimetableCreated() {
-  this.workingTimeEntries = new ReactiveVar([])
+  this.workingTimeEntries = new ReactiveVar()
   this.totalWorkingTimeEntries = new ReactiveVar()
 
   Tracker.autorun(() => {
@@ -43,8 +46,9 @@ Template.workingtimetable.onRendered(() => {
           name: i18next.t('globals.date'),
           editable: false,
           compareValue: (cell, keyword) => [moment(cell, 'DD.MM.YYYY').toDate(), moment(keyword, 'DD.MM.YYYY').toDate()],
+          format: addToolTipToTableCell,
         },
-        { name: i18next.t('globals.resource'), editable: false },
+        { name: i18next.t('globals.resource'), editable: false, format: addToolTipToTableCell },
         { name: i18next.t('details.startTime'), editable: false },
         { name: i18next.t('details.breakStartTime'), editable: false },
         { name: i18next.t('details.breakEndTime'), editable: false },
@@ -52,18 +56,23 @@ Template.workingtimetable.onRendered(() => {
         { name: i18next.t('details.totalTime'), editable: false },
         { name: i18next.t('details.regularWorkingTime'), editable: false },
         { name: i18next.t('details.regularWorkingTimeDifference'), editable: false }]
-      Template.instance().datatable = new DataTable('#datatable-container', {
-        columns,
-        serialNoColumn: false,
-        clusterize: false,
-        layout: 'ratio',
-        showTotalRow: true,
-        noDataMessage: i18next.t('tabular.sZeroRecords'),
-      })
-      Template.instance().datatable
-        .refresh(Template.instance().workingTimeEntries.get()
-          .map((entry) => Object.entries(entry)
-            .map((key) => { if (key[1] instanceof Date) { return moment(key[1]).format('DD.MM.YYYY') } return key[1] })), columns)
+      if (!Template.instance().datatable) {
+        Template.instance().datatable = new DataTable('#datatable-container', {
+          columns,
+          serialNoColumn: false,
+          clusterize: false,
+          layout: 'fluid',
+          showTotalRow: true,
+          noDataMessage: i18next.t('tabular.sZeroRecords'),
+        })
+      }
+      if (Template.instance().workingTimeEntries.get() && window.BootstrapLoaded.get()) {
+        Template.instance().datatable
+          .refresh(Template.instance().workingTimeEntries.get()
+            .map((entry) => Object.entries(entry)
+              .map((key) => { if (key[1] instanceof Date) { return moment(key[1]).format('DD.MM.YYYY') } return key[1] })), columns)
+        $('[data-toggle="tooltip"]').tooltip()
+      }
     }
   })
 })
@@ -98,6 +107,14 @@ Template.workingtimetable.events({
       csvArray.push(`${moment(timeEntry.date).format('ddd DD.MM.YYYY')},${timeEntry.resource},${timeEntry.startTime},${timeEntry.breakStartTime},${timeEntry.breakEndTime},${timeEntry.endTime},${timeEntry.totalTime},${timeEntry.regularWorkingTime},${timeEntry.regularWorkingTimeDifference}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_working_time_${templateInstance.data.period.get()}.csv`)
+  },
+  'click .js-export-xlsx': (event, templateInstance) => {
+    event.preventDefault()
+    const data = [[i18next.t('globals.date'), i18next.t('globals.resource'), i18next.t('details.startTime'), i18next.t('details.breakStartTime'), i18next.t('details.breakEndTime'), i18next.t('details.endTime'), i18next.t('details.totalTime'), i18next.t('details.regularWorkingTime'), i18next.t('details.regularWorkingTimeDifference')]]
+    for (const timeEntry of templateInstance.workingTimeEntries.get()) {
+      data.push([moment(timeEntry.date).format('ddd DD.MM.YYYY'), timeEntry.resource, timeEntry.startTime, timeEntry.breakStartTime, timeEntry.breakEndTime, timeEntry.endTime, timeEntry.totalTime, timeEntry.regularWorkingTime, timeEntry.regularWorkingTimeDifference])
+    }
+    saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'working time').createDownloadUrl(), `titra_working_time_${templateInstance.data.period.get()}.xlsx`)
   },
 })
 Template.workingtimetable.onDestroyed(() => {

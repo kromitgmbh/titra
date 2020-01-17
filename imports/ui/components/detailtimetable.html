@@ -1,0 +1,30 @@
+<template name="detailtimetable">
+    <div class="row">
+        <div class="col-xl-6 mt-2">
+            <div class="btn-group">
+                <button class="btn btn-secondary border js-track-time"> <i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></button>
+                <button class="btn btn-secondary border js-export-xlsx"><i class="fa fa-download"></i> Excel</button>
+                <button class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> CSV</button>
+                <button class="btn btn-secondary border js-share"><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
+                <button class="btn btn-secondary border js-invoice"><i class="fa fa-upload"></i> <span class="d-none d-md-inline">{{t "navigation.invoice"}}</span></button>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-5 mt-2">
+            {{>limitpicker}}
+        </div>
+        <div class="col-xl-3 col-md-7 mt-2">
+            <div class="input-group">
+                <input type="search" class="js-search form-control float-right" placeholder='{{t "details.search"}}'/>
+                <div class="input-group-append">
+                    <button class="btn btn-secondary border"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="datatable-container" class="my-3"></div>
+    {{#if detailTimeEntries}}
+        {{>pagination totalEntries=totalDetailTimeEntries limit=limit}}
+    {{else}}
+        <h5 class="text-center">{{t "tabular.sZeroRecords"}}</h5>
+    {{/if}}
+</template>

@@ -5,10 +5,11 @@ import { periodToDates } from './periodHelpers.js'
 
 function getProjectListById(projectId) {
   let projectList = []
+  const userId = Meteor.userId()
   if (projectId === 'all') {
     projectList = Projects.find(
       {
-        $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+        $or: [{ userId }, { public: true }, { team: userId }],
       },
       { $fields: { _id: 1 } },
     ).fetch().map((value) => value._id)
@@ -24,17 +25,19 @@ function checkAuthentication(context) {
 }
 function getProjectListByCustomer(customer) {
   let projects = []
+  const userId = Meteor.userId()
+
   if (customer === 'all') {
     projects = Projects.find(
       {
-        $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+        $or: [{ userId }, { public: true }, { team: userId }],
       },
       { _id: 1, name: 1 },
     )
   } else {
     projects = Projects.find(
       {
-        customer, $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+        customer, $or: [{ userId }, { public: true }, { team: userId }],
       },
       { _id: 1, name: 1 },
     )
@@ -292,6 +295,76 @@ function workingTimeEntriesMapper(entry) {
     regularWorkingTimeDifference: entry.totalTime - userRegularWorkingTime,
   }
 }
+
+function buildDetailedTimeEntriesForPeriodSelector({
+  projectId, search, customer, period, userId, limit, page, sort,
+}) {
+  const detailedTimeArray = []
+  let projectList = getProjectListById(projectId)
+  if (customer !== 'all') {
+    projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
+  }
+  const query = { projectId: { $in: projectList } }
+  if (search) {
+    query.task = { $regex: `.*${search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' }
+  }
+  const options = { sort: {} }
+  if (limit) {
+    options.limit = limit
+  }
+  if (sort) {
+    let field
+    let order
+    switch (sort.column) {
+      case 0:
+        field = 'projectId'
+        break
+      case 1:
+        field = 'date'
+        break
+      case 2:
+        field = 'task'
+        break
+      case 3:
+        field = 'userId'
+        break
+      case 4:
+        field = 'hours'
+        break
+      default:
+        field = 'date'
+    }
+    switch (sort.order) {
+      case 'asc':
+        order = 1
+        break
+      case 'desc':
+        order = -1
+        break
+      default:
+        order = -1
+        break
+    }
+    options.sort[field] = order
+  } else {
+    options.sort = { date: -1 }
+  }
+
+  if (page) {
+    options.skip = (page - 1) * limit
+  }
+  if (period !== 'all') {
+    const { startDate, endDate } = periodToDates(period)
+    query.date = { $gte: startDate, $lte: endDate }
+    if (userId !== 'all') {
+      query.userId = userId
+    }
+  }
+  detailedTimeArray.push(query)
+  detailedTimeArray.push(options)
+  return detailedTimeArray
+}
+
 export {
   checkAuthentication,
   getProjectListById,
@@ -302,4 +375,5 @@ export {
   buildDailyHoursSelector,
   workingTimeEntriesMapper,
   buildworkingTimeSelector,
+  buildDetailedTimeEntriesForPeriodSelector,
 }

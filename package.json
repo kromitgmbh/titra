@@ -1,24 +1,22 @@
 {
   "name": "titra",
-  "version": "0.8.9",
+  "version": "0.9.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.7.7",
+    "@babel/runtime": "^7.8.3",
     "@fullcalendar/core": "^4.3.1",
     "@fullcalendar/daygrid": "^4.3.0",
     "@fullcalendar/interaction": "^4.3.0",
-    "@simonwep/pickr": "^1.4.8",
+    "@neovici/nullxlsx": "^3.0.2",
+    "@simonwep/pickr": "^1.5.0",
     "bcrypt": "^3.0.7",
     "bootstrap": ">=4.4.1",
     "bootstrap4-notify": "^4.0.3",
     "chart.js": "^2.9.3",
     "content-type": "^1.0.4",
-    "datatables.net": "^1.10.20",
-    "datatables.net-buttons": "^1.6.1",
-    "datatables.net-buttons-bs4": "^1.6.1",
     "docker-names": "^1.1.1",
     "file-saver": "^2.0.2",
     "frappe-datatable": "^1.15.1",
@@ -26,8 +24,7 @@
     "is-dark": "^1.0.4",
     "jquery": "^3.4.1",
     "jquery-serializejson": "^2.9.0",
-    "jszip": "^3.2.2",
-    "mathjs": "^6.4.0",
+    "mathjs": "^6.5.0",
     "meteor-node-stubs": "^1.0.0",
     "moment": "^2.24.0",
     "namedavatar": "^1.1.0",
@@ -46,7 +43,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^3.2.0",
-    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-meteor": "^6.0.0"
   },
   "apidoc": {

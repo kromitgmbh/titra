@@ -3,9 +3,11 @@ import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { saveAs } from 'file-saver'
 import DataTable from 'frappe-datatable'
+import { NullXlsx } from '@neovici/nullxlsx'
 import 'frappe-datatable/dist/frappe-datatable.css'
 import './dailytimetable.html'
 import './pagination.js'
+import './limitpicker.js'
 import i18nextReady from '../../startup/client/startup.js'
 
 Template.dailytimetable.onCreated(function dailytimetablecreated() {
@@ -82,11 +84,27 @@ Template.dailytimetable.helpers({
 Template.dailytimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
-    const csvArray = [`\uFEFF${i18next.t('globals.date')},${i18next.t('globals.project')},${i18next.t('globals.resource')}\r\n`]
+    let unit = i18next.t('globals.hour_plural')
+    if (Meteor.user()) {
+      unit = Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
+    }
+    const csvArray = [`\uFEFF${i18next.t('globals.date')},${i18next.t('globals.project')},${i18next.t('globals.resource')},${unit}\r\n`]
     for (const timeEntry of templateInstance.dailyTimecards.get()) {
-      csvArray.push(`${moment(timeEntry.date).format('ddd DD.MM.YYYY')},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
+      csvArray.push(`${moment(timeEntry.date).format('DD.MM.YYYY')},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_daily_time_${templateInstance.data.period.get()}.csv`)
+  },
+  'click .js-export-xlsx': (event, templateInstance) => {
+    event.preventDefault()
+    let unit = i18next.t('globals.hour_plural')
+    if (Meteor.user()) {
+      unit = Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
+    }
+    const data = [[i18next.t('globals.date'), i18next.t('globals.project'), i18next.t('globals.resource'), unit]]
+    for (const timeEntry of templateInstance.dailyTimecards.get()) {
+      data.push([moment(timeEntry.date).format('DD.MM.YYYY'), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
+    }
+    saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'daily').createDownloadUrl(), `titra_daily_time_${templateInstance.data.period.get()}.xlsx`)
   },
 })
 Template.dailytimetable.onDestroyed(() => {

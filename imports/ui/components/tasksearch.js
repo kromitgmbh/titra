@@ -12,6 +12,7 @@ Template.tasksearch.events({
     event.preventDefault()
     templateInstance.$('.js-tasksearch-input').val(templateInstance.$(event.currentTarget).children('.js-tasksearch-task-name').text())
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
+    templateInstance.$('.js-tasksearch-input').removeClass('is-invalid')
     if ($('#hours')) {
       $('#hours').focus()
     }
@@ -23,9 +24,6 @@ Template.tasksearch.events({
   'blur .js-tasksearch-input': (event, templateInstance) => {
     if (!event.relatedTarget) {
       templateInstance.$('.js-tasksearch-results').addClass('d-none')
-    }
-    if (!$(event.currentTarget).val()) {
-      templateInstance.$('.js-tasksearch-input').addClass('is-invalid')
     }
   },
   'keyup .js-tasksearch-input': (event, templateInstance) => {

@@ -54,8 +54,29 @@ $pagination-disabled-bg: #303030 !default;
 $popover-bg: map-get($theme-colors, secondary);
 $modal-content-bg: map-get($theme-colors, secondary);
 
+$font-weight-base: 200 !default;
 
 //++++ [custom] ++++
+.ql-editor {
+    line-height: 1em;
+    background-color: #444444 !important;
+    border: 1px solid #5e5e5e!important;
+    border-top-left-radius: 0rem;
+    border-top-right-radius: 0rem;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    font-size: 1rem !important;
+}
+.ql-toolbar.ql-snow {
+    // border: 1px solid #a2a2a2!important;
+    // background-color: #9b9b9b !important;
+    border: 1px solid#5e5e5e !important;
+    background-color:rgb(41, 41, 41) !important;
+}
+.ql-container.ql-snow {
+    border: #444444 !important;
+    background-color: #455A64 !important;
+}
 .btn-secondary:hover {
     color: $gray-900 !important;
     background-color: $titra-dark !important;
@@ -123,6 +144,9 @@ $modal-content-bg: map-get($theme-colors, secondary);
     color: #f0f0f0 !important ;
     background-color: #303030 !important;
     border-color: #455A64 #455A64 $titra-dark !important;
+}
+.card-block .list-group-item {
+    background-color: #1fc98227 !important;
 }
 .datatable {
     --dt-border-color: #424242;

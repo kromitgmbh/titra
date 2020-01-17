@@ -4,6 +4,7 @@ import isDarkMode from 'is-dark'
 import i18next from 'i18next'
 import * as bs4notify from 'bootstrap4-notify'
 import Projects from '../../api/projects/projects.js'
+import { timeInUserUnit } from '../../utils/frontend_helpers.js'
 
 $.notifyDefaults({
   type: 'success',
@@ -108,6 +109,26 @@ Meteor.startup(() => {
       loadLanguage(language)
     }
   })
+  // Global keyboard Shortcuts - check https://keycode.info/ for keycodes
+  document.onkeyup = (e) => {
+    if (e.which === 83 && e.ctrlKey && e.shiftKey) {
+      if (document.querySelector('.js-save')) {
+        document.querySelector('.js-save').click()
+      }
+    } else if (e.which === 68 && e.ctrlKey && e.shiftKey) {
+      if (document.querySelector('.js-day')) {
+        document.querySelector('.js-day').click()
+      }
+    } else if (e.which === 87 && e.ctrlKey && e.shiftKey) {
+      if (document.querySelector('.js-week')) {
+        document.querySelector('.js-week').click()
+      }
+    } else if (e.which === 77 && e.ctrlKey && e.shiftKey) {
+      if (document.querySelector('.js-month')) {
+        document.querySelector('.js-month').click()
+      }
+    }
+  }
 })
 Template.registerHelper('i18nextReady', () => i18nextReady.get())
 Template.registerHelper('unit', () => {
@@ -143,18 +164,7 @@ Template.registerHelper('timetrackview', () => {
   return false
 })
 Template.registerHelper('timeInUserUnit', (time) => {
-  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-    if (Meteor.user().profile.timeunit === 'd') {
-      const convertedTime = Number(time / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
-      return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
-    }
-    if (time) {
-      return Number(time).toFixed(precision)
-    }
-  }
-  return false
+  return timeInUserUnit(time)
 })
 Template.registerHelper('projectColor', (_id) => {
   if (Projects.findOne({ _id })) {

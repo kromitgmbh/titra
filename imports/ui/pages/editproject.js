@@ -111,7 +111,7 @@ Template.editproject.onRendered(() => {
   })
 })
 Template.editproject.events({
-  'click #save': (event, templateInstance) => {
+  'click .js-save': (event, templateInstance) => {
     event.preventDefault()
     if (!templateInstance.$('#name').val()) {
       templateInstance.$('#name').addClass('is-invalid')

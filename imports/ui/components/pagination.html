@@ -1,6 +1,6 @@
 <template name="pagination">
   <nav aria-label="Page navigation" class="pull-right">
-    <ul class="pagination">
+    <ul class="pagination mb-0">
       <li class="page-item {{disabledClass 'previous'}}"><a class="page-link js-previous" href="#">{{t "tabular.oPaginate.sPrevious"}}</a></li>
       {{#if showPagination}}
         {{#each page in getPages}}

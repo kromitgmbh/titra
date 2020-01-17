@@ -14,7 +14,7 @@ Meteor.publish('projectUsers', function projectUsers({ projectId }) {
     const projectList = Projects.find(
       { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
-    ).fetch().map(value => value._id)
+    ).fetch().map((value) => value._id)
     if (Timecards.find({ projectId: { $in: projectList } }).count() <= 0) {
       return this.ready()
     }
@@ -29,10 +29,12 @@ Meteor.publish('projectUsers', function projectUsers({ projectId }) {
           this.added('projectUsers', projectId, { users: Meteor.users.find({ _id: { $in: uniqueUsers } }, { profile: 1 }).fetch() })
         }
       },
-      removed: (_id) => {
+      removed: () => {
         if (!initializing) {
-          userIds.splice(userIds.indexOf(Timecards.findOne(_id).userId), 1)
-          uniqueUsers = [...new Set(userIds)]
+          userIds = []
+          Timecards.find({ projectId: { $in: projectList } }).forEach((timecard) => {
+            userIds.push(timecard.userId)
+          })
           this.changed('projectUsers', projectId, { users: Meteor.users.find({ _id: { $in: uniqueUsers } }, { profile: 1 }).fetch() })
         }
       },

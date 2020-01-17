@@ -77,16 +77,19 @@ Template.tracktime.onCreated(function tracktimeCreated() {
 Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
-    if (!$('#hours').val()) {
-      $.notify({ message: i18next.t('notifications.enter_time') }, { type: 'danger' })
-      return
-    }
-    if (!templateInstance.$('#targetProject').val()) {
+    if (!$('#targetProject').val()) {
+      $('#targetProject').addClass('is-invalid')
       $.notify({ message: i18next.t('notifications.select_project') }, { type: 'danger' })
       return
     }
-    if (!templateInstance.$('.js-tasksearch-input').val()) {
+    if (!$('.js-tasksearch-input').val()) {
+      $('.js-tasksearch-input').addClass('is-invalid')
       $.notify({ message: i18next.t('notifications.enter_task') }, { type: 'danger' })
+      return
+    }
+    if (!$('#hours').val()) {
+      $('#hours').addClass('is-invalid')
+      $.notify({ message: i18next.t('notifications.enter_time') }, { type: 'danger' })
       return
     }
     try {
@@ -113,12 +116,11 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
         } else {
-          templateInstance.$('.js-tasksearch-results').addClass('d-none')
+          $('.js-tasksearch-results').addClass('d-none')
           $.notify(i18next.t('notifications.time_entry_updated'))
           templateInstance.$(event.currentTarget).text(buttonLabel)
           templateInstance.$(event.currentTarget).prop('disabled', false)
-          templateInstance.$('.js-show-timecards').removeClass('d-none')
-          templateInstance.$('[data-toggle="tooltip"]').tooltip()
+          $('[data-toggle="tooltip"]').tooltip()
         }
       })
     } else {
@@ -135,7 +137,7 @@ Template.tracktime.events({
           $.notify(i18next.t('notifications.time_entry_saved'))
           templateInstance.$(event.currentTarget).text(buttonLabel)
           templateInstance.$(event.currentTarget).prop('disabled', false)
-          templateInstance.$('.js-show-timecards').removeClass('d-none')
+          templateInstance.$('.js-show-timecards').slideDown('fast')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
         }
       })
@@ -203,6 +205,9 @@ Template.tracktime.events({
   'click .js-open-calendar': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.tinydatepicker.open()
+  },
+  'focus #hours': (event, templateInstance) => {
+    templateInstance.$('#hours').removeClass('is-invalid')
   },
 })
 Template.tracktime.helpers({

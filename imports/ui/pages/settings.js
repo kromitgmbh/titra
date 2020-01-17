@@ -60,11 +60,12 @@ Template.settings.helpers({
   titraAPItoken: () => (Meteor.user() ? Meteor.user().profile.APItoken : false),
   dailyStartTime: () => (Meteor.user() ? Meteor.user().profile.dailyStartTime : '09:00'),
   breakStartTime: () => (Meteor.user() ? Meteor.user().profile.breakStartTime : '12:00'),
-  breakDuration: () => (Meteor.user() ? Meteor.user().profile.breakDuration : 0.5),
+  breakDuration: () => (Meteor.user() ? Meteor.user().profile.breakDuration : 1),
   regularWorkingTime: () => (Meteor.user() ? Meteor.user().profile.regularWorkingTime : 8),
   avatarColor: () => (Meteor.user() && Meteor.user().profile.avatarColor
     ? Meteor.user().profile.avatarColor : Template.instance().selectedAvatarColor.get()),
 })
+
 
 Template.settings.events({
   'click .js-save': (event, templateInstance) => {
@@ -88,17 +89,20 @@ Template.settings.events({
       regularWorkingTime: templateInstance.$('#regularWorkingTime').val(),
       avatar: templateInstance.$('#avatarData').val(),
       avatarColor: templateInstance.$('#avatarColor').val(),
-    }, (error) => {
+    },
+    (error) => {
       if (error) {
         $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
       } else {
         $.notify(i18next.t('notifications.settings_saved_success'))
-        $('#imagePreview').hide()
+        templateInstance.$('#imagePreview').hide()
       }
     })
   },
   'change #timeunit': (event, templateInstance) => {
-    Template.instance().displayHoursToDays.set(templateInstance.$('#timeunit').val() === 'd')
+    Template.instance().displayHoursToDays.set(
+      templateInstance.$('#timeunit').val() === 'd',
+    )
   },
   'click .js-logout': (event) => {
     event.preventDefault()
@@ -126,7 +130,9 @@ Template.settings.events({
           if (resizeCanvas) {
             resizeCanvas.width = image.width * ratio
             resizeCanvas.height = image.height * ratio
-            resizeCanvas.getContext('2d').drawImage(image, 0, 0, resizeCanvas.width, resizeCanvas.height)
+            resizeCanvas
+              .getContext('2d')
+              .drawImage(image, 0, 0, resizeCanvas.width, resizeCanvas.height)
             const dataURL = resizeCanvas.toDataURL('image/png')
             templateInstance.$('#imagePreview img').attr('src', dataURL)
             templateInstance.$('#avatarData').val(dataURL)
@@ -158,35 +164,36 @@ Template.settings.onCreated(function settingsCreated() {
   })
 })
 Template.settings.onRendered(function settingsRendered() {
+  const templateInstance = Template.instance()
   import('node-emoji').then((emojiImport) => {
     const emoji = emojiImport.default
     const replacer = (match) => emoji.emojify(match)
     $.getJSON('https://api.github.com/repos/kromitgmbh/titra/tags', (data) => {
       const tag = data[2]
       $.getJSON(tag.commit.url, (commitData) => {
-        $('#titra-changelog').html(`Version <a href="https://github.com/kromitgmbh/titra/tags" target="_blank">${tag.name}</a> (${moment(commitData.commit.committer.date).format('DD.MM.YYYY')}) :<br/>${commitData.commit.message.replace(/(:.*:)/g, replacer)}`)
+        templateInstance.$('#titra-changelog').html(`Version <a href='https://github.com/kromitgmbh/titra/tags' target='_blank'>${tag.name}</a> (${moment(commitData.commit.committer.date).format('DD.MM.YYYY')}) :<br/>${commitData.commit.message.replace(/(:.*:)/g, replacer)}`)
       })
     }).fail(() => {
-      $('#titra-changelog').html(i18next.t('settings.titra_changelog_error'))
+      templateInstance.$('#titra-changelog').html(i18next.t('settings.titra_changelog_error'))
     })
   })
-  this.autorun(() => {
+  templateInstance.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
       && Meteor.user().profile && this.subscriptionsReady()) {
-      $('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h')
-      $('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
-      $('#theme').val(Meteor.user().profile.theme ? Meteor.user().profile.theme : 'auto')
-      $('#language').val(Meteor.user().profile.language ? Meteor.user().profile.language : 'auto')
-      $('#dailyStartTime').val(Meteor.user().profile.dailyStartTime ? Meteor.user().profile.dailyStartTime : '09:00')
-      $('#breakStartTime').val(Meteor.user().profile.breakStartTime ? Meteor.user().profile.breakStartTime : '12:00')
-      $('#breakDuration').val(Meteor.user().profile.breakDuration ? Meteor.user().profile.breakDuration : 0.5)
-      $('#regularWorkingTime').val(Meteor.user().profile.regularWorkingTime ? Meteor.user().profile.regularWorkingTime : 8)
-      $('#avatarData').val(Meteor.user().profile.avatar)
-      if (this.pickr) {
-        this.pickr.destroy()
-        delete this.pickr
+      templateInstance.$('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h')
+      templateInstance.$('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
+      templateInstance.$('#theme').val(Meteor.user().profile.theme ? Meteor.user().profile.theme : 'auto')
+      templateInstance.$('#language').val(Meteor.user().profile.language ? Meteor.user().profile.language : 'auto')
+      templateInstance.$('#dailyStartTime').val(Meteor.user().profile.dailyStartTime ? Meteor.user().profile.dailyStartTime : '09:00')
+      templateInstance.$('#breakStartTime').val(Meteor.user().profile.breakStartTime ? Meteor.user().profile.breakStartTime : '12:00')
+      templateInstance.$('#breakDuration').val(Meteor.user().profile.breakDuration ? Meteor.user().profile.breakDuration : 0.5)
+      templateInstance.$('#regularWorkingTime').val(Meteor.user().profile.regularWorkingTime ? Meteor.user().profile.regularWorkingTime : 8)
+      templateInstance.$('#avatarData').val(Meteor.user().profile.avatar)
+      if (templateInstance.pickr) {
+        templateInstance.pickr.destroy()
+        delete templateInstance.pickr
       }
-      if (!Meteor.user().profile.avatar && $('#avatarColorPickr').length) {
+      if (!Meteor.user().profile.avatar && templateInstance.$('#avatarColorPickr').length) {
         const pickrOptions = {
           el: '#avatarColorPickr',
           theme: 'monolith',
@@ -207,16 +214,18 @@ Template.settings.onRendered(function settingsRendered() {
             },
           },
         }
-        this.pickr = Pickr.create(pickrOptions)
-        this.pickr.on('change', (color) => {
-          this.selectedAvatarColor.set(color.toHEXA().toString())
-          $('#avatarColor').val(color.toHEXA().toString())
+        templateInstance.pickr = Pickr.create(pickrOptions)
+        templateInstance.pickr.on('change', (color) => {
+          templateInstance.selectedAvatarColor.set(color.toHEXA().toString())
+          templateInstance.$('#avatarColor').val(color.toHEXA().toString())
         })
       }
     }
   })
 })
 Template.settings.onDestroyed(function settingsDestroyed() {
-  this.pickr.destroy()
-  delete this.pickr
+  if (this.pickr) {
+    this.pickr.destroy()
+    delete this.pickr
+  }
 })
