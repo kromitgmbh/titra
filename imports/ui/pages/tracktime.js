@@ -17,19 +17,6 @@ import '../components/weektable.js'
 import '../components/calendar.js'
 import '../components/backbutton.js'
 
-// Shortcuts - check https://keycode.info/ for keycodes
-document.onkeyup = (e) => {
-  if (e.which === 83 && e.ctrlKey && e.shiftKey) {
-    $('.js-save').click()
-  } else if (e.which === 68 && e.ctrlKey && e.shiftKey) {
-    $('.js-day').click()
-  } else if (e.which === 87 && e.ctrlKey && e.shiftKey) {
-    $('.js-week').click()
-  } else if (e.which === 77 && e.ctrlKey && e.shiftKey) {
-    $('.js-month').click()
-  }
-}
-
 Template.tracktime.onRendered(() => {
   Template.instance().tinydatepicker = TinyDatePicker('#date', {
     format(date) {

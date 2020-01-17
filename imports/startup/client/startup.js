@@ -109,6 +109,26 @@ Meteor.startup(() => {
       loadLanguage(language)
     }
   })
+  // Global keyboard Shortcuts - check https://keycode.info/ for keycodes
+  document.onkeyup = (e) => {
+    if (e.which === 83 && e.ctrlKey && e.shiftKey) {
+      if (document.querySelector('.js-save')) {
+        document.querySelector('.js-save').click()
+      }
+    } else if (e.which === 68 && e.ctrlKey && e.shiftKey) {
+      if (document.querySelector('.js-day')) {
+        document.querySelector('.js-day').click()
+      }
+    } else if (e.which === 87 && e.ctrlKey && e.shiftKey) {
+      if (document.querySelector('.js-week')) {
+        document.querySelector('.js-week').click()
+      }
+    } else if (e.which === 77 && e.ctrlKey && e.shiftKey) {
+      if (document.querySelector('.js-month')) {
+        document.querySelector('.js-month').click()
+      }
+    }
+  }
 })
 Template.registerHelper('i18nextReady', () => i18nextReady.get())
 Template.registerHelper('unit', () => {
