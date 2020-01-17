@@ -3,6 +3,7 @@
     "unit_day_short": "T",
     "unit_hour_short": "S",
     "name": "Name",
+    "prj_name": "Projektname",
     "description": "Beschreibung",
     "day": "Tag",
     "week": "Woche",
