@@ -2,16 +2,14 @@ import moment from 'moment'
 import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { saveAs } from 'file-saver'
-import DataTable from 'frappe-datatable'
 import { NullXlsx } from '@neovici/nullxlsx'
-import 'frappe-datatable/dist/frappe-datatable.css'
 import './dailytimetable.html'
 import './pagination.js'
 import './limitpicker.js'
 import i18nextReady from '../../startup/client/startup.js'
 
 Template.dailytimetable.onCreated(function dailytimetablecreated() {
-  this.dailyTimecards = new ReactiveVar([])
+  this.dailyTimecards = new ReactiveVar()
   this.totalEntries = new ReactiveVar()
   Tracker.autorun(() => {
     if (this.data.project.get()
@@ -39,8 +37,15 @@ Template.dailytimetable.onCreated(function dailytimetablecreated() {
   })
 })
 Template.dailytimetable.onRendered(() => {
-  Template.instance().autorun(() => {
-    if (Template.instance().subscriptionsReady() && i18nextReady.get()) {
+  const templateInstance = Template.instance()
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady() && i18nextReady.get()) {
+      let data = []
+      if (templateInstance.dailyTimecards.get()) {
+        data = templateInstance.dailyTimecards.get()
+          .map((entry) => Object.entries(entry)
+            .map((key) => { if (key[1] instanceof Date) { return moment(key[1]).format('DD.MM.YYYY') } return key[1] }))
+      }
       const columns = [
         {
           name: i18next.t('globals.date'),
@@ -58,18 +63,32 @@ Template.dailytimetable.onRendered(() => {
             ? Meteor.user().profile.precision : 2),
         },
       ]
-      Template.instance().datatable = new DataTable('#datatable-container', {
-        columns,
-        serialNoColumn: false,
-        clusterize: false,
-        layout: 'ratio',
-        showTotalRow: true,
-        noDataMessage: i18next.t('tabular.sZeroRecords'),
-      })
-      Template.instance().datatable
-        .refresh(Template.instance().dailyTimecards.get()
-          .map((entry) => Object.entries(entry)
-            .map((key) => { if (key[1] instanceof Date) { return moment(key[1]).format('DD.MM.YYYY') } return key[1] })), columns)
+      if (!templateInstance.datatable) {
+        import('frappe-datatable/dist/frappe-datatable.css').then(() => {
+          import('frappe-datatable').then((datatable) => {
+            const DataTable = datatable.default
+            templateInstance.datatable = new DataTable('#datatable-container', {
+              columns,
+              serialNoColumn: false,
+              clusterize: false,
+              layout: 'ratio',
+              showTotalRow: true,
+              data,
+              noDataMessage: i18next.t('tabular.sZeroRecords'),
+            })
+          })
+        })
+      }
+      if (templateInstance.datatable && templateInstance.dailyTimecards.get()
+        && window.BootstrapLoaded.get()) {
+        templateInstance.datatable
+          .refresh(data, columns)
+        if (templateInstance.dailyTimecards.get().length === 0) {
+          $('.dt-scrollable').height('auto')
+        } else {
+          $('[data-toggle="tooltip"]').tooltip()
+        }
+      }
     }
   })
 })

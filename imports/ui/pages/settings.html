@@ -119,7 +119,7 @@
         {{#if displayHoursToDays}}
         <div class="form-group">
           <label for="hoursToDays"><strong>{{t "settings.hours_per_day"}}</strong></label>
-          <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" />
+          <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" step="any" />
         </div>
         {{/if}}
         <div class="form-group">
@@ -132,11 +132,11 @@
         </div>
         <div class="form-group">
           <label for="breakDuration"><strong>{{t "settings.break_duration"}}</strong></label>
-          <input type="number" class="form-control" id="breakDuration" value="{{breakDuration}}" />
+          <input type="number" class="form-control" id="breakDuration" value="{{breakDuration}}" step="any" />
         </div>
         <div class="form-group">
           <label for="regularWorkingTime"><strong>{{t "details.regularWorkingTime"}}</strong></label>
-          <input type="number" class="form-control" id="regularWorkingTime" value="{{regularWorkingTime}}" />
+          <input type="number" class="form-control" id="regularWorkingTime" value="{{regularWorkingTime}}" step="any" />
         </div>
       </div>
     </div>

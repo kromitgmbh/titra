@@ -110,6 +110,11 @@ Meteor.methods({
     date,
     hours,
   }) {
+    check(projectId, String)
+    check(_id, String)
+    check(task, String)
+    check(date, Date)
+    check(hours, Number)
     checkAuthentication(this)
     if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })) {
       Tasks.insert({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })

@@ -1,7 +1,5 @@
 import moment from 'moment'
 import i18next from 'i18next'
-import 'frappe-datatable/dist/frappe-datatable.css'
-import DataTable from 'frappe-datatable'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
@@ -39,8 +37,15 @@ Template.workingtimetable.onCreated(function workingtimetableCreated() {
   })
 })
 Template.workingtimetable.onRendered(() => {
-  Template.instance().autorun(() => {
-    if (Template.instance().subscriptionsReady() && i18nextReady.get()) {
+  const templateInstance = Template.instance()
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady() && i18nextReady.get()) {
+      let data
+      if (templateInstance.workingTimeEntries.get()) {
+        data = templateInstance.workingTimeEntries.get()
+          .map((entry) => Object.entries(entry)
+            .map((key) => { if (key[1] instanceof Date) { return moment(key[1]).format('DD.MM.YYYY') } return key[1] }))
+      }
       const columns = [
         {
           name: i18next.t('globals.date'),
@@ -56,22 +61,31 @@ Template.workingtimetable.onRendered(() => {
         { name: i18next.t('details.totalTime'), editable: false },
         { name: i18next.t('details.regularWorkingTime'), editable: false },
         { name: i18next.t('details.regularWorkingTimeDifference'), editable: false }]
-      if (!Template.instance().datatable) {
-        Template.instance().datatable = new DataTable('#datatable-container', {
-          columns,
-          serialNoColumn: false,
-          clusterize: false,
-          layout: 'fluid',
-          showTotalRow: true,
-          noDataMessage: i18next.t('tabular.sZeroRecords'),
+      if (!templateInstance.datatable) {
+        import('frappe-datatable/dist/frappe-datatable.css').then(() => {
+          import('frappe-datatable').then((datatable) => {
+            const DataTable = datatable.default
+            templateInstance.datatable = new DataTable('#datatable-container', {
+              columns,
+              serialNoColumn: false,
+              clusterize: false,
+              layout: 'fluid',
+              showTotalRow: true,
+              data,
+              noDataMessage: i18next.t('tabular.sZeroRecords'),
+            })
+          })
         })
       }
-      if (Template.instance().workingTimeEntries.get() && window.BootstrapLoaded.get()) {
-        Template.instance().datatable
-          .refresh(Template.instance().workingTimeEntries.get()
-            .map((entry) => Object.entries(entry)
-              .map((key) => { if (key[1] instanceof Date) { return moment(key[1]).format('DD.MM.YYYY') } return key[1] })), columns)
-        $('[data-toggle="tooltip"]').tooltip()
+      if (templateInstance.datatable && templateInstance.workingTimeEntries.get()
+        && window.BootstrapLoaded.get()) {
+        templateInstance.datatable
+          .refresh(data, columns)
+        if (templateInstance.workingTimeEntries.get().length === 0) {
+          $('.dt-scrollable').height('auto')
+        } else {
+          $('[data-toggle="tooltip"]').tooltip()
+        }
       }
     }
   })

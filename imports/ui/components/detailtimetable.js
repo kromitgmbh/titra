@@ -1,7 +1,5 @@
 import moment from 'moment'
 import i18next from 'i18next'
-import 'frappe-datatable/dist/frappe-datatable.css'
-import DataTable from 'frappe-datatable'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
@@ -62,17 +60,18 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
   })
 })
 Template.detailtimetable.onRendered(() => {
-  Template.instance().autorun(() => {
-    if (Template.instance().subscriptionsReady() && i18nextReady.get()) {
+  const templateInstance = Template.instance()
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady() && i18nextReady.get()) {
       const selector = buildDetailedTimeEntriesForPeriodSelector({
-        projectId: Template.instance().data.project.get(),
-        search: Template.instance().search.get(),
-        customer: Template.instance().data.customer.get(),
-        period: Template.instance().data.period.get(),
-        userId: Template.instance().data.resource.get(),
-        limit: Template.instance().data.limit.get(),
+        projectId: templateInstance.data.project.get(),
+        search: templateInstance.search.get(),
+        customer: templateInstance.data.customer.get(),
+        period: templateInstance.data.period.get(),
+        userId: templateInstance.data.resource.get(),
+        limit: templateInstance.data.limit.get(),
         page: Number(FlowRouter.getQueryParam('page')),
-        sort: Template.instance().sort.get(),
+        sort: templateInstance.sort.get(),
       })
       delete selector[1].skip
       const data = Timecards.find(selector[0], selector[1]).fetch().map(detailedDataTableMapper)
@@ -103,30 +102,38 @@ Template.detailtimetable.onRendered(() => {
               </div`
             : ''),
         }]
-      if (!Template.instance().datatable) {
-        const templateInstance = Template.instance()
-        templateInstance.datatable = new DataTable('#datatable-container', {
-          columns,
-          data,
-          serialNoColumn: false,
-          clusterize: false,
-          layout: 'fluid',
-          showTotalRow: true,
-          noDataMessage: i18next.t('tabular.sZeroRecords'),
-          events: {
-            onSortColumn(column) {
-              templateInstance.sort.set({ column: column.colIndex, order: column.sortOrder })
-            },
-          },
+      if (!templateInstance.datatable) {
+        import('frappe-datatable/dist/frappe-datatable.css').then(() => {
+          import('frappe-datatable').then((datatable) => {
+            const DataTable = datatable.default
+            templateInstance.datatable = new DataTable('#datatable-container', {
+              columns,
+              data,
+              serialNoColumn: false,
+              clusterize: false,
+              layout: 'fluid',
+              showTotalRow: true,
+              noDataMessage: i18next.t('tabular.sZeroRecords'),
+              events: {
+                onSortColumn(column) {
+                  templateInstance.sort.set({ column: column.colIndex, order: column.sortOrder })
+                },
+              },
+            })
+          })
         })
       } else {
-        Template.instance().datatable.refresh(data, columns)
+        templateInstance.datatable.refresh(data, columns)
       }
-      Template.instance().totalDetailTimeEntries
-        .set(Counts.findOne({ _id: Template.instance().data.project.get() })
-          ? Counts.findOne({ _id: Template.instance().data.project.get() }).count : 0)
+      templateInstance.totalDetailTimeEntries
+        .set(Counts.findOne({ _id: templateInstance.data.project.get() })
+          ? Counts.findOne({ _id: templateInstance.data.project.get() }).count : 0)
       if (window.BootstrapLoaded.get()) {
-        $('[data-toggle="tooltip"]').tooltip()
+        if (data.length === 0) {
+          $('.dt-scrollable').height('auto')
+        } else {
+          $('[data-toggle="tooltip"]').tooltip()
+        }
       }
     }
   })
@@ -144,7 +151,7 @@ Template.detailtimetable.helpers({
       sort: Template.instance().sort.get(),
     })
     delete selector[1].skip
-    return Timecards.find(selector[0], selector[1])
+    return Timecards.find(selector[0], selector[1]).fetch()
   },
   detailTimeSum() {
     const selector = buildDetailedTimeEntriesForPeriodSelector({

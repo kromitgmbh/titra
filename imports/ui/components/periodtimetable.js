@@ -1,7 +1,5 @@
 import i18next from 'i18next'
-import DataTable from 'frappe-datatable'
 import { saveAs } from 'file-saver'
-import 'frappe-datatable/dist/frappe-datatable.css'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
 import i18nextReady from '../../startup/client/startup.js'
@@ -10,7 +8,7 @@ import './pagination.js'
 import './limitpicker.js'
 
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
-  this.periodTimecards = new ReactiveVar([])
+  this.periodTimecards = new ReactiveVar()
   this.totalPeriodTimeCards = new ReactiveVar()
   Tracker.autorun(() => {
     if (this.data.project.get()
@@ -38,8 +36,15 @@ Template.periodtimetable.onCreated(function periodtimetableCreated() {
   })
 })
 Template.periodtimetable.onRendered(() => {
-  Template.instance().autorun(() => {
-    if (Template.instance().subscriptionsReady() && i18nextReady.get()) {
+  const templateInstance = Template.instance()
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady() && i18nextReady.get()) {
+      let data = []
+      if (templateInstance.periodTimecards.get()) {
+        data = templateInstance.periodTimecards.get()
+          .map((entry) => Object.entries(entry)
+            .map((key) => key[1]))
+      }
       const columns = [
         { name: i18next.t('globals.project'), editable: false },
         { name: i18next.t('globals.resource'), editable: false },
@@ -50,18 +55,32 @@ Template.periodtimetable.onRendered(() => {
             ? Meteor.user().profile.precision : 2),
         },
       ]
-      Template.instance().datatable = new DataTable('#datatable-container', {
-        columns,
-        serialNoColumn: false,
-        clusterize: false,
-        layout: 'ratio',
-        showTotalRow: true,
-        noDataMessage: i18next.t('tabular.sZeroRecords'),
-      })
-      Template.instance().datatable
-        .refresh(Template.instance().periodTimecards.get()
-          .map((entry) => Object.entries(entry)
-            .map((key) => key[1])), columns)
+      if (!templateInstance.datatable) {
+        import('frappe-datatable/dist/frappe-datatable.css').then(() => {
+          import('frappe-datatable').then((datatable) => {
+            const DataTable = datatable.default
+            templateInstance.datatable = new DataTable('#datatable-container', {
+              columns,
+              serialNoColumn: false,
+              clusterize: false,
+              layout: 'ratio',
+              showTotalRow: true,
+              data,
+              noDataMessage: i18next.t('tabular.sZeroRecords'),
+            })
+          })
+        })
+      }
+      if (templateInstance.datatable && templateInstance.periodTimecards.get()
+        && window.BootstrapLoaded.get()) {
+        templateInstance.datatable
+          .refresh(data, columns)
+        if (templateInstance.periodTimecards.get().length === 0) {
+          $('.dt-scrollable').height('auto')
+        } else {
+          $('[data-toggle="tooltip"]').tooltip()
+        }
+      }
     }
   })
 })

@@ -37,13 +37,14 @@ Template.tracktime.onCreated(function tracktimeCreated() {
   import('mathjs').then((mathjs) => {
     this.math = mathjs
   })
-  this.date = new ReactiveVar(new Date())
+  this.date = new ReactiveVar(moment.utc().toDate())
   this.projectId = new ReactiveVar(FlowRouter.getParam('projectId'))
   if (FlowRouter.getParam('tcid')) {
     this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
     this.autorun(() => {
       if (this.subscriptionsReady()) {
-        this.date.set(Timecards.findOne() ? Timecards.findOne().date : new Date())
+        this.date.set(Timecards.findOne()
+          ? moment.utc(Timecards.findOne().date).toDate() : moment.utc().toDate())
       }
     })
   }
@@ -51,10 +52,10 @@ Template.tracktime.onCreated(function tracktimeCreated() {
   let handle
   this.autorun(() => {
     if (FlowRouter.getQueryParam('date')) {
-      this.date.set(moment(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate())
+      this.date.set(moment.utc(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate())
     }
     if (!FlowRouter.getParam('tcid')) {
-      handle = this.subscribe('myTimecardsForDate', { date: moment(this.date.get()).format('YYYY-MM-DD') })
+      handle = this.subscribe('myTimecardsForDate', { date: moment.utc(this.date.get()).format('YYYY-MM-DD') })
       if (handle.ready()) {
         Timecards.find().forEach((timecard) => {
           this.subscribe('publicProjectName', timecard.projectId)
@@ -145,16 +146,13 @@ Template.tracktime.events({
   },
   'click .js-previous': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: moment(templateInstance.date.get()).subtract(1, 'days').format('YYYY-MM-DD') })
-    // templateInstance.date.set(new Date(moment(templateInstance.date.get())
-    // .subtract(1, 'days').utc()))
+    FlowRouter.setQueryParams({ date: moment.utc(templateInstance.date.get()).subtract(1, 'days').format('YYYY-MM-DD') })
     templateInstance.$('#hours').val('')
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
   'click .js-next': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: moment(templateInstance.date.get()).add(1, 'days').format('YYYY-MM-DD') })
-    // templateInstance.date.set(new Date(moment(templateInstance.date.get()).add(1, 'days').utc()))
+    FlowRouter.setQueryParams({ date: moment.utc(templateInstance.date.get()).add(1, 'days').format('YYYY-MM-DD') })
     templateInstance.$('#hours').val('')
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
@@ -164,9 +162,9 @@ Template.tracktime.events({
   },
   'change #date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
-      let date = moment(templateInstance.$(event.currentTarget).val(), 'ddd, DD.MM.YYYY')
+      let date = moment.utc(templateInstance.$(event.currentTarget).val(), 'ddd, DD.MM.YYYY')
       if (!date.isValid()) {
-        date = moment()
+        date = moment.utc()
         event.currentTarget.valueAsDate = date.toDate()
       }
       date = date.format('YYYY-MM-DD')
@@ -211,7 +209,7 @@ Template.tracktime.events({
   },
 })
 Template.tracktime.helpers({
-  date: () => moment(Template.instance().date.get()).format('ddd, DD.MM.YYYY'),
+  date: () => moment.utc(Template.instance().date.get()).format('ddd, DD.MM.YYYY'),
   projectId: () => {
     if (FlowRouter.getParam('projectId')) {
       return FlowRouter.getParam('projectId')
@@ -225,8 +223,8 @@ Template.tracktime.helpers({
   hours: () => (Timecards.findOne({ _id: FlowRouter.getParam('tcid') }) ? Timecards.findOne({ _id: FlowRouter.getParam('tcid') }).hours : false),
   showTracker: () => (Meteor.user() ? (Meteor.user().profile.timeunit !== 'd') : false),
   totalTime: () => Template.instance().totalTime.get(),
-  previousDay: () => moment(Template.instance().date.get()).subtract(1, 'day').format('ddd, DD.MM.YYYY'),
-  nextDay: () => moment(Template.instance().date.get()).add(1, 'day').format('ddd, DD.MM.YYYY'),
+  previousDay: () => moment.utc(Template.instance().date.get()).subtract(1, 'day').format('ddd, DD.MM.YYYY'),
+  nextDay: () => moment.utc(Template.instance().date.get()).add(1, 'day').format('ddd, DD.MM.YYYY'),
   borderClass: () => (FlowRouter.getParam('tcid') ? '' : 'tab-borders'),
 })
 

@@ -13,7 +13,7 @@ function getWeekDays(date) {
 }
 function timeInUserUnit(time) {
   if (!time || time === 0) {
-    return 0
+    return false
   }
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
     const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2

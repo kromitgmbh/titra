@@ -3,8 +3,8 @@
         <div class="col-xl-6 mt-2">
             <div class="btn-group">
                 <button class="btn btn-secondary border js-track-time"> <i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></button>
-                <button class="btn btn-secondary border js-export-xlsx"><i class="fa fa-download"></i> Excel</button>
-                <button class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> CSV</button>
+                <button class="btn btn-secondary border js-export-xlsx"><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
+                <button class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
                 <button class="btn btn-secondary border js-share"><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
                 <button class="btn btn-secondary border js-invoice"><i class="fa fa-upload"></i> <span class="d-none d-md-inline">{{t "navigation.invoice"}}</span></button>
             </div>
@@ -24,7 +24,5 @@
     <div id="datatable-container" class="my-3"></div>
     {{#if detailTimeEntries}}
         {{>pagination totalEntries=totalDetailTimeEntries limit=limit}}
-    {{else}}
-        <h5 class="text-center">{{t "tabular.sZeroRecords"}}</h5>
     {{/if}}
 </template>
