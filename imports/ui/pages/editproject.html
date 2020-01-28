@@ -41,7 +41,7 @@
     </div>
     <div class="card-block">
       <label for="target"><strong>{{t "project.target"}} ({{timeunit}})</strong></label>
-      <input name="target" id="target" type="number" value="{{timeInUserUnit (target)}}" class="form-control" placeholder="1000" />
+      <input name="target" id="target" type="number" value="{{timeInUserUnit (target)}}" class="form-control" placeholder="1000" step="any"/>
     </div>
     {{#if currentUser.profile.enableWekan}}
     <div class="card-block">

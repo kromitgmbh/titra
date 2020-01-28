@@ -2,146 +2,6 @@
   <form>
     <div class="card form-group">
       <div class="card-header">
-        {{t "settings.user_profile"}}
-      </div>
-      <div class="card-block">
-        <div class="form-group">
-          <label for="name"><strong>{{t "globals.name"}}</strong></label>
-          <input type="text" class="form-control" id="name" value="{{name}}" />
-        </div>  
-        <div class="card form-group">
-          <!-- <div class="card-header">
-            {{t "settings.avatar"}}
-          </div> -->
-          <div class="card-block">
-            <div class="row">
-              <div class="col-lg-2">
-              <label class="d-block">{{t "settings.current"}}</label>
-              {{#if currentUser.profile.avatar}}
-                <img id="avatar" src="{{currentUser.profile.avatar}}" alt='{{t "settings.avatar"}}' class="img-responsive"/>
-                <button class="btn btn-secondary d-block" id="removeAvatar">{{t "settings.reset"}}</button>
-              {{else}}
-                {{{svgAvatar}}}
-              {{/if}}
-              </div>
-              <div class="col-lg-3">
-                {{#unless currentUser.profile.avatar}}
-                <div class="form-group">
-                  <label for="color">{{t "globals.color"}}</label>
-                  <div class="input-group" id="colpick">
-                    <input name="avatarColor" id="avatarColor" type="text" value="{{avatarColor}}" data-color="{{avatarColor}}" class="form-control" />
-                    <div class="input-group-append">
-                      <button class="btn" id="avatarColorPickr" type="button"></button>
-                    </div>
-                  </div>
-                </div>
-                  <div class="form-group">
-                    <label class="d-block">{{t "settings.custom_avatar"}}</label>
-                    <input type="file" name="avatarImage" id="avatarImage" accept="image/gif,image/jpeg,image/png"/>
-                  </div>
-                {{/unless}}
-                <input type="hidden" name="avatarData" id="avatarData" value="{{currentUser.profile.avatarData}}"/>
-              </div>
-              <div class="col-lg-3">
-                {{#unless currentUser.profile.avatar}}
-                <div id="imagePreview" style="display:none;">
-                  <p>{{t "settings.preview"}}:</p>
-                  <img class="img-responsive img-thumbnail" style="max-height:200px;" alt="avatar upload preview"/>
-                </div>
-                {{/unless}}
-              </div>
-            </div>
-          </div>
-        </div>
-        {{#if currentUser.emails}}
-          {{#unless isSandstorm}}
-          <div class="row">
-            <div class="col-6 col-md-3 mr-auto">
-              <a class="btn btn-secondary border" href="/changePwd">{{t "login.change_password"}}</a>
-            </div>
-            <div class="col-6 col-md-3">
-              <a class="btn btn-secondary border js-logout form-control" href="#">{{t "navigation.logout"}}</a>
-            </div>
-          </div>
-          {{/unless}}
-        {{else}}
-          <div class="alert alert-secondary" role="alert">
-            {{t "login.anonymous_account_warning"}}
-          </div>
-          <a class="btn btn-primary border" href="/join">{{t "login.permanent_account"}}</a>
-        {{/if}}
-      </div>
-    </div>
-    <div class="card form-group">
-      <div class="card-header">
-        {{t "settings.user_interface"}}
-      </div>
-      <div class="card-block">
-        <div class="form-group">
-          <label for="theme"><strong>{{t "settings.theme"}}</strong></label>
-          <select class="form-control" id="theme">
-            <option value="auto">{{t "settings.auto_detect"}}</option>
-            <option value="light">{{t "settings.light_theme"}}</option>
-            <option value="dark">{{t "settings.dark_theme"}}</option>
-          </select>
-          <small class="form-text text-muted">{{t "settings.auto_detect_help"}} <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">caniuse.com</a>.</small>
-        </div>
-        <div class="form-group">
-          <label for="theme"><strong>{{t "settings.language"}}</strong></label>
-          <select class="form-control" id="language">
-            <option value="auto">{{t "settings.auto_detect"}}</option>
-            <option value="en">{{t "settings.en"}}</option>
-            <option value="de">{{t "settings.de"}}</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="card form-group">
-      <div class="card-header">
-        {{t "settings.time_tracking"}}
-      </div>
-      <div class="card-block">
-        <div class="form-group">
-          <label for="tracktimeview"><strong>{{t "settings.track_time_view"}}</strong></label>
-          <select class="form-control" id="timetrackview">
-            <option value="d">{{t "globals.day"}}</option>
-            <option value="w">{{t "globals.week"}}</option>
-            <option value="M">{{t "globals.month"}}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="timeunit"><strong>{{t "settings.time_unit"}}</strong></label>
-          <select class="form-control" id="timeunit">
-            <option value="h">{{t "globals.hour"}}</option>
-            <option value="d">{{t "globals.day"}}</option>
-          </select>
-        </div>
-        {{#if displayHoursToDays}}
-        <div class="form-group">
-          <label for="hoursToDays"><strong>{{t "settings.hours_per_day"}}</strong></label>
-          <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" step="any" />
-        </div>
-        {{/if}}
-        <div class="form-group">
-          <label for="dailyStartTime"><strong>{{t "settings.daily_start_time"}}</strong></label>
-          <input type="time" class="form-control" id="dailyStartTime" value="{{dailyStartTime}}" />
-        </div>
-        <div class="form-group">
-          <label for="breakStartTime"><strong>{{t "settings.break_start_time"}}</strong></label>
-          <input type="time" class="form-control" id="breakStartTime" value="{{breakStartTime}}" />
-        </div>
-        <div class="form-group">
-          <label for="breakDuration"><strong>{{t "settings.break_duration"}}</strong></label>
-          <input type="number" class="form-control" id="breakDuration" value="{{breakDuration}}" step="any" />
-        </div>
-        <div class="form-group">
-          <label for="regularWorkingTime"><strong>{{t "details.regularWorkingTime"}}</strong></label>
-          <input type="number" class="form-control" id="regularWorkingTime" value="{{regularWorkingTime}}" step="any" />
-        </div>
-      </div>
-    </div>
-    <div class="card form-group">
-      <div class="card-header">
         {{t "settings.global_settings"}}
       </div>
       <div class="card-block">
@@ -155,6 +15,50 @@
         </div>
       </div>
     </div>
+    <div class="card form-group">
+      <div class="card-header">
+          {{t "settings.time_tracking"}}
+      </div>
+      <div class="card-block">
+          <div class="form-group">
+          <label for="tracktimeview"><strong>{{t "settings.track_time_view"}}</strong></label>
+          <select class="form-control" id="timetrackview">
+              <option value="d">{{t "globals.day"}}</option>
+              <option value="w">{{t "globals.week"}}</option>
+              <option value="M">{{t "globals.month"}}</option>
+          </select>
+          </div>
+          <div class="form-group">
+          <label for="timeunit"><strong>{{t "settings.time_unit"}}</strong></label>
+          <select class="form-control" id="timeunit">
+              <option value="h">{{t "globals.hour"}}</option>
+              <option value="d">{{t "globals.day"}}</option>
+          </select>
+          </div>
+          {{#if displayHoursToDays}}
+          <div class="form-group">
+          <label for="hoursToDays"><strong>{{t "settings.hours_per_day"}}</strong></label>
+          <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" step="any" />
+          </div>
+          {{/if}}
+          <div class="form-group">
+          <label for="dailyStartTime"><strong>{{t "settings.daily_start_time"}}</strong></label>
+          <input type="time" class="form-control" id="dailyStartTime" value="{{dailyStartTime}}" />
+          </div>
+          <div class="form-group">
+          <label for="breakStartTime"><strong>{{t "settings.break_start_time"}}</strong></label>
+          <input type="time" class="form-control" id="breakStartTime" value="{{breakStartTime}}" />
+          </div>
+          <div class="form-group">
+          <label for="breakDuration"><strong>{{t "settings.break_duration"}}</strong></label>
+          <input type="number" class="form-control" id="breakDuration" value="{{breakDuration}}" step="any" />
+          </div>
+          <div class="form-group">
+          <label for="regularWorkingTime"><strong>{{t "details.regularWorkingTime"}}</strong></label>
+          <input type="number" class="form-control" id="regularWorkingTime" value="{{regularWorkingTime}}" step="any" />
+          </div>
+      </div>
+      </div>
     <div class="card form-group">
       <div class="card-header">
         {{t "settings.integrations"}}
@@ -193,16 +97,6 @@
                 <input type="text" class="form-control" id="siwapptoken" value="{{siwapptoken}}" />
               </div>
             </div>
-        </div>
-      </div>
-    </div>
-    <div class="card form-group">
-      <div class="card-header">
-        {{t "settings.titra_changelog"}}
-      </div>
-      <div class="card-block">
-        <div>
-          <p class="card-text" id="titra-changelog" style="white-space:pre-wrap;">{{t "globals.loading"}}</p>
         </div>
       </div>
     </div>

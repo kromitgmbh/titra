@@ -98,6 +98,26 @@ FlowRouter.route('/settings', {
   },
   name: 'settings',
 })
+FlowRouter.route('/profile', {
+  waitOn() {
+    return import('../../ui/pages/profile.js')
+  },
+  action() {
+    document.title = 'titra - profile'
+    this.render('appLayout', 'profile')
+  },
+  name: 'settings',
+})
+FlowRouter.route('/about', {
+  waitOn() {
+    return import('../../ui/pages/about.js')
+  },
+  action() {
+    document.title = 'titra - about'
+    this.render('appLayout', 'about')
+  },
+  name: 'settings',
+})
 FlowRouter.route('/dashboard/:_id', {
   waitOn() {
     return import('../../ui/pages/dashboard.js')
@@ -141,6 +161,20 @@ FlowRouter.route('/try', {
     }
   },
   name: 'try',
+})
+FlowRouter.route('/claim/admin', {
+  action() {
+    if (Meteor.userId()) {
+      Meteor.call('claimAdmin', (error, result) => {
+        if (error) {
+          console.error(error)
+          alert(error.error)
+        } else {
+          alert(result)
+        }
+      })
+    }
+  },
 })
 FlowRouter.route('/404', {
   action() {

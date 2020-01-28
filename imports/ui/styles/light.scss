@@ -28,6 +28,7 @@ $theme-colors: (
   light: #BDBDBD,
   dark: #455A64
 );
+$dropdown-link-hover-bg: map-get($theme-colors, dark) !default;
 
 //++++ [custom] ++++
 

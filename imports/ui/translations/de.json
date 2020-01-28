@@ -27,6 +27,8 @@
     "track": "Erfassen",
     "overview": "Übersicht",
     "details": "Details",
+    "profile": "Profil",
+    "about": "Über",
     "settings": "Einstellungen",
     "save": "Speichern",
     "back": "Zurück",
@@ -249,5 +251,17 @@
     "password_mismatch": "Die eingegebenen Passwörter stimmen nicht überein. Bitte überprüfen Sie Ihre Eingabe.",
     "permanent_account": "Permanenten Zugang erstellen",
     "anonymous_account_warning": "Sie verwenden aktuell einen temporären Account. Wenn Sie titra auf einem anderen Gerät verwenden möchten, erstellen Sie bitte einen Benutzer mit E-mail Addresse und Passwort."
+  },
+  "about": {
+    "documentation": "Dokumentation",
+    "source_code": "Quelltext",
+    "runtime": "Laufzeitumgebung",
+    "versions": "Versionen",
+    "environment": "Server Umgebung",
+    "os": "Betriebsystem",
+    "uptime": "Laufzeit",
+    "total_memory": "Arbeitsspeicher gesamt",
+    "free_memory": "Freier Arbeitsspeicher",
+    "history": "Alle Versionen anzeigen"
   }
 }

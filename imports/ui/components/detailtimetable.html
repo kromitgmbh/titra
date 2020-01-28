@@ -3,10 +3,18 @@
         <div class="col-xl-6 mt-2">
             <div class="btn-group">
                 <button class="btn btn-secondary border js-track-time"> <i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></button>
-                <button class="btn btn-secondary border js-export-xlsx"><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
-                <button class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
-                <button class="btn btn-secondary border js-share"><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
-                <button class="btn btn-secondary border js-invoice"><i class="fa fa-upload"></i> <span class="d-none d-md-inline">{{t "navigation.invoice"}}</span></button>
+                {{#if detailTimeEntries}}
+                    <button class="btn btn-secondary border js-export-xlsx"><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
+                    <button class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
+                    <button class="btn btn-secondary border js-share"><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
+                {{else}}
+                    <button class="btn btn-secondary border js-export-xlsx" disabled><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
+                    <button class="btn btn-secondary border js-export-csv" disabled><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
+                    <button class="btn btn-secondary border js-share" disabled><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
+                {{/if}}
+                {{#if currentUser.profile.siwappurl}}
+                    <button class="btn btn-secondary border js-invoice"><i class="fa fa-upload"></i> <span class="d-none d-md-inline">{{t "navigation.invoice"}}</span></button>
+                {{/if}}
             </div>
         </div>
         <div class="col-xl-3 col-md-5 mt-2">

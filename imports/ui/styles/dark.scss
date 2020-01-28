@@ -40,6 +40,7 @@ $nav-tabs-link-hover-border-color: map-get($theme-colors, dark) !default;
 
 $dropdown-bg: map-get($theme-colors, secondary) !default;
 $dropdown-color: $gray-900 !default;
+$dropdown-link-hover-bg: map-get($theme-colors, dark) !default;
 
 $pagination-bg: map-get($theme-colors, secondary) !default;
 $pagination-color: $gray-900 !default;

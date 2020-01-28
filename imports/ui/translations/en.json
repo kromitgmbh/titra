@@ -27,6 +27,8 @@
     "track": "Track",
     "overview": "Overview",
     "details": "Details",
+    "profile": "Profile",
+    "about": "About",
     "settings": "Settings",
     "save": "Save",
     "back": "Back",
@@ -242,5 +244,17 @@
     "password_mismatch": "The provided passwords do not match, please try again.",
     "permanent_account": "Create permanent account",
     "anonymous_account_warning": "You are currently logged in using a temporary account which can only be used on this device. If you want to use titra on other devices, please create a regular user with an e-mail address and password below."
+  },
+  "about": {
+    "documentation": "Documentation",
+    "source_code": "Source code",
+    "runtime": "Runtime information",
+    "versions": "Versions",
+    "environment": "Host environment",
+    "os": "Operating system",
+    "uptime": "Uptime",
+    "total_memory": "Total memory",
+    "free_memory": "Free memory",
+    "history": "All releases"
   }
 }

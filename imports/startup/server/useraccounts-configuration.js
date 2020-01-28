@@ -19,5 +19,9 @@ Accounts.onCreateUser((options, user) => {
     delete localUser.profile.currentLanguageProject
     delete localUser.profile.currentLanguageProjectDesc
   }
+  // the first user registered on a server will automatically receive the isAdmin flag
+  if (Meteor.users.find().count === 0) {
+    localUser.isAdmin = true
+  }
   return localUser
 })
