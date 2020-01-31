@@ -76,11 +76,11 @@
     {{/unless}}
     <div class="form-group">
       <label>{{t "globals.project"}}</label>
-      {{>projectselect}}
+      {{>projectselect tcid=tcid projectId=reactiveProjectId}}
     </div>
     <div class="form-group">
       <label for="task">{{t "globals.task"}}</label>
-      {{>tasksearch}}
+      {{>tasksearch tcid=tcid}}
     </div>
     <div class="form-group">
       <div class="row">
@@ -92,7 +92,7 @@
         </div>
         {{#unless isEdit}}
           {{#if showTracker}}
-            <div class="col-md-3 col-6 text-right">
+            <div class="col-6 col-md-3 text-right">
               <div class="form-group">
                 <label>&nbsp;</label>
                   {{>timetracker}}
@@ -103,12 +103,21 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-6 col-md-3 mr-auto">
-        {{>backbutton}}
-      </div>
-      <div class="col-6 col-md-3">
-        <button class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
-      </div>
+        {{#if tcid}}
+          <div class="col-6 mr-auto">
+            <button class="btn btn-secondary border form-control" data-dismiss="modal" aria-label="Close">{{t "navigation.cancel"}}</button>
+          </div>
+          <div class="col-6">
+            <button class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
+          </div>
+        {{else}}
+          <div class="col-6 col-md-3 mr-auto">
+            {{>backbutton}}
+          </div>
+          <div class="col-6 col-md-3">
+            <button class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
+          </div>
+        {{/if}}
     </div>
   </form>
 </template>

@@ -25,10 +25,10 @@ Meteor.publish('myProjectStats', function myProjectStats() {
   checkAuthentication(this)
   let initializing = true
 
-  const currentMonthStart = moment().startOf('month')
-  const currentMonthEnd = moment().endOf('month')
-  const previousMonthStart = moment().startOf('month')
-  const previousMonthEnd = moment().endOf('month')
+  const currentMonthStart = moment.utc().startOf('month')
+  const currentMonthEnd = moment.utc().endOf('month')
+  const previousMonthStart = moment.utc().startOf('month')
+  const previousMonthEnd = moment.utc().endOf('month')
   // observeChanges only returns after the initial `added` callbacks
   // have run. Until then, we don't want to send a lot of
   // `self.changed()` messages - hence tracking the
@@ -130,15 +130,15 @@ Meteor.publish('projectStats', function projectStats(projectId) {
     return this.ready()
   }
   let initializing = true
-  const currentMonthName = moment().format('MMM')
-  const currentMonthStart = moment().startOf('month')
-  const currentMonthEnd = moment().endOf('month')
-  const previousMonthName = moment().subtract('1', 'months').format('MMM')
-  const previousMonthStart = moment().subtract('1', 'months').startOf('month')
-  const previousMonthEnd = moment().subtract('1', 'months').endOf('month')
-  const beforePreviousMonthStart = moment().subtract('2', 'months').startOf('month')
-  const beforePreviousMonthEnd = moment().subtract('2', 'months').endOf('month')
-  const beforePreviousMonthName = moment().subtract('2', 'months').format('MMM')
+  const currentMonthName = moment.utc().format('MMM')
+  const currentMonthStart = moment.utc().startOf('month')
+  const currentMonthEnd = moment.utc().endOf('month')
+  const previousMonthName = moment.utc().subtract('1', 'months').format('MMM')
+  const previousMonthStart = moment.utc().subtract('1', 'months').startOf('month')
+  const previousMonthEnd = moment.utc().subtract('1', 'months').endOf('month')
+  const beforePreviousMonthStart = moment.utc().subtract('2', 'months').startOf('month')
+  const beforePreviousMonthEnd = moment.utc().subtract('2', 'months').endOf('month')
+  const beforePreviousMonthName = moment.utc().subtract('2', 'months').format('MMM')
 
   let totalHours = 0
   let currentMonthHours = 0

@@ -7,8 +7,8 @@ const DailyMailLimit = new Mongo.Collection('dailymaillimit')
 function addNotification(message, userId) {
   const id = Random.id()
   const meteorUser = Meteor.users.findOne({ _id: userId })
-  const start = moment().startOf('day').toDate()
-  const end = moment().endOf('day').toDate()
+  const start = moment.utc().startOf('day').toDate()
+  const end = moment.utc().endOf('day').toDate()
   let recipient = ''
   if (meteorUser) {
     recipient = meteorUser.emails[0].address

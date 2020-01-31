@@ -12,12 +12,13 @@ import { buildDetailedTimeEntriesForPeriodSelector } from '../../utils/server_me
 import './detailtimetable.html'
 import './pagination.js'
 import './limitpicker.js'
+import '../pages/tracktime.js'
 
 const Counts = new Mongo.Collection('counts')
 
 function detailedDataTableMapper(entry) {
   return [Projects.findOne({ _id: entry.projectId }) ? Projects.findOne({ _id: entry.projectId }).name : '',
-    moment(entry.date).format('DD.MM.YYYY'),
+    moment.utc(entry.date).format('DD.MM.YYYY'),
     entry.task,
     projectUsers.findOne() ? projectUsers.findOne().users.find((elem) => elem._id === entry.userId).profile.name : '',
     Number(timeInUserUnit(entry.hours)),
@@ -27,6 +28,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
   this.totalDetailTimeEntries = new ReactiveVar()
   this.search = new ReactiveVar()
   this.sort = new ReactiveVar()
+  this.tcid = new ReactiveVar()
   this.autorun(() => {
     if (this.data.project.get()
       && this.data.resource.get()
@@ -80,7 +82,7 @@ Template.detailtimetable.onRendered(() => {
         {
           name: i18next.t('globals.date'),
           editable: false,
-          compareValue: (cell, keyword) => [moment(cell, 'DD.MM.YYYY').toDate(), moment(keyword, 'DD.MM.YYYY').toDate()],
+          compareValue: (cell, keyword) => [moment.utc(cell, 'DD.MM.YYYY').toDate(), moment(keyword, 'DD.MM.YYYY').toDate()],
           format: addToolTipToTableCell,
         },
         { name: i18next.t('globals.task'), editable: false, format: addToolTipToTableCell },
@@ -97,7 +99,7 @@ Template.detailtimetable.onRendered(() => {
           dropdown: false,
           format: (value) => (value && Timecards.findOne({ _id: value }).userId === Meteor.userId()
             ? `<div class="text-center">
-                <a href="/edit/timecard/${value}"><i class="fa fa-edit"></i></a>
+                <a href="#" class="js-edit" data-id="${value}"><i class="fa fa-edit"></i></a>
                 <a href="#" class="js-delete" data-id="${value}"><i class="fa fa-trash"></i></a>
               </div`
             : ''),
@@ -172,8 +174,9 @@ Template.detailtimetable.helpers({
     return Template.instance().totalDetailTimeEntries
   },
   moment(date) {
-    return moment(date).format('ddd DD.MM.YYYY')
+    return moment.utc(date).format('ddd DD.MM.YYYY')
   },
+  tcid() { return Template.instance().tcid },
 })
 Template.detailtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
@@ -220,16 +223,18 @@ Template.detailtimetable.events({
   },
   'click .js-track-time': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.go('tracktime', { projectId: templateInstance.$('#targetProject').val() })
+    templateInstance.tcid.set(undefined)
+    $('#edit-tc-entry-modal').modal({ focus: false })
+    // FlowRouter.go('tracktime', { projectId: templateInstance.$('.js-target-project').val() })
   },
   'click .js-share': (event, templateInstance) => {
     event.preventDefault()
-    if ($('#period').val() === 'all' || $('#targetProject').val() === 'all') {
+    if ($('#period').val() === 'all' || $('.js-target-project').val() === 'all') {
       $.notify({ message: i18next.t('notifications.sanity') }, { type: 'danger' })
       return
     }
     Meteor.call('addDashboard', {
-      projectId: $('#targetProject').val(), resourceId: $('#resourceselect').val(), customer: $('#customerselect').val(), timePeriod: $('#period').val(),
+      projectId: $('.js-target-project').val(), resourceId: $('#resourceselect').val(), customer: $('#customerselect').val(), timePeriod: $('#period').val(),
     }, (error, _id) => {
       if (error) {
         $.notify({ message: i18next.t('notifications.dashboard_creation_failed', { error }) }, { type: 'danger' })
@@ -245,7 +250,7 @@ Template.detailtimetable.events({
     event.preventDefault()
     if (Meteor.user().profile.siwappurl && Meteor.user().profile.siwapptoken) {
       Meteor.call('sendToSiwapp', {
-        projectId: $('#targetProject').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
+        projectId: $('.js-target-project').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
       }, (error, result) => {
         if (error) {
           $.notify({ message: i18next.t('notifications.export_failed', { error }) }, { type: 'danger' })
@@ -269,8 +274,16 @@ Template.detailtimetable.events({
       })
     }
   },
+  'click .js-edit': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.tcid.set(templateInstance.$(event.currentTarget).data('id'))
+    $('#edit-tc-entry-modal').modal({ focus: false })
+  },
   'change .js-search': (event, templateInstance) => {
     templateInstance.search.set($(event.currentTarget).val())
+  },
+  'change .js-project-filter>.js-target-project': (event, templateInstance) => {
+    templateInstance.data.project.set(templateInstance.$('.js-target-project').val())
   },
 })
 Template.detailtimetable.onDestroyed(() => {

@@ -46,7 +46,8 @@
     "retry": "Erneut versuchen",
     "lastWeek": "Letzte Woche",
     "nextWeek": "Nächste Woche",
-    "newLine": "Neue Zeile"
+    "newLine": "Neue Zeile",
+    "cancel": "Abbrechen"
   },
   "tracktime": {
     "no_time": "Keine Zeiten erfasst.",

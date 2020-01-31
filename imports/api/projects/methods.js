@@ -18,24 +18,24 @@ Meteor.methods({
     let currentMonthHours = 0
     let previousMonthHours = 0
     let beforePreviousMonthHours = 0
-    const currentMonthName = moment().format('MMM')
-    const currentMonthStart = moment().startOf('month')
-    const currentMonthEnd = moment().endOf('month')
-    const previousMonthName = moment().subtract('1', 'months').format('MMM')
-    const beforePreviousMonthName = moment().subtract('2', 'months').format('MMM')
-    const previousMonthStart = moment().subtract('1', 'months').startOf('month')
-    const previousMonthEnd = moment().subtract('1', 'months').endOf('month')
-    const beforePreviousMonthStart = moment().subtract('2', 'months').startOf('month')
-    const beforePreviousMonthEnd = moment().subtract('2', 'months').endOf('month')
+    const currentMonthName = moment.utc().format('MMM')
+    const currentMonthStart = moment.utc().startOf('month')
+    const currentMonthEnd = moment.utc().endOf('month')
+    const previousMonthName = moment.utc().subtract('1', 'months').format('MMM')
+    const beforePreviousMonthName = moment.utc().subtract('2', 'months').format('MMM')
+    const previousMonthStart = moment.utc().subtract('1', 'months').startOf('month')
+    const previousMonthEnd = moment.utc().subtract('1', 'months').endOf('month')
+    const beforePreviousMonthStart = moment.utc().subtract('2', 'months').startOf('month')
+    const beforePreviousMonthEnd = moment.utc().subtract('2', 'months').endOf('month')
 
     for (const timecard of
       Timecards.find({ projectId: { $in: projectList } }).fetch()) {
-      if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+      if (moment.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
         currentMonthHours += Number.parseFloat(timecard.hours)
-      } else if (moment(new Date(timecard.date))
+      } else if (moment.utc(new Date(timecard.date))
         .isBetween(previousMonthStart, previousMonthEnd)) {
         previousMonthHours += Number.parseFloat(timecard.hours)
-      } else if (moment(new Date(timecard.date))
+      } else if (moment.utc(new Date(timecard.date))
         .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
         beforePreviousMonthHours += Number.parseFloat(timecard.hours)
       }

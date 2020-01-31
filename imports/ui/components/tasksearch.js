@@ -66,10 +66,16 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
   this.wekanAPITasks = new ReactiveVar()
   // this.lastTimecards = new ReactiveVar()
   this.autorun(() => {
-    if (FlowRouter.getParam('tcid')) {
-      const handle = this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
+    let tcid
+    if (this.data.tcid && this.data.tcid.get()) {
+      tcid = this.data.tcid.get()
+    } else if (FlowRouter.getParam('tcid')) {
+      tcid = FlowRouter.getParam('tcid')
+    }
+    if (tcid) {
+      const handle = this.subscribe('singleTimecard', tcid)
       if (handle.ready()) {
-        this.$('.js-tasksearch-input').val(Timecards.findOne().task)
+        this.$('.js-tasksearch-input').val(Timecards.findOne({ _id: tcid }).task)
       }
     }
   })

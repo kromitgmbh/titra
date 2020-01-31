@@ -11,12 +11,12 @@ Template.weektable.onCreated(function weekTableCreated() {
   // attention: this is a workaround because we are currently hard coding the european week format
   // where weeks start on Monday - in the future this needs to be updated based on a user specific
   // 'start of the week' setting
-  this.startDate = new ReactiveVar(moment(moment().startOf('week').add(1, 'day')))
-  this.endDate = new ReactiveVar(moment(moment().endOf('week').add(1, 'day')))
+  this.startDate = new ReactiveVar(moment.utc().startOf('week').add(1, 'day'))
+  this.endDate = new ReactiveVar(moment.utc().endOf('week').add(1, 'day'))
   this.autorun(() => {
     if (FlowRouter.getQueryParam('date')) {
-      this.startDate.set(moment(moment(FlowRouter.getQueryParam('date')).startOf('week').add(1, 'day')), 'YYYY-MM-DD')
-      this.endDate.set(moment(moment(FlowRouter.getQueryParam('date')).endOf('week').add(1, 'day')), 'YYYY-MM-DD')
+      this.startDate.set(moment.utc(FlowRouter.getQueryParam('date')).startOf('week').add(1, 'day'), 'YYYY-MM-DD')
+      this.endDate.set(moment.utc(FlowRouter.getQueryParam('date')).endOf('week').add(1, 'day'), 'YYYY-MM-DD')
     }
   })
 })
@@ -35,7 +35,7 @@ Template.weektable.helpers({
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       clientTimecards.find().fetch().forEach((element) => {
         if (element.entries) {
-          total += element.entries.filter((entry) => moment(entry.date).format('ddd, DD.MM') === day)
+          total += element.entries.filter((entry) => moment.utc(entry.date).format('ddd, DD.MM') === day)
             .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
         }
       })
@@ -51,11 +51,11 @@ Template.weektable.helpers({
 Template.weektable.events({
   'click .js-previous-week': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: moment(templateInstance.startDate.get()).subtract(1, 'week').format('YYYY-MM-DD') })
+    FlowRouter.setQueryParams({ date: moment.utc(templateInstance.startDate.get()).subtract(1, 'week').format('YYYY-MM-DD') })
   },
   'click .js-next-week': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: moment(templateInstance.startDate.get()).add(1, 'week').format('YYYY-MM-DD') })
+    FlowRouter.setQueryParams({ date: moment.utc(templateInstance.startDate.get()).add(1, 'week').format('YYYY-MM-DD') })
   },
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
@@ -134,7 +134,7 @@ Template.weektablerow.helpers({
   getHoursForDay(day, task) {
     if (task.entries) {
       const entryForDay = task.entries
-        .filter((entry) => moment(entry.date).format('ddd, DD.MM') === day)
+        .filter((entry) => moment.utc(entry.date).format('ddd, DD.MM') === day)
         .reduce(((total, element) => total + element.hours), 0)
       return entryForDay !== 0 ? timeInUserUnit(entryForDay) : ''
     }
@@ -165,7 +165,7 @@ Template.weektablerow.helpers({
         },
       ).fetch().concat(Template.instance().tempTimeEntries.get()).forEach((element) => {
         if (element.entries) {
-          total += element.entries.filter((entry) => moment(entry.date).format('ddd, DD.MM') === day)
+          total += element.entries.filter((entry) => moment.utc(entry.date).format('ddd, DD.MM') === day)
             .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
         }
       })

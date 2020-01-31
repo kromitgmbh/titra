@@ -6,32 +6,36 @@
       <div class="col-3 text-right"><button class="btn btn-secondary border js-next-week"><span class="d-none d-lg-inline">{{t "navigation.nextWeek"}} </span><i class="fa fa-chevron-right"></i></button></div>
     </div>
     <div class="row">
-      <table class="table table-responsive-md table-sm mb-0">
-        <thead class="thead">
-          <th scope="col" style="width:299.4px">{{t "globals.project"}} / {{t "globals.task"}}</th>
-          {{#each weekday in weekDays}}
-            <th scope="col">{{weekday}}</th>
-          {{/each}}
-          <th scope="col"></th>
-        </thead>
-          {{#each project in projects}}
-            {{>weektablerow projectName=project.name projectId=project._id startDate=startDate endDate=endDate}}
-          {{/each}}
-        <tr>
-          <td></td>
-          {{#each weekday in weekDays}}
-            <td class="pl-3">{{getTotalForDay weekday}}</td>
-          {{/each}}
-          <td class="text-center">{{#if hasData}}Σ{{/if}}</td>
-        </tr>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <thead class="thead">
+            <th scope="col" style="min-width:200px;width:200px">{{t "globals.project"}} / {{t "globals.task"}}</th>
+            {{#each weekday in weekDays}}
+              <th scope="col" style="min-width:122px;">{{weekday}}</th>
+            {{/each}}
+            <th scope="col"></th>
+          </thead>
+            {{#each project in projects}}
+              {{>weektablerow projectName=project.name projectId=project._id startDate=startDate endDate=endDate}}
+            {{/each}}
+          <tr>
+            <td></td>
+            {{#each weekday in weekDays}}
+              <td class="pl-3">{{getTotalForDay weekday}}</td>
+            {{/each}}
+            <td class="text-center">{{#if hasData}}Σ{{/if}}</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 </template>
 
 <template name="weektablerow">
     <tr>
-      <td scope="row"><a href="#" style="color:inherit" class="week-row" data-toggle="collapse" data-target="#{{projectId}}" aria-expanded="false">{{projectName}} <i class="fa fa-chevron-right"></i></a></td>
+      <td scope="row">
+        <a href="#" style="color:inherit" class="week-row" data-toggle="collapse" data-target="#{{projectId}}" aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-toggle="tooltip" data-placement="top" data-title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
+      </td>
       {{#if weekDays}}
         {{#each weekday in weekDays}}
           <td class="pl-3">{{getTotalForDayPerProject projectId weekday}}</td>

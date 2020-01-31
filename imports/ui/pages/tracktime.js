@@ -18,43 +18,60 @@ import '../components/calendar.js'
 import '../components/backbutton.js'
 
 Template.tracktime.onRendered(() => {
-  Template.instance().tinydatepicker = TinyDatePicker('#date', {
-    format(date) {
-      return date ? moment(date).format('ddd, DD.MM.YYYY') : moment().format('ddd, DD.MM.YYYY')
-    },
-    parse(date) {
-      return moment(date, 'ddd, DD.MM.YYYY')
-    },
-    mode: 'dp-modal',
-    dayOffset: 1,
-  }).on('select', (_, dp) => {
-    if (!dp.state.selectedDate) {
-      $('#date').val(moment().format('ddd, DD.MM.YYYY'))
-    }
-  })
+  if (!Template.instance().tinydatepicker) {
+    Template.instance().tinydatepicker = TinyDatePicker('#date', {
+      format(date) {
+        return date ? moment(date).format('ddd, DD.MM.YYYY') : moment().format('ddd, DD.MM.YYYY')
+      },
+      parse(date) {
+        return moment(date, 'ddd, DD.MM.YYYY')
+      },
+      mode: 'dp-modal',
+      dayOffset: 1,
+    }).on('select', (_, dp) => {
+      if (!dp.state.selectedDate) {
+        $('#date').val(moment().format('ddd, DD.MM.YYYY'))
+      }
+    })
+  }
 })
 Template.tracktime.onCreated(function tracktimeCreated() {
   import('mathjs').then((mathjs) => {
     this.math = mathjs
   })
   this.date = new ReactiveVar(moment.utc().toDate())
-  this.projectId = new ReactiveVar(FlowRouter.getParam('projectId'))
-  if (FlowRouter.getParam('tcid')) {
-    this.subscribe('singleTimecard', FlowRouter.getParam('tcid'))
-    this.autorun(() => {
-      if (this.subscriptionsReady()) {
-        this.date.set(Timecards.findOne()
-          ? moment.utc(Timecards.findOne().date).toDate() : moment.utc().toDate())
-      }
-    })
-  }
+  this.projectId = new ReactiveVar()
+  this.tcid = new ReactiveVar()
   this.totalTime = new ReactiveVar(0)
   let handle
   this.autorun(() => {
-    if (FlowRouter.getQueryParam('date')) {
+    if (this.data.tcid && this.data.tcid.get()) {
+      this.tcid.set(this.data.tcid.get())
+    } else if (FlowRouter.getParam('tcid')) {
+      this.tcid.set(FlowRouter.getParam('tcid'))
+    }
+    if (this.data.dateArg && this.data.dateArg.get()) {
+      this.date.set(this.data.dateArg.get())
+    } else if (!(this.data.dateArg && this.data.dateArg.get())
+      && !(this.data.tcid && this.data.tcid.get()) && FlowRouter.getQueryParam('date')) {
       this.date.set(moment.utc(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate())
     }
-    if (!FlowRouter.getParam('tcid')) {
+    if (this.data.projectIdArg && this.data.projectIdArg.get()) {
+      this.projectId.set(this.data.projectIdArg.get())
+    } else if (!(this.data.projectIdArg && this.data.projectIdArg.get()) && FlowRouter.getParam('projectId')) {
+      this.projectId.set(FlowRouter.getParam('projectId'))
+    }
+    if (this.tcid.get()) {
+      this.subscribe('singleTimecard', this.tcid.get())
+      if (this.subscriptionsReady()) {
+        this.date.set(Timecards.findOne({ _id: this.tcid.get() })
+          ? moment.utc(Timecards.findOne({ _id: this.tcid.get() }).date).toDate()
+          : moment.utc().toDate())
+      }
+    }
+  })
+  this.autorun(() => {
+    if (!this.tcid.get()) {
       handle = this.subscribe('myTimecardsForDate', { date: moment.utc(this.date.get()).format('YYYY-MM-DD') })
       if (handle.ready()) {
         Timecards.find().forEach((timecard) => {
@@ -78,8 +95,8 @@ Template.tracktime.onCreated(function tracktimeCreated() {
 Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
-    if (!$('#targetProject').val()) {
-      $('#targetProject').addClass('is-invalid')
+    if (!$('.js-target-project').val()) {
+      $('.js-target-project').addClass('is-invalid')
       $.notify({ message: i18next.t('notifications.select_project') }, { type: 'danger' })
       return
     }
@@ -99,7 +116,7 @@ Template.tracktime.events({
       $.notify({ message: i18next.t('notifications.check_time_input') }, { type: 'danger' })
       return
     }
-    const projectId = templateInstance.$('#targetProject').val()
+    const projectId = templateInstance.$('.js-target-project').val()
     const task = templateInstance.$('.js-tasksearch-input').val()
     const date = moment.utc($('#date').val(), 'ddd, DD.MM.YYYY').toDate()
     let hours = templateInstance.math.evaluate($('#hours').val())
@@ -110,9 +127,9 @@ Template.tracktime.events({
     const buttonLabel = $(event.currentTarget).text()
     templateInstance.$(event.currentTarget).text('saving ...')
     templateInstance.$(event.currentTarget).prop('disabled', true)
-    if (FlowRouter.getParam('tcid')) {
+    if (templateInstance.tcid.get()) {
       Meteor.call('updateTimeCard', {
-        _id: FlowRouter.getParam('tcid'), projectId, date, hours, task,
+        _id: templateInstance.tcid.get(), projectId, date, hours, task,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -122,11 +139,14 @@ Template.tracktime.events({
           templateInstance.$(event.currentTarget).text(buttonLabel)
           templateInstance.$(event.currentTarget).prop('disabled', false)
           $('[data-toggle="tooltip"]').tooltip()
+          if (templateInstance.data.tcid) {
+            $('#edit-tc-entry-modal').modal('hide')
+          }
         }
       })
     } else {
       Meteor.call('insertTimeCard', {
-        projectId: $('#targetProject').val(), date, hours, task,
+        projectId: $('.js-target-project').val(), date, hours, task,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -140,6 +160,7 @@ Template.tracktime.events({
           templateInstance.$(event.currentTarget).prop('disabled', false)
           templateInstance.$('.js-show-timecards').slideDown('fast')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
+          $('#edit-tc-entry-modal').modal('hide')
         }
       })
     }
@@ -156,7 +177,7 @@ Template.tracktime.events({
     templateInstance.$('#hours').val('')
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
-  'change #targetProject': (event, templateInstance) => {
+  'change .js-target-project': (event, templateInstance) => {
     templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
     templateInstance.$('.js-tasksearch').focus()
   },
@@ -165,7 +186,7 @@ Template.tracktime.events({
       let date = moment.utc(templateInstance.$(event.currentTarget).val(), 'ddd, DD.MM.YYYY')
       if (!date.isValid()) {
         date = moment.utc()
-        event.currentTarget.valueAsDate = date.toDate()
+        event.currentTarget.value = date.format('ddd, DD.MM.YYYY')
       }
       date = date.format('YYYY-MM-DD')
       // we need this to correctly capture calender change events from the input
@@ -210,22 +231,22 @@ Template.tracktime.events({
 })
 Template.tracktime.helpers({
   date: () => moment.utc(Template.instance().date.get()).format('ddd, DD.MM.YYYY'),
-  projectId: () => {
-    if (FlowRouter.getParam('projectId')) {
-      return FlowRouter.getParam('projectId')
-    }
-    return Timecards.findOne({ _id: FlowRouter.getParam('tcid') }) ? Timecards.findOne({ _id: FlowRouter.getParam('tcid') }).projectId : false
-  },
+  projectId: () => Template.instance().projectId.get(),
+  reactiveProjectId: () => Template.instance().projectId,
   projectName: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false),
   timecards: () => Timecards.find(),
-  isEdit: () => FlowRouter.getParam('tcid'),
-  task: () => (Timecards.findOne({ _id: FlowRouter.getParam('tcid') }) ? Timecards.findOne({ _id: FlowRouter.getParam('tcid') }).task : false),
-  hours: () => (Timecards.findOne({ _id: FlowRouter.getParam('tcid') }) ? Timecards.findOne({ _id: FlowRouter.getParam('tcid') }).hours : false),
+  isEdit: () => Template.instance().tcid.get()
+    || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
+    || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()),
+  task: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
+    ? Timecards.findOne({ _id: Template.instance().tcid.get() }).task : false),
+  hours: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
+    ? Timecards.findOne({ _id: Template.instance().tcid.get() }).hours : false),
   showTracker: () => (Meteor.user() ? (Meteor.user().profile.timeunit !== 'd') : false),
   totalTime: () => Template.instance().totalTime.get(),
   previousDay: () => moment.utc(Template.instance().date.get()).subtract(1, 'day').format('ddd, DD.MM.YYYY'),
   nextDay: () => moment.utc(Template.instance().date.get()).add(1, 'day').format('ddd, DD.MM.YYYY'),
-  borderClass: () => (FlowRouter.getParam('tcid') ? '' : 'tab-borders'),
+  borderClass: () => (Template.instance().tcid.get() ? '' : 'tab-borders'),
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

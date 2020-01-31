@@ -46,7 +46,8 @@
     "retry": "Retry now",
     "lastWeek": "Last week",
     "nextWeek": "Next week",
-    "newLine": "New line"
+    "newLine": "New line",
+    "cancel": "Cancel"
   },
   "tracktime": {
     "no_time": "No time tracked yet.",

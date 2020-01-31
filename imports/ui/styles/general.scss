@@ -116,6 +116,9 @@
   cursor: pointer;
 }
 
+.dp-below, .dp-modal {
+  z-index: 1060 !important;
+}
 .dp-selected {
   background: map-get($theme-colors, primary) !important;
 }

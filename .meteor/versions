@@ -24,7 +24,7 @@ ddp@1.4.0
 ddp-client@2.3.3
 ddp-common@1.4.0
 ddp-rate-limiter@1.0.7
-ddp-server@2.3.0
+ddp-server@2.3.1
 deps@1.0.12
 diff-sequence@1.1.1
 dynamic-import@0.5.1

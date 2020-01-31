@@ -12,7 +12,7 @@ Template.navbar.helpers({
   displayLinkText: (routename) => (FlowRouter.getRouteName() === routename),
   avatar: () => {
     if (Meteor.user() && Meteor.user().profile.avatar) {
-      return `<img src="${Meteor.user().profile.avatar}" alt="${Meteor.user().profile.name}" style="height:30px" class="rounded"/>`
+      return `<img src="${Meteor.user().profile.avatar}" alt="${Meteor.user().profile.name}" style="height:25px" class="rounded"/>`
     }
     namedavatar.config({
       nameType: 'initials',
