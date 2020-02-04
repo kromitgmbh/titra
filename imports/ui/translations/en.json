@@ -30,6 +30,7 @@
     "profile": "Profile",
     "about": "About",
     "settings": "Settings",
+    "administration": "Administration",
     "save": "Save",
     "back": "Back",
     "edit": "Edit",
@@ -257,5 +258,16 @@
     "total_memory": "Total memory",
     "free_memory": "Free memory",
     "history": "All releases"
+  },
+  "administration": {
+    "admin": "Admin",
+    "create": "Create",
+    "create_user": "Create user",
+    "creation_date": "Creation date",
+    "users": "Users",
+    "user_created": "The user has been created.",
+    "user_updated": "The user information has been updated.",
+    "user_deleted": "The users has been deleted",
+    "user_deletion_confirmation": "Do you really want to delete this users (this cannot be undone)?"
   }
 }

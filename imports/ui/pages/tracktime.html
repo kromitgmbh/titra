@@ -74,7 +74,7 @@
           </ul>
       </div>
     {{/unless}}
-    <div class="form-group">
+    <div class="form-group js-tracktime-projectselect">
       <label>{{t "globals.project"}}</label>
       {{>projectselect tcid=tcid projectId=reactiveProjectId}}
     </div>
@@ -103,7 +103,7 @@
       </div>
     </div>
     <div class="row">
-        {{#if tcid}}
+        {{#if isEdit}}
           <div class="col-6 mr-auto">
             <button class="btn btn-secondary border form-control" data-dismiss="modal" aria-label="Close">{{t "navigation.cancel"}}</button>
           </div>

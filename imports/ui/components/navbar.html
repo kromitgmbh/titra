@@ -19,6 +19,9 @@
             <div class="dropdown-menu mt-0 bg-dark" aria-labelledby="navbarDropdownMenuLink" style="left:auto;right:-1rem;">
               <a class="dropdown-item text-white" href="/profile"><i class="fa fa-user-circle"></i> {{t "navigation.profile"}}</a>
               <a class="dropdown-item text-white" href="/settings"><i class="fa fa-cogs"></i> {{t "navigation.settings"}}</a>
+              {{#if currentUser.isAdmin}}
+                <a class="dropdown-item text-white" href="/admin"><i class="fa fa-lock"></i> {{t "navigation.administration"}}</a>
+              {{/if}}
               <div class="dropdown-divider"></div>
               <a class="dropdown-item text-white" href="/about"><i class="fa fa-info-circle"></i> {{t "navigation.about"}}</a>
             </div>

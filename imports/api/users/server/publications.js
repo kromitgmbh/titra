@@ -1,7 +1,7 @@
 import Timecards from '../../timecards/timecards.js'
 import Projects from '../../projects/projects.js'
 import { Dashboards } from '../../dashboards/dashboards'
-import { checkAuthentication } from '../../../utils/server_method_helpers.js'
+import { checkAuthentication, checkAdminAuthentication } from '../../../utils/server_method_helpers.js'
 
 Meteor.publish('projectUsers', function projectUsers({ projectId }) {
   check(projectId, String)
@@ -90,4 +90,20 @@ Meteor.publish('dashboardUser', function dashboardUser({ _id }) {
   checkAuthentication(this)
   const dashboard = Dashboards.findOne({ _id })
   return Meteor.users.find({ _id: dashboard.resourceId }, { fields: { 'profile.name': 1 } })
+})
+
+Meteor.publish('userRoles', function userRoles() {
+  checkAuthentication(this)
+  return Meteor.users.find({ _id: this.userId }, { fields: { profile: 1, isAdmin: 1 } })
+})
+
+Meteor.publish('adminUserList', function adminUserList() {
+  checkAdminAuthentication(this)
+  return Meteor.users.find({},
+    {
+      fields: {
+        profile: 1, emails: 1, isAdmin: 1, createdAt: 1,
+      },
+      sort: { createdAt: -1 },
+    })
 })

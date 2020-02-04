@@ -8,3 +8,8 @@ Template.editTimeEntryModal.helpers({
     || (!!Template.instance().data.selectedProjectId
         && !!Template.instance().data.selectedProjectId.get())),
 })
+Template.editTimeEntryModal.onDestroyed(() => {
+  $('#edit-tc-entry-modal').modal('dispose')
+  $('.modal-backdrop').remove()
+  $('body').removeClass('modal-open')
+})

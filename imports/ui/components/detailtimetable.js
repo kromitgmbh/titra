@@ -12,7 +12,6 @@ import { buildDetailedTimeEntriesForPeriodSelector } from '../../utils/server_me
 import './detailtimetable.html'
 import './pagination.js'
 import './limitpicker.js'
-import '../pages/tracktime.js'
 
 const Counts = new Mongo.Collection('counts')
 
