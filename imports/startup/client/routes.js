@@ -80,7 +80,7 @@ FlowRouter.route('/create/project/', {
 })
 FlowRouter.route('/list/timecards/:projectId', {
   waitOn() {
-    return import('../../ui/pages/timecardlist.js')
+    return [import('../../ui/pages/timecardlist.js'), import('../../ui/pages/tracktime.js')]
   },
   action() {
     document.title = 'titra - details'
@@ -115,6 +115,16 @@ FlowRouter.route('/about', {
   action() {
     document.title = 'titra - about'
     this.render('appLayout', 'about')
+  },
+  name: 'settings',
+})
+FlowRouter.route('/admin', {
+  waitOn() {
+    return import('../../ui/pages/administration.js')
+  },
+  action() {
+    document.title = 'titra - administration'
+    this.render('appLayout', 'administration')
   },
   name: 'settings',
 })
@@ -176,6 +186,7 @@ FlowRouter.route('/claim/admin', {
     }
   },
 })
+
 FlowRouter.route('/404', {
   action() {
     this.render('appLayout', '404')

@@ -1,5 +1,6 @@
 import { check, Match } from 'meteor/check'
-import { checkAuthentication } from '../../utils/server_method_helpers.js'
+import { Accounts } from 'meteor/accounts-base'
+import { checkAuthentication, checkAdminAuthentication } from '../../utils/server_method_helpers.js'
 
 Meteor.methods({
   updateSettings({
@@ -82,5 +83,33 @@ Meteor.methods({
       return `Congratulations ${Meteor.users.findOne({ _id: this.userId }).profile.name}, you are now admin.`
     }
     throw new Meteor.Error('Unable to claim admin rights, only the first user on a server is allowed to do this.')
+  },
+  adminCreateUser({
+    name, email, password, isAdmin, currentLanguageProject, currentLanguageProjectDesc
+  }) {
+    checkAdminAuthentication(this)
+    check(name, String)
+    check(email, String)
+    check(password, String)
+    check(isAdmin, Boolean)
+    check(currentLanguageProject, String)
+    check(currentLanguageProjectDesc, String)
+    const profile = { currentLanguageProject, currentLanguageProjectDesc, name }
+    const userId = Accounts.createUser({
+      email, password, profile,
+    })
+    Meteor.users.update({ _id: userId }, { $set: { isAdmin: true } })
+    return userId
+  },
+  adminDeleteUser({ userId }) {
+    checkAdminAuthentication(this)
+    check(userId, String)
+    Meteor.users.remove({ _id: userId })
+  },
+  adminToggleUserAdmin({ userId, isAdmin }) {
+    checkAdminAuthentication(this)
+    check(userId, String)
+    check(isAdmin, Boolean)
+    Meteor.users.update({ _id: userId }, { $set: { isAdmin } })
   },
 })

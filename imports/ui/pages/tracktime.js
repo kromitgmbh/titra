@@ -36,8 +36,8 @@ Template.tracktime.onRendered(() => {
   }
 })
 Template.tracktime.onCreated(function tracktimeCreated() {
-  import('mathjs').then((mathjs) => {
-    this.math = mathjs
+  import('math-expression-evaluator').then((mathexp) => {
+    this.math = mathexp
   })
   this.date = new ReactiveVar(moment.utc().toDate())
   this.projectId = new ReactiveVar()
@@ -95,8 +95,9 @@ Template.tracktime.onCreated(function tracktimeCreated() {
 Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
-    if (!$('.js-target-project').val()) {
-      $('.js-target-project').addClass('is-invalid')
+    const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > .js-target-project')
+    if (!selectedProjectElement.val()) {
+      selectedProjectElement.addClass('is-invalid')
       $.notify({ message: i18next.t('notifications.select_project') }, { type: 'danger' })
       return
     }
@@ -111,18 +112,18 @@ Template.tracktime.events({
       return
     }
     try {
-      templateInstance.math.evaluate($('#hours').val())
+      templateInstance.math.eval($('#hours').val())
     } catch (exception) {
       $.notify({ message: i18next.t('notifications.check_time_input') }, { type: 'danger' })
       return
     }
-    const projectId = templateInstance.$('.js-target-project').val()
+    const projectId = selectedProjectElement.val()
     const task = templateInstance.$('.js-tasksearch-input').val()
     const date = moment.utc($('#date').val(), 'ddd, DD.MM.YYYY').toDate()
-    let hours = templateInstance.math.evaluate($('#hours').val())
+    let hours = templateInstance.math.eval($('#hours').val())
 
     if (Meteor.user().profile.timeunit === 'd') {
-      hours = templateInstance.math.evaluate(templateInstance.$('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
+      hours = templateInstance.math.eval(templateInstance.$('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
     }
     const buttonLabel = $(event.currentTarget).text()
     templateInstance.$(event.currentTarget).text('saving ...')
@@ -146,7 +147,7 @@ Template.tracktime.events({
       })
     } else {
       Meteor.call('insertTimeCard', {
-        projectId: $('.js-target-project').val(), date, hours, task,
+        projectId, date, hours, task,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -235,7 +236,7 @@ Template.tracktime.helpers({
   reactiveProjectId: () => Template.instance().projectId,
   projectName: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false),
   timecards: () => Timecards.find(),
-  isEdit: () => Template.instance().tcid.get()
+  isEdit: () => (Template.instance().tcid && Template.instance().tcid.get())
     || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
     || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()),
   task: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })

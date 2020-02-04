@@ -23,6 +23,13 @@ function checkAuthentication(context) {
     throw new Meteor.Error(i18next.t('notifications.auth_error_method'))
   }
 }
+function checkAdminAuthentication(context) {
+  if (!context.userId) {
+    throw new Meteor.Error(i18next.t('notifications.auth_error_method'))
+  } else if (!Meteor.users.findOne({ _id: context.userId }).isAdmin) {
+    throw new Meteor.Error(i18next.t('notifications.auth_error_method'))
+  }
+}
 function getProjectListByCustomer(customer) {
   let projects = []
   const userId = Meteor.userId()
@@ -367,6 +374,7 @@ function buildDetailedTimeEntriesForPeriodSelector({
 
 export {
   checkAuthentication,
+  checkAdminAuthentication,
   getProjectListById,
   getProjectListByCustomer,
   totalHoursForPeriodMapper,

@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -24,7 +24,7 @@
     "is-dark": "^1.0.4",
     "jquery": "^3.4.1",
     "jquery-serializejson": "^2.9.0",
-    "mathjs": "^6.5.0",
+    "math-expression-evaluator": "^1.2.22",
     "meteor-node-stubs": "^1.0.0",
     "moment": "^2.24.0",
     "namedavatar": "^1.1.0",
@@ -43,7 +43,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^3.2.0",
-    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-meteor": "^6.0.0"
   },
   "apidoc": {

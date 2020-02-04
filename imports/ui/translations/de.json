@@ -30,6 +30,7 @@
     "profile": "Profil",
     "about": "Über",
     "settings": "Einstellungen",
+    "administration": "Administration",
     "save": "Speichern",
     "back": "Zurück",
     "edit": "Bearbeiten",
@@ -264,5 +265,16 @@
     "total_memory": "Arbeitsspeicher gesamt",
     "free_memory": "Freier Arbeitsspeicher",
     "history": "Alle Versionen anzeigen"
+  },
+  "administration": {
+    "admin": "Admin",
+    "create": "Erstellen",
+    "create_user": "Benutzer anlegen",
+    "creation_date": "Erstellungsdatum",
+    "users": "Benutzer",
+    "user_created": "Der Benutzer wurde erstellt.",
+    "user_updated": "Die Benutzerinformationen wurden aktualisiert.",
+    "user_deleted": "Der Benutzer wurde gelöscht.",
+    "user_deletion_confirmation": "Möchten Sie diesen Benutzer wirklich löschen (dies kann nicht rückgängig gemacht werden)?"
   }
 }

@@ -1,3 +1,5 @@
+import namedavatar from 'namedavatar'
+
 const clientTimecards = new Mongo.Collection('clientTimecards')
 
 function addToolTipToTableCell(value) {
@@ -28,9 +30,27 @@ function timeInUserUnit(time) {
   }
   return false
 }
+function displayUserAvatar(meteorUser) {
+  if (meteorUser && meteorUser.profile.avatar) {
+    return `<img src="${meteorUser.profile.avatar}" alt="${meteorUser.profile.name}" style="height:25px" class="rounded"/>`
+  }
+  namedavatar.config({
+    nameType: 'initials',
+    backgroundColors:
+      [(meteorUser && meteorUser.profile.avatarColor
+        ? meteorUser.profile.avatarColor : '#455A64')],
+    minFontSize: 2,
+  })
+  const rawSVG = namedavatar.getSVG(meteorUser ? meteorUser.profile.name : false)
+  rawSVG.classList = 'rounded'
+  rawSVG.style.width = '25px'
+  rawSVG.style.height = '25px'
+  return rawSVG.outerHTML
+}
 export {
   addToolTipToTableCell,
   getWeekDays,
   clientTimecards,
   timeInUserUnit,
+  displayUserAvatar,
 }
