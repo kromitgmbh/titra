@@ -1,10 +1,9 @@
 import { Template } from 'meteor/templating'
-import emoji from 'node-emoji'
 import isDarkMode from 'is-dark'
 import i18next from 'i18next'
 import * as bs4notify from 'bootstrap4-notify'
 import Projects from '../../api/projects/projects.js'
-import { timeInUserUnit } from '../../utils/frontend_helpers.js'
+import { timeInUserUnit, emojify } from '../../utils/frontend_helpers.js'
 
 $.notifyDefaults({
   type: 'success',
@@ -75,6 +74,7 @@ function loadLanguage(language) {
 Meteor.startup(() => {
   window.BootstrapLoaded = new ReactiveVar(false)
   let language = navigator.language.substring(0, 2)
+  import('@fortawesome/fontawesome-free/js/all.js')
   Tracker.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
       && Meteor.user().profile) {
@@ -139,8 +139,7 @@ Template.registerHelper('unit', () => {
 })
 Template.registerHelper('emojify', (text) => {
   if (text) {
-    const replacer = (match) => emoji.emojify(match)
-    return text.replace(/(:.*:)/g, replacer)
+    return text.replace(/(:.*:)/g, emojify)
   }
   return false
 })

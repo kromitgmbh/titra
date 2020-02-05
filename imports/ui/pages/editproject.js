@@ -7,6 +7,7 @@ import i18next from 'i18next'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
+import { validateEmail } from '../../utils/frontend_helpers'
 
 function validateWekanUrl() {
   const templateInstance = Template.instance()
@@ -156,9 +157,8 @@ Template.editproject.events({
   },
   'click #addNewMember': (event, templateInstance) => {
     event.preventDefault()
-    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     const newmembermail = templateInstance.$('#newmembermail').val()
-    if (newmembermail && emailRegex.test(newmembermail)) {
+    if (newmembermail && validateEmail(newmembermail)) {
       Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: templateInstance.$('#newmembermail').val() }, (error, result) => {
         if (error) {
           $.notify({ message: i18next.t(error.error) }, { type: 'danger' })

@@ -36,6 +36,7 @@ $dropdown-link-hover-bg: map-get($theme-colors, dark) !default;
   color: #495057;
 }
 .tab-borders {
+  background-color: map-get($theme-colors, secondary);
   border-left: 1px solid #dee2e6;
   border-right: 1px solid #dee2e6;
   border-bottom: 1px solid #dee2e6;
@@ -50,9 +51,9 @@ $dropdown-link-hover-bg: map-get($theme-colors, dark) !default;
   background: rgba(0, 150, 136, 0.5) !important;
 }
 .alert-secondary {
-    color: #7b7b7b !important;
-    background-color: #ffffff !important;
-    border-color: #e8e8e8 !important;
+    color: #7b7b7b;
+    background-color: #ffffff;
+    border-color: #e8e8e8;
 }
 .fc-button-primary {
     color: #000000 !important;
@@ -74,5 +75,21 @@ $dropdown-link-hover-bg: map-get($theme-colors, dark) !default;
     --dt-selection-highlight-color: var(--dt-light-yellow);
     --dt-toast-message-border: none;
     --dt-header-cell-bg: var(--dt-cell-bg);
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+  color: #495057;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+.nav-tabs .nav-link:hover {
+  color: #495057;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+.drag.card {
+  background-color: map-get($theme-colors, secondary);  
+}
+.card-block .list-group-item {
+  background-color: map-get($theme-colors, secondary);
 }
 @import "{}/imports/ui/styles/general.scss";

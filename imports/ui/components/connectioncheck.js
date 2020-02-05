@@ -1,4 +1,4 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import './connectioncheck.html'
 
 Template.connectioncheck.events({
@@ -10,5 +10,5 @@ Template.connectioncheck.events({
 Template.connectioncheck.helpers({
   offline: () => (Meteor.status().status === 'failed'
       || Meteor.status().status === 'waiting') && Meteor.status().retryCount > 1,
-  nextRetry: () => moment(new Date(Meteor.status().retryTime)).fromNow(),
+  nextRetry: () => dayjs(new Date(Meteor.status().retryTime)).fromNow(),
 })

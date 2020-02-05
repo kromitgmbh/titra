@@ -1,5 +1,6 @@
 import i18next from 'i18next'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import Projects from '../api/projects/projects.js'
 import { periodToDates } from './periodHelpers.js'
 
@@ -283,13 +284,14 @@ function buildworkingTimeSelector(projectId, period, userId, limit, page) {
   return workingTimeArray
 }
 function workingTimeEntriesMapper(entry) {
+  dayjs.extend(customParseFormat)
   const meteorUser = Meteor.users.findOne({ _id: entry._id.userId })
-  const userBreakStartTime = moment(meteorUser.profile.breakStartTime ? meteorUser.profile.breakStartTime : '12:00', 'HH:mm')
+  const userBreakStartTime = dayjs(meteorUser.profile.breakStartTime ? meteorUser.profile.breakStartTime : '12:00', 'HH:mm')
   const userBreakDuration = meteorUser.profile.breakDuration ? meteorUser.profile.breakDuration : '0.5'
-  const userBreakEndTime = moment(userBreakStartTime, 'HH:mm').add(userBreakDuration, 'Hours')
+  const userBreakEndTime = dayjs(userBreakStartTime, 'HH:mm').add(userBreakDuration, 'hour')
   const userRegularWorkingTime = meteorUser.profile.regularWorkingTime ? meteorUser.profile.regularWorkingTime : '8'
   const userStartTime = meteorUser.profile.dailyStartTime ? meteorUser.profile.dailyStartTime : '09:00'
-  const userEndTime = moment(userStartTime, 'HH:mm').add(entry.totalTime, 'Hours')
+  const userEndTime = dayjs(userStartTime, 'HH:mm').add(entry.totalTime, 'hour')
   return {
     date: entry._id.date,
     resource: meteorUser.profile.name,

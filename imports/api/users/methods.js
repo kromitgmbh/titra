@@ -98,7 +98,7 @@ Meteor.methods({
     const userId = Accounts.createUser({
       email, password, profile,
     })
-    Meteor.users.update({ _id: userId }, { $set: { isAdmin: true } })
+    Meteor.users.update({ _id: userId }, { $set: { isAdmin } })
     return userId
   },
   adminDeleteUser({ userId }) {

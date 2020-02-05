@@ -1,5 +1,5 @@
-import moment from 'moment'
-import emoji from 'node-emoji'
+import dayjs from 'dayjs'
+import { emojify } from '../../utils/frontend_helpers'
 import i18next from 'i18next'
 import { HTTP } from 'meteor/http'
 import { check, Match } from 'meteor/check'
@@ -19,40 +19,39 @@ import {
   workingTimeEntriesMapper,
 } from '../../utils/server_method_helpers.js'
 
-const replacer = (match) => emoji.emojify(match)
 
 function insertTimeCard(projectId, task, date, hours, userId) {
-  if (!Tasks.findOne({ userId, name: task.replace(/(:.*:)/g, replacer) })) {
-    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, replacer) })
+  if (!Tasks.findOne({ userId, name: task.replace(/(:.*:)/g, emojify) })) {
+    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, emojify) })
   } else {
-    Tasks.update({ userId, name: task.replace(/(:.*:)/g, replacer) }, { $set: { lastUsed: new Date() } })
+    Tasks.update({ userId, name: task.replace(/(:.*:)/g, emojify) }, { $set: { lastUsed: new Date() } })
   }
   return Timecards.insert({
     userId,
     projectId,
     date,
     hours,
-    task: task.replace(/(:.*:)/g, replacer),
+    task: task.replace(/(:.*:)/g, emojify),
   })
 }
 function upsertTimecard(projectId, task, date, hours, userId) {
-  if (!Tasks.findOne({ userId, name: task.replace(/(:.*:)/g, replacer) })) {
-    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, replacer) })
+  if (!Tasks.findOne({ userId, name: task.replace(/(:.*:)/g, emojify) })) {
+    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, emojify) })
   } else {
-    Tasks.update({ userId, name: task.replace(/(:.*:)/g, replacer) }, { $set: { lastUsed: new Date() } })
+    Tasks.update({ userId, name: task.replace(/(:.*:)/g, emojify) }, { $set: { lastUsed: new Date() } })
   }
   if (hours === 0) {
     Timecards.remove({
       userId,
       projectId,
       date,
-      task: task.replace(/(:.*:)/g, replacer),
+      task: task.replace(/(:.*:)/g, emojify),
     })
   } else if (Timecards.find({
     userId,
     projectId,
     date,
-    task: task.replace(/(:.*:)/g, replacer),
+    task: task.replace(/(:.*:)/g, emojify),
   }).count() > 1) {
     // if there are more time entries with the same task description for one day,
     // we remove all of them and create a new entry for the total sum
@@ -60,21 +59,21 @@ function upsertTimecard(projectId, task, date, hours, userId) {
       userId,
       projectId,
       date,
-      task: task.replace(/(:.*:)/g, replacer),
+      task: task.replace(/(:.*:)/g, emojify),
     })
   }
   return Timecards.update({
     userId,
     projectId,
     date,
-    task: task.replace(/(:.*:)/g, replacer),
+    task: task.replace(/(:.*:)/g, emojify),
   },
   {
     userId,
     projectId,
     date,
     hours,
-    task: task.replace(/(:.*:)/g, replacer),
+    task: task.replace(/(:.*:)/g, emojify),
   }, { upsert: true })
 }
 
@@ -116,15 +115,15 @@ Meteor.methods({
     check(date, Date)
     check(hours, Number)
     checkAuthentication(this)
-    if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })) {
-      Tasks.insert({ userId: this.userId, name: task.replace(/(:.*:)/g, replacer) })
+    if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, emojify) })) {
+      Tasks.insert({ userId: this.userId, name: task.replace(/(:.*:)/g, emojify) })
     }
     Timecards.update({ _id }, {
       $set: {
         projectId,
         date,
         hours,
-        task: task.replace(/(:.*:)/g, replacer),
+        task: task.replace(/(:.*:)/g, emojify),
       },
     })
   },
@@ -208,7 +207,7 @@ Meteor.methods({
       data: {
         attributes: {
           name: 'from titra',
-          issue_date: moment().format('YYYY-MM-DD'),
+          issue_date: dayjs().format('YYYY-MM-DD'),
           draft: true,
         },
         relationships: {

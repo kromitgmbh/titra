@@ -1,15 +1,17 @@
-import moment from 'moment'
-import emoji from 'node-emoji'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import isBetween from 'dayjs/plugin/isBetween'
 import Timecards from '../timecards/timecards'
 import Projects from './projects.js'
 import { checkAuthentication } from '../../utils/server_method_helpers.js'
 import { addNotification } from '../notifications/notifications.js'
-
-const replacer = (match) => emoji.emojify(match)
+import { emojify } from '../../utils/frontend_helpers'
 
 Meteor.methods({
   getAllProjectStats() {
     checkAuthentication(this)
+    dayjs.extend(utc)
+    dayjs.extend(isBetween)
     const projectList = Projects.find(
       { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
@@ -18,24 +20,24 @@ Meteor.methods({
     let currentMonthHours = 0
     let previousMonthHours = 0
     let beforePreviousMonthHours = 0
-    const currentMonthName = moment.utc().format('MMM')
-    const currentMonthStart = moment.utc().startOf('month')
-    const currentMonthEnd = moment.utc().endOf('month')
-    const previousMonthName = moment.utc().subtract('1', 'months').format('MMM')
-    const beforePreviousMonthName = moment.utc().subtract('2', 'months').format('MMM')
-    const previousMonthStart = moment.utc().subtract('1', 'months').startOf('month')
-    const previousMonthEnd = moment.utc().subtract('1', 'months').endOf('month')
-    const beforePreviousMonthStart = moment.utc().subtract('2', 'months').startOf('month')
-    const beforePreviousMonthEnd = moment.utc().subtract('2', 'months').endOf('month')
+    const currentMonthName = dayjs.utc().format('MMM')
+    const currentMonthStart = dayjs.utc().startOf('month')
+    const currentMonthEnd = dayjs.utc().endOf('month')
+    const previousMonthName = dayjs.utc().subtract('1', 'months').format('MMM')
+    const beforePreviousMonthName = dayjs.utc().subtract('2', 'months').format('MMM')
+    const previousMonthStart = dayjs.utc().subtract('1', 'months').startOf('month')
+    const previousMonthEnd = dayjs.utc().subtract('1', 'months').endOf('month')
+    const beforePreviousMonthStart = dayjs.utc().subtract('2', 'months').startOf('month')
+    const beforePreviousMonthEnd = dayjs.utc().subtract('2', 'months').endOf('month')
 
     for (const timecard of
       Timecards.find({ projectId: { $in: projectList } }).fetch()) {
-      if (moment.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+      if (dayjs.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
         currentMonthHours += Number.parseFloat(timecard.hours)
-      } else if (moment.utc(new Date(timecard.date))
+      } else if (dayjs.utc(new Date(timecard.date))
         .isBetween(previousMonthStart, previousMonthEnd)) {
         previousMonthHours += Number.parseFloat(timecard.hours)
-      } else if (moment.utc(new Date(timecard.date))
+      } else if (dayjs.utc(new Date(timecard.date))
         .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
         beforePreviousMonthHours += Number.parseFloat(timecard.hours)
       }
@@ -59,7 +61,7 @@ Meteor.methods({
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
     }
-    updateJSON.name = updateJSON.name.replace(/(:.*:)/g, replacer)
+    updateJSON.name = updateJSON.name.replace(/(:.*:)/g, emojify)
     if (!updateJSON.public) {
       updateJSON.public = false
     } else {

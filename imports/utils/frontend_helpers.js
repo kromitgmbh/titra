@@ -47,10 +47,22 @@ function displayUserAvatar(meteorUser) {
   rawSVG.style.height = '25px'
   return rawSVG.outerHTML
 }
+function validateEmail(email) {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(String(email).toLowerCase())
+}
+
+function emojify(match) {
+  const emojiImport = Promise.await(import('node-emoji'))
+  return emojiImport.default.emojify(match)
+}
+
 export {
   addToolTipToTableCell,
   getWeekDays,
   clientTimecards,
   timeInUserUnit,
   displayUserAvatar,
+  validateEmail,
+  emojify,
 }

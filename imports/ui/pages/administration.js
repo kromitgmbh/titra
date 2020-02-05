@@ -1,8 +1,8 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { Random } from 'meteor/random'
 import i18next from 'i18next'
 import './administration.html'
-import { displayUserAvatar } from '../../utils/frontend_helpers'
+import { displayUserAvatar, validateEmail } from '../../utils/frontend_helpers'
 
 Template.administration.onCreated(function administrationCreated() {
   this.subscribe('adminUserList')
@@ -11,7 +11,7 @@ Template.administration.onCreated(function administrationCreated() {
 Template.administration.helpers({
   users: () => Meteor.users.find({}, { sort: { createdAt: -1 } }),
   avatar: (meteorUser) => displayUserAvatar(meteorUser),
-  moment: (date) => moment(date).format('DD.MM.YYYY (HH:mm)'),
+  dayjs: (date) => dayjs(date).format('DD.MM.YYYY (HH:mm)'),
 })
 
 Template.administration.events({
@@ -35,12 +35,17 @@ Template.administration.events({
     const isAdmin = templateInstance.$('#isAdmin').is(':checked')
     const currentLanguageProject = i18next.t('globals.project')
     const currentLanguageProjectDesc = i18next.t('project.first_project_desc')
+    if (!validateEmail(email)) {
+      templateInstance.$('#email').addClass('is-invalid')
+      return
+    }
     if (name && email && password) {
       Meteor.call('adminCreateUser', {
         name, email, password, isAdmin, currentLanguageProject, currentLanguageProjectDesc
       }, (error) => {
         if (error) {
           console.error(error)
+          $.notify({ message: error.message }, { type: 'danger' })
         } else {
           templateInstance.$('#name').val('')
           templateInstance.$('#email').val('')
@@ -48,6 +53,7 @@ Template.administration.events({
           templateInstance.$('#isAdmin').prop('checked', false)
           $.notify({ message: i18next.t('administration.user_created') }, { type: 'success' })
         }
+        templateInstance.$('#email').removeClass('is-invalid')
       })
     }
   },

@@ -1,4 +1,6 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import isBetween from 'dayjs/plugin/isBetween'
 import { check } from 'meteor/check'
 import Projects from '../projects'
 import Timecards from '../../timecards/timecards.js'
@@ -23,12 +25,14 @@ Meteor.publish('singleProject', function singleProject(projectId) {
 
 Meteor.publish('myProjectStats', function myProjectStats() {
   checkAuthentication(this)
+  dayjs.extend(utc)
+  dayjs.extend(isBetween)
   let initializing = true
 
-  const currentMonthStart = moment.utc().startOf('month')
-  const currentMonthEnd = moment.utc().endOf('month')
-  const previousMonthStart = moment.utc().startOf('month')
-  const previousMonthEnd = moment.utc().endOf('month')
+  const currentMonthStart = dayjs.utc().startOf('month')
+  const currentMonthEnd = dayjs.utc().endOf('month')
+  const previousMonthStart = dayjs.utc().startOf('month')
+  const previousMonthEnd = dayjs.utc().endOf('month')
   // observeChanges only returns after the initial `added` callbacks
   // have run. Until then, we don't want to send a lot of
   // `self.changed()` messages - hence tracking the
@@ -44,10 +48,10 @@ Meteor.publish('myProjectStats', function myProjectStats() {
         let previousMonthHours = 0
         for (const timecard of
           Timecards.find({ userId: this.userId, projectId }).fetch()) {
-          if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+          if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
             currentMonthHours += Number.parseFloat(timecard.hours)
           }
-          if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+          if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
             previousMonthHours += Number.parseFloat(timecard.hours)
           }
           totalHours += Number.parseFloat(timecard.hours)
@@ -61,10 +65,10 @@ Meteor.publish('myProjectStats', function myProjectStats() {
       let previousMonthHours = 0
       for (const timecard of
         Timecards.find({ userId: this.userId, projectId }).fetch()) {
-        if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+        if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
           currentMonthHours += Number.parseFloat(timecard.hours)
         }
-        if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+        if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
           previousMonthHours += Number.parseFloat(timecard.hours)
         }
         totalHours += Number.parseFloat(timecard.hours)
@@ -77,10 +81,10 @@ Meteor.publish('myProjectStats', function myProjectStats() {
       let previousMonthHours = 0
       for (const timecard of
         Timecards.find({ userId: this.userId, projectId }).fetch()) {
-        if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+        if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
           currentMonthHours += Number.parseFloat(timecard.hours)
         }
-        if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+        if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
           previousMonthHours += Number.parseFloat(timecard.hours)
         }
         totalHours += Number.parseFloat(timecard.hours)
@@ -101,10 +105,10 @@ Meteor.publish('myProjectStats', function myProjectStats() {
     let previousMonthHours = 0
     for (const timecard of
       Timecards.find({ userId: this.userId, projectId: project._id }).fetch()) {
-      if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+      if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
         currentMonthHours += Number.parseFloat(timecard.hours)
       }
-      if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+      if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
         previousMonthHours += Number.parseFloat(timecard.hours)
       }
       totalHours += Number.parseFloat(timecard.hours)
@@ -123,6 +127,8 @@ Meteor.publish('myProjectStats', function myProjectStats() {
 Meteor.publish('projectStats', function projectStats(projectId) {
   check(projectId, String)
   checkAuthentication(this)
+  dayjs.extend(utc)
+  dayjs.extend(isBetween)
   if (!this.userId || !Projects.findOne({
     _id: projectId,
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
@@ -130,15 +136,15 @@ Meteor.publish('projectStats', function projectStats(projectId) {
     return this.ready()
   }
   let initializing = true
-  const currentMonthName = moment.utc().format('MMM')
-  const currentMonthStart = moment.utc().startOf('month')
-  const currentMonthEnd = moment.utc().endOf('month')
-  const previousMonthName = moment.utc().subtract('1', 'months').format('MMM')
-  const previousMonthStart = moment.utc().subtract('1', 'months').startOf('month')
-  const previousMonthEnd = moment.utc().subtract('1', 'months').endOf('month')
-  const beforePreviousMonthStart = moment.utc().subtract('2', 'months').startOf('month')
-  const beforePreviousMonthEnd = moment.utc().subtract('2', 'months').endOf('month')
-  const beforePreviousMonthName = moment.utc().subtract('2', 'months').format('MMM')
+  const currentMonthName = dayjs.utc().format('MMM')
+  const currentMonthStart = dayjs.utc().startOf('month')
+  const currentMonthEnd = dayjs.utc().endOf('month')
+  const previousMonthName = dayjs.utc().subtract('1', 'months').format('MMM')
+  const previousMonthStart = dayjs.utc().subtract('1', 'months').startOf('month')
+  const previousMonthEnd = dayjs.utc().subtract('1', 'months').endOf('month')
+  const beforePreviousMonthStart = dayjs.utc().subtract('2', 'months').startOf('month')
+  const beforePreviousMonthEnd = dayjs.utc().subtract('2', 'months').endOf('month')
+  const beforePreviousMonthName = dayjs.utc().subtract('2', 'months').format('MMM')
 
   let totalHours = 0
   let currentMonthHours = 0
@@ -153,13 +159,13 @@ Meteor.publish('projectStats', function projectStats(projectId) {
     added: (timecardId) => {
       if (!initializing) {
         const timecard = Timecards.findOne({ _id: timecardId })
-        if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+        if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
           currentMonthHours += Number.parseFloat(timecard.hours)
         }
-        if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+        if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
           previousMonthHours += Number.parseFloat(timecard.hours)
         }
-        if (moment(new Date(timecard.date))
+        if (dayjs(new Date(timecard.date))
           .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
           beforePreviousMonthHours += Number.parseFloat(timecard.hours)
         }
@@ -179,13 +185,13 @@ Meteor.publish('projectStats', function projectStats(projectId) {
     removed: (timecardId) => {
       if (!initializing) {
         const timecard = Timecards.findOne({ _id: timecardId })
-        if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+        if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
           currentMonthHours += Number.parseFloat(timecard.hours)
         }
-        if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+        if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
           previousMonthHours += Number.parseFloat(timecard.hours)
         }
-        if (moment(new Date(timecard.date))
+        if (dayjs(new Date(timecard.date))
           .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
           beforePreviousMonthHours += Number.parseFloat(timecard.hours)
         }
@@ -205,13 +211,13 @@ Meteor.publish('projectStats', function projectStats(projectId) {
     changed: (timecardId) => {
       if (!initializing) {
         const timecard = Timecards.findOne({ _id: timecardId })
-        if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+        if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
           currentMonthHours += Number.parseFloat(timecard.hours)
         }
-        if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+        if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
           previousMonthHours += Number.parseFloat(timecard.hours)
         }
-        if (moment(new Date(timecard.date))
+        if (dayjs(new Date(timecard.date))
           .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
           beforePreviousMonthHours += Number.parseFloat(timecard.hours)
         }
@@ -234,13 +240,13 @@ Meteor.publish('projectStats', function projectStats(projectId) {
   initializing = false
   for (const timecard of
     Timecards.find({ projectId }).fetch()) {
-    if (moment(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+    if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
       currentMonthHours += Number.parseFloat(timecard.hours)
     }
-    if (moment(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+    if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
       previousMonthHours += Number.parseFloat(timecard.hours)
     }
-    if (moment(new Date(timecard.date))
+    if (dayjs(new Date(timecard.date))
       .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
       beforePreviousMonthHours += Number.parseFloat(timecard.hours)
     }

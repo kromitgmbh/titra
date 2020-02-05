@@ -5,7 +5,7 @@
             <div class="card-block">
                 <a href="https://titra.io/wiki" target="_blank" class="btn btn-outline-primary m-2"><i class="fa fa-book"></i> Wiki</a>
                 <a href="https://titra.io" target="_blank" class="btn btn-outline-primary m-2"><i class="fa fa-globe"></i> Homepage</a>
-                <a href="https://github.com/kromitgmbh/titra" target="_blank" class="btn btn-outline-primary m-2"><i class="fa fa-github"></i> {{t "about.source_code"}}</a>
+                <a href="https://github.com/kromitgmbh/titra" target="_blank" class="btn btn-outline-primary m-2"><i class="fab fa-github"></i> {{t "about.source_code"}}</a>
             </div>
         </div>
         <div class="card form-group">
@@ -25,7 +25,7 @@
                 <ul class="list-group">
                     <li class="list-group-item"><strong>{{t "about.os"}}:</strong> {{statistics.os.type}} ({{statistics.os.arch}})</li>
                     {{#if statistics.process.uptime}}
-                        <li class="list-group-item"><strong>{{t "about.uptime"}}:</strong> {{humanize (statistics.process.uptime)}}</li>
+                        <li class="list-group-item"><strong>{{t "about.uptime"}}:</strong> {{humanReadableTime(statistics.process.uptime)}}</li>
                         <li class="list-group-item"><strong>{{t "about.total_memory"}}:</strong> {{bytesToSize(statistics.os.totalmem)}}</li>
                         <li class="list-group-item"><strong>{{t "about.free_memory"}}:</strong> {{bytesToSize(statistics.os.freemem)}}</li>
                     {{/if}}
@@ -42,7 +42,7 @@
                     <p class="card-text" id="titra-changelog" style="white-space:pre-wrap;">{{t "globals.loading"}}</p>
                 </div>
                 <br/>
-                <a href="https://github.com/kromitgmbh/titra/releases" target="_blank" class="btn btn-outline-primary"><i class="fa fa-github"></i> {{t "about.history"}}</a>
+                <a href="https://github.com/kromitgmbh/titra/releases" target="_blank" class="btn btn-outline-primary"><i class="fab fa-github"></i> {{t "about.history"}}</a>
             </div>
         </div>
     </form>

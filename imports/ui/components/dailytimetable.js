@@ -1,4 +1,4 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { saveAs } from 'file-saver'
@@ -44,14 +44,14 @@ Template.dailytimetable.onRendered(() => {
       if (templateInstance.dailyTimecards.get()) {
         data = templateInstance.dailyTimecards.get()
           .map((entry) => Object.entries(entry)
-            .map((key) => { if (key[1] instanceof Date) { return moment(key[1]).format('DD.MM.YYYY') } return key[1] }))
+            .map((key) => { if (key[1] instanceof Date) { return dayjs(key[1]).format('DD.MM.YYYY') } return key[1] }))
       }
       const columns = [
         {
           name: i18next.t('globals.date'),
           editable: false,
           width: 1,
-          compareValue: (cell, keyword) => [moment(cell, 'DD.MM.YYYY').toDate(), moment(keyword, 'DD.MM.YYYY').toDate()],
+          compareValue: (cell, keyword) => [dayjs(cell, 'DD.MM.YYYY').toDate(), dayjs(keyword, 'DD.MM.YYYY').toDate()],
         },
         { name: i18next.t('globals.project'), editable: false, width: 2 },
         { name: i18next.t('globals.resource'), editable: false, width: 2 },
@@ -109,7 +109,7 @@ Template.dailytimetable.events({
     }
     const csvArray = [`\uFEFF${i18next.t('globals.date')},${i18next.t('globals.project')},${i18next.t('globals.resource')},${unit}\r\n`]
     for (const timeEntry of templateInstance.dailyTimecards.get()) {
-      csvArray.push(`${moment(timeEntry.date).format('DD.MM.YYYY')},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
+      csvArray.push(`${dayjs(timeEntry.date).format('DD.MM.YYYY')},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_daily_time_${templateInstance.data.period.get()}.csv`)
   },
@@ -121,7 +121,7 @@ Template.dailytimetable.events({
     }
     const data = [[i18next.t('globals.date'), i18next.t('globals.project'), i18next.t('globals.resource'), unit]]
     for (const timeEntry of templateInstance.dailyTimecards.get()) {
-      data.push([moment(timeEntry.date).format('DD.MM.YYYY'), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
+      data.push([dayjs(timeEntry.date).format('DD.MM.YYYY'), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'daily').createDownloadUrl(), `titra_daily_time_${templateInstance.data.period.get()}.xlsx`)
   },

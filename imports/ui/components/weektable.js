@@ -1,4 +1,5 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './weektable.html'
@@ -7,16 +8,17 @@ import Projects from '../../api/projects/projects'
 import { clientTimecards, getWeekDays, timeInUserUnit } from '../../utils/frontend_helpers'
 
 Template.weektable.onCreated(function weekTableCreated() {
+  dayjs.extend(utc)
   this.subscribe('myprojects')
   // attention: this is a workaround because we are currently hard coding the european week format
   // where weeks start on Monday - in the future this needs to be updated based on a user specific
   // 'start of the week' setting
-  this.startDate = new ReactiveVar(moment.utc().startOf('week').add(1, 'day'))
-  this.endDate = new ReactiveVar(moment.utc().endOf('week').add(1, 'day'))
+  this.startDate = new ReactiveVar(dayjs.utc().startOf('week').add(1, 'day'))
+  this.endDate = new ReactiveVar(dayjs.utc().endOf('week').add(1, 'day'))
   this.autorun(() => {
     if (FlowRouter.getQueryParam('date')) {
-      this.startDate.set(moment.utc(FlowRouter.getQueryParam('date')).startOf('week').add(1, 'day'), 'YYYY-MM-DD')
-      this.endDate.set(moment.utc(FlowRouter.getQueryParam('date')).endOf('week').add(1, 'day'), 'YYYY-MM-DD')
+      this.startDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).startOf('week').add(1, 'day'), 'YYYY-MM-DD')
+      this.endDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).endOf('week').add(1, 'day'), 'YYYY-MM-DD')
     }
   })
 })
@@ -35,7 +37,7 @@ Template.weektable.helpers({
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       clientTimecards.find().fetch().forEach((element) => {
         if (element.entries) {
-          total += element.entries.filter((entry) => moment.utc(entry.date).format('ddd, DD.MM') === day)
+          total += element.entries.filter((entry) => dayjs.utc(entry.date).format('ddd, DD.MM') === day)
             .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
         }
       })
@@ -51,11 +53,11 @@ Template.weektable.helpers({
 Template.weektable.events({
   'click .js-previous-week': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: moment.utc(templateInstance.startDate.get()).subtract(1, 'week').format('YYYY-MM-DD') })
+    FlowRouter.setQueryParams({ date: dayjs.utc(templateInstance.startDate.get()).subtract(1, 'week').format('YYYY-MM-DD') })
   },
   'click .js-next-week': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: moment.utc(templateInstance.startDate.get()).add(1, 'week').format('YYYY-MM-DD') })
+    FlowRouter.setQueryParams({ date: dayjs.utc(templateInstance.startDate.get()).add(1, 'week').format('YYYY-MM-DD') })
   },
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
@@ -77,7 +79,7 @@ Template.weektable.events({
         weekArray.push({
           projectId: $(element).data('project-id'),
           task,
-          date: moment.utc(startDate.add(Number(templateInstance.$(element).data('week-day')) + 1, 'day').format('YYYY-MM-DD')).toDate(),
+          date: dayjs.utc(startDate.add(Number(templateInstance.$(element).data('week-day')) + 1, 'day').format('YYYY-MM-DD')).toDate(),
           hours,
         })
       }
@@ -134,7 +136,7 @@ Template.weektablerow.helpers({
   getHoursForDay(day, task) {
     if (task.entries) {
       const entryForDay = task.entries
-        .filter((entry) => moment.utc(entry.date).format('ddd, DD.MM') === day)
+        .filter((entry) => dayjs.utc(entry.date).format('ddd, DD.MM') === day)
         .reduce(((total, element) => total + element.hours), 0)
       return entryForDay !== 0 ? timeInUserUnit(entryForDay) : ''
     }
@@ -165,7 +167,7 @@ Template.weektablerow.helpers({
         },
       ).fetch().concat(Template.instance().tempTimeEntries.get()).forEach((element) => {
         if (element.entries) {
-          total += element.entries.filter((entry) => moment.utc(entry.date).format('ddd, DD.MM') === day)
+          total += element.entries.filter((entry) => dayjs.utc(entry.date).format('ddd, DD.MM') === day)
             .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
         }
       })

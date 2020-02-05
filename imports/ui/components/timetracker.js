@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { ReactiveVar } from 'meteor/reactive-var'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import './timetracker.html'
 
 Template.timetracker.onCreated(function createTimeTracker() {
@@ -19,17 +19,17 @@ Template.timetracker.events({
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
     }
-    templateInstance.$('#hours').val(moment.duration(moment().valueOf() - templateInstance.timer.get().valueOf()).asHours().toFixed(precision))
+    templateInstance.$('#hours').val(dayjs.duration(dayjs().valueOf() - templateInstance.timer.get().valueOf()).asHours().toFixed(precision))
     Meteor.clearTimeout(templateInstance.intervalHandle)
     Template.instance().timer.set(null)
   },
   'click .js-start': (event, templateInstance) => {
     event.preventDefault()
-    Template.instance().timer.set(moment())
+    Template.instance().timer.set(dayjs())
     const timer = templateInstance.timer.get()
     Template.instance().intervalHandle = Meteor.setInterval(function handleTimer() {
       // console.log(timer)
-      const duration = moment.duration(moment().valueOf() - timer.get().valueOf())
+      const duration = dayjs.duration(dayjs().valueOf() - timer.get().valueOf())
       this.$('.js-timer').text(`${pad(duration.hours(), 2)}:${pad(duration.minutes(), 2)}:${pad(duration.seconds(), 2)}`)
     }, 1000)
   },

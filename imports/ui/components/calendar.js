@@ -1,24 +1,25 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import { Template } from 'meteor/templating'
-import emoji from 'node-emoji'
 import hex2rgba from '../../utils/hex2rgba.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
 import './calendar.html'
 import './editTimeEntryModal.js'
+import { emojify } from '../../utils/frontend_helpers.js'
 
 Template.calendar.onCreated(function calendarCreated() {
+  dayjs.extend(utc)
   this.subscribe('myprojects')
-  this.startDate = new ReactiveVar(moment.utc().startOf('month').toDate())
-  this.endDate = new ReactiveVar(moment.utc().endOf('month').toDate())
+  this.startDate = new ReactiveVar(dayjs.utc().startOf('month').toDate())
+  this.endDate = new ReactiveVar(dayjs.utc().endOf('month').toDate())
   this.tcid = new ReactiveVar()
   this.selectedProjectId = new ReactiveVar()
   this.selectedDate = new ReactiveVar()
 })
 
 Template.calendar.onRendered(() => {
-  const replacer = (match) => emoji.emojify(match)
-  const safeReplacer = (transform) => transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
+  const safeReplacer = (transform) => transform.replace(/(:.*:)/g, emojify).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
   const templateInstance = Template.instance()
   templateInstance.calendarInitialized = new ReactiveVar(false)
   templateInstance.autorun(() => {
@@ -84,7 +85,7 @@ Template.calendar.onRendered(() => {
                 templateInstance.selectedDate.set(dropInfo.date)
                 templateInstance.selectedProjectId.set($(dropInfo.draggedEl).data('project'))
                 $('#edit-tc-entry-modal').modal({ focus: false })
-                // FlowRouter.go(`/tracktime/${$(dropInfo.draggedEl).data('project')}?date=${moment(dropInfo.date).format()}`)
+                // FlowRouter.go(`/tracktime/${$(dropInfo.draggedEl).data('project')}?date=${dayjs(dropInfo.date).format()}`)
               },
               eventClick: (eventClickInfo) => {
                 // $('.tooltip').tooltip('dispose')
@@ -99,7 +100,7 @@ Template.calendar.onRendered(() => {
                 templateInstance.selectedProjectId.set('all')
                 templateInstance.selectedDate.set(dateClickInfo.date)
                 $('#edit-tc-entry-modal').modal({ focus: false })
-                // FlowRouter.go(`/tracktime/?date=${moment(dateClickInfo.date).format()}&view=d`)
+                // FlowRouter.go(`/tracktime/?date=${dayjs(dateClickInfo.date).format()}&view=d`)
               },
             })
             templateInstance.calendar.render()

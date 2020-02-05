@@ -1,4 +1,4 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import i18next from 'i18next'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
@@ -44,13 +44,13 @@ Template.workingtimetable.onRendered(() => {
       if (templateInstance.workingTimeEntries.get()) {
         data = templateInstance.workingTimeEntries.get()
           .map((entry) => Object.entries(entry)
-            .map((key) => { if (key[1] instanceof Date) { return moment(key[1]).format('DD.MM.YYYY') } return key[1] }))
+            .map((key) => { if (key[1] instanceof Date) { return dayjs(key[1]).format('DD.MM.YYYY') } return key[1] }))
       }
       const columns = [
         {
           name: i18next.t('globals.date'),
           editable: false,
-          compareValue: (cell, keyword) => [moment(cell, 'DD.MM.YYYY').toDate(), moment(keyword, 'DD.MM.YYYY').toDate()],
+          compareValue: (cell, keyword) => [dayjs(cell, 'DD.MM.YYYY').toDate(), dayjs(keyword, 'DD.MM.YYYY').toDate()],
           format: addToolTipToTableCell,
         },
         { name: i18next.t('globals.resource'), editable: false, format: addToolTipToTableCell },
@@ -109,16 +109,13 @@ Template.workingtimetable.helpers({
   totalWorkingTimeEntries() {
     return Template.instance().totalWorkingTimeEntries
   },
-  moment(date) {
-    return moment(date).format('ddd DD.MM.YYYY')
-  },
 })
 Template.workingtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
     const csvArray = [`\uFEFF${i18next.t('globals.date')},${i18next.t('globals.resource')},${i18next.t('details.startTime')},${i18next.t('details.breakStartTime')},${i18next.t('details.breakEndTime')},${i18next.t('details.endTime')},${i18next.t('details.totalTime')},${i18next.t('details.regularWorkingTime')},${i18next.t('details.regularWorkingTimeDifference')}\r\n`]
     for (const timeEntry of templateInstance.workingTimeEntries.get()) {
-      csvArray.push(`${moment(timeEntry.date).format('ddd DD.MM.YYYY')},${timeEntry.resource},${timeEntry.startTime},${timeEntry.breakStartTime},${timeEntry.breakEndTime},${timeEntry.endTime},${timeEntry.totalTime},${timeEntry.regularWorkingTime},${timeEntry.regularWorkingTimeDifference}\r\n`)
+      csvArray.push(`${dayjs(timeEntry.date).format('ddd DD.MM.YYYY')},${timeEntry.resource},${timeEntry.startTime},${timeEntry.breakStartTime},${timeEntry.breakEndTime},${timeEntry.endTime},${timeEntry.totalTime},${timeEntry.regularWorkingTime},${timeEntry.regularWorkingTimeDifference}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_working_time_${templateInstance.data.period.get()}.csv`)
   },
@@ -126,7 +123,7 @@ Template.workingtimetable.events({
     event.preventDefault()
     const data = [[i18next.t('globals.date'), i18next.t('globals.resource'), i18next.t('details.startTime'), i18next.t('details.breakStartTime'), i18next.t('details.breakEndTime'), i18next.t('details.endTime'), i18next.t('details.totalTime'), i18next.t('details.regularWorkingTime'), i18next.t('details.regularWorkingTimeDifference')]]
     for (const timeEntry of templateInstance.workingTimeEntries.get()) {
-      data.push([moment(timeEntry.date).format('ddd DD.MM.YYYY'), timeEntry.resource, timeEntry.startTime, timeEntry.breakStartTime, timeEntry.breakEndTime, timeEntry.endTime, timeEntry.totalTime, timeEntry.regularWorkingTime, timeEntry.regularWorkingTimeDifference])
+      data.push([dayjs(timeEntry.date).format('ddd DD.MM.YYYY'), timeEntry.resource, timeEntry.startTime, timeEntry.breakStartTime, timeEntry.breakEndTime, timeEntry.endTime, timeEntry.totalTime, timeEntry.regularWorkingTime, timeEntry.regularWorkingTimeDifference])
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'working time').createDownloadUrl(), `titra_working_time_${templateInstance.data.period.get()}.xlsx`)
   },

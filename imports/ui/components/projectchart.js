@@ -1,4 +1,5 @@
 import namedavatar from 'namedavatar'
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 import './projectchart.html'
 import Projects, { ProjectStats } from '../../api/projects/projects.js'
 
@@ -9,6 +10,7 @@ import hex2rgba from '../../utils/hex2rgba.js'
 Template.projectchart.onCreated(function projectchartCreated() {
   // this.resources = new ReactiveVar()
   this.topTasks = new ReactiveVar()
+  this.projectDescAsHtml = new ReactiveVar()
   this.autorun(() => {
     this.subscribe('singleProject', this.data.projectId)
     this.subscribe('projectStats', this.data.projectId)
@@ -22,6 +24,11 @@ Template.projectchart.onCreated(function projectchartCreated() {
         this.topTasks.set(result)
       }
     })
+    if (this.subscriptionsReady()) {
+      const converter = new QuillDeltaToHtmlConverter(Projects
+        .findOne({ _id: Template.instance().data.projectId }).desc.ops, {})
+      this.projectDescAsHtml.set(converter.convert())
+    }
   })
 })
 Template.projectchart.helpers({
@@ -84,6 +91,9 @@ Template.projectchart.helpers({
     return Number(Projects.findOne({ _id: Template.instance().data.projectId }).target) > 0
       ? Projects.findOne({ _id: Template.instance().data.projectId }).target : false
   },
+  projectDescAsHtml: () => Template.instance().projectDescAsHtml.get(),
+  truncatedProjectDescAsHtml: () => (Template.instance().projectDescAsHtml.get()
+    ? Template.instance().projectDescAsHtml.get().replace('<p>', '<p class="text-truncate">') : ''),
 })
 Template.projectchart.onRendered(function projectchartRendered() {
   const templateInstance = Template.instance()

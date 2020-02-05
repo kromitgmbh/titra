@@ -58,12 +58,12 @@
                             <td>{{user.emails.[0].address}}</td>
                             <td class="text-center">
                                 {{#if user.isAdmin}}
-                                    <a href="#" class="js-remove-admin" data-id="{{user._id}}" data-title="Remove admin"><i class="fa fa-check-square-o"></i></a>
+                                    <a href="#" class="js-remove-admin" data-id="{{user._id}}" data-title="Remove admin"><i class="fa fa-check-square"></i></a>
                                 {{else}}
-                                    <a href="#" class="js-make-admin" data-id="{{user._id}}" data-title="Add admin"><i class="fa fa-square-o"></i></a>
+                                    <a href="#" class="js-make-admin" data-id="{{user._id}}" data-title="Add admin"><i class="far fa-square"></i></a>
                                 {{/if}}
                             </td>
-                            <td>{{moment(user.createdAt)}}</td>
+                            <td>{{dayjs(user.createdAt)}}</td>
                             <td class="text-center"><a href="#" class="js-delete" data-id="{{user._id}}"><i class="fa fa-trash"></i></a></td>
                         </tr>
                     {{/each}}

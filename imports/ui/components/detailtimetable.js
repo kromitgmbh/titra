@@ -1,4 +1,5 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import i18next from 'i18next'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
@@ -15,9 +16,11 @@ import './limitpicker.js'
 
 const Counts = new Mongo.Collection('counts')
 
+dayjs.extend(utc)
+
 function detailedDataTableMapper(entry) {
   return [Projects.findOne({ _id: entry.projectId }) ? Projects.findOne({ _id: entry.projectId }).name : '',
-    moment.utc(entry.date).format('DD.MM.YYYY'),
+    dayjs.utc(entry.date).format('DD.MM.YYYY'),
     entry.task,
     projectUsers.findOne() ? projectUsers.findOne().users.find((elem) => elem._id === entry.userId).profile.name : '',
     Number(timeInUserUnit(entry.hours)),
@@ -62,6 +65,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
 })
 Template.detailtimetable.onRendered(() => {
   const templateInstance = Template.instance()
+  dayjs.extend(utc)
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && i18nextReady.get()) {
       const selector = buildDetailedTimeEntriesForPeriodSelector({
@@ -81,7 +85,7 @@ Template.detailtimetable.onRendered(() => {
         {
           name: i18next.t('globals.date'),
           editable: false,
-          compareValue: (cell, keyword) => [moment.utc(cell, 'DD.MM.YYYY').toDate(), moment(keyword, 'DD.MM.YYYY').toDate()],
+          compareValue: (cell, keyword) => [dayjs.utc(cell, 'DD.MM.YYYY').toDate(), dayjs(keyword, 'DD.MM.YYYY').toDate()],
           format: addToolTipToTableCell,
         },
         { name: i18next.t('globals.task'), editable: false, format: addToolTipToTableCell },
@@ -172,8 +176,9 @@ Template.detailtimetable.helpers({
   totalDetailTimeEntries() {
     return Template.instance().totalDetailTimeEntries
   },
-  moment(date) {
-    return moment.utc(date).format('ddd DD.MM.YYYY')
+  dayjs(date) {
+    dayjs.extend(utc)
+    return dayjs.utc(date).format('ddd DD.MM.YYYY')
   },
   tcid() { return Template.instance().tcid },
 })
@@ -197,7 +202,7 @@ Template.detailtimetable.events({
       csvArray.push(`${timeEntry[0]},${timeEntry[1]},${timeEntry[2]},${timeEntry[3]},${timeEntry[4]}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }),
-      `titra_export_${moment().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.csv`)
+      `titra_export_${dayjs().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.csv`)
   },
   'click .js-export-xlsx': (event, templateInstance) => {
     event.preventDefault()
@@ -218,7 +223,7 @@ Template.detailtimetable.events({
       data.push([timeEntry[0], timeEntry[1], timeEntry[2], timeEntry[3], timeEntry[4]])
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'titra export').createDownloadUrl(),
-      `titra_export_${moment().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.xlsx`)
+      `titra_export_${dayjs().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.xlsx`)
   },
   'click .js-track-time': (event, templateInstance) => {
     event.preventDefault()

@@ -1,14 +1,16 @@
 import { Mongo } from 'meteor/mongo'
 import { Email } from 'meteor/email'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 const Notifications = new Mongo.Collection('notifications')
 const DailyMailLimit = new Mongo.Collection('dailymaillimit')
 function addNotification(message, userId) {
+  dayjs.extend(utc)
   const id = Random.id()
   const meteorUser = Meteor.users.findOne({ _id: userId })
-  const start = moment.utc().startOf('day').toDate()
-  const end = moment.utc().endOf('day').toDate()
+  const start = dayjs.utc().startOf('day').toDate()
+  const end = dayjs.utc().endOf('day').toDate()
   let recipient = ''
   if (meteorUser) {
     recipient = meteorUser.emails[0].address

@@ -11,6 +11,7 @@
     "month": "Month",
     "hour": "Hour",
     "hour_plural": "Hours",
+    "minute_plural": "Minutes",
     "loading": "Loading data ...",
     "project": "Project",
     "task": "Task",
@@ -245,6 +246,7 @@
     "current_password": "Current password",
     "password_mismatch": "The provided passwords do not match, please try again.",
     "permanent_account": "Create permanent account",
+    "email_unknown": "Sorry, but we could not find an account with the provided e-mail adress.",
     "anonymous_account_warning": "You are currently logged in using a temporary account which can only be used on this device. If you want to use titra on other devices, please create a regular user with an e-mail address and password below."
   },
   "about": {

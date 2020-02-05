@@ -1,7 +1,7 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import randomColor from 'randomcolor'
-import emoji from 'node-emoji'
+import { emojify } from '../../utils/frontend_helpers'
 import './dashboard.html'
 import Timecards from '../../api/timecards/timecards'
 import Projects from '../../api/projects/projects'
@@ -40,7 +40,6 @@ Template.dashboard.onCreated(function dashboardCreated() {
 Template.dashboard.onRendered(function dashboardRendered() {
   import('chart.js').then((chartModule) => {
     const Chart = chartModule.default
-    const replacer = (match) => emoji.emojify(match)
     this.autorun(() => {
       if (this.subscriptionsReady()) {
         let temphours = 0
@@ -49,15 +48,15 @@ Template.dashboard.onRendered(function dashboardRendered() {
         const datemap = new Map()
         for (const timecard of Timecards.find({}, { sort: { date: 1 } }).fetch()) {
           taskmap.set(
-            timecard.task.replace(/(:.*:)/g, replacer),
-            taskmap.get(timecard.task.replace(/(:.*:)/g, replacer))
-              ? Number(taskmap.get(timecard.task.replace(/(:.*:)/g, replacer))) + timeInUnitHelper(Number(timecard.hours))
+            timecard.task.replace(/(:.*:)/g, emojify),
+            taskmap.get(timecard.task.replace(/(:.*:)/g, emojify))
+              ? Number(taskmap.get(timecard.task.replace(/(:.*:)/g, emojify))) + timeInUnitHelper(Number(timecard.hours))
               : timeInUnitHelper(timecard.hours),
           )
           datemap.set(
-            moment(timecard.date).format('DDMMYYYY'),
-            datemap.get(moment(timecard.date).format('DDMMYYYY'))
-              ? Number(datemap.get(moment(timecard.date).format('DDMMYYYY'))) + timeInUnitHelper(Number(timecard.hours))
+            dayjs(timecard.date).format('DDMMYYYY'),
+            datemap.get(dayjs(timecard.date).format('DDMMYYYY'))
+              ? Number(datemap.get(dayjs(timecard.date).format('DDMMYYYY'))) + timeInUnitHelper(Number(timecard.hours))
               : timeInUnitHelper(timecard.hours),
           )
           temphours += timecard.hours
@@ -157,15 +156,15 @@ Template.dashboard.onRendered(function dashboardRendered() {
 Template.dashboard.helpers({
   timecards: () => Timecards.find(),
   projectName: () => (Projects.findOne() ? Projects.findOne().name : false),
-  formatDate: (date) => moment(date).format('ddd DD.MM.YYYY'),
+  formatDate: (date) => dayjs(date).format('ddd DD.MM.YYYY'),
   timeunit: () => {
     if (Dashboards.findOne()) {
       return Dashboards.findOne().timeunit === 'd' ? 'Days' : 'Hours'
     }
     return false
   },
-  startDate: () => (Dashboards.findOne() ? moment(Dashboards.findOne().startDate).format('DD.MM.YYYY') : false),
-  endDate: () => (Dashboards.findOne() ? moment(Dashboards.findOne().endDate).format('DD.MM.YYYY') : false),
+  startDate: () => (Dashboards.findOne() ? dayjs(Dashboards.findOne().startDate).format('DD.MM.YYYY') : false),
+  endDate: () => (Dashboards.findOne() ? dayjs(Dashboards.findOne().endDate).format('DD.MM.YYYY') : false),
   dashBoardResource: () => (Dashboards.findOne()
     ? (Meteor.users.findOne(Dashboards.findOne().resourceId)
       ? Meteor.users.findOne(Dashboards.findOne().resourceId).profile.name : false) : false),
