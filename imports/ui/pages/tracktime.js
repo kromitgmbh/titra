@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import i18next from 'i18next'
 import TinyDatePicker from 'tiny-date-picker'
 import 'tiny-date-picker/tiny-date-picker.css'
@@ -41,6 +42,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
     this.math = mathexp
   })
   dayjs.extend(utc)
+  dayjs.extend(customParseFormat)
   this.date = new ReactiveVar(dayjs.utc().toDate())
   this.projectId = new ReactiveVar()
   this.tcid = new ReactiveVar()
@@ -121,7 +123,10 @@ Template.tracktime.events({
     }
     const projectId = selectedProjectElement.val()
     const task = templateInstance.$('.js-tasksearch-input').val()
+    console.log($('#date').val())
+    console.log(dayjs.utc($('#date').val(), 'ddd, DD.MM.YYYY'))
     const date = dayjs.utc($('#date').val(), 'ddd, DD.MM.YYYY').toDate()
+    console.log(date)
     let hours = templateInstance.math.eval($('#hours').val())
 
     if (Meteor.user().profile.timeunit === 'd') {

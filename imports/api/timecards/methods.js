@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import { emojify } from '../../utils/frontend_helpers'
 import i18next from 'i18next'
 import { HTTP } from 'meteor/http'
 import { check, Match } from 'meteor/check'
@@ -7,6 +6,7 @@ import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'
 import Tasks from '../tasks/tasks.js'
 import Projects from '../projects/projects.js'
+import { emojify } from '../../utils/frontend_helpers'
 import { periodToDates, timeInUserUnit } from '../../utils/periodHelpers.js'
 import {
   checkAuthentication,

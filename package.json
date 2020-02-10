@@ -1,19 +1,19 @@
 {
   "name": "titra",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
-    "@fortawesome/fontawesome-free": "^5.12.0",
+    "@fortawesome/fontawesome-free": "^5.12.1",
     "@fullcalendar/core": "^4.3.1",
     "@fullcalendar/daygrid": "^4.3.0",
     "@fullcalendar/interaction": "^4.3.0",
     "@neovici/nullxlsx": "^3.0.2",
-    "@simonwep/pickr": "^1.5.0",
-    "bcrypt": "^3.0.7",
+    "@simonwep/pickr": "^1.5.1",
+    "bcrypt": "^3.0.8",
     "bootstrap": ">=4.4.1",
     "bootstrap4-notify": "^4.0.3",
     "chart.js": "^2.9.3",

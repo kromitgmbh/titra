@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './weektable.html'
@@ -9,6 +10,7 @@ import { clientTimecards, getWeekDays, timeInUserUnit } from '../../utils/fronte
 
 Template.weektable.onCreated(function weekTableCreated() {
   dayjs.extend(utc)
+  dayjs.extend(customParseFormat)
   this.subscribe('myprojects')
   // attention: this is a workaround because we are currently hard coding the european week format
   // where weeks start on Monday - in the future this needs to be updated based on a user specific

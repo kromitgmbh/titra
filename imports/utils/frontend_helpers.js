@@ -11,7 +11,7 @@ function addToolTipToTableCell(value) {
 
 function getWeekDays(date) {
   const calendar = date.clone().startOf('week')
-  return new Array(7).fill(0).map(() => (calendar.add(1, 'day').format('ddd, DD.MM')))
+  return new Array(7).fill(0).map((value, index) => (calendar.add(index + 1, 'day').format('ddd, DD.MM')))
 }
 function timeInUserUnit(time) {
   if (!time || time === 0) {
