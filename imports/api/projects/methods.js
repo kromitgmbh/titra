@@ -81,7 +81,7 @@ Meteor.methods({
     } else {
       updateJSON.public = true
     }
-    updateJSON.name = updateJSON.name.replace(/(:.*:)/g, replacer)
+    updateJSON.name = updateJSON.name.replace(/(:.*:)/g, emojify)
     updateJSON._id = Random.id()
     updateJSON.userId = this.userId
     Projects.insert(updateJSON)

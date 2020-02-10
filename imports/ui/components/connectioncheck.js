@@ -1,4 +1,6 @@
 import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
 import './connectioncheck.html'
 
 Template.connectioncheck.events({
@@ -6,6 +8,9 @@ Template.connectioncheck.events({
     event.preventDefault()
     Meteor.reconnect()
   },
+})
+Template.connectioncheck.onCreated(() => {
+  dayjs.extend(relativeTime)
 })
 Template.connectioncheck.helpers({
   offline: () => (Meteor.status().status === 'failed'
