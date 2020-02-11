@@ -318,7 +318,7 @@ function buildDetailedTimeEntriesForPeriodSelector({
     query.task = { $regex: `.*${search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' }
   }
   const options = { sort: {} }
-  if (limit) {
+  if (limit && limit > 0) {
     options.limit = limit
   }
   if (sort) {

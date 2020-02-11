@@ -23,12 +23,12 @@ Meteor.methods({
     const currentMonthName = dayjs.utc().format('MMM')
     const currentMonthStart = dayjs.utc().startOf('month')
     const currentMonthEnd = dayjs.utc().endOf('month')
-    const previousMonthName = dayjs.utc().subtract('1', 'months').format('MMM')
-    const beforePreviousMonthName = dayjs.utc().subtract('2', 'months').format('MMM')
-    const previousMonthStart = dayjs.utc().subtract('1', 'months').startOf('month')
-    const previousMonthEnd = dayjs.utc().subtract('1', 'months').endOf('month')
-    const beforePreviousMonthStart = dayjs.utc().subtract('2', 'months').startOf('month')
-    const beforePreviousMonthEnd = dayjs.utc().subtract('2', 'months').endOf('month')
+    const previousMonthName = dayjs.utc().subtract('1', 'month').format('MMM')
+    const beforePreviousMonthName = dayjs.utc().subtract('2', 'month').format('MMM')
+    const previousMonthStart = dayjs.utc().subtract('1', 'month').startOf('month')
+    const previousMonthEnd = dayjs.utc().subtract('1', 'month').endOf('month')
+    const beforePreviousMonthStart = dayjs.utc().subtract('2', 'month').startOf('month')
+    const beforePreviousMonthEnd = dayjs.utc().subtract('2', 'month').endOf('month')
 
     for (const timecard of
       Timecards.find({ projectId: { $in: projectList } }).fetch()) {

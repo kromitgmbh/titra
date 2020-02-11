@@ -36,8 +36,8 @@ function periodToDates(period) {
       endDate = dayjs.utc().subtract(1, 'year').endOf('year').toDate()
       break
     case 'all':
-      startDate = dayjs.utc().subtract(20, 'years').startOf('month').toDate()
-      endDate = dayjs.utc().add(20, 'years').toDate()
+      startDate = dayjs.utc().subtract(20, 'year').startOf('month').toDate()
+      endDate = dayjs.utc().add(20, 'year').toDate()
       break
   }
   return { startDate, endDate }
