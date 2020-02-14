@@ -24,8 +24,8 @@ This will pull in the latest titra release and spin up a local Mongodb v4.0 inst
 Congratulations! titra should now be up and running at http://localhost:3000
 
 ## Deploy on DigitalOcean
-titra is available in the DigitalOcean Marketplace for easy 1-click deployment of droplets. Get started below:
-[![do-btn-blue](https://user-images.githubusercontent.com/11456790/74553033-c9399f80-4f56-11ea-9f9f-6f1ac4af50ce.png)](https://marketplace.digitalocean.com/apps/titra)
+titra is available in the [DigitalOcean Marketplace](https://marketplace.digitalocean.com/apps/titra) for easy 1-click deployment of droplets. Get started below:
+[![do-btn-blue](https://user-images.githubusercontent.com/11456790/74553033-c9399f80-4f56-11ea-9f9f-6f1ac4af50ce.png)](https://cloud.digitalocean.com/droplets/new?image=kromit-titra-18-04#choose-droplet-size)
 
 
 ## Documentation and more
