@@ -23,6 +23,10 @@ curl -L https://github.com/faburem/titra/raw/master/docker-compose.yml | ROOT_UR
 This will pull in the latest titra release and spin up a local Mongodb v4.0 instance and link them together.
 Congratulations! titra should now be up and running at http://localhost:3000
 
+## Deploy on DigitalOcean
+titra is available in the DigitalOcean Marketplace for easy 1-click deployment of droplets. Get started below:
+[![do-btn-blue](https://user-images.githubusercontent.com/11456790/74553033-c9399f80-4f56-11ea-9f9f-6f1ac4af50ce.png)](https://marketplace.digitalocean.com/apps/titra)
+
 
 ## Documentation and more
 Checkout our [wiki](https://github.com/faburem/titra/wiki/) for best practices and to learn how to setup interfaces with external tools like Wekan.
