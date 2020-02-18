@@ -123,7 +123,11 @@
     "preview": "Vorschau",
     "reset": "Zurücksetzen",
     "custom_avatar": "Eigenes Bild hochladen",
-    "current": "Aktueller Avatar"
+    "current": "Aktueller Avatar",
+    "date_format": "Datumsformat",
+    "verbose_date_format": "Detailliertes Datumsformat",
+    "weekview_date_format": "Datumsformat Wochenansicht",
+    "startof_week": "Wochenbeginn"
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -277,6 +281,8 @@
     "user_created": "Der Benutzer wurde erstellt.",
     "user_updated": "Die Benutzerinformationen wurden aktualisiert.",
     "user_deleted": "Der Benutzer wurde gelöscht.",
-    "user_deletion_confirmation": "Möchten Sie diesen Benutzer wirklich löschen (dies kann nicht rückgängig gemacht werden)?"
+    "user_deletion_confirmation": "Möchten Sie diesen Benutzer wirklich löschen (dies kann nicht rückgängig gemacht werden)?",
+    "value": "Wert",
+    "global_defaults": "Voreinstellungen:"
   }
 }

@@ -37,7 +37,7 @@
     </div>
     <div class="card-block">
       <label for="rate"><strong>{{t "project.rate"}} ({{unit}}/h)</strong></label>
-      <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100" />
+      <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100" step="any" />
     </div>
     <div class="card-block">
       <label for="target"><strong>{{t "project.target"}} ({{timeunit}})</strong></label>
@@ -104,7 +104,7 @@
     </div>
     {{#unless newProject}} {{#if archived (projectId)}}
     <div class="col-3">
-      <button class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-repeat"></i> <span class="d-none d-md-inline">{{t "navigation.back"}}</span></button>
+      <button class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-undo"></i> <span class="d-none d-md-inline">{{t "navigation.restore"}}</span></button>
     </div>
     <div class="col-3">
       <button class="btn btn-secondary border btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">{{t "navigation.delete"}}</span></button>

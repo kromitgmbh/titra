@@ -7,6 +7,7 @@ import './dailytimetable.html'
 import './pagination.js'
 import './limitpicker.js'
 import i18nextReady from '../../startup/client/startup.js'
+import { getGlobalSetting } from '../../utils/frontend_helpers'
 
 Template.dailytimetable.onCreated(function dailytimetablecreated() {
   this.dailyTimecards = new ReactiveVar()
@@ -44,14 +45,14 @@ Template.dailytimetable.onRendered(() => {
       if (templateInstance.dailyTimecards.get()) {
         data = templateInstance.dailyTimecards.get()
           .map((entry) => Object.entries(entry)
-            .map((key) => { if (key[1] instanceof Date) { return dayjs(key[1]).format('DD.MM.YYYY') } return key[1] }))
+            .map((key) => { if (key[1] instanceof Date) { return dayjs(key[1]).format(getGlobalSetting('dateformat')) } return key[1] }))
       }
       const columns = [
         {
           name: i18next.t('globals.date'),
           editable: false,
           width: 1,
-          compareValue: (cell, keyword) => [dayjs(cell, 'DD.MM.YYYY').toDate(), dayjs(keyword, 'DD.MM.YYYY').toDate()],
+          compareValue: (cell, keyword) => [dayjs(cell, getGlobalSetting('dateformat')).toDate(), dayjs(keyword, getGlobalSetting('dateformat')).toDate()],
         },
         { name: i18next.t('globals.project'), editable: false, width: 2 },
         { name: i18next.t('globals.resource'), editable: false, width: 2 },
@@ -60,22 +61,26 @@ Template.dailytimetable.onRendered(() => {
           editable: false,
           width: 1,
           format: (value) => value.toFixed(Meteor.user().profile.precision
-            ? Meteor.user().profile.precision : 2),
+            ? Meteor.user().profile.precision : getGlobalSetting('precision')),
         },
       ]
       if (!templateInstance.datatable) {
         import('frappe-datatable/dist/frappe-datatable.css').then(() => {
           import('frappe-datatable').then((datatable) => {
             const DataTable = datatable.default
-            templateInstance.datatable = new DataTable('#datatable-container', {
-              columns,
-              serialNoColumn: false,
-              clusterize: false,
-              layout: 'ratio',
-              showTotalRow: true,
-              data,
-              noDataMessage: i18next.t('tabular.sZeroRecords'),
-            })
+            try {
+              templateInstance.datatable = new DataTable('#datatable-container', {
+                columns,
+                serialNoColumn: false,
+                clusterize: false,
+                layout: 'ratio',
+                showTotalRow: true,
+                data,
+                noDataMessage: i18next.t('tabular.sZeroRecords'),
+              })
+            } catch (error) {
+              console.error(`Caught error: ${error}`)
+            }
           })
         })
       }
@@ -109,7 +114,7 @@ Template.dailytimetable.events({
     }
     const csvArray = [`\uFEFF${i18next.t('globals.date')},${i18next.t('globals.project')},${i18next.t('globals.resource')},${unit}\r\n`]
     for (const timeEntry of templateInstance.dailyTimecards.get()) {
-      csvArray.push(`${dayjs(timeEntry.date).format('DD.MM.YYYY')},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
+      csvArray.push(`${dayjs(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_daily_time_${templateInstance.data.period.get()}.csv`)
   },
@@ -121,7 +126,7 @@ Template.dailytimetable.events({
     }
     const data = [[i18next.t('globals.date'), i18next.t('globals.project'), i18next.t('globals.resource'), unit]]
     for (const timeEntry of templateInstance.dailyTimecards.get()) {
-      data.push([dayjs(timeEntry.date).format('DD.MM.YYYY'), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
+      data.push([dayjs(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'daily').createDownloadUrl(), `titra_daily_time_${templateInstance.data.period.get()}.xlsx`)
   },

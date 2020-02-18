@@ -10,6 +10,7 @@ import 'tiny-date-picker/tiny-date-picker.css'
 
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
+import { getGlobalSetting } from '../../utils/frontend_helpers.js'
 
 import './tracktime.html'
 import '../components/projectselect.js'
@@ -23,16 +24,16 @@ Template.tracktime.onRendered(() => {
   if (!Template.instance().tinydatepicker) {
     Template.instance().tinydatepicker = TinyDatePicker('#date', {
       format(date) {
-        return date ? dayjs(date).format('ddd, DD.MM.YYYY') : dayjs().format('ddd, DD.MM.YYYY')
+        return date ? dayjs(date).format(getGlobalSetting('dateformatVerbose')) : dayjs().format(getGlobalSetting('dateformatVerbose'))
       },
       parse(date) {
-        return dayjs(date, 'ddd, DD.MM.YYYY')
+        return dayjs(date, getGlobalSetting('dateformatVerbose'))
       },
       mode: 'dp-modal',
-      dayOffset: 1,
+      dayOffset: getGlobalSetting('startOfWeek'),
     }).on('select', (_, dp) => {
       if (!dp.state.selectedDate) {
-        $('#date').val(dayjs().format('ddd, DD.MM.YYYY'))
+        $('#date').val(dayjs().format(getGlobalSetting('dateformatVerbose')))
       }
     })
   }
@@ -100,6 +101,8 @@ Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
     const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > .js-target-project')
+    let hours = templateInstance.$('#hours').val()
+
     if (!selectedProjectElement.val()) {
       selectedProjectElement.addClass('is-invalid')
       $.notify({ message: i18next.t('notifications.select_project') }, { type: 'danger' })
@@ -110,24 +113,26 @@ Template.tracktime.events({
       $.notify({ message: i18next.t('notifications.enter_task') }, { type: 'danger' })
       return
     }
-    if (!$('#hours').val()) {
+    if (!hours) {
       $('#hours').addClass('is-invalid')
       $.notify({ message: i18next.t('notifications.enter_time') }, { type: 'danger' })
       return
     }
     try {
-      templateInstance.math.eval($('#hours').val())
+      hours = hours.replace(',', '.')
+      templateInstance.math.eval(hours)
     } catch (exception) {
       $.notify({ message: i18next.t('notifications.check_time_input') }, { type: 'danger' })
       return
     }
     const projectId = selectedProjectElement.val()
     const task = templateInstance.$('.js-tasksearch-input').val()
-    const date = dayjs.utc($('#date').val(), 'ddd, DD.MM.YYYY').toDate()
-    let hours = templateInstance.math.eval($('#hours').val())
+    const date = dayjs.utc($('#date').val(), getGlobalSetting('dateformatVerbose')).toDate()
+    hours = templateInstance.math.eval(hours)
 
     if (Meteor.user().profile.timeunit === 'd') {
-      hours = templateInstance.math.eval(templateInstance.$('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
+      hours = templateInstance.math.eval(hours)
+        * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays'))
     }
     const buttonLabel = $(event.currentTarget).text()
     templateInstance.$(event.currentTarget).text('saving ...')
@@ -188,10 +193,10 @@ Template.tracktime.events({
   },
   'change #date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
-      let date = dayjs.utc(templateInstance.$(event.currentTarget).val(), 'ddd, DD.MM.YYYY')
+      let date = dayjs.utc(templateInstance.$(event.currentTarget).val(), getGlobalSetting('dateformatVerbose'))
       if (!date.isValid()) {
         date = dayjs.utc()
-        event.currentTarget.value = date.format('ddd, DD.MM.YYYY')
+        event.currentTarget.value = date.format(getGlobalSetting('dateformatVerbose'))
       }
       date = date.format('YYYY-MM-DD')
       // we need this to correctly capture calender change events from the input
@@ -235,7 +240,7 @@ Template.tracktime.events({
   },
 })
 Template.tracktime.helpers({
-  date: () => dayjs.utc(Template.instance().date.get()).format('ddd, DD.MM.YYYY'),
+  date: () => dayjs.utc(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose')),
   projectId: () => Template.instance().projectId.get(),
   reactiveProjectId: () => Template.instance().projectId,
   projectName: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false),
@@ -249,17 +254,20 @@ Template.tracktime.helpers({
     ? Timecards.findOne({ _id: Template.instance().tcid.get() }).hours : false),
   showTracker: () => (Meteor.user() ? (Meteor.user().profile.timeunit !== 'd') : false),
   totalTime: () => Template.instance().totalTime.get(),
-  previousDay: () => dayjs.utc(Template.instance().date.get()).subtract(1, 'day').format('ddd, DD.MM.YYYY'),
-  nextDay: () => dayjs.utc(Template.instance().date.get()).add(1, 'day').format('ddd, DD.MM.YYYY'),
+  previousDay: () => dayjs.utc(Template.instance().date.get()).subtract(1, 'day').format(getGlobalSetting('dateformatVerbose')),
+  nextDay: () => dayjs.utc(Template.instance().date.get()).add(1, 'day').format(getGlobalSetting('dateformatVerbose')),
   borderClass: () => (Template.instance().tcid.get()
     || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
     || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()) ? '' : 'tab-borders'),
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {
-  this.timetrackview = new ReactiveVar(Meteor.user() ? Meteor.user().profile.timetrackview || 'd' : 'd')
+  this.timetrackview = new ReactiveVar(getGlobalSetting('timetrackview'))
   this.autorun(() => {
-    if (FlowRouter.getParam('projectId')) {
+    if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.timetrackview) {
+      this.timetrackview.set(Meteor.user().profile.timetrackview)
+    }
+    if (FlowRouter.getParam('projectId') && this.subscriptionsReady()) {
       this.timetrackview.set('d')
     } else if (FlowRouter.getQueryParam('view')) {
       this.timetrackview.set(FlowRouter.getQueryParam('view'))

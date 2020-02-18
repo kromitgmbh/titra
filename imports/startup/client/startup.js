@@ -3,7 +3,7 @@ import isDarkMode from 'is-dark'
 import i18next from 'i18next'
 import * as bs4notify from 'bootstrap4-notify'
 import Projects from '../../api/projects/projects.js'
-import { timeInUserUnit, emojify } from '../../utils/frontend_helpers.js'
+import { timeInUserUnit, emojify, getGlobalSetting } from '../../utils/frontend_helpers.js'
 
 $.notifyDefaults({
   type: 'success',
@@ -78,6 +78,7 @@ Meteor.startup(() => {
   Tracker.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
       && Meteor.user().profile) {
+      Meteor.subscribe('globalsettings')
       if (Meteor.user().profile.theme === 'dark') {
         import('../../ui/styles/dark.scss')
       } else if (Meteor.user().profile.theme === 'light') {
@@ -102,6 +103,10 @@ Meteor.startup(() => {
         window.Popper = Popper.default
         import('bootstrap').then(() => {
           window.BootstrapLoaded.set(true)
+          import('bootbox').then((bootbox) => {
+            window.bootbox = bootbox.default
+            window.bootbox.setDefaults({ locale: language })
+          })
           $('[data-toggle="tooltip"]').tooltip()
         })
       })
@@ -133,7 +138,7 @@ Meteor.startup(() => {
 Template.registerHelper('i18nextReady', () => i18nextReady.get())
 Template.registerHelper('unit', () => {
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
+    return Meteor.user().profile.unit ? Meteor.user().profile.unit : getGlobalSetting('unit')
   }
   return false
 })
@@ -158,7 +163,7 @@ Template.registerHelper('timeunit', () => {
 })
 Template.registerHelper('timetrackview', () => {
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd'
+    return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : getGlobalSetting('timetrackview')
   }
   return false
 })

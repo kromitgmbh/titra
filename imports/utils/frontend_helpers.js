@@ -1,6 +1,12 @@
 import namedavatar from 'namedavatar'
+import { Globalsettings } from '../api/globalsettings/globalsettings.js'
 
 const clientTimecards = new Mongo.Collection('clientTimecards')
+
+
+function getGlobalSetting(name) {
+  return Globalsettings.findOne({ name }) ? Globalsettings.findOne({ name }).value : ''
+}
 
 function addToolTipToTableCell(value) {
   if (value) {
@@ -11,17 +17,17 @@ function addToolTipToTableCell(value) {
 
 function getWeekDays(date) {
   const calendar = date.clone().startOf('week')
-  return new Array(7).fill(0).map((value, index) => (calendar.add(index + 1, 'day').format('ddd, DD.MM')))
+  return new Array(7).fill(0).map((value, index) => (calendar.add(index + getGlobalSetting('startOfWeek'), 'day').format(getGlobalSetting('weekviewDateFormat'))))
 }
 function timeInUserUnit(time) {
   if (!time || time === 0) {
     return false
   }
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+    const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : getGlobalSetting('precision')
     if (Meteor.user().profile.timeunit === 'd') {
       const convertedTime = Number(time / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
+        ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays'))).toFixed(precision)
       return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
     }
     if (time) {
@@ -65,4 +71,5 @@ export {
   displayUserAvatar,
   validateEmail,
   emojify,
+  getGlobalSetting,
 }

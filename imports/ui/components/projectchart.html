@@ -1,7 +1,7 @@
 <template name="projectchart">
   <div class="row">
     <div class="col-12 col-md-4">
-      <div class="text-truncate" data-toggle="tooltip" data-html="true" data-placement="right" data-title="{{projectDescAsHtml}}"><!-- {{t "overview.project_information"}} -->
+      <div class="text-truncate" title='{{projectDescAsHtml}}'><!-- {{t "overview.project_information"}} -->
         {{{truncatedProjectDescAsHtml}}}
       </div>
       {{#if Template.subscriptionsReady}}

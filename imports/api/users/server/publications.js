@@ -97,13 +97,16 @@ Meteor.publish('userRoles', function userRoles() {
   return Meteor.users.find({ _id: this.userId }, { fields: { profile: 1, isAdmin: 1 } })
 })
 
-Meteor.publish('adminUserList', function adminUserList() {
+Meteor.publish('adminUserList', function adminUserList({ limit }) {
   checkAdminAuthentication(this)
-  return Meteor.users.find({},
-    {
-      fields: {
-        profile: 1, emails: 1, isAdmin: 1, createdAt: 1,
-      },
-      sort: { createdAt: -1 },
-    })
+  check(limit, Match.Maybe(Number))
+  const options = {}
+  options.fields = {
+    profile: 1, emails: 1, isAdmin: 1, createdAt: 1,
+  }
+  options.sort = { createdAt: -1 }
+  if (limit) {
+    options.limit = limit
+  }
+  return Meteor.users.find({}, options)
 })

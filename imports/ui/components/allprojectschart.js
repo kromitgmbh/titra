@@ -1,5 +1,6 @@
 import './allprojectschart.html'
 import hex2rgba from '../../utils/hex2rgba.js'
+import { getGlobalSetting } from '../../utils/frontend_helpers'
 
 Template.allprojectschart.onCreated(function allprojectschartCreated() {
   // this.resources = new ReactiveVar()
@@ -35,9 +36,9 @@ Template.allprojectschart.helpers({
 })
 Template.allprojectschart.onRendered(function allprojectschartRendered() {
   const templateInstance = Template.instance()
-  let precision = 2
+  let precision = getGlobalSetting('precision')
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+    precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : getGlobalSetting('precision')
   }
   import('chart.js').then((chartModule) => {
     const Chart = chartModule.default
@@ -50,17 +51,17 @@ Template.allprojectschart.onRendered(function allprojectschartRendered() {
           if (Meteor.user().profile.timeunit === 'd') {
             stats.beforePreviousMonthHours
               /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
+                ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
             stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
               .toFixed(precision)
             stats.previousMonthHours
               /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
+                ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
             stats.previousMonthHours = Number(stats.previousMonthHours)
               .toFixed(precision)
             stats.currentMonthHours
               /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
+                ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
             stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
           }
           if (this.$('.js-hour-chart')[0]) {

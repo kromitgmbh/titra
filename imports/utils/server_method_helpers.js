@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import Projects from '../api/projects/projects.js'
 import { periodToDates } from './periodHelpers.js'
+import { getGlobalSetting } from './frontend_helpers.js'
 
 function getProjectListById(projectId) {
   let projectList = []
@@ -59,7 +60,7 @@ function totalHoursForPeriodMapper(entry) {
     // const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
     if (Meteor.user().profile.timeunit === 'd') {
       totalHours = Number(entry.totalHours / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : 8))
+        ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')))
     }
   }
   return {
@@ -75,7 +76,7 @@ function dailyTimecardMapper(entry) {
     // const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
     if (Meteor.user().profile.timeunit === 'd') {
       totalHours = Number(entry.totalHours / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : 8))
+        ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')))
     }
   }
   return {

@@ -123,7 +123,12 @@
     "preview": "Preview",
     "reset": "Reset",
     "custom_avatar": "Upload custom avatar",
-    "current": "Current"
+    "current": "Current",
+    "date_format": "Date format",
+    "verbose_date_format": "Detailed date format",
+    "weekview_date_format": "Weekview date format",
+    "startof_week": "Start of week",
+    "global_defaults": "Default settings:"
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -270,6 +275,7 @@
     "user_created": "The user has been created.",
     "user_updated": "The user information has been updated.",
     "user_deleted": "The users has been deleted",
-    "user_deletion_confirmation": "Do you really want to delete this users (this cannot be undone)?"
+    "user_deletion_confirmation": "Do you really want to delete this users (this cannot be undone)?",
+    "value": "Value"
   }
 }

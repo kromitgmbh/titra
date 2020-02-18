@@ -7,7 +7,7 @@ import i18next from 'i18next'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
-import { validateEmail } from '../../utils/frontend_helpers'
+import { validateEmail, getGlobalSetting } from '../../utils/frontend_helpers'
 
 function validateWekanUrl() {
   const templateInstance = Template.instance()
@@ -124,7 +124,7 @@ Template.editproject.events({
     const projectArray = templateInstance.$('#editProjectForm').serializeArray()
     projectArray.push({ name: 'desc', value: Template.instance().quill.getContents() })
     if (Meteor.user().profile.timeunit === 'd') {
-      templateInstance.$('#target').val(templateInstance.$('#target').val() * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8))
+      templateInstance.$('#target').val(templateInstance.$('#target').val() * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')))
     }
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {
@@ -186,7 +186,7 @@ Template.editproject.events({
   'click .js-delete-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
-    if (confirm(i18next.t('notifications.project_delete_confirm'))) {
+    if (window.bootbox.confirm(i18next.t('notifications.project_delete_confirm'))) {
       Template.instance().deletion.set(true)
       Meteor.call('deleteProject', { projectId: FlowRouter.getParam('id') }, (error) => {
         if (!error) {

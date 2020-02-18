@@ -6,6 +6,7 @@ import i18nextReady from '../../startup/client/startup.js'
 import './periodtimetable.html'
 import './pagination.js'
 import './limitpicker.js'
+import { getGlobalSetting } from '../../utils/frontend_helpers.js'
 
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
   this.periodTimecards = new ReactiveVar()
@@ -52,22 +53,26 @@ Template.periodtimetable.onRendered(() => {
           name: Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
           editable: false,
           format: (value) => value.toFixed(Meteor.user().profile.precision
-            ? Meteor.user().profile.precision : 2),
+            ? Meteor.user().profile.precision : getGlobalSetting('precision')),
         },
       ]
       if (!templateInstance.datatable) {
         import('frappe-datatable/dist/frappe-datatable.css').then(() => {
           import('frappe-datatable').then((datatable) => {
             const DataTable = datatable.default
-            templateInstance.datatable = new DataTable('#datatable-container', {
-              columns,
-              serialNoColumn: false,
-              clusterize: false,
-              layout: 'ratio',
-              showTotalRow: true,
-              data,
-              noDataMessage: i18next.t('tabular.sZeroRecords'),
-            })
+            try {
+              templateInstance.datatable = new DataTable('#datatable-container', {
+                columns,
+                serialNoColumn: false,
+                clusterize: false,
+                layout: 'ratio',
+                showTotalRow: true,
+                data,
+                noDataMessage: i18next.t('tabular.sZeroRecords'),
+              })
+            } catch (error) {
+              console.error(`Caught error: ${error}`)
+            }
           })
         })
       }

@@ -1,20 +1,32 @@
 <template name="administration">
     <ul class="nav nav-tabs" id="administration-tab-pane" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true">{{t "administration.users"}}</a>
-        </li>
-        <!-- <li class="nav-item">
-          <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">{{t "details.daily"}}</a>
-        </li>
+            <a class="nav-link active" id="daily-tab" data-toggle="tab" href="#globalsettings" role="tab" aria-controls="globalsettings" aria-selected="true">{{t "settings.global_settings"}}</a>
+          </li> 
         <li class="nav-item">
-          <a class="nav-link" id="time-period-tab" data-toggle="tab" href="#time-period" role="tab" aria-controls="time-period" aria-selected="false">{{t "details.total"}}</a>
+          <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">{{t "administration.users"}}</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" id="working-time-tab" data-toggle="tab" href="#working-time" role="tab" aria-controls="working-time" aria-selected="false">{{t "tracktime.working_time"}}</a>
-        </li> -->
     </ul>
     <div class="tab-content" id="administration-content">
-        <div class="tab-pane fade show active table-responsive p-3 tab-borders" id="users">
+        <div class="tab-pane fade show active table-responsive p-3 tab-borders" id="globalsettings">
+            <div class="table-responsive">
+                <table class="table">
+                    <tr>
+                        <th>{{t "globals.name"}}</th>
+                        <th>{{t "administration.value"}}</th>
+                    </tr>
+                    {{#each setting in globalsettings}}
+                        <tr>
+                            <td>{{t setting.description}}</td>
+                            <td><input id="{{setting.name}}" name="{{setting.name}}" type="{{setting.type}}" value="{{setting.value}}" class="form-control js-setting-input"/></td>
+                        </tr>
+                    {{/each}}
+                </table>
+            </div>
+            <button class="btn btn-danger" id="reset">{{t "settings.reset"}}</button>
+            <button class="btn btn-primary js-save float-right">{{t "navigation.save"}}</button>
+        </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="users">
             <div class="card form-group">
                 <div class="card-header">
                     <a href="#" class="text-reset text-decoration-none week-row" data-toggle="collapse" data-target="#createUser" id="retrieveChangeLog"> {{t "administration.create_user"}} <i class="float-right fa fa-chevron-right"></i></a>
@@ -41,6 +53,8 @@
                     </form>
                 </div>
             </div>
+            {{>limitpicker}}
+            <br/>
             <div class="table-responsive">
                 <table class="table">
                     <tr>

@@ -3,6 +3,7 @@ import { Random } from 'meteor/random'
 import i18next from 'i18next'
 import './settings.html'
 import '../components/backbutton.js'
+import { getGlobalSetting } from '../../utils/frontend_helpers'
 
 Template.settings.onCreated(function settingsCreated() {
   this.displayHoursToDays = new ReactiveVar()
@@ -19,12 +20,12 @@ Template.settings.onRendered(function settingsRendered() {
   templateInstance.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
         && Meteor.user().profile && this.subscriptionsReady()) {
-      templateInstance.$('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h')
-      templateInstance.$('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
-      templateInstance.$('#dailyStartTime').val(Meteor.user().profile.dailyStartTime ? Meteor.user().profile.dailyStartTime : '09:00')
-      templateInstance.$('#breakStartTime').val(Meteor.user().profile.breakStartTime ? Meteor.user().profile.breakStartTime : '12:00')
-      templateInstance.$('#breakDuration').val(Meteor.user().profile.breakDuration ? Meteor.user().profile.breakDuration : 0.5)
-      templateInstance.$('#regularWorkingTime').val(Meteor.user().profile.regularWorkingTime ? Meteor.user().profile.regularWorkingTime : 8)
+      templateInstance.$('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : getGlobalSetting('timeunit'))
+      templateInstance.$('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : getGlobalSetting('timetrackview'))
+      templateInstance.$('#dailyStartTime').val(Meteor.user().profile.dailyStartTime ? Meteor.user().profile.dailyStartTime : getGlobalSetting('dailyStartTime'))
+      templateInstance.$('#breakStartTime').val(Meteor.user().profile.breakStartTime ? Meteor.user().profile.breakStartTime : getGlobalSetting('breakStartTime'))
+      templateInstance.$('#breakDuration').val(Meteor.user().profile.breakDuration ? Meteor.user().profile.breakDuration : getGlobalSetting('breakDuration'))
+      templateInstance.$('#regularWorkingTime').val(Meteor.user().profile.regularWorkingTime ? Meteor.user().profile.regularWorkingTime : getGlobalSetting('regularWorkingTime'))
     }
   })
 })
@@ -32,30 +33,29 @@ Template.settings.onRendered(function settingsRendered() {
 Template.settings.helpers({
   unit() {
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
+      return Meteor.user().profile.unit ? Meteor.user().profile.unit : getGlobalSetting('unit')
     }
     return false
   },
-  dailyStartTime: () => (Meteor.user() ? Meteor.user().profile.dailyStartTime : '09:00'),
-  breakStartTime: () => (Meteor.user() ? Meteor.user().profile.breakStartTime : '12:00'),
-  breakDuration: () => (Meteor.user() ? Meteor.user().profile.breakDuration : 1),
-  regularWorkingTime: () => (Meteor.user() ? Meteor.user().profile.regularWorkingTime : 8),
-
+  dailyStartTime: () => (Meteor.user() ? Meteor.user().profile.dailyStartTime : getGlobalSetting('dailyStartTime')),
+  breakStartTime: () => (Meteor.user() ? Meteor.user().profile.breakStartTime : getGlobalSetting('breakStartTime')),
+  breakDuration: () => (Meteor.user() ? Meteor.user().profile.breakDuration : getGlobalSetting('breakDuration')),
+  regularWorkingTime: () => (Meteor.user() ? Meteor.user().profile.regularWorkingTime : getGlobalSetting('regularWorkingTime')),
   precision() {
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.precision ? Meteor.user().profile.precision : '2'
+      return Meteor.user().profile.precision ? Meteor.user().profile.precision : getGlobalSetting('precision')
     }
     return false
   },
   timetrackview() {
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd'
+      return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : getGlobalSetting('timetrackview')
     }
     return false
   },
   hoursToDays() {
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8
+      return Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
     }
     return false
   },
@@ -107,5 +107,15 @@ Template.settings.events({
     Template.instance().displayHoursToDays.set(
       templateInstance.$('#timeunit').val() === 'd',
     )
+  },
+  'click .js-reset': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('resetUserSettings', (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        $.notify(i18next.t('notifications.settings_saved_success'))
+      }
+    })
   },
 })

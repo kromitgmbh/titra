@@ -156,22 +156,25 @@ FlowRouter.route('/changePwd/:token?', {
   },
   name: 'changePassword',
 })
-FlowRouter.route('/try', {
-  action() {
-    if (Meteor.userId()) {
-      FlowRouter.go('/')
-    } else {
-      AccountsAnonymous.login((error) => {
-        if (!error) {
-          FlowRouter.go('/')
-        } else {
-          console.error(error)
-        }
-      })
-    }
-  },
-  name: 'try',
-})
+
+if (Meteor.settings.public.enableAnonymousLogins) {
+  FlowRouter.route('/try', {
+    action() {
+      if (Meteor.userId()) {
+        FlowRouter.go('/')
+      } else {
+        AccountsAnonymous.login((error) => {
+          if (!error) {
+            FlowRouter.go('/')
+          } else {
+            console.error(error)
+          }
+        })
+      }
+    },
+    name: 'try',
+  })
+}
 FlowRouter.route('/claim/admin', {
   action() {
     if (Meteor.userId()) {

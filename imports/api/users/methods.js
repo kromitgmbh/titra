@@ -50,6 +50,23 @@ Meteor.methods({
       },
     })
   },
+  resetUserSettings() {
+    checkAuthentication(this)
+    Meteor.users.update({ _id: this.userId }, {
+      $unset: {
+        'profile.unit': '',
+        'profile.timeunit': '',
+        'profile.timetrackview': '',
+        'profile.enableWekan': '',
+        'profile.hoursToDays': '',
+        'profile.precision': '',
+        'profile.dailyStartTime': '',
+        'profile.breakStartTime': '',
+        'profile.breakDuration': '',
+        'profile.regularWorkingTime': '',
+      },
+    })
+  },
   updateProfile({
     name,
     theme,

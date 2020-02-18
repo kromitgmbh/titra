@@ -87,16 +87,18 @@ Template.projectlist.events({
   'click .js-delete-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
-    if (confirm(i18next.t('notifications.project_delete_confirm'))) {
-      const projectId = event.currentTarget.parentElement.parentElement.id
-      Meteor.call('deleteProject', { projectId }, (error) => {
-        if (!error) {
-          $.notify(i18next.t('notifications.project_delete_success'))
-        } else {
-          console.error(error)
-        }
-      })
-    }
+    const projectId = event.currentTarget.parentElement.parentElement.id
+    window.bootbox.confirm(i18next.t('notifications.project_delete_confirm'), (result) => {
+      if (result) {
+        Meteor.call('deleteProject', { projectId }, (error) => {
+          if (!error) {
+            $.notify(i18next.t('notifications.project_delete_success'))
+          } else {
+            console.error(error)
+          }
+        })
+      }
+    })
   },
   'click .js-archive-project': (event) => {
     event.preventDefault()

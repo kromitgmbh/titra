@@ -5,6 +5,7 @@ import Projects, { ProjectStats } from '../../api/projects/projects.js'
 
 import projectUsers from '../../api/users/users.js'
 import hex2rgba from '../../utils/hex2rgba.js'
+import { getGlobalSetting } from '../../utils/frontend_helpers'
 
 
 Template.projectchart.onCreated(function projectchartCreated() {
@@ -33,9 +34,9 @@ Template.projectchart.onCreated(function projectchartCreated() {
 })
 Template.projectchart.helpers({
   totalHours() {
-    let precision = 2
+    let precision = getGlobalSetting('precision')
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+      precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : getGlobalSetting('precision')
     }
     return ProjectStats.findOne({ _id: Template.instance().data.projectId })
       ? Number(ProjectStats.findOne({
@@ -46,12 +47,12 @@ Template.projectchart.helpers({
   hourIndicator() {
     const stats = ProjectStats.findOne({ _id: Template.instance().data.projectId })
     if (stats.previousMonthHours > stats.currentMonthHours) {
-      return '<i class="d-md-none fa fa-arrow-circle-o-up"></i>'
+      return '<i class="d-md-none fa fa-arrow-circle-up"></i>'
     }
     if (stats.previousMonthHours < stats.currentMonthHours) {
-      return '<i class="d-md-none fa fa-arrow-circle-o-down"></i>'
+      return '<i class="d-md-none fa fa-arrow-circle-down"></i>'
     }
-    return '<i class="d-md-none fa fa-minus-square-o"></i>'
+    return '<i class="d-md-none fa fa-minus-square"></i>'
   },
   allTeamMembers() {
     // return Template.instance().resources.get()
@@ -81,11 +82,15 @@ Template.projectchart.helpers({
     return Template.instance().topTasks.get()
   },
   turnOver() {
+    let precision = getGlobalSetting('precision')
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
+      precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : getGlobalSetting('precision')
+    }
     return Projects.findOne({ _id: Template.instance().data.projectId }).rate
       && ProjectStats.findOne({ _id: Template.instance().data.projectId })
       ? Number(Projects.findOne({ _id: Template.instance().data.projectId }).rate
           * ProjectStats.findOne({ _id: Template.instance().data.projectId }).totalHours)
-        .toLocaleString() : false
+        .toFixed(precision) : false
   },
   target() {
     return Number(Projects.findOne({ _id: Template.instance().data.projectId }).target) > 0
@@ -93,13 +98,13 @@ Template.projectchart.helpers({
   },
   projectDescAsHtml: () => Template.instance().projectDescAsHtml.get(),
   truncatedProjectDescAsHtml: () => (Template.instance().projectDescAsHtml.get()
-    ? Template.instance().projectDescAsHtml.get().replace('<p>', '<p class="text-truncate">') : ''),
+    ? Template.instance().projectDescAsHtml.get().replace('<p>', `<p class="text-truncate" data-toggle="tooltip" data-html="true" data-placement="right" data-title='${Template.instance().projectDescAsHtml.get()}'>`) : ''),
 })
 Template.projectchart.onRendered(function projectchartRendered() {
   const templateInstance = Template.instance()
-  let precision = 2
+  let precision = getGlobalSetting('precision')
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+    precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : getGlobalSetting('precision')
   }
   import('chart.js').then((chartModule) => {
     const Chart = chartModule.default
@@ -112,17 +117,17 @@ Template.projectchart.onRendered(function projectchartRendered() {
           if (Meteor.user().profile.timeunit === 'd') {
             stats.beforePreviousMonthHours
               /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
+                ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
             stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
               .toFixed(precision)
             stats.previousMonthHours
               /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
+                ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
             stats.previousMonthHours = Number(stats.previousMonthHours)
               .toFixed(precision)
             stats.currentMonthHours
               /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
+                ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
             stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
           }
           if (this.$('.js-hour-chart')[0]) {

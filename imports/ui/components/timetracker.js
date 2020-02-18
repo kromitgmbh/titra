@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating'
 import { ReactiveVar } from 'meteor/reactive-var'
 import dayjs from 'dayjs'
 import './timetracker.html'
+import { getGlobalSetting } from '../../utils/frontend_helpers'
 
 Template.timetracker.onCreated(function createTimeTracker() {
   this.timer = new ReactiveVar(null)
@@ -15,9 +16,9 @@ function pad(num, size) {
 Template.timetracker.events({
   'click .js-stop': (event, templateInstance) => {
     event.preventDefault()
-    let precision = 2
+    let precision = getGlobalSetting('precision')
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
+      precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : getGlobalSetting('precision')
     }
     templateInstance.$('#hours').val(dayjs.duration(dayjs().valueOf() - templateInstance.timer.get().valueOf()).asHours().toFixed(precision))
     Meteor.clearTimeout(templateInstance.intervalHandle)

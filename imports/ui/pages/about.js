@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import i18next from 'i18next'
-import { emojify } from '../../utils/frontend_helpers'
+import { emojify, getGlobalSetting } from '../../utils/frontend_helpers'
 import './about.html'
 
 Template.about.onCreated(function aboutCreated() {
@@ -20,7 +20,7 @@ Template.about.events({
       $.getJSON('https://api.github.com/repos/kromitgmbh/titra/tags', (data) => {
         const tag = data[2]
         $.getJSON(tag.commit.url, (commitData) => {
-          templateInstance.$('#titra-changelog').html(`Version <a href='https://github.com/kromitgmbh/titra/tags' target='_blank'>${tag.name}</a> (${dayjs(commitData.commit.committer.date).format('DD.MM.YYYY')}) :<br/>${commitData.commit.message.replace(/(:.*:)/g, emojify)}`)
+          templateInstance.$('#titra-changelog').html(`Version <a href='https://github.com/kromitgmbh/titra/tags' target='_blank'>${tag.name}</a> (${dayjs(commitData.commit.committer.date).format(getGlobalSetting('dateformat'))}) :<br/>${commitData.commit.message.replace(/(:.*:)/g, emojify)}`)
         })
       }).fail(() => {
         templateInstance.$('#titra-changelog').html(i18next.t('settings.titra_changelog_error'))

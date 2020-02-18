@@ -6,7 +6,9 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './weektable.html'
 import './tasksearch'
 import Projects from '../../api/projects/projects'
-import { clientTimecards, getWeekDays, timeInUserUnit } from '../../utils/frontend_helpers'
+import {
+  clientTimecards, getWeekDays, timeInUserUnit, getGlobalSetting,
+} from '../../utils/frontend_helpers'
 
 Template.weektable.onCreated(function weekTableCreated() {
   dayjs.extend(utc)
@@ -39,7 +41,7 @@ Template.weektable.helpers({
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       clientTimecards.find().fetch().forEach((element) => {
         if (element.entries) {
-          total += element.entries.filter((entry) => dayjs.utc(entry.date).format('ddd, DD.MM') === day)
+          total += element.entries.filter((entry) => dayjs.utc(entry.date).format(getGlobalSetting('weekviewDateFormat')) === day)
             .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
         }
       })
@@ -76,7 +78,7 @@ Template.weektable.events({
         }
         let hours = Number(value)
         if (Meteor.user().profile.timeunit === 'd') {
-          hours *= (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
+          hours *= (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays'))
         }
         weekArray.push({
           projectId: $(element).data('project-id'),
@@ -138,7 +140,7 @@ Template.weektablerow.helpers({
   getHoursForDay(day, task) {
     if (task.entries) {
       const entryForDay = task.entries
-        .filter((entry) => dayjs.utc(entry.date).format('ddd, DD.MM') === day)
+        .filter((entry) => dayjs.utc(entry.date).format(getGlobalSetting('weekviewDateFormat')) === day)
         .reduce(((total, element) => total + element.hours), 0)
       return entryForDay !== 0 ? timeInUserUnit(entryForDay) : ''
     }
@@ -169,7 +171,7 @@ Template.weektablerow.helpers({
         },
       ).fetch().concat(Template.instance().tempTimeEntries.get()).forEach((element) => {
         if (element.entries) {
-          total += element.entries.filter((entry) => dayjs.utc(entry.date).format('ddd, DD.MM') === day)
+          total += element.entries.filter((entry) => dayjs.utc(entry.date).format(getGlobalSetting('weekviewDateFormat')) === day)
             .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
         }
       })

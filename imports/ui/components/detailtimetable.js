@@ -6,7 +6,7 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
 import Timecards from '../../api/timecards/timecards'
 import i18nextReady from '../../startup/client/startup.js'
-import { addToolTipToTableCell, timeInUserUnit } from '../../utils/frontend_helpers'
+import { addToolTipToTableCell, timeInUserUnit, getGlobalSetting } from '../../utils/frontend_helpers'
 import projectUsers from '../../api/users/users.js'
 import Projects from '../../api/projects/projects'
 import { buildDetailedTimeEntriesForPeriodSelector } from '../../utils/server_method_helpers'
@@ -20,7 +20,7 @@ dayjs.extend(utc)
 
 function detailedDataTableMapper(entry) {
   return [Projects.findOne({ _id: entry.projectId }) ? Projects.findOne({ _id: entry.projectId }).name : '',
-    dayjs.utc(entry.date).format('DD.MM.YYYY'),
+    dayjs.utc(entry.date).format(getGlobalSetting('dateformat')),
     entry.task,
     projectUsers.findOne() ? projectUsers.findOne().users.find((elem) => elem._id === entry.userId).profile.name : '',
     Number(timeInUserUnit(entry.hours)),
@@ -85,7 +85,7 @@ Template.detailtimetable.onRendered(() => {
         {
           name: i18next.t('globals.date'),
           editable: false,
-          compareValue: (cell, keyword) => [dayjs.utc(cell, 'DD.MM.YYYY').toDate(), dayjs(keyword, 'DD.MM.YYYY').toDate()],
+          compareValue: (cell, keyword) => [dayjs.utc(cell, getGlobalSetting('dateformat')).toDate(), dayjs(keyword, getGlobalSetting('dateformat')).toDate()],
           format: addToolTipToTableCell,
         },
         { name: i18next.t('globals.task'), editable: false, format: addToolTipToTableCell },
@@ -94,7 +94,7 @@ Template.detailtimetable.onRendered(() => {
           name: Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
           editable: false,
           format: (value) => value.toFixed(Meteor.user().profile.precision
-            ? Meteor.user().profile.precision : 2),
+            ? Meteor.user().profile.precision : getGlobalSetting('precision')),
         },
         {
           name: i18next.t('navigation.edit'),
@@ -111,20 +111,24 @@ Template.detailtimetable.onRendered(() => {
         import('frappe-datatable/dist/frappe-datatable.css').then(() => {
           import('frappe-datatable').then((datatable) => {
             const DataTable = datatable.default
-            templateInstance.datatable = new DataTable('#datatable-container', {
-              columns,
-              data,
-              serialNoColumn: false,
-              clusterize: false,
-              layout: 'fluid',
-              showTotalRow: true,
-              noDataMessage: i18next.t('tabular.sZeroRecords'),
-              events: {
-                onSortColumn(column) {
-                  templateInstance.sort.set({ column: column.colIndex, order: column.sortOrder })
+            try {
+              templateInstance.datatable = new DataTable('#datatable-container', {
+                columns,
+                data,
+                serialNoColumn: false,
+                clusterize: false,
+                layout: 'fluid',
+                showTotalRow: true,
+                noDataMessage: i18next.t('tabular.sZeroRecords'),
+                events: {
+                  onSortColumn(column) {
+                    templateInstance.sort.set({ column: column.colIndex, order: column.sortOrder })
+                  },
                 },
-              },
-            })
+              })
+            } catch (error) {
+              console.error(`Caught error: ${error}`)
+            }
           })
         })
       } else {
@@ -175,10 +179,6 @@ Template.detailtimetable.helpers({
   },
   totalDetailTimeEntries() {
     return Template.instance().totalDetailTimeEntries
-  },
-  dayjs(date) {
-    dayjs.extend(utc)
-    return dayjs.utc(date).format('ddd DD.MM.YYYY')
   },
   tcid() { return Template.instance().tcid },
 })
@@ -268,15 +268,17 @@ Template.detailtimetable.events({
   },
   'click .js-delete': (event, templateInstance) => {
     event.preventDefault()
-    if (confirm(i18next.t('notifications.delete_confirm'))) {
-      Meteor.call('deleteTimeCard', { timecardId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
-        if (!error) {
-          $.notify(i18next.t('notifications.time_entry_deleted'))
-        } else {
-          console.error(error)
-        }
-      })
-    }
+    window.bootbox.confirm(i18next.t('notifications.delete_confirm'), (result) => {
+      if (result) {
+        Meteor.call('deleteTimeCard', { timecardId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
+          if (!error) {
+            $.notify(i18next.t('notifications.time_entry_deleted'))
+          } else {
+            console.error(error)
+          }
+        })
+      }
+    })
   },
   'click .js-edit': (event, templateInstance) => {
     event.preventDefault()
