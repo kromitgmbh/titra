@@ -131,12 +131,11 @@ Template.tracktime.events({
     hours = templateInstance.math.eval(hours)
 
     if (Meteor.user().profile.timeunit === 'd') {
-      hours = templateInstance.math.eval(hours)
-        * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays'))
+      hours *= (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays'))
     }
-    const buttonLabel = $(event.currentTarget).text()
-    templateInstance.$(event.currentTarget).text('saving ...')
-    templateInstance.$(event.currentTarget).prop('disabled', true)
+    const buttonLabel = $('.js-save').text()
+    templateInstance.$('.js-save').text(i18next.t('navigation.saving'))
+    templateInstance.$('.js-save').prop('disabled', true)
     if (templateInstance.tcid.get()) {
       Meteor.call('updateTimeCard', {
         _id: templateInstance.tcid.get(), projectId, date, hours, task,
@@ -166,8 +165,8 @@ Template.tracktime.events({
           templateInstance.$('#hours').val('')
           templateInstance.$('.js-tasksearch-results').addClass('d-none')
           $.notify(i18next.t('notifications.time_entry_saved'))
-          templateInstance.$(event.currentTarget).text(buttonLabel)
-          templateInstance.$(event.currentTarget).prop('disabled', false)
+          templateInstance.$('.js-save').text(buttonLabel)
+          templateInstance.$('.js-save').prop('disabled', false)
           templateInstance.$('.js-show-timecards').slideDown('fast')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
           $('#edit-tc-entry-modal').modal('hide')
@@ -237,6 +236,13 @@ Template.tracktime.events({
   },
   'focus #hours': (event, templateInstance) => {
     templateInstance.$('#hours').removeClass('is-invalid')
+  },
+  'keydown #hours': (event, templateInstance) => {
+    if (event.keyCode === 13) {
+      event.preventDefault()
+      event.stopPropagation()
+      templateInstance.$('.js-save').click()
+    }
   },
 })
 Template.tracktime.helpers({

@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -23,7 +23,7 @@
     "docker-names": "^1.1.1",
     "file-saver": "^2.0.2",
     "frappe-datatable": "^1.15.1",
-    "i18next": "^19.1.0",
+    "i18next": "^19.2.0",
     "is-dark": "^1.0.4",
     "jquery": "^3.4.1",
     "jquery-serializejson": "^2.9.0",

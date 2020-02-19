@@ -26,6 +26,16 @@ Template.tasksearch.events({
       templateInstance.$('.js-tasksearch-results').addClass('d-none')
     }
   },
+  'keydown .js-tasksearch-input': (event, templateInstance) => {
+    if (event.keyCode === 13) {
+      event.preventDefault()
+      event.stopPropagation()
+      if ($('#hours') && templateInstance.$('.js-tasksearch-input').val()) {
+        templateInstance.$('.js-tasksearch-results').addClass('d-none')
+        $('#hours').focus()
+      }
+    }
+  },
   'keyup .js-tasksearch-input': (event, templateInstance) => {
     if (event.keyCode === 40) {
       event.preventDefault()
