@@ -42,5 +42,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'startOfWeek', description: 'settings.startof_week', type: 'number', value: 1,
 })
-
+defaultSettings.push({
+  name: 'useState', description: 'settings.use_state', type: 'text', value: true,
+})
 export { defaultSettings, Globalsettings }

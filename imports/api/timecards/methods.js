@@ -145,6 +145,7 @@ Meteor.methods({
     }
     const { startDate, endDate } = periodToDates(timePeriod)
     const projectMap = new Map()
+    const timeEntries = []
     if (projectId === 'all') {
       const projects = getProjectListByCustomer(customer)
       projects.forEach((project) => {
@@ -155,6 +156,7 @@ Meteor.methods({
             projectId: project._id,
             date: { $gte: startDate, $lte: endDate },
           }).forEach((timecard) => {
+            timeEntries.push(timecard._id)
             const resource = Meteor.users.findOne({ _id: timecard.userId }).profile.name
             resourceMap.set(resource, resourceMap.get(resource)
               ? resourceMap.get(resource) + timecard.hours : timecard.hours)
@@ -165,6 +167,7 @@ Meteor.methods({
             projectId: project._id,
             date: { $gte: startDate, $lte: endDate },
           }).forEach((timecard) => {
+            timeEntries.push(timecard._id)
             const resource = Meteor.users.findOne({ _id: timecard.userId }).profile.name
             resourceMap.set(resource, resourceMap.get(resource)
               ? resourceMap.get(resource) + timecard.hours : timecard.hours)
@@ -186,6 +189,7 @@ Meteor.methods({
           projectId: project._id,
           date: { $gte: startDate, $lte: endDate },
         }).forEach((timecard) => {
+          timeEntries.push(timecard._id)
           const resource = Meteor.users.findOne({ _id: timecard.userId }).profile.name
           resourceMap.set(resource, resourceMap.get(resource)
             ? resourceMap.get(resource) + timecard.hours : timecard.hours)
@@ -196,6 +200,7 @@ Meteor.methods({
           projectId: project._id,
           date: { $gte: startDate, $lte: endDate },
         }).forEach((timecard) => {
+          timeEntries.push(timecard._id)
           const resource = Meteor.users.findOne({ _id: timecard.userId }).profile.name
           resourceMap.set(resource, resourceMap.get(resource)
             ? resourceMap.get(resource) + timecard.hours : timecard.hours)
@@ -237,6 +242,7 @@ Meteor.methods({
         'Content-type': 'application/json',
       },
     })
+    Timecards.update({ _id: { $in: timeEntries } }, { $set: { state: 'billed' } }, { multi: true })
     return 'Siwapp invoice created successfully.'
   },
   getDailyTimecards({
@@ -298,6 +304,7 @@ Meteor.methods({
     limit,
     page,
   }) {
+    checkAuthentication(this)
     check(projectId, String)
     check(period, String)
     check(userId, String)
@@ -314,6 +321,21 @@ Meteor.methods({
       .toArray()).map(workingTimeEntriesMapper)
     workingHoursObject.workingHours = workingHours
     return workingHoursObject
+  },
+  setTimeEntriesState({ timeEntries, state }) {
+    checkAuthentication(this)
+    check(state, String)
+    check(timeEntries, Array)
+    for (const timeEntryId of timeEntries) {
+      check(timeEntryId, String)
+    }
+    if (state === 'exported') {
+      Timecards.update({ _id: { $in: timeEntries }, state: { $in: ['new', undefined] } }, { $set: { state } }, { multi: true })
+    } else if (state === 'billed') {
+      Timecards.update({ _id: { $in: timeEntries }, state: { $ne: 'notBillable' } }, { $set: { state } }, { multi: true })
+    } else {
+      Timecards.update({ _id: { $in: timeEntries } }, { $set: { state } }, { multi: true })
+    }
   },
 })
 

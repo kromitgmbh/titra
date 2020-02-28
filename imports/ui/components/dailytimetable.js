@@ -7,7 +7,7 @@ import './dailytimetable.html'
 import './pagination.js'
 import './limitpicker.js'
 import i18nextReady from '../../startup/client/startup.js'
-import { getGlobalSetting } from '../../utils/frontend_helpers'
+import { getGlobalSetting, numberWithUserPrecision } from '../../utils/frontend_helpers'
 
 Template.dailytimetable.onCreated(function dailytimetablecreated() {
   this.dailyTimecards = new ReactiveVar()
@@ -40,7 +40,7 @@ Template.dailytimetable.onCreated(function dailytimetablecreated() {
 Template.dailytimetable.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
-    if (templateInstance.subscriptionsReady() && i18nextReady.get()) {
+    if (i18nextReady.get()) {
       let data = []
       if (templateInstance.dailyTimecards.get()) {
         data = templateInstance.dailyTimecards.get()
@@ -60,8 +60,7 @@ Template.dailytimetable.onRendered(() => {
           name: Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
           editable: false,
           width: 1,
-          format: (value) => value.toFixed(Meteor.user().profile.precision
-            ? Meteor.user().profile.precision : getGlobalSetting('precision')),
+          format: numberWithUserPrecision,
         },
       ]
       if (!templateInstance.datatable) {
@@ -86,8 +85,11 @@ Template.dailytimetable.onRendered(() => {
       }
       if (templateInstance.datatable && templateInstance.dailyTimecards.get()
         && window.BootstrapLoaded.get()) {
-        templateInstance.datatable
-          .refresh(data, columns)
+        try {
+          templateInstance.datatable.refresh(data, columns)
+        } catch (error) {
+          console.error(`Caught error: ${error}`)
+        }
         if (templateInstance.dailyTimecards.get().length === 0) {
           $('.dt-scrollable').height('auto')
         } else {
@@ -133,4 +135,6 @@ Template.dailytimetable.events({
 })
 Template.dailytimetable.onDestroyed(() => {
   FlowRouter.setQueryParams({ page: null })
+  Template.instance().datatable.destroy()
+  Template.instance().datatable = undefined
 })

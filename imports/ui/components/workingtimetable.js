@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
 import i18nextReady from '../../startup/client/startup.js'
-import { addToolTipToTableCell, getGlobalSetting } from '../../utils/frontend_helpers'
+import { addToolTipToTableCell, getGlobalSetting, numberWithUserPrecision } from '../../utils/frontend_helpers'
 import './workingtimetable.html'
 import './pagination.js'
 import './limitpicker.js'
@@ -39,7 +39,7 @@ Template.workingtimetable.onCreated(function workingtimetableCreated() {
 Template.workingtimetable.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
-    if (templateInstance.subscriptionsReady() && i18nextReady.get()) {
+    if (i18nextReady.get()) {
       let data
       if (templateInstance.workingTimeEntries.get()) {
         data = templateInstance.workingTimeEntries.get()
@@ -58,9 +58,9 @@ Template.workingtimetable.onRendered(() => {
         { name: i18next.t('details.breakStartTime'), editable: false },
         { name: i18next.t('details.breakEndTime'), editable: false },
         { name: i18next.t('details.endTime'), editable: false },
-        { name: i18next.t('details.totalTime'), editable: false },
-        { name: i18next.t('details.regularWorkingTime'), editable: false },
-        { name: i18next.t('details.regularWorkingTimeDifference'), editable: false }]
+        { name: i18next.t('details.totalTime'), editable: false, format: numberWithUserPrecision },
+        { name: i18next.t('details.regularWorkingTime'), editable: false, format: numberWithUserPrecision },
+        { name: i18next.t('details.regularWorkingTimeDifference'), editable: false, format: numberWithUserPrecision }]
       if (!templateInstance.datatable) {
         import('frappe-datatable/dist/frappe-datatable.css').then(() => {
           import('frappe-datatable').then((datatable) => {
@@ -83,8 +83,11 @@ Template.workingtimetable.onRendered(() => {
       }
       if (templateInstance.datatable && templateInstance.workingTimeEntries.get()
         && window.BootstrapLoaded.get()) {
-        templateInstance.datatable
-          .refresh(data, columns)
+        try {
+          templateInstance.datatable.refresh(data, columns)
+        } catch (error) {
+          console.error(`Caught error: ${error}`)
+        }
         if (templateInstance.workingTimeEntries.get().length === 0) {
           $('.dt-scrollable').height('auto')
         } else {
@@ -134,4 +137,6 @@ Template.workingtimetable.events({
 })
 Template.workingtimetable.onDestroyed(() => {
   FlowRouter.setQueryParams({ page: null })
+  Template.instance().datatable.destroy()
+  Template.instance().datatable = undefined
 })

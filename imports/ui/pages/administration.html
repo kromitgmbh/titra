@@ -18,7 +18,7 @@
                     {{#each setting in globalsettings}}
                         <tr>
                             <td>{{t setting.description}}</td>
-                            <td><input id="{{setting.name}}" name="{{setting.name}}" type="{{setting.type}}" value="{{setting.value}}" class="form-control js-setting-input"/></td>
+                            <td><input id="{{setting.name}}" name="{{setting.name}}" type="{{setting.type}}" value="{{stringify setting.value}}" class="form-control js-setting-input"/></td>
                         </tr>
                     {{/each}}
                 </table>

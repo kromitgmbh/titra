@@ -24,6 +24,7 @@ Template.administration.helpers({
   avatar: (meteorUser) => displayUserAvatar(meteorUser),
   dayjs: (date) => dayjs(date).format('DD.MM.YYYY (HH:mm)'),
   globalsettings: () => Globalsettings.find(),
+  stringify: (string) => string.toString(),
 })
 
 Template.administration.events({

@@ -22,7 +22,7 @@ function periodToDates(period) {
       break
     case 'last3months':
       startDate = dayjs.utc().subtract(3, 'month').startOf('month').toDate()
-      endDate = dayjs.utc().subtract(1, 'month').endOf('month').toDate()
+      endDate = dayjs.utc().toDate()
       break
     case 'lastWeek':
       startDate = dayjs.utc().subtract(1, 'week').startOf('week').toDate()

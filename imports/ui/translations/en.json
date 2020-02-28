@@ -129,7 +129,8 @@
     "verbose_date_format": "Detailed date format",
     "weekview_date_format": "Weekview date format",
     "startof_week": "Start of week",
-    "global_defaults": "Default settings:"
+    "global_defaults": "Default settings:",
+    "use_state": "Use time entry state?"
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -170,7 +171,12 @@
     "endTime": "End",
     "totalTime": "Total",
     "regularWorkingTime": "Regular work time",
-    "regularWorkingTimeDifference": "Difference"
+    "regularWorkingTimeDifference": "Difference",
+    "state": "State",
+    "new": "New",
+    "exported": "Exported",
+    "billed": "Billed",
+    "notBillable": "Not Billable"
   },
   "dashboard": {
     "share": "Share project dashboard",

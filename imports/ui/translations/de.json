@@ -128,7 +128,8 @@
     "date_format": "Datumsformat",
     "verbose_date_format": "Detailliertes Datumsformat",
     "weekview_date_format": "Datumsformat Wochenansicht",
-    "startof_week": "Wochenbeginn"
+    "startof_week": "Wochenbeginn",
+    "use_state": "Status für Zeiteinträge verwenden?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -169,7 +170,12 @@
     "endTime": "Ende",
     "totalTime": "Gesamt",
     "regularWorkingTime": "Normalarbeitszeit",
-    "regularWorkingTimeDifference": "Differenz"
+    "regularWorkingTimeDifference": "Differenz",
+    "state": "Status",
+    "new": "Neu",
+    "exported": "Exportiert",
+    "billed": "Verrechnet",
+    "notBillable": "Nicht Verrechenbar"
   },
   "dashboard": {
     "share": "Projekt Dashboard teilen",

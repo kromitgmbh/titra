@@ -19,6 +19,14 @@ function getWeekDays(date) {
   const calendar = date.clone().startOf('week')
   return new Array(7).fill(0).map((value, index) => (calendar.add(index + getGlobalSetting('startOfWeek'), 'day').format(getGlobalSetting('weekviewDateFormat'))))
 }
+
+function numberWithUserPrecision(number) {
+  if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.precision) {
+    return number.toFixed(Meteor.user().profile.precision)
+  }
+  return number.toFixed(getGlobalSetting('precision'))
+}
+
 function timeInUserUnit(time) {
   if (!time || time === 0) {
     return false
@@ -72,4 +80,5 @@ export {
   validateEmail,
   emojify,
   getGlobalSetting,
+  numberWithUserPrecision,
 }
