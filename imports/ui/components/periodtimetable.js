@@ -6,7 +6,8 @@ import i18nextReady from '../../startup/client/startup.js'
 import './periodtimetable.html'
 import './pagination.js'
 import './limitpicker.js'
-import { numberWithUserPrecision } from '../../utils/frontend_helpers.js'
+import { numberWithUserPrecision, getUserSetting } from '../../utils/frontend_helpers.js'
+import { totalHoursForPeriodMapper } from '../../utils/server_method_helpers.js'
 
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
   this.periodTimecards = new ReactiveVar()
@@ -42,7 +43,7 @@ Template.periodtimetable.onRendered(() => {
     if (i18nextReady.get()) {
       let data = []
       if (templateInstance.periodTimecards.get()) {
-        data = templateInstance.periodTimecards.get()
+        data = templateInstance.periodTimecards.get().map(totalHoursForPeriodMapper)
           .map((entry) => Object.entries(entry)
             .map((key) => key[1]))
       }
@@ -50,7 +51,7 @@ Template.periodtimetable.onRendered(() => {
         { name: i18next.t('globals.project'), editable: false },
         { name: i18next.t('globals.resource'), editable: false },
         {
-          name: Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
+          name: Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
           editable: false,
           format: numberWithUserPrecision,
         },
@@ -99,7 +100,7 @@ Template.periodtimetable.helpers({
 Template.periodtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
-    const csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.resource')},${Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}\r\n`]
+    const csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.resource')},${Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}\r\n`]
     for (const timeEntry of templateInstance.periodTimecards.get()) {
       csvArray.push(`${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
@@ -107,7 +108,7 @@ Template.periodtimetable.events({
   },
   'click .js-export-xlsx': (event, templateInstance) => {
     event.preventDefault()
-    const data = [[i18next.t('globals.project'), i18next.t('globals.resource'), Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')]]
+    const data = [[i18next.t('globals.project'), i18next.t('globals.resource'), Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')]]
     for (const timeEntry of templateInstance.periodTimecards.get()) {
       data.push([timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
     }

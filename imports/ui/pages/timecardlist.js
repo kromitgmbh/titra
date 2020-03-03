@@ -9,6 +9,7 @@ import '../components/periodtimetable.js'
 import '../components/workingtimetable.js'
 import '../components/detailtimetable'
 import '../components/weektable.js'
+import './dashboard.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {
   this.project = new ReactiveVar()

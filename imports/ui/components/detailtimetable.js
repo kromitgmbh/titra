@@ -11,6 +11,7 @@ import {
   timeInUserUnit,
   getGlobalSetting,
   numberWithUserPrecision,
+  getUserSetting,
 } from '../../utils/frontend_helpers'
 import projectUsers from '../../api/users/users.js'
 import Projects from '../../api/projects/projects'
@@ -104,7 +105,7 @@ Template.detailtimetable.onRendered(() => {
         { name: i18next.t('globals.task'), editable: false, format: addToolTipToTableCell },
         { name: i18next.t('globals.resource'), editable: false, format: addToolTipToTableCell },
         {
-          name: Meteor.user() && Meteor.user().profile && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
+          name: Meteor.user() && Meteor.user().profile && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
           editable: false,
           format: numberWithUserPrecision,
         },
@@ -252,7 +253,7 @@ Template.detailtimetable.helpers({
     return Template.instance().totalDetailTimeEntries
   },
   tcid() { return Template.instance().tcid },
-  showInvoiceButton: () => (Meteor.user() && Meteor.user().profile && Meteor.user().profile.siwappurl) || getGlobalSetting('useState'),
+  showInvoiceButton: () => (getUserSetting('siwappurl')) || getGlobalSetting('useState'),
 })
 Template.detailtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
@@ -270,9 +271,9 @@ Template.detailtimetable.events({
     delete selector[1].skip
     let csvArray
     if (getGlobalSetting('useState')) {
-      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')},${i18next.t('details.state')}\r\n`]
+      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')},${i18next.t('details.state')}\r\n`]
     } else {
-      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}\r\n`]
+      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}\r\n`]
     }
     for (const timeEntry of Timecards.find(selector[0], selector[1]).fetch()
       .map(detailedDataTableMapper)) {
@@ -305,9 +306,9 @@ Template.detailtimetable.events({
     delete selector[1].skip
     let data
     if (getGlobalSetting('useState')) {
-      data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'), i18next.t('details.state')]]
+      data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'), i18next.t('details.state')]]
     } else {
-      data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')]]
+      data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')]]
     }
     for (const timeEntry of Timecards.find(selector[0], selector[1]).fetch()
       .map(detailedDataTableMapper)) {
@@ -352,7 +353,7 @@ Template.detailtimetable.events({
   },
   'click .js-invoice': (event, templateInstance) => {
     event.preventDefault()
-    if (Meteor.user().profile.siwappurl && Meteor.user().profile.siwapptoken) {
+    if (getUserSetting('siwappurl') && getUserSetting('siwapptoken')) {
       Meteor.call('sendToSiwapp', {
         projectId: $('.js-target-project').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
       }, (error, result) => {

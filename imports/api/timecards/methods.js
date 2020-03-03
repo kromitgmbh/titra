@@ -11,8 +11,6 @@ import { periodToDates, timeInUserUnit } from '../../utils/periodHelpers.js'
 import {
   checkAuthentication,
   getProjectListByCustomer,
-  totalHoursForPeriodMapper,
-  dailyTimecardMapper,
   buildTotalHoursForPeriodSelector,
   buildDailyHoursSelector,
   buildworkingTimeSelector,
@@ -266,7 +264,7 @@ Meteor.methods({
       .aggregate(buildDailyHoursSelector(projectId, period, userId, customer, 0))
       .toArray()).length
     const dailyHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
-      .toArray()).map(dailyTimecardMapper)
+      .toArray())
     dailyHoursObject.dailyHours = dailyHours
     dailyHoursObject.totalEntries = totalEntries
     return dailyHoursObject
@@ -292,7 +290,7 @@ Meteor.methods({
       .aggregate(buildTotalHoursForPeriodSelector(projectId, period, userId, customer, 0))
       .toArray()).length
     const totalHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
-      .toArray()).map(totalHoursForPeriodMapper)
+      .toArray())
     totalHoursObject.totalHours = totalHours
     totalHoursObject.totalEntries = totalEntries
     return totalHoursObject

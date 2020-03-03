@@ -5,7 +5,11 @@ import { displayUserAvatar } from '../../utils/frontend_helpers'
 import './navbar.html'
 
 Template.navbar.onCreated(function navbarCreated() {
-  this.subscribe('userRoles')
+  this.autorun(() => {
+    if (Meteor.user()) {
+      this.subscribe('userRoles')
+    }
+  })
 })
 
 Template.navbar.helpers({

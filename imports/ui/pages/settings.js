@@ -3,16 +3,12 @@ import { Random } from 'meteor/random'
 import i18next from 'i18next'
 import './settings.html'
 import '../components/backbutton.js'
-import { getGlobalSetting } from '../../utils/frontend_helpers'
+import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
 
 Template.settings.onCreated(function settingsCreated() {
   this.displayHoursToDays = new ReactiveVar()
   this.autorun(() => {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      if (Meteor.user().profile) {
-        this.displayHoursToDays.set(Meteor.user().profile.timeunit === 'd')
-      }
-    }
+    this.displayHoursToDays.set(getUserSetting('timeunit') === 'd')
   })
 })
 Template.settings.onRendered(function settingsRendered() {
@@ -20,55 +16,30 @@ Template.settings.onRendered(function settingsRendered() {
   templateInstance.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
         && Meteor.user().profile && this.subscriptionsReady()) {
-      templateInstance.$('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : getGlobalSetting('timeunit'))
-      templateInstance.$('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : getGlobalSetting('timetrackview'))
-      templateInstance.$('#dailyStartTime').val(Meteor.user().profile.dailyStartTime ? Meteor.user().profile.dailyStartTime : getGlobalSetting('dailyStartTime'))
-      templateInstance.$('#breakStartTime').val(Meteor.user().profile.breakStartTime ? Meteor.user().profile.breakStartTime : getGlobalSetting('breakStartTime'))
-      templateInstance.$('#breakDuration').val(Meteor.user().profile.breakDuration ? Meteor.user().profile.breakDuration : getGlobalSetting('breakDuration'))
-      templateInstance.$('#regularWorkingTime').val(Meteor.user().profile.regularWorkingTime ? Meteor.user().profile.regularWorkingTime : getGlobalSetting('regularWorkingTime'))
+      templateInstance.$('#timeunit').val(getUserSetting('timeunit') ? getUserSetting('timeunit') : getGlobalSetting('timeunit'))
+      templateInstance.$('#timetrackview').val(getUserSetting('timetrackview') ? getUserSetting('timetrackview') : getGlobalSetting('timetrackview'))
+      templateInstance.$('#dailyStartTime').val(getUserSetting('dailyStartTime') ? getUserSetting('dailyStartTime') : getGlobalSetting('dailyStartTime'))
+      templateInstance.$('#breakStartTime').val(getUserSetting('breakStartTime') ? getUserSetting('breakStartTime') : getGlobalSetting('breakStartTime'))
+      templateInstance.$('#breakDuration').val(getUserSetting('breakDuration') ? getUserSetting('breakDuration') : getGlobalSetting('breakDuration'))
+      templateInstance.$('#regularWorkingTime').val(getUserSetting('regularWorkingTime') ? getUserSetting('regularWorkingTime') : getGlobalSetting('regularWorkingTime'))
     }
   })
 })
 
 Template.settings.helpers({
-  unit() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.unit ? Meteor.user().profile.unit : getGlobalSetting('unit')
-    }
-    return false
-  },
-  dailyStartTime: () => (Meteor.user() ? Meteor.user().profile.dailyStartTime : getGlobalSetting('dailyStartTime')),
-  breakStartTime: () => (Meteor.user() ? Meteor.user().profile.breakStartTime : getGlobalSetting('breakStartTime')),
-  breakDuration: () => (Meteor.user() ? Meteor.user().profile.breakDuration : getGlobalSetting('breakDuration')),
-  regularWorkingTime: () => (Meteor.user() ? Meteor.user().profile.regularWorkingTime : getGlobalSetting('regularWorkingTime')),
-  precision() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.precision ? Meteor.user().profile.precision : getGlobalSetting('precision')
-    }
-    return false
-  },
-  timetrackview() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : getGlobalSetting('timetrackview')
-    }
-    return false
-  },
-  hoursToDays() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
-    }
-    return false
-  },
+  unit: () => (getUserSetting('timeunit') ? getUserSetting('timeunit') : getGlobalSetting('unit')),
+  dailyStartTime: () => (Meteor.user() ? getUserSetting('dailyStartTime') : getGlobalSetting('dailyStartTime')),
+  breakStartTime: () => (Meteor.user() ? getUserSetting('breakStartTime') : getGlobalSetting('breakStartTime')),
+  breakDuration: () => (Meteor.user() ? getUserSetting('breakDuration') : getGlobalSetting('breakDuration')),
+  regularWorkingTime: () => (Meteor.user() ? getUserSetting('regularWorkingTime') : getGlobalSetting('regularWorkingTime')),
+  precision: () => (getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')),
+  timetrackview: () => (getUserSetting('timetrackview') ? getUserSetting('timetrackview') : getGlobalSetting('timetrackview')),
+  hoursToDays: () => (getUserSetting('hoursToDays') ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')),
   displayHoursToDays: () => Template.instance().displayHoursToDays.get(),
-  enableWekan() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile ? Meteor.user().profile.enableWekan : false
-    }
-    return false
-  },
-  siwappurl: () => (Meteor.user() ? Meteor.user().profile.siwappurl : false),
-  siwapptoken: () => (Meteor.user() ? Meteor.user().profile.siwapptoken : false),
-  titraAPItoken: () => (Meteor.user() ? Meteor.user().profile.APItoken : false),
+  enableWekan: () => (getUserSetting('enableWekan') ? getUserSetting('enableWekan') : getGlobalSetting('enableWekan')),
+  siwappurl: () => (getUserSetting('siwappurl') ? getUserSetting('siwappurl') : false),
+  siwapptoken: () => (getUserSetting('siwapptoken') ? getUserSetting('siwapptoken') : false),
+  titraAPItoken: () => (getUserSetting('APItoken') ? getUserSetting('APItoken') : false),
 })
 
 

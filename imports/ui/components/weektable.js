@@ -7,7 +7,7 @@ import './weektable.html'
 import './tasksearch'
 import Projects from '../../api/projects/projects'
 import {
-  clientTimecards, getWeekDays, timeInUserUnit, getGlobalSetting,
+  clientTimecards, getWeekDays, timeInUserUnit, getGlobalSetting, getUserSetting,
 } from '../../utils/frontend_helpers'
 
 Template.weektable.onCreated(function weekTableCreated() {
@@ -77,8 +77,8 @@ Template.weektable.events({
           return
         }
         let hours = Number(value)
-        if (Meteor.user().profile.timeunit === 'd') {
-          hours *= (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays'))
+        if (getUserSetting('timeunit') === 'd') {
+          hours *= (getUserSetting('hoursToDays') ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays'))
         }
         weekArray.push({
           projectId: $(element).data('project-id'),

@@ -7,7 +7,8 @@ import './dailytimetable.html'
 import './pagination.js'
 import './limitpicker.js'
 import i18nextReady from '../../startup/client/startup.js'
-import { getGlobalSetting, numberWithUserPrecision } from '../../utils/frontend_helpers'
+import { getGlobalSetting, numberWithUserPrecision, getUserSetting } from '../../utils/frontend_helpers'
+import { dailyTimecardMapper } from '../../utils/server_method_helpers'
 
 Template.dailytimetable.onCreated(function dailytimetablecreated() {
   this.dailyTimecards = new ReactiveVar()
@@ -43,7 +44,7 @@ Template.dailytimetable.onRendered(() => {
     if (i18nextReady.get()) {
       let data = []
       if (templateInstance.dailyTimecards.get()) {
-        data = templateInstance.dailyTimecards.get()
+        data = templateInstance.dailyTimecards.get().map(dailyTimecardMapper)
           .map((entry) => Object.entries(entry)
             .map((key) => { if (key[1] instanceof Date) { return dayjs(key[1]).format(getGlobalSetting('dateformat')) } return key[1] }))
       }
@@ -57,7 +58,7 @@ Template.dailytimetable.onRendered(() => {
         { name: i18next.t('globals.project'), editable: false, width: 2 },
         { name: i18next.t('globals.resource'), editable: false, width: 2 },
         {
-          name: Meteor.user() && Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
+          name: Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
           editable: false,
           width: 1,
           format: numberWithUserPrecision,
@@ -112,7 +113,7 @@ Template.dailytimetable.events({
     event.preventDefault()
     let unit = i18next.t('globals.hour_plural')
     if (Meteor.user()) {
-      unit = Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
+      unit = getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
     }
     const csvArray = [`\uFEFF${i18next.t('globals.date')},${i18next.t('globals.project')},${i18next.t('globals.resource')},${unit}\r\n`]
     for (const timeEntry of templateInstance.dailyTimecards.get()) {
@@ -124,7 +125,7 @@ Template.dailytimetable.events({
     event.preventDefault()
     let unit = i18next.t('globals.hour_plural')
     if (Meteor.user()) {
-      unit = Meteor.user().profile.timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
+      unit = getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
     }
     const data = [[i18next.t('globals.date'), i18next.t('globals.project'), i18next.t('globals.resource'), unit]]
     for (const timeEntry of templateInstance.dailyTimecards.get()) {

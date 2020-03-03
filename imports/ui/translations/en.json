@@ -176,7 +176,8 @@
     "new": "New",
     "exported": "Exported",
     "billed": "Billed",
-    "notBillable": "Not Billable"
+    "notBillable": "Not Billable",
+    "charts": "Charts"
   },
   "dashboard": {
     "share": "Share project dashboard",

@@ -7,7 +7,7 @@ import i18next from 'i18next'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
-import { validateEmail, getGlobalSetting } from '../../utils/frontend_helpers'
+import { validateEmail, getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
 
 function validateWekanUrl() {
   const templateInstance = Template.instance()
@@ -118,13 +118,13 @@ Template.editproject.events({
       templateInstance.$('#name').addClass('is-invalid')
       return
     }
-    if (Meteor.user().profile.timeunit === 'd') {
+    if (getUserSetting('timeunit') === 'd') {
       templateInstance.$('#target').val(Number(templateInstance.$('#target').val()) * 8)
     }
     const projectArray = templateInstance.$('#editProjectForm').serializeArray()
     projectArray.push({ name: 'desc', value: Template.instance().quill.getContents() })
-    if (Meteor.user().profile.timeunit === 'd') {
-      templateInstance.$('#target').val(templateInstance.$('#target').val() * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')))
+    if (getUserSetting('timeunit') === 'd') {
+      templateInstance.$('#target').val(templateInstance.$('#target').val() * (getUserSetting('hoursToDays') ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')))
     }
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {

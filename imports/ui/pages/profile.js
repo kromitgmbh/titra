@@ -5,25 +5,26 @@ import i18next from 'i18next'
 
 import '../components/backbutton.js'
 import './profile.html'
+import { getUserSetting } from '../../utils/frontend_helpers.js'
 
 Template.profile.helpers({
-  name: () => (Meteor.user() ? Meteor.user().profile.name : false),
+  name: () => getUserSetting('name'),
   svgAvatar() {
     namedavatar.config({
       nameType: 'initials',
       backgroundColors:
-            [(Meteor.user() && Meteor.user().profile.avatarColor
-              ? Meteor.user().profile.avatarColor : Template.instance().selectedAvatarColor.get())],
+            [(Meteor.user() && getUserSetting('avatarColor')
+              ? getUserSetting('avatarColor') : Template.instance().selectedAvatarColor.get())],
       minFontSize: 2,
     })
-    const rawSVG = namedavatar.getSVG(Meteor.user() ? Meteor.user().profile.name : false)
+    const rawSVG = namedavatar.getSVG(Meteor.user() ? getUserSetting('name') : false)
     rawSVG.classList = 'rounded'
     rawSVG.style.width = '100px'
     rawSVG.style.height = '100px'
     return rawSVG.outerHTML
   },
-  avatarColor: () => (Meteor.user() && Meteor.user().profile.avatarColor
-    ? Meteor.user().profile.avatarColor : Template.instance().selectedAvatarColor.get()),
+  avatarColor: () => (Meteor.user() && getUserSetting('avatarColor')
+    ? getUserSetting('avatarColor') : Template.instance().selectedAvatarColor.get()),
 })
 
 
@@ -98,22 +99,22 @@ Template.profile.onRendered(function settingsRendered() {
   templateInstance.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
         && Meteor.user().profile && this.subscriptionsReady()) {
-      templateInstance.$('#theme').val(Meteor.user().profile.theme ? Meteor.user().profile.theme : 'auto')
-      templateInstance.$('#language').val(Meteor.user().profile.language ? Meteor.user().profile.language : 'auto')
-      templateInstance.$('#avatarData').val(Meteor.user().profile.avatar)
+      templateInstance.$('#theme').val(getUserSetting('theme') ? getUserSetting('theme') : 'auto')
+      templateInstance.$('#language').val(getUserSetting('language') ? getUserSetting('language') : 'auto')
+      templateInstance.$('#avatarData').val(getUserSetting('avatar'))
       if (templateInstance.pickr) {
         templateInstance.pickr.destroy()
         delete templateInstance.pickr
       }
-      if (!Meteor.user().profile.avatar && templateInstance.$('#avatarColorPickr').length) {
+      if (!getUserSetting('avatar') && templateInstance.$('#avatarColorPickr').length) {
         const pickrOptions = {
           el: '#avatarColorPickr',
           theme: 'monolith',
           lockOpacity: true,
           comparison: false,
           position: 'left-start',
-          default: (Meteor.user() && Meteor.user().profile.avatarColor
-            ? Meteor.user().profile.avatarColor : Template.instance().selectedAvatarColor.get()),
+          default: (Meteor.user() && getUserSetting('avatarColor')
+            ? getUserSetting('avatarColor') : Template.instance().selectedAvatarColor.get()),
           components: {
             preview: true,
             opacity: false,

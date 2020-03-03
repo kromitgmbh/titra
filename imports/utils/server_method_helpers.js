@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import Projects from '../api/projects/projects.js'
 import { periodToDates } from './periodHelpers.js'
-import { getGlobalSetting } from './frontend_helpers.js'
+import { getGlobalSetting, getUserSetting } from './frontend_helpers.js'
 
 function getProjectListById(projectId) {
   let projectList = []
@@ -57,10 +57,9 @@ function getProjectListByCustomer(customer) {
 function totalHoursForPeriodMapper(entry) {
   let { totalHours } = entry
   if (Meteor.user()) {
-    // const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-    if (Meteor.user().profile.timeunit === 'd') {
-      totalHours = Number(entry.totalHours / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')))
+    if (getUserSetting('timeunit') === 'd') {
+      totalHours = Number(entry.totalHours / (getUserSetting('hoursToDays')
+        ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')))
     }
   }
   return {
@@ -73,10 +72,9 @@ function totalHoursForPeriodMapper(entry) {
 function dailyTimecardMapper(entry) {
   let { totalHours } = entry
   if (Meteor.user()) {
-    // const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-    if (Meteor.user().profile.timeunit === 'd') {
-      totalHours = Number(entry.totalHours / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')))
+    if (getUserSetting('timeunit') === 'd') {
+      totalHours = Number(entry.totalHours / (getUserSetting('hoursToDays')
+        ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')))
     }
   }
   return {

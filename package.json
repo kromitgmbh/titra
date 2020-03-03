@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -13,7 +13,7 @@
     "@fullcalendar/interaction": "^4.4.0",
     "@neovici/nullxlsx": "^3.0.2",
     "@simonwep/pickr": "^1.5.1",
-    "bcrypt": "^4.0.0",
+    "bcrypt": "^4.0.1",
     "bootbox": "^5.4.0",
     "bootstrap": ">=4.4.1",
     "bootstrap4-notify": "^4.0.3",

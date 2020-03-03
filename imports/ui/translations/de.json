@@ -175,7 +175,8 @@
     "new": "Neu",
     "exported": "Exportiert",
     "billed": "Verrechnet",
-    "notBillable": "Nicht Verrechenbar"
+    "notBillable": "Nicht Verrechenbar",
+    "charts": "Diagramme"
   },
   "dashboard": {
     "share": "Projekt Dashboard teilen",

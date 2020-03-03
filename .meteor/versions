@@ -68,7 +68,7 @@ npm-bcrypt@0.9.3
 npm-mongo@3.3.0
 observe-sequence@1.0.16
 ordered-dict@1.1.0
-ostrio:flow-router-extra@3.7.3
+ostrio:flow-router-extra@3.7.4
 ostrio:logger@2.0.8
 ostrio:loggerconsole@2.0.5
 promise@0.11.2

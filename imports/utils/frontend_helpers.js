@@ -8,6 +8,14 @@ function getGlobalSetting(name) {
   return Globalsettings.findOne({ name }) ? Globalsettings.findOne({ name }).value : ''
 }
 
+function getUserSetting(field) {
+  check(field, String)
+  if ((Meteor.isClient && !Meteor.loggingIn()) && Meteor.user() && Meteor.user().profile) {
+    return Meteor.user().profile[field]
+  }
+  return false
+}
+
 function addToolTipToTableCell(value) {
   if (value) {
     return `<span data-toggle="tooltip" data-placement="left" title="${value}">${value}</span>`
@@ -21,26 +29,21 @@ function getWeekDays(date) {
 }
 
 function numberWithUserPrecision(number) {
-  if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.precision) {
-    return number.toFixed(Meteor.user().profile.precision)
-  }
-  return number.toFixed(getGlobalSetting('precision'))
+  return getUserSetting('precision') ? number.toFixed(getUserSetting('precision')) : number.toFixed(getGlobalSetting('precision'))
 }
 
 function timeInUserUnit(time) {
   if (!time || time === 0) {
     return false
   }
-  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : getGlobalSetting('precision')
-    if (Meteor.user().profile.timeunit === 'd') {
-      const convertedTime = Number(time / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays'))).toFixed(precision)
-      return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
-    }
-    if (time) {
-      return Number(time).toFixed(precision)
-    }
+  const precision = getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')
+  if (getUserSetting('timeunit') === 'd') {
+    const convertedTime = Number(time / (getUserSetting('hoursToDays')
+      ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays'))).toFixed(precision)
+    return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
+  }
+  if (time) {
+    return Number(time).toFixed(precision)
   }
   return false
 }
@@ -81,4 +84,5 @@ export {
   emojify,
   getGlobalSetting,
   numberWithUserPrecision,
+  getUserSetting,
 }

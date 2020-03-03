@@ -3,7 +3,7 @@ import isDarkMode from 'is-dark'
 import i18next from 'i18next'
 import * as bs4notify from 'bootstrap4-notify'
 import Projects from '../../api/projects/projects.js'
-import { timeInUserUnit, emojify, getGlobalSetting } from '../../utils/frontend_helpers.js'
+import { timeInUserUnit, emojify, getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers.js'
 
 $.notifyDefaults({
   type: 'success',
@@ -79,9 +79,9 @@ Meteor.startup(() => {
     if (!Meteor.loggingIn() && Meteor.user()
       && Meteor.user().profile) {
       Meteor.subscribe('globalsettings')
-      if (Meteor.user().profile.theme === 'dark') {
+      if (getUserSetting('theme') === 'dark') {
         import('../../ui/styles/dark.scss')
-      } else if (Meteor.user().profile.theme === 'light') {
+      } else if (getUserSetting('theme') === 'light') {
         import('../../ui/styles/light.scss')
       } else if (isDarkMode()) {
           import('../../ui/styles/dark.scss')
@@ -94,8 +94,8 @@ Meteor.startup(() => {
       import('../../ui/styles/light.scss')
     }
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      if (Meteor.user().profile.language) {
-        language = Meteor.user().profile.language === 'auto' ? navigator.language.substring(0, 2) : Meteor.user().profile.language
+      if (getUserSetting('language')) {
+        language = getUserSetting('theme') === 'auto' ? navigator.language.substring(0, 2) : getUserSetting('theme')
       }
       loadLanguage(language)
       import('popper.js').then((Popper) => {
@@ -138,7 +138,7 @@ Meteor.startup(() => {
 Template.registerHelper('i18nextReady', () => i18nextReady.get())
 Template.registerHelper('unit', () => {
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    return Meteor.user().profile.unit ? Meteor.user().profile.unit : getGlobalSetting('unit')
+    return getUserSetting('unit') ? getUserSetting('unit') : getGlobalSetting('unit')
   }
   return false
 })
@@ -150,7 +150,7 @@ Template.registerHelper('emojify', (text) => {
 })
 Template.registerHelper('timeunit', () => {
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && i18nextReady.get()) {
-    switch (Meteor.user().profile.timeunit) {
+    switch (getUserSetting('timeunit')) {
       case 'h':
         return i18next.t('globals.unit_hour_short')
       case 'd':
@@ -163,7 +163,7 @@ Template.registerHelper('timeunit', () => {
 })
 Template.registerHelper('timetrackview', () => {
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : getGlobalSetting('timetrackview')
+    return getUserSetting('timetrackview') ? getUserSetting('timetrackview') : getGlobalSetting('timetrackview')
   }
   return false
 })

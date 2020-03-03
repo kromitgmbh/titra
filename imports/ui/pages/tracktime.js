@@ -10,7 +10,7 @@ import 'tiny-date-picker/tiny-date-picker.css'
 
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
-import { getGlobalSetting } from '../../utils/frontend_helpers.js'
+import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers.js'
 
 import './tracktime.html'
 import '../components/projectselect.js'
@@ -130,8 +130,8 @@ Template.tracktime.events({
     const date = dayjs.utc($('#date').val(), getGlobalSetting('dateformatVerbose')).toDate()
     hours = templateInstance.math.eval(hours)
 
-    if (Meteor.user().profile.timeunit === 'd') {
-      hours *= (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays'))
+    if (getUserSetting('timeunit') === 'd') {
+      hours *= (getUserSetting('hoursToDays') ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays'))
     }
     const buttonLabel = $('.js-save').text()
     templateInstance.$('.js-save').text(i18next.t('navigation.saving'))
@@ -258,7 +258,7 @@ Template.tracktime.helpers({
     ? Timecards.findOne({ _id: Template.instance().tcid.get() }).task : false),
   hours: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
     ? Timecards.findOne({ _id: Template.instance().tcid.get() }).hours : false),
-  showTracker: () => (Meteor.user() ? (Meteor.user().profile.timeunit !== 'd') : false),
+  showTracker: () => (getUserSetting('timeunit') !== 'd'),
   totalTime: () => Template.instance().totalTime.get(),
   previousDay: () => dayjs.utc(Template.instance().date.get()).subtract(1, 'day').format(getGlobalSetting('dateformatVerbose')),
   nextDay: () => dayjs.utc(Template.instance().date.get()).add(1, 'day').format(getGlobalSetting('dateformatVerbose')),
@@ -270,9 +270,7 @@ Template.tracktime.helpers({
 Template.tracktimemain.onCreated(function tracktimeCreated() {
   this.timetrackview = new ReactiveVar(getGlobalSetting('timetrackview'))
   this.autorun(() => {
-    if (Meteor.user() && Meteor.user().profile && Meteor.user().profile.timetrackview) {
-      this.timetrackview.set(Meteor.user().profile.timetrackview)
-    }
+    this.timetrackview.set(getUserSetting('timetrackview'))
     if (FlowRouter.getParam('projectId') && this.subscriptionsReady()) {
       this.timetrackview.set('d')
     } else if (FlowRouter.getQueryParam('view')) {

@@ -1,6 +1,6 @@
 import './allprojectschart.html'
 import hex2rgba from '../../utils/hex2rgba.js'
-import { getGlobalSetting } from '../../utils/frontend_helpers'
+import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
 
 Template.allprojectschart.onCreated(function allprojectschartCreated() {
   // this.resources = new ReactiveVar()
@@ -36,10 +36,7 @@ Template.allprojectschart.helpers({
 })
 Template.allprojectschart.onRendered(function allprojectschartRendered() {
   const templateInstance = Template.instance()
-  let precision = getGlobalSetting('precision')
-  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : getGlobalSetting('precision')
-  }
+  const precision = getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')
   import('chart.js').then((chartModule) => {
     const Chart = chartModule.default
     this.autorun(() => {
@@ -48,20 +45,20 @@ Template.allprojectschart.onRendered(function allprojectschartRendered() {
           this.$('.js-hour-chart').remove()
           this.$('.js-chart-container').html('<canvas class="js-hour-chart"></canvas>')
           const stats = templateInstance.projectStats.get()
-          if (Meteor.user().profile.timeunit === 'd') {
+          if (getUserSetting('timeunit') === 'd') {
             stats.beforePreviousMonthHours
-              /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
+              /= getUserSetting('hoursToDays')
+                ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')
             stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
               .toFixed(precision)
             stats.previousMonthHours
-              /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
+              /= getUserSetting('hoursToDays')
+                ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')
             stats.previousMonthHours = Number(stats.previousMonthHours)
               .toFixed(precision)
             stats.currentMonthHours
-              /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : getGlobalSetting('hoursToDays')
+              /= getUserSetting('hoursToDays')
+                ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')
             stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
           }
           if (this.$('.js-hour-chart')[0]) {
