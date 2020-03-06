@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { saveAs } from 'file-saver'
@@ -11,6 +12,7 @@ import { getGlobalSetting, numberWithUserPrecision, getUserSetting } from '../..
 import { dailyTimecardMapper } from '../../utils/server_method_helpers'
 
 Template.dailytimetable.onCreated(function dailytimetablecreated() {
+  dayjs.extend(utc)
   this.dailyTimecards = new ReactiveVar()
   this.totalEntries = new ReactiveVar()
   Tracker.autorun(() => {
@@ -19,22 +21,28 @@ Template.dailytimetable.onCreated(function dailytimetablecreated() {
       && this.data.period.get()
       && this.data.limit.get()
       && this.data.customer.get()) {
-      Meteor.call('getDailyTimecards',
-        {
-          projectId: this.data.project.get(),
-          userId: this.data.resource.get(),
-          period: this.data.period.get(),
-          limit: this.data.limit.get(),
-          customer: this.data.customer.get(),
-          page: Number(FlowRouter.getQueryParam('page')),
-        }, (error, result) => {
-          if (error) {
-            console.error(error)
-          } else {
-            this.dailyTimecards.set(result.dailyHours.sort((a, b) => b.date - a.date))
-            this.totalEntries.set(result.totalEntries)
-          }
-        })
+      const methodParameters = {
+        projectId: this.data.project.get(),
+        userId: this.data.resource.get(),
+        period: this.data.period.get(),
+        limit: this.data.limit.get(),
+        customer: this.data.customer.get(),
+        page: Number(FlowRouter.getQueryParam('page')),
+      }
+      if (this.data.period.get() === 'custom') {
+        methodParameters.dates = {
+          startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
+          endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
+        }
+      }
+      Meteor.call('getDailyTimecards', methodParameters, (error, result) => {
+        if (error) {
+          console.error(error)
+        } else {
+          this.dailyTimecards.set(result.dailyHours.sort((a, b) => b.date - a.date))
+          this.totalEntries.set(result.totalEntries)
+        }
+      })
     }
   })
 })

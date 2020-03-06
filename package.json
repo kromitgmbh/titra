@@ -1,17 +1,17 @@
 {
   "name": "titra",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.8.4",
+    "@babel/runtime": "^7.8.7",
     "@fortawesome/fontawesome-free": "^5.12.1",
     "@fullcalendar/core": "^4.4.0",
     "@fullcalendar/daygrid": "^4.4.0",
     "@fullcalendar/interaction": "^4.4.0",
-    "@neovici/nullxlsx": "^3.0.2",
+    "@neovici/nullxlsx": "^3.0.4",
     "@simonwep/pickr": "^1.5.1",
     "bcrypt": "^4.0.1",
     "bootbox": "^5.4.0",

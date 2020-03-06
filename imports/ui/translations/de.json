@@ -149,7 +149,9 @@
     "last3months": "Die letzten 3 Monate",
     "lastWeek": "Letzte Woche",
     "lastYear": "Letztes Jahr",
-    "all": "Alles anzeigen"
+    "all": "Alles anzeigen",
+    "custom": "Benutzerdefiniert",
+    "custom_period": "Benutzerdefinierte Zeitperiode"
   },
   "resource": {
     "select": "Ressource auswählen",

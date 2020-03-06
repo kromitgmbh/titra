@@ -7,7 +7,34 @@
     <option value="last3months">{{t "period.last3months"}}</option>
     <option value="lastWeek">{{t "period.lastWeek"}}</option>
     <option value="lastYear">{{t "period.lastYear"}}</option>
+    <option value="custom">{{t "period.custom"}}</option>
     <option value="all">{{t "period.all"}}</option>
     <!-- <option value="custom">Custom</option> -->
   </select>
+  <div class="modal fade js-custom-period-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{t "period.custom_period"}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>{{t "details.startTime"}}:</label>
+            <input class="form-control" name="customStartDate" id="customStartDate" type="date" value="{{startDate}}"/>
+          </div>
+          <div class="form-group">
+            <label>{{t "details.endTime"}}:</label>
+            <input class="form-control" name="customEndDate" id="customEndDate" type="date" value="{{endDate}}"/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary border" data-dismiss="modal">{{t "navigation.close"}}</button>
+          <button type="button" class="btn btn-primary js-save">{{t "navigation.save"}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>

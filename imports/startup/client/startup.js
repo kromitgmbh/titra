@@ -84,7 +84,7 @@ Meteor.startup(() => {
       } else if (getUserSetting('theme') === 'light') {
         import('../../ui/styles/light.scss')
       } else if (isDarkMode()) {
-          import('../../ui/styles/dark.scss')
+        import('../../ui/styles/dark.scss')
       } else {
         import('../../ui/styles/light.scss')
       }
@@ -95,7 +95,7 @@ Meteor.startup(() => {
     }
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       if (getUserSetting('language')) {
-        language = getUserSetting('theme') === 'auto' ? navigator.language.substring(0, 2) : getUserSetting('theme')
+        language = getUserSetting('language') === 'auto' ? navigator.language.substring(0, 2) : getUserSetting('language')
       }
       loadLanguage(language)
       import('popper.js').then((Popper) => {

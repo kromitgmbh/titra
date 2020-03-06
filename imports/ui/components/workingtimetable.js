@@ -1,15 +1,22 @@
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import i18next from 'i18next'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
 import i18nextReady from '../../startup/client/startup.js'
-import { addToolTipToTableCell, getGlobalSetting, numberWithUserPrecision } from '../../utils/frontend_helpers'
+import {
+  addToolTipToTableCell,
+  getGlobalSetting,
+  numberWithUserPrecision,
+  getUserSetting,
+} from '../../utils/frontend_helpers'
 import './workingtimetable.html'
 import './pagination.js'
 import './limitpicker.js'
 
 Template.workingtimetable.onCreated(function workingtimetableCreated() {
+  dayjs.extend(utc)
   this.workingTimeEntries = new ReactiveVar()
   this.totalWorkingTimeEntries = new ReactiveVar()
 
@@ -18,21 +25,27 @@ Template.workingtimetable.onCreated(function workingtimetableCreated() {
       && this.data.resource.get()
       && this.data.period.get()
       && this.data.limit.get()) {
-      Meteor.call('getWorkingHoursForPeriod',
-        {
-          projectId: this.data.project.get(),
-          userId: this.data.resource.get(),
-          period: this.data.period.get(),
-          limit: this.data.limit.get(),
-          page: Number(FlowRouter.getQueryParam('page')),
-        }, (error, result) => {
-          if (error) {
-            console.error(error)
-          } else {
-            this.workingTimeEntries.set(result.workingHours.sort((a, b) => a.date - b.date))
-            this.totalWorkingTimeEntries.set(result.totalEntries)
-          }
-        })
+      const methodParameters = {
+        projectId: this.data.project.get(),
+        userId: this.data.resource.get(),
+        period: this.data.period.get(),
+        limit: this.data.limit.get(),
+        page: Number(FlowRouter.getQueryParam('page')),
+      }
+      if (this.data.period.get() === 'custom') {
+        methodParameters.dates = {
+          startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
+          endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
+        }
+      }
+      Meteor.call('getWorkingHoursForPeriod', methodParameters, (error, result) => {
+        if (error) {
+          console.error(error)
+        } else {
+          this.workingTimeEntries.set(result.workingHours.sort((a, b) => a.date - b.date))
+          this.totalWorkingTimeEntries.set(result.totalEntries)
+        }
+      })
     }
   })
 })

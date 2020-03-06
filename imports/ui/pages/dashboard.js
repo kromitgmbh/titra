@@ -54,14 +54,29 @@ Template.dashboard.onCreated(function dashboardCreated() {
       && this.data.resource.get()
       && this.data.customer.get()
       && this.data.period.get() && this.data.period.get() !== 'all') {
-      this.subscribe('getDetailedTimeEntriesForPeriod',
-        {
-          projectId: this.data.project.get(),
-          userId: this.data.resource.get(),
-          customer: this.data.customer.get(),
-          period: this.data.period.get(),
-          limit: -1,
-        })
+      if (this.data.period.get() === 'custom') {
+        this.subscribe('getDetailedTimeEntriesForPeriod',
+          {
+            projectId: this.data.project.get(),
+            userId: this.data.resource.get(),
+            customer: this.data.customer.get(),
+            period: this.data.period.get(),
+            dates: {
+              startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
+              endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
+            },
+            limit: -1,
+          })
+      } else {
+        this.subscribe('getDetailedTimeEntriesForPeriod',
+          {
+            projectId: this.data.project.get(),
+            userId: this.data.resource.get(),
+            customer: this.data.customer.get(),
+            period: this.data.period.get(),
+            limit: -1,
+          })
+      }
     }
   })
 })

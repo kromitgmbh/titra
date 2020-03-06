@@ -84,7 +84,7 @@ function dailyTimecardMapper(entry) {
     totalHours,
   }
 }
-function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, limit, page) {
+function buildTotalHoursForPeriodSelector(projectId, period, dates, userId, customer, limit, page) {
   let projectList = []
   const periodArray = []
   let matchSelector = {}
@@ -113,7 +113,23 @@ function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, l
   } else {
     projectList = getProjectListById(projectId)
   }
-  if (period && period !== 'all') {
+  if (period && period === 'custom') {
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+        date: { $gte: dates.startDate, $lte: dates.endDate },
+      },
+    }
+    if (userId !== 'all') {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+          userId,
+        },
+      }
+    }
+  } else if (period && period !== 'all') {
     const { startDate, endDate } = periodToDates(period)
     matchSelector = {
       $match: {
@@ -146,7 +162,7 @@ function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, l
   }
   return periodArray
 }
-function buildDailyHoursSelector(projectId, period, userId, customer, limit, page) {
+function buildDailyHoursSelector(projectId, period, dates, userId, customer, limit, page) {
   let projectList = []
   if (customer !== 'all') {
     projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
@@ -175,7 +191,24 @@ function buildDailyHoursSelector(projectId, period, userId, customer, limit, pag
   const limitSelector = {
     $limit: limit,
   }
-  if (period && period !== 'all') {
+  if (period && period === 'custom') {
+    if (userId === 'all') {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+        },
+      }
+    } else {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+          userId,
+        },
+      }
+    }
+  } else if (period && period !== 'all') {
     const { startDate, endDate } = periodToDates(period)
     if (userId === 'all') {
       matchSelector = {
@@ -216,7 +249,7 @@ function buildDailyHoursSelector(projectId, period, userId, customer, limit, pag
   }
   return dailyArray
 }
-function buildworkingTimeSelector(projectId, period, userId, limit, page) {
+function buildworkingTimeSelector(projectId, period, dates, userId, limit, page) {
   let projectList = []
   projectList = getProjectListById(projectId)
   const workingTimeArray = []
@@ -241,7 +274,24 @@ function buildworkingTimeSelector(projectId, period, userId, limit, page) {
   const limitSelector = {
     $limit: limit,
   }
-  if (period && period !== 'all') {
+  if (period && period === 'custom') {
+    if (userId === 'all') {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+        },
+      }
+    } else {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+          userId,
+        },
+      }
+    }
+  } else if (period && period !== 'all') {
     const { startDate, endDate } = periodToDates(period)
     if (userId === 'all') {
       matchSelector = {
@@ -305,7 +355,7 @@ function workingTimeEntriesMapper(entry) {
 }
 
 function buildDetailedTimeEntriesForPeriodSelector({
-  projectId, search, customer, period, userId, limit, page, sort,
+  projectId, search, customer, period, dates, userId, limit, page, sort,
 }) {
   const detailedTimeArray = []
   let projectList = getProjectListById(projectId)
@@ -361,12 +411,14 @@ function buildDetailedTimeEntriesForPeriodSelector({
   if (page) {
     options.skip = (page - 1) * limit
   }
-  if (period !== 'all') {
+  if (period === 'custom') {
+    query.date = { $gte: dates.startDate, $lte: dates.endDate }
+  } else if (period !== 'all') {
     const { startDate, endDate } = periodToDates(period)
     query.date = { $gte: startDate, $lte: endDate }
-    if (userId !== 'all') {
-      query.userId = userId
-    }
+  }
+  if (userId !== 'all') {
+    query.userId = userId
   }
   detailedTimeArray.push(query)
   detailedTimeArray.push(options)

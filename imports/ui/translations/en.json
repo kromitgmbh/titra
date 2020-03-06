@@ -150,7 +150,9 @@
     "last3months": "Last 3 months",
     "lastWeek": "Last week",
     "lastYear": "Last year",
-    "all": "All time"
+    "all": "All time",
+    "custom": "Custom",
+    "custom_period": "Custom time period"
   },
   "resource": {
     "select": "Select resource",

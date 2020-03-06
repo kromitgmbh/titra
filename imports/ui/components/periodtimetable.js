@@ -1,4 +1,6 @@
 import i18next from 'i18next'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
@@ -10,6 +12,7 @@ import { numberWithUserPrecision, getUserSetting } from '../../utils/frontend_he
 import { totalHoursForPeriodMapper } from '../../utils/server_method_helpers.js'
 
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
+  dayjs.extend(utc)
   this.periodTimecards = new ReactiveVar()
   this.totalPeriodTimeCards = new ReactiveVar()
   Tracker.autorun(() => {
@@ -18,22 +21,28 @@ Template.periodtimetable.onCreated(function periodtimetableCreated() {
       && this.data.period.get()
       && this.data.limit.get()
       && this.data.customer.get()) {
-      Meteor.call('getTotalHoursForPeriod',
-        {
-          projectId: this.data.project.get(),
-          userId: this.data.resource.get(),
-          period: this.data.period.get(),
-          customer: this.data.customer.get(),
-          limit: this.data.limit.get(),
-          page: Number(FlowRouter.getQueryParam('page')),
-        }, (error, result) => {
-          if (error) {
-            console.error(error)
-          } else {
-            this.periodTimecards.set(result.totalHours)
-            this.totalPeriodTimeCards.set(result.totalEntries)
-          }
-        })
+      const methodParameters = {
+        projectId: this.data.project.get(),
+        userId: this.data.resource.get(),
+        period: this.data.period.get(),
+        customer: this.data.customer.get(),
+        limit: this.data.limit.get(),
+        page: Number(FlowRouter.getQueryParam('page')),
+      }
+      if (this.data.period.get() === 'custom') {
+        methodParameters.dates = {
+          startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
+          endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
+        }
+      }
+      Meteor.call('getTotalHoursForPeriod', methodParameters, (error, result) => {
+        if (error) {
+          console.error(error)
+        } else {
+          this.periodTimecards.set(result.totalHours)
+          this.totalPeriodTimeCards.set(result.totalEntries)
+        }
+      })
     }
   })
 })

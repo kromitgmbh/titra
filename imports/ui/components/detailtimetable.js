@@ -50,27 +50,38 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
       && this.data.limit.get()) {
       this.myProjectsHandle = this.subscribe('myprojects')
       this.projectUsersHandle = this.subscribe('projectUsers', { projectId: this.data.project.get() })
-      this.detailedEntriesPeriodCountHandle = this.subscribe('getDetailedTimeEntriesForPeriodCount',
-        {
-          projectId: this.data.project.get(),
-          userId: this.data.resource.get(),
-          customer: this.data.customer.get(),
-          period: this.data.period.get(),
-          limit: this.data.limit.get(),
-          search: this.search.get(),
-          page: Number(FlowRouter.getQueryParam('page')),
-        })
-      this.detailedTimeEntriesForPeriodHandle = this.subscribe('getDetailedTimeEntriesForPeriod',
-        {
-          projectId: this.data.project.get(),
-          userId: this.data.resource.get(),
-          customer: this.data.customer.get(),
-          period: this.data.period.get(),
-          limit: this.data.limit.get(),
-          search: this.search.get(),
-          sort: this.sort.get(),
-          page: Number(FlowRouter.getQueryParam('page')),
-        })
+      this.selector = buildDetailedTimeEntriesForPeriodSelector({
+        projectId: this.data.project.get(),
+        search: this.search.get(),
+        customer: this.data.customer.get(),
+        period: this.data.period.get(),
+        dates: {
+          startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
+          endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
+        },
+        userId: this.data.resource.get(),
+        limit: this.data.limit.get(),
+        page: Number(FlowRouter.getQueryParam('page')),
+        sort: this.sort.get(),
+      })
+      delete this.selector[1].skip
+      const subscriptionParameters = {
+        projectId: this.data.project.get(),
+        userId: this.data.resource.get(),
+        customer: this.data.customer.get(),
+        period: this.data.period.get(),
+        limit: this.data.limit.get(),
+        search: this.search.get(),
+        page: Number(FlowRouter.getQueryParam('page')),
+      }
+      if (this.data.period.get() === 'custom') {
+        subscriptionParameters.dates = {
+          startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
+          endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
+        }
+      }
+      this.detailedEntriesPeriodCountHandle = this.subscribe('getDetailedTimeEntriesForPeriodCount', subscriptionParameters)
+      this.detailedTimeEntriesForPeriodHandle = this.subscribe('getDetailedTimeEntriesForPeriod', subscriptionParameters)
     }
   })
 })
@@ -79,18 +90,8 @@ Template.detailtimetable.onRendered(() => {
   dayjs.extend(utc)
   templateInstance.autorun(() => {
     if (templateInstance.detailedTimeEntriesForPeriodHandle.ready() && i18nextReady.get()) {
-      const selector = buildDetailedTimeEntriesForPeriodSelector({
-        projectId: templateInstance.data.project.get(),
-        search: templateInstance.search.get(),
-        customer: templateInstance.data.customer.get(),
-        period: templateInstance.data.period.get(),
-        userId: templateInstance.data.resource.get(),
-        limit: templateInstance.data.limit.get(),
-        page: Number(FlowRouter.getQueryParam('page')),
-        sort: templateInstance.sort.get(),
-      })
-      delete selector[1].skip
-      const data = Timecards.find(selector[0], selector[1]).fetch().map(detailedDataTableMapper)
+      const data = Timecards.find(templateInstance.selector[0], templateInstance.selector[1])
+        .fetch().map(detailedDataTableMapper)
       if (data.length === 0) {
         $('.dt-row-totalRow').remove()
       }
@@ -221,32 +222,10 @@ Template.detailtimetable.onRendered(() => {
 })
 Template.detailtimetable.helpers({
   detailTimeEntries() {
-    const selector = buildDetailedTimeEntriesForPeriodSelector({
-      projectId: Template.instance().data.project.get(),
-      search: Template.instance().search.get(),
-      customer: Template.instance().data.customer.get(),
-      period: Template.instance().data.period.get(),
-      userId: Template.instance().data.resource.get(),
-      limit: Template.instance().data.limit.get(),
-      page: Number(FlowRouter.getQueryParam('page')),
-      sort: Template.instance().sort.get(),
-    })
-    delete selector[1].skip
-    return Timecards.find(selector[0], selector[1]).fetch()
+    return Timecards.find(Template.instance().selector[0], Template.instance().selector[1]).fetch()
   },
   detailTimeSum() {
-    const selector = buildDetailedTimeEntriesForPeriodSelector({
-      projectId: Template.instance().data.project.get(),
-      search: Template.instance().search.get(),
-      customer: Template.instance().data.customer.get(),
-      period: Template.instance().data.period.get(),
-      userId: Template.instance().data.resource.get(),
-      limit: Template.instance().data.limit.get(),
-      page: Number(FlowRouter.getQueryParam('page')),
-      sort: Template.instance().sort.get(),
-    })
-    delete selector[1].skip
-    return timeInUserUnit(Timecards.find(selector[0], selector[1]).fetch()
+    return timeInUserUnit(Timecards.find(Template.instance().selector[0], Template.instance().selector[1]).fetch()
       .reduce(((total, element) => total + element.hours), 0))
   },
   totalDetailTimeEntries() {
@@ -258,24 +237,13 @@ Template.detailtimetable.helpers({
 Template.detailtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
-    const selector = buildDetailedTimeEntriesForPeriodSelector({
-      projectId: Template.instance().data.project.get(),
-      search: Template.instance().search.get(),
-      customer: Template.instance().data.customer.get(),
-      period: Template.instance().data.period.get(),
-      userId: Template.instance().data.resource.get(),
-      limit: Template.instance().data.limit.get(),
-      page: Number(FlowRouter.getQueryParam('page')),
-      sort: Template.instance().sort.get(),
-    })
-    delete selector[1].skip
     let csvArray
     if (getGlobalSetting('useState')) {
       csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')},${i18next.t('details.state')}\r\n`]
     } else {
       csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}\r\n`]
     }
-    for (const timeEntry of Timecards.find(selector[0], selector[1]).fetch()
+    for (const timeEntry of Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
       .map(detailedDataTableMapper)) {
       if (getGlobalSetting('useState')) {
         csvArray.push(`${timeEntry[0]},${timeEntry[1]},${timeEntry[2]},${timeEntry[3]},${timeEntry[4]},${i18next.t(`details.${timeEntry[5]}`)}\r\n`)
@@ -285,7 +253,7 @@ Template.detailtimetable.events({
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }),
       `titra_export_${dayjs().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.csv`)
-    Meteor.call('setTimeEntriesState', { timeEntries: Timecards.find(selector[0], selector[1]).fetch().map((entry) => entry._id), state: 'exported' }, (error) => {
+    Meteor.call('setTimeEntriesState', { timeEntries: Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch().map((entry) => entry._id), state: 'exported' }, (error) => {
       if (error) {
         console.error(error)
       }
@@ -293,24 +261,13 @@ Template.detailtimetable.events({
   },
   'click .js-export-xlsx': (event, templateInstance) => {
     event.preventDefault()
-    const selector = buildDetailedTimeEntriesForPeriodSelector({
-      projectId: Template.instance().data.project.get(),
-      search: Template.instance().search.get(),
-      customer: Template.instance().data.customer.get(),
-      period: Template.instance().data.period.get(),
-      userId: Template.instance().data.resource.get(),
-      limit: Template.instance().data.limit.get(),
-      page: Number(FlowRouter.getQueryParam('page')),
-      sort: Template.instance().sort.get(),
-    })
-    delete selector[1].skip
     let data
     if (getGlobalSetting('useState')) {
       data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'), i18next.t('details.state')]]
     } else {
       data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')]]
     }
-    for (const timeEntry of Timecards.find(selector[0], selector[1]).fetch()
+    for (const timeEntry of Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
       .map(detailedDataTableMapper)) {
       if (getGlobalSetting('useState')) {
         data.push([timeEntry[0], timeEntry[1], timeEntry[2], timeEntry[3], timeEntry[4], i18next.t(`details.${timeEntry[5]}`)])
@@ -320,7 +277,7 @@ Template.detailtimetable.events({
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'titra export').createDownloadUrl(),
       `titra_export_${dayjs().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.xlsx`)
-    Meteor.call('setTimeEntriesState', { timeEntries: Timecards.find(selector[0], selector[1]).fetch().map((entry) => entry._id), state: 'exported' }, (error) => {
+    Meteor.call('setTimeEntriesState', { timeEntries: Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch().map((entry) => entry._id), state: 'exported' }, (error) => {
       if (error) {
         console.error(error)
       }
@@ -364,18 +321,7 @@ Template.detailtimetable.events({
         }
       })
     } else {
-      const selector = buildDetailedTimeEntriesForPeriodSelector({
-        projectId: Template.instance().data.project.get(),
-        search: Template.instance().search.get(),
-        customer: Template.instance().data.customer.get(),
-        period: Template.instance().data.period.get(),
-        userId: Template.instance().data.resource.get(),
-        limit: Template.instance().data.limit.get(),
-        page: Number(FlowRouter.getQueryParam('page')),
-        sort: Template.instance().sort.get(),
-      })
-      delete selector[1].skip
-      Meteor.call('setTimeEntriesState', { timeEntries: Timecards.find(selector[0], selector[1]).fetch().map((entry) => entry._id), state: 'billed' }, (error) => {
+      Meteor.call('setTimeEntriesState', { timeEntries: Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch().map((entry) => entry._id), state: 'billed' }, (error) => {
         if (error) {
           console.error(error)
         } else {

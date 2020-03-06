@@ -129,4 +129,15 @@ Meteor.methods({
     check(isAdmin, Boolean)
     Meteor.users.update({ _id: userId }, { $set: { isAdmin } })
   },
+  setCustomPeriodDates({ customStartDate, customEndDate }) {
+    checkAuthentication(this)
+    check(customStartDate, Date)
+    check(customEndDate, Date)
+    Meteor.users.update({ _id: this.userId }, {
+      $set: {
+        'profile.customStartDate': customStartDate,
+        'profile.customEndDate': customEndDate,
+      },
+    })
+  },
 })
