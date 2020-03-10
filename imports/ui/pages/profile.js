@@ -40,9 +40,9 @@ Template.profile.events({
     },
     (error) => {
       if (error) {
-        $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
+        $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
       } else {
-        $.notify(i18next.t('notifications.settings_saved_success'))
+        $.Toast.fire(i18next.t('notifications.settings_saved_success'))
         templateInstance.$('#imagePreview').hide()
       }
     })

@@ -133,7 +133,7 @@ Template.editproject.events({
       }, (error) => {
         if (!error) {
           templateInstance.$('#name').removeClass('is-invalid')
-          $.notify(i18next.t('notifications.project_update_success'))
+          $.Toast.fire(i18next.t('notifications.project_update_success'))
         } else {
           console.error(error)
         }
@@ -143,7 +143,7 @@ Template.editproject.events({
         projectArray,
       }, (error, result) => {
         if (!error) {
-          $.notify(i18next.t('notifications.project_create_success'))
+          $.Toast.fire(i18next.t('notifications.project_create_success'))
           FlowRouter.go('editproject', { id: result })
         } else {
           console.error(error)
@@ -161,10 +161,10 @@ Template.editproject.events({
     if (newmembermail && validateEmail(newmembermail)) {
       Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: templateInstance.$('#newmembermail').val() }, (error, result) => {
         if (error) {
-          $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
+          $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
         } else {
           templateInstance.$('#newmembermail').val('')
-          $.notify(i18next.t(result))
+          $.Toast.fire(i18next.t(result))
         }
       })
       templateInstance.$('#newmembermail').removeClass('is-invalid')
@@ -177,33 +177,35 @@ Template.editproject.events({
     const userId = event.currentTarget.parentElement.parentElement.id
     Meteor.call('removeTeamMember', { projectId: FlowRouter.getParam('id'), userId }, (error, result) => {
       if (error) {
-        $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
+        $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
       } else {
-        $.notify(i18next.t(result))
+        $.Toast.fire(i18next.t(result))
       }
     })
   },
   'click .js-delete-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
-    if (window.bootbox.confirm(i18next.t('notifications.project_delete_confirm'))) {
-      Template.instance().deletion.set(true)
-      Meteor.call('deleteProject', { projectId: FlowRouter.getParam('id') }, (error) => {
-        if (!error) {
-          FlowRouter.go('projectlist')
-          $.notify(i18next.t('notifications.project_delete_success'))
-        } else {
-          console.error(error)
-        }
-      })
-    }
+    $.ConfirmBox.fire(i18next.t('notifications.project_delete_confirm')).then((result) => {
+      if (result.value) {
+        Template.instance().deletion.set(true)
+        Meteor.call('deleteProject', { projectId: FlowRouter.getParam('id') }, (error) => {
+          if (!error) {
+            FlowRouter.go('projectlist')
+            $.Toast.fire(i18next.t('notifications.project_delete_success'))
+          } else {
+            console.error(error)
+          }
+        })
+      }
+    })
   },
   'click .js-archive-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
     Meteor.call('archiveProject', { projectId: FlowRouter.getParam('id') }, (error) => {
       if (!error) {
-        $.notify(i18next.t('notifications.project_archive_success'))
+        $.Toast.fire(i18next.t('notifications.project_archive_success'))
       } else {
         console.error(error)
       }
@@ -214,7 +216,7 @@ Template.editproject.events({
     event.stopPropagation()
     Meteor.call('restoreProject', { projectId: FlowRouter.getParam('id') }, (error) => {
       if (!error) {
-        $.notify(i18next.t('notifications.project_restore_success'))
+        $.Toast.fire(i18next.t('notifications.project_restore_success'))
       } else {
         console.error(error)
       }

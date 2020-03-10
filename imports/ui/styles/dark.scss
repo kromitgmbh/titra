@@ -57,6 +57,8 @@ $modal-content-bg: map-get($theme-colors, secondary);
 
 $font-weight-base: 200 !default;
 
+@import "{}/node_modules/sweetalert2/src/sweetalert2.scss";
+
 //++++ [custom] ++++
 .ql-editor {
     line-height: 1em;
@@ -138,7 +140,7 @@ $font-weight-base: 200 !default;
 }
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
     color: #f0f0f0;
-    background-color: #404040;
+    background-color: $card-cap-bg;
     border-color:#455A64 #455A64 $titra-dark;
 }
 .nav-tabs .nav-link:hover {
@@ -159,5 +161,20 @@ $font-weight-base: 200 !default;
     --dt-selection-highlight-color: var(--dt-light-bg);
     --dt-toast-message-border: 1px solid var(--dt-border-color);
     --dt-header-cell-bg: #262c2e;
+}
+.swal2-popup {
+    background-color: $card-cap-bg;
+}
+.swal2-popup.swal2-toast {
+    background-color: $card-cap-bg;
+}
+.swal2-content {
+    color: #dfe2e5;
+}
+.swal2-title {
+    color: #dfe2e5;
+}
+.swal2-popup.swal2-toast .swal2-title {
+    color: #dfe2e5;
 }
 @import "{}/imports/ui/styles/general.scss";

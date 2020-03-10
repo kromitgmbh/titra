@@ -30,13 +30,13 @@ Template.administration.helpers({
 Template.administration.events({
   'click .js-delete': (event, templateInstance) => {
     event.preventDefault()
-    window.bootbox.confirm(i18next.t('administration.user_deletion_confirmation'), (result) => {
-      if (result) {
+    $.ConfirmBox.fire(i18next.t('administration.user_deletion_confirmation')).then((result) => {
+      if (result.value) {
         Meteor.call('adminDeleteUser', { userId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
           if (error) {
             console.error(error)
           } else {
-            $.notify({ message: i18next.t('administration.user_deleted') }, { type: 'success' })
+            $.Toast.fire({ text: i18next.t('administration.user_deleted'), icon: 'success' })
           }
         })
       }
@@ -60,13 +60,13 @@ Template.administration.events({
       }, (error) => {
         if (error) {
           console.error(error)
-          $.notify({ message: error.message }, { type: 'danger' })
+          $.Toast.fire({ text: error.message, icon: 'error' })
         } else {
           templateInstance.$('#name').val('')
           templateInstance.$('#email').val('')
           templateInstance.$('#password').val('')
           templateInstance.$('#isAdmin').prop('checked', false)
-          $.notify({ message: i18next.t('administration.user_created') }, { type: 'success' })
+          $.Toast.fire({ text: i18next.t('administration.user_created'), icon: 'success' })
         }
         templateInstance.$('#email').removeClass('is-invalid')
       })
@@ -78,7 +78,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        $.notify({ message: i18next.t('administration.user_updated') }, { type: 'success' })
+        $.Toast.fire(i18next.t('administration.user_updated'))
       }
     })
   },
@@ -88,7 +88,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        $.notify({ message: i18next.t('administration.user_updated') }, { type: 'success' })
+        $.Toast.fire(i18next.t('administration.user_updated'))
       }
     })
   },
@@ -102,7 +102,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        $.notify(i18next.t('notifications.settings_saved_success'))
+        $.Toast.fire(i18next.t('notifications.settings_saved_success'))
       }
     })
   },
@@ -125,7 +125,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        $.notify(i18next.t('notifications.settings_saved_success'))
+        $.Toast.fire(i18next.t('notifications.settings_saved_success'))
       }
     })
   },

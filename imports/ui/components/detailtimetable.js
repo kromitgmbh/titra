@@ -181,7 +181,7 @@ Template.detailtimetable.onRendered(() => {
                         if (error) {
                           console.error(error)
                         } else {
-                          $.notify(i18next.t('notifications.time_entry_updated'))
+                          $.Toast.fire(i18next.t('notifications.time_entry_updated'))
                         }
                       })
                     },
@@ -222,11 +222,11 @@ Template.detailtimetable.onRendered(() => {
 })
 Template.detailtimetable.helpers({
   detailTimeEntries() {
-    return Timecards.find(Template.instance().selector[0], Template.instance().selector[1]).fetch()
+    return Timecards.find(Template.instance().selector[0], Template.instance().selector[1])
   },
   detailTimeSum() {
-    return timeInUserUnit(Timecards.find(Template.instance().selector[0], Template.instance().selector[1]).fetch()
-      .reduce(((total, element) => total + element.hours), 0))
+    return timeInUserUnit(Timecards.find(Template.instance().selector[0], Template.instance().selector[1])
+      .fetch().reduce(((total, element) => total + element.hours), 0))
   },
   totalDetailTimeEntries() {
     return Template.instance().totalDetailTimeEntries
@@ -243,8 +243,8 @@ Template.detailtimetable.events({
     } else {
       csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}\r\n`]
     }
-    for (const timeEntry of Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
-      .map(detailedDataTableMapper)) {
+    for (const timeEntry of Timecards.find(templateInstance.selector[0], templateInstance.selector[1])
+      .fetch().map(detailedDataTableMapper)) {
       if (getGlobalSetting('useState')) {
         csvArray.push(`${timeEntry[0]},${timeEntry[1]},${timeEntry[2]},${timeEntry[3]},${timeEntry[4]},${i18next.t(`details.${timeEntry[5]}`)}\r\n`)
       } else {
@@ -292,14 +292,14 @@ Template.detailtimetable.events({
   'click .js-share': (event, templateInstance) => {
     event.preventDefault()
     if ($('#period').val() === 'all' || $('.js-target-project').val() === 'all') {
-      $.notify({ message: i18next.t('notifications.sanity') }, { type: 'danger' })
+      $.Toast.fire({ text: i18next.t('notifications.sanity') }, { type: 'danger' })
       return
     }
     Meteor.call('addDashboard', {
       projectId: $('.js-target-project').val(), resourceId: $('#resourceselect').val(), customer: $('#customerselect').val(), timePeriod: $('#period').val(),
     }, (error, _id) => {
       if (error) {
-        $.notify({ message: i18next.t('notifications.dashboard_creation_failed', { error }) }, { type: 'danger' })
+        $.Toast.fire({ text: i18next.t('notifications.dashboard_creation_failed', { error }), icon: 'error' })
         // console.error(error)
       } else {
         $('#dashboardURL').val(FlowRouter.url('dashboard', { _id }))
@@ -315,9 +315,9 @@ Template.detailtimetable.events({
         projectId: $('.js-target-project').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
       }, (error, result) => {
         if (error) {
-          $.notify({ message: i18next.t('notifications.export_failed', { error }) }, { type: 'danger' })
+          $.Toast.fire({ text: i18next.t('notifications.export_failed', { error }), icon: 'error' })
         } else {
-          $.notify(result)
+          $.Toast.fire(result)
         }
       })
     } else {
@@ -325,18 +325,18 @@ Template.detailtimetable.events({
         if (error) {
           console.error(error)
         } else {
-          $.notify({ message: i18next.t('notifications.time_entry_updated') })
+          $.Toast.fire({ text: i18next.t('notifications.time_entry_updated') })
         }
       })
     }
   },
   'click .js-delete': (event, templateInstance) => {
     event.preventDefault()
-    window.bootbox.confirm(i18next.t('notifications.delete_confirm'), (result) => {
-      if (result) {
+    $.ConfirmBox.fire({ text: i18next.t('notifications.delete_confirm') }).then((result) => {
+      if (result.value) {
         Meteor.call('deleteTimeCard', { timecardId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
           if (!error) {
-            $.notify(i18next.t('notifications.time_entry_deleted'))
+            $.Toast.fire(i18next.t('notifications.time_entry_deleted'))
           } else {
             console.error(error)
           }

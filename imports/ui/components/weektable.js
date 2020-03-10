@@ -73,7 +73,7 @@ Template.weektable.events({
         const newTaskInput = templateInstance.$(element.parentElement.parentElement).find('.js-tasksearch-input').val()
         const task = templateInstance.$(element).data('task') ? templateInstance.$(element).data('task') : newTaskInput
         if (!task) {
-          $.notify({ message: i18next.t('notifications.enter_task') }, { type: 'danger' })
+          $.Toast.fire({ text: i18next.t('notifications.enter_task'), icon: 'error' })
           return
         }
         let hours = Number(value)
@@ -96,7 +96,7 @@ Template.weektable.events({
           templateInstance.$('.js-tasksearch-input').val('')
           templateInstance.$('.js-tasksearch-input').parent().parent().find('.js-hours')
             .val('')
-          $.notify(i18next.t('notifications.time_entry_updated'))
+          $.Toast.fire(i18next.t('notifications.time_entry_updated'))
         }
       })
     }

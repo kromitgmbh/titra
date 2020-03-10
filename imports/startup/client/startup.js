@@ -1,18 +1,16 @@
 import { Template } from 'meteor/templating'
 import isDarkMode from 'is-dark'
 import i18next from 'i18next'
-import * as bs4notify from 'bootstrap4-notify'
+import hotkeys from 'hotkeys-js'
+import { $ } from 'meteor/jquery'
 import Projects from '../../api/projects/projects.js'
-import { timeInUserUnit, emojify, getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers.js'
+import {
+  timeInUserUnit,
+  emojify,
+  getGlobalSetting,
+  getUserSetting,
+} from '../../utils/frontend_helpers.js'
 
-$.notifyDefaults({
-  type: 'success',
-  delay: 2000,
-  placement: {
-    from: 'top',
-    align: 'right',
-  },
-})
 const i18nextReady = new ReactiveVar(false)
 const i18nextDebugMode = window.location.href.indexOf('localhost') > 0
 let globalT
@@ -103,37 +101,88 @@ Meteor.startup(() => {
         window.Popper = Popper.default
         import('bootstrap').then(() => {
           window.BootstrapLoaded.set(true)
-          import('bootbox').then((bootbox) => {
-            window.bootbox = bootbox.default
-            window.bootbox.setDefaults({ locale: language })
-          })
           $('[data-toggle="tooltip"]').tooltip()
         })
       })
     } else if (!Meteor.user() && !Meteor.loggingIn()) {
       loadLanguage(language)
     }
-  })
-  // Global keyboard Shortcuts - check https://keycode.info/ for keycodes
-  document.onkeyup = (e) => {
-    if (e.which === 83 && e.ctrlKey && e.shiftKey) {
-      if (document.querySelector('.js-save')) {
-        document.querySelector('.js-save').click()
-      }
-    } else if (e.which === 68 && e.ctrlKey && e.shiftKey) {
-      if (document.querySelector('.js-day')) {
-        document.querySelector('.js-day').click()
-      }
-    } else if (e.which === 87 && e.ctrlKey && e.shiftKey) {
-      if (document.querySelector('.js-week')) {
-        document.querySelector('.js-week').click()
-      }
-    } else if (e.which === 77 && e.ctrlKey && e.shiftKey) {
-      if (document.querySelector('.js-month')) {
-        document.querySelector('.js-month').click()
-      }
+    if (i18nextReady.get()) {
+      import('sweetalert2/dist/sweetalert2.js').then((Swal) => {
+        $.ConfirmBox = Swal.default.mixin({
+          showCancelButton: true,
+          cancelButtonText: i18next.t('navigation.cancel'),
+          reverseButtons: true,
+          buttonsStyling: false,
+          backdrop: 'rgba(0, 0, 0, 0.5)',
+          customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-secondary border mr-3',
+          },
+          showClass: {
+            popup: '',
+            backdrop: '',
+            icon: '',
+          },
+          hideClass: {
+            popup: '',
+            backdrop: '',
+            icon: '',
+          },
+        })
+        $.Toast = Swal.default.mixin({
+          toast: true,
+          icon: 'success',
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          onOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          },
+          showClass: {
+            popup: '',
+            backdrop: '',
+            icon: '',
+          },
+          hideClass: {
+            popup: '',
+            backdrop: '',
+            icon: '',
+          },
+        })
+      })
     }
-  }
+  })
+
+  hotkeys('command+s,d,w,m', (event, handler) => {
+    event.preventDefault()
+    switch (handler.key) {
+      case 'command+s':
+        if (document.querySelector('.js-save')) {
+          document.querySelector('.js-save').click()
+        }
+        break
+      case 'd':
+        if (document.querySelector('.js-day')) {
+          document.querySelector('.js-day').click()
+        }
+        break
+      case 'w':
+        if (document.querySelector('.js-week')) {
+          document.querySelector('.js-week').click()
+        }
+        break
+      case 'm':
+        if (document.querySelector('.js-month')) {
+          document.querySelector('.js-month').click()
+        }
+        break
+      default:
+        break
+    }
+  })
 })
 Template.registerHelper('i18nextReady', () => i18nextReady.get())
 Template.registerHelper('unit', () => {

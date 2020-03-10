@@ -1,8 +1,8 @@
 import namedavatar from 'namedavatar'
+
 import { Globalsettings } from '../api/globalsettings/globalsettings.js'
 
 const clientTimecards = new Mongo.Collection('clientTimecards')
-
 
 function getGlobalSetting(name) {
   return Globalsettings.findOne({ name }) ? Globalsettings.findOne({ name }).value : ''

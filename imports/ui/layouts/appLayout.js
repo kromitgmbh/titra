@@ -18,7 +18,7 @@ Template.appLayout.onRendered(function appLayoutRendered() {
   this.autorun(() => {
     if (this.subscriptionsReady()
     && Meteor.userId() && Notifications.findOne({ userId: Meteor.userId() })) {
-      $.notify(Notifications.findOne().message)
+      $.Toast.fire(Notifications.findOne().message)
     }
   })
 })

@@ -88,11 +88,11 @@ Template.projectlist.events({
     event.preventDefault()
     event.stopPropagation()
     const projectId = event.currentTarget.parentElement.parentElement.id
-    window.bootbox.confirm(i18next.t('notifications.project_delete_confirm'), (result) => {
-      if (result) {
+    $.ConfirmBox.fire(i18next.t('notifications.project_delete_confirm')).then((result) => {
+      if (result.value) {
         Meteor.call('deleteProject', { projectId }, (error) => {
           if (!error) {
-            $.notify(i18next.t('notifications.project_delete_success'))
+            $.Toast.fire(i18next.t('notifications.project_delete_success'))
           } else {
             console.error(error)
           }
@@ -106,7 +106,7 @@ Template.projectlist.events({
     const projectId = event.currentTarget.parentElement.parentElement.id
     Meteor.call('archiveProject', { projectId }, (error) => {
       if (!error) {
-        $.notify(i18next.t('notifications.project_archive_success'))
+        $.Toast.fire(i18next.t('notifications.project_archive_success'))
       } else {
         console.error(error)
       }
@@ -118,7 +118,7 @@ Template.projectlist.events({
     const projectId = event.currentTarget.parentElement.parentElement.id
     Meteor.call('restoreProject', { projectId }, (error) => {
       if (!error) {
-        $.notify(i18next.t('notifications.project_restore_success'))
+        $.Toast.fire(i18next.t('notifications.project_restore_success'))
       } else {
         console.error(error)
       }

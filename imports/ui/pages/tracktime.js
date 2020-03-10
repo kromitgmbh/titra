@@ -105,24 +105,24 @@ Template.tracktime.events({
 
     if (!selectedProjectElement.val()) {
       selectedProjectElement.addClass('is-invalid')
-      $.notify({ message: i18next.t('notifications.select_project') }, { type: 'danger' })
+      $.Toast.fire({ text: i18next.t('notifications.select_project'), icon: 'error' })
       return
     }
     if (!$('.js-tasksearch-input').val()) {
       $('.js-tasksearch-input').addClass('is-invalid')
-      $.notify({ message: i18next.t('notifications.enter_task') }, { type: 'danger' })
+      $.Toast.fire({ text: i18next.t('notifications.enter_task'), icon: 'error' })
       return
     }
     if (!hours) {
       $('#hours').addClass('is-invalid')
-      $.notify({ message: i18next.t('notifications.enter_time') }, { type: 'danger' })
+      $.Toast.fire({ text: i18next.t('notifications.enter_time'), icon: 'error' })
       return
     }
     try {
       hours = hours.replace(',', '.')
       templateInstance.math.eval(hours)
     } catch (exception) {
-      $.notify({ message: i18next.t('notifications.check_time_input') }, { type: 'danger' })
+      $.Toast.fire({ text: i18next.t('notifications.check_time_input'), icon: 'error' })
       return
     }
     const projectId = selectedProjectElement.val()
@@ -144,7 +144,7 @@ Template.tracktime.events({
           console.error(error)
         } else {
           $('.js-tasksearch-results').addClass('d-none')
-          $.notify(i18next.t('notifications.time_entry_updated'))
+          $.Toast.fire(i18next.t('notifications.time_entry_updated'))
           templateInstance.$(event.currentTarget).text(buttonLabel)
           templateInstance.$(event.currentTarget).prop('disabled', false)
           $('[data-toggle="tooltip"]').tooltip()
@@ -164,7 +164,7 @@ Template.tracktime.events({
           templateInstance.$('.js-tasksearch-input').keyup()
           templateInstance.$('#hours').val('')
           templateInstance.$('.js-tasksearch-results').addClass('d-none')
-          $.notify(i18next.t('notifications.time_entry_saved'))
+          $.Toast.fire(i18next.t('notifications.time_entry_saved'))
           templateInstance.$('.js-save').text(buttonLabel)
           templateInstance.$('.js-save').prop('disabled', false)
           templateInstance.$('.js-show-timecards').slideDown('fast')
@@ -224,7 +224,7 @@ Template.tracktime.events({
     const timecardId = event.currentTarget.href.split('/').pop()
     Meteor.call('deleteTimeCard', { timecardId }, (error, result) => {
       if (!error) {
-        $.notify(i18next.t('notifications.time_entry_deleted'))
+        $.Toast.fire(i18next.t('notifications.time_entry_deleted'))
       } else {
         console.error(error)
       }

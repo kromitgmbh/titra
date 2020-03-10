@@ -18,7 +18,7 @@ Template.changePassword.events({
           templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
           document.querySelector('.notification').classList.toggle('d-none')
         } else {
-          $.notify(i18next.t('notifications.password_changed'))
+          $.Toast.fire(i18next.t('notifications.password_changed'))
           FlowRouter.go('projectlist')
         }
       })
@@ -28,7 +28,7 @@ Template.changePassword.events({
           templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
           document.querySelector('.notification').classList.toggle('d-none')
         } else {
-          $.notify(i18next.t('notifications.password_changed'))
+          $.Toast.fire(i18next.t('notifications.password_changed'))
           FlowRouter.go('projectlist')
         }
       })

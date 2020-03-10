@@ -248,3 +248,9 @@
 .js-hours::placeholder {
   color: #eeeeee
 }
+
+.swal2-popup.swal2-toast {
+  -webkit-box-shadow: 3px 3px 3px 0px rgba(64,64,64,0.5);
+  -moz-box-shadow: 3px 3px 3px 0px rgba(64,64,64,0.5);
+  box-shadow: 3px 3px 3px 0px rgba(64,64,64,0.5);
+}
