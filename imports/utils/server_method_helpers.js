@@ -2,6 +2,7 @@ import i18next from 'i18next'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import Projects from '../api/projects/projects.js'
+import projectUsers from '../api/users/users.js'
 import { periodToDates } from './periodHelpers.js'
 import { getGlobalSetting, getUserSetting } from './frontend_helpers.js'
 
@@ -64,7 +65,7 @@ function totalHoursForPeriodMapper(entry) {
   }
   return {
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-    userId: Meteor.users.findOne({ _id: entry._id.userId })?.profile?.name,
+    userId: projectUsers.findOne().users.find((elem) => elem._id === entry._id.userId)?.profile?.name,
     totalHours,
   }
 }
@@ -80,7 +81,7 @@ function dailyTimecardMapper(entry) {
   return {
     date: entry._id.date,
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-    userId: Meteor.users.findOne({ _id: entry._id.userId })?.profile?.name,
+    userId: projectUsers.findOne().users.find((elem) => elem._id === entry._id.userId)?.profile?.name,
     totalHours,
   }
 }

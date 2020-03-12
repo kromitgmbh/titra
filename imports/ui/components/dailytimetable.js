@@ -52,7 +52,7 @@ Template.dailytimetable.onRendered(() => {
   templateInstance.autorun(() => {
     if (i18nextReady.get()) {
       let data = []
-      if (templateInstance.dailyTimecards.get()) {
+      if (templateInstance.dailyTimecards.get() && templateInstance.projectUsersHandle.ready()) {
         data = templateInstance.dailyTimecards.get().map(dailyTimecardMapper)
           .map((entry) => Object.entries(entry)
             .map((key) => { if (key[1] instanceof Date) { return dayjs(key[1]).format(getGlobalSetting('dateformat')) } return key[1] }))
@@ -94,7 +94,7 @@ Template.dailytimetable.onRendered(() => {
         })
       }
       if (templateInstance.datatable && templateInstance.dailyTimecards.get()
-        && window.BootstrapLoaded.get()) {
+        && window.BootstrapLoaded.get() && data.length > 0) {
         try {
           templateInstance.datatable.refresh(data, columns)
         } catch (error) {

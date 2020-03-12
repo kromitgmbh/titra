@@ -12,7 +12,7 @@ jobs:
     - uses: butlerlogic/action-autotag@1.0.2
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        tagmessage: github.event.head_commit.message
+        tag_message: github.event.head_commit.message
     - uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:

@@ -52,7 +52,7 @@ Template.periodtimetable.onRendered(() => {
   templateInstance.autorun(() => {
     if (i18nextReady.get()) {
       let data = []
-      if (templateInstance.periodTimecards.get()) {
+      if (templateInstance.periodTimecards.get() && templateInstance.projectUsersHandle.ready()) {
         data = templateInstance.periodTimecards.get().map(totalHoursForPeriodMapper)
           .map((entry) => Object.entries(entry)
             .map((key) => key[1]))
