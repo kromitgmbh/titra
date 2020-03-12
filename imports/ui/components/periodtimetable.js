@@ -15,12 +15,13 @@ Template.periodtimetable.onCreated(function periodtimetableCreated() {
   dayjs.extend(utc)
   this.periodTimecards = new ReactiveVar()
   this.totalPeriodTimeCards = new ReactiveVar()
-  Tracker.autorun(() => {
+  this.autorun(() => {
     if (this.data.project.get()
       && this.data.resource.get()
       && this.data.period.get()
       && this.data.limit.get()
       && this.data.customer.get()) {
+      this.projectUsersHandle = this.subscribe('projectUsers', { projectId: this.data.project.get() })
       const methodParameters = {
         projectId: this.data.project.get(),
         userId: this.data.resource.get(),
@@ -110,7 +111,7 @@ Template.periodtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
     const csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.resource')},${Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}\r\n`]
-    for (const timeEntry of templateInstance.periodTimecards.get()) {
+    for (const timeEntry of templateInstance.periodTimecards.get().map(totalHoursForPeriodMapper)) {
       csvArray.push(`${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_total_time_${templateInstance.data.period.get()}.csv`)
@@ -118,7 +119,7 @@ Template.periodtimetable.events({
   'click .js-export-xlsx': (event, templateInstance) => {
     event.preventDefault()
     const data = [[i18next.t('globals.project'), i18next.t('globals.resource'), Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')]]
-    for (const timeEntry of templateInstance.periodTimecards.get()) {
+    for (const timeEntry of templateInstance.periodTimecards.get().map(totalHoursForPeriodMapper)) {
       data.push([timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'total time').createDownloadUrl(), `titra_total_time_${templateInstance.data.period.get()}.xlsx`)

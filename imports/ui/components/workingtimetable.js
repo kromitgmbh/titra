@@ -20,11 +20,12 @@ Template.workingtimetable.onCreated(function workingtimetableCreated() {
   this.workingTimeEntries = new ReactiveVar()
   this.totalWorkingTimeEntries = new ReactiveVar()
 
-  Tracker.autorun(() => {
+  this.autorun(() => {
     if (this.data.project.get()
       && this.data.resource.get()
       && this.data.period.get()
       && this.data.limit.get()) {
+      this.projectUsersHandle = this.subscribe('projectUsers', { projectId: this.data.project.get() })
       const methodParameters = {
         projectId: this.data.project.get(),
         userId: this.data.resource.get(),

@@ -64,7 +64,7 @@ function totalHoursForPeriodMapper(entry) {
   }
   return {
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-    userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+    userId: Meteor.users.findOne({ _id: entry._id.userId })?.profile?.name,
     totalHours,
   }
 }
@@ -80,7 +80,7 @@ function dailyTimecardMapper(entry) {
   return {
     date: entry._id.date,
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-    userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+    userId: Meteor.users.findOne({ _id: entry._id.userId })?.profile?.name,
     totalHours,
   }
 }
@@ -335,15 +335,15 @@ function buildworkingTimeSelector(projectId, period, dates, userId, limit, page)
 function workingTimeEntriesMapper(entry) {
   dayjs.extend(customParseFormat)
   const meteorUser = Meteor.users.findOne({ _id: entry._id.userId })
-  const userBreakStartTime = dayjs(meteorUser.profile.breakStartTime ? meteorUser.profile.breakStartTime : '12:00', 'HH:mm')
-  const userBreakDuration = meteorUser.profile.breakDuration ? meteorUser.profile.breakDuration : '0.5'
+  const userBreakStartTime = dayjs(meteorUser?.profile?.breakStartTime ? meteorUser.profile.breakStartTime : '12:00', 'HH:mm')
+  const userBreakDuration = meteorUser?.profile?.breakDuration ? meteorUser.profile.breakDuration : '0.5'
   const userBreakEndTime = dayjs(userBreakStartTime, 'HH:mm').add(userBreakDuration, 'hour')
-  const userRegularWorkingTime = meteorUser.profile.regularWorkingTime ? meteorUser.profile.regularWorkingTime : '8'
-  const userStartTime = meteorUser.profile.dailyStartTime ? meteorUser.profile.dailyStartTime : '09:00'
+  const userRegularWorkingTime = meteorUser?.profile?.regularWorkingTime ? meteorUser.profile.regularWorkingTime : '8'
+  const userStartTime = meteorUser?.profile?.dailyStartTime ? meteorUser.profile.dailyStartTime : '09:00'
   const userEndTime = dayjs(userStartTime, 'HH:mm').add(entry.totalTime, 'hour')
   return {
     date: entry._id.date,
-    resource: meteorUser.profile.name,
+    resource: meteorUser?.profile?.name,
     startTime: userStartTime,
     breakStartTime: userEndTime.isAfter(userBreakStartTime) ? userBreakStartTime.format('HH:mm') : '',
     breakEndTime: userEndTime.isAfter(userBreakStartTime) ? userBreakEndTime.format('HH:mm') : '',

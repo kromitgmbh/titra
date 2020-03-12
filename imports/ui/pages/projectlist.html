@@ -1,115 +1,143 @@
 <template name="projectlist">
-  {{#if moreThanOneProject}}
-    <div class="card mb-3 all-projects-bg">
-      <div class="card-header">{{t "overview.all_projects"}}</div>
+  {{#if Template.subscriptionsReady}}
+    {{#if moreThanOneProject}}
+      <div class="card mb-3 all-projects-bg">
+        <div class="card-header">{{t "overview.all_projects"}}</div>
+        <div class="card-body">
+          <!-- <h6 class="card-subtitle mb-1">All projects</h6> -->
+          <!-- <span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span> -->
+          {{> allprojectschart}}
+          <!-- <p>{{totalHours(_id)}} - {{currentMonthHours(_id)}} - {{previousMonthHours(_id)}}</p> -->
+          <!-- <br/> -->
+          <!-- <div class="row no-gutters" style="margin-left:-1em; margin-right:-1em;">
+            <div class="btn-group btn-group-m w-100"> -->
+            <hr/>
+            <div class="row mt-2" id="{{project._id}}">
+              <div class="col-3 col-offset-9">
+                <a href="/list/timecards/all" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
+              </div>
+            </div>
+            <!-- </div>
+          </div> -->
+        </div>
+      </div>
+    {{/if}}
+    {{#if adsenseClientId}}
+      <div class="card mb-3" style="border: 1px solid #455A64; overflow:hidden;">
+        <div class="card-body">
+            <ins class="adsbygoogle"
+              style="display:block"
+              data-ad-format="fluid"
+              data-ad-layout-key="-gc+36+6u-7h-56"
+              data-ad-client="{{adsenseClientId}}"
+              data-ad-slot="{{adsenseAdSlot}}"></ins>
+        </div>
+      </div>
+    {{/if}}
+    <!-- <h5 style="text-align:center">Your projects</h5> -->
+      <!-- <ul class="list-group mb-2"> -->
+      <div class="js-project-list">
+        {{#each project in projects}}
+        <!-- <li class="list-group-item" id="{{_id}}"> -->
+          <!-- <div class="d-flex w-100 justify-content-between">
+            <a href="/list/timecards/{{_id}}">{{name}}</a><span><a href="/edit/project/{{_id}}"><i class="fa fa-edit"></i></a> <a href="#" class="js-delete-project"><i class="fa fa-trash"></i></a></span>
+          </div> -->
+          <!-- <br/> -->
+          <!-- <div class="mb-1" style="width:100%;padding-top:10px"> -->
+          <div class="card mb-3" style="border: 1px solid {{colorOpacity project.color 50}}">
+            <div class="card-header">{{project.name}} <span class="float-right handle"><i class="fa fa-arrows-alt"></i></span></div>
+            <div class="card-body">
+              <!-- <h6 class="card-subtitle mb-1">{{project.name}}</h6> -->
+              <!-- <span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span> -->
+              {{> projectchart projectId=project._id}}
+              <!-- <p>{{totalHours(_id)}} - {{currentMonthHours(_id)}} - {{previousMonthHours(_id)}}</p> -->
+              <!-- <br/> -->
+              <!-- <div class="row no-gutters" style="margin-left:-1em; margin-right:-1em;">
+                <div class="btn-group btn-group-m w-100"> -->
+                <div class="row mt-2" id="{{project._id}}">
+                  {{#if archived (project._id)}}
+                    <div class="col-3">
+                      <button class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-undo"></i> <span class="d-none d-md-inline">{{t "navigation.restore"}}</span></button>
+                    </div>
+                  {{else}}
+                    <div class="col-3">
+                      <a href="/tracktime/{{project._id}}" class="btn btn-secondary border btn-block"><i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></a>
+                    </div>
+                  {{/if}}
+                  <div class="col-3">
+                    <a href="/list/timecards/{{project._id}}" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
+                  </div>
+                  {{#if isProjectOwner (project._id)}}
+                    <div class="col-3">
+                      <button class="btn btn-secondary border btn-block js-edit-project"><i class="fa fa-edit"></i> <span class="d-none d-md-inline">{{t "navigation.edit"}}</span></button>
+                    </div>
+                    {{#if archived (project._id)}}
+                    <div class="col-3">
+                      <button class="btn btn-secondary border btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">{{t "navigation.delete"}}</span></button>
+                    </div>
+                    {{else}}
+                    <div class="col-3">
+                      <button class="btn btn-secondary border btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">{{t "navigation.archive"}}</span></button>
+                    </div>
+                    {{/if}}
+                  {{/if}}
+                </div>
+                <!-- </div>
+              </div> -->
+            </div>
+            {{#if project.target}}
+              {{#with project}}
+                {{>projectProgress}}
+              {{/with}}
+            {{/if}}
+          </div>
+        <!-- </li> -->
+        {{/each}}
+      </div>
+      <div class="row">
+        <div class="col-md-4 col-6">
+          <a href="/create/project" class="btn btn-primary" id="next">{{t "navigation.new_project"}}</a>
+        </div>
+        <div class="col-md-6 col-4">
+          {{#if hasArchivedProjects}}
+          <div class="form-check pull-right">
+              <input id="showArchived" type="checkbox" class="form-check-input"/>
+              <label class="form-check-label"> <span class="d-none d-sm-inline">{{t "navigation.show_archived"}} </span><i class="fa fa-archive d-inline d-sm-none"></i></label>
+          </div>
+          {{/if}}
+        </div>
+        <div class="col-2 text-right">
+          <!-- <input id="showArchived" type="checkbox"/>
+          <label for="showArchived">Show archived</label> -->
+          <span class="badge badge-secondary" data-toggle="tooltip" data-placement="right" title="{{t 'overview.number_projects'}}" id="projectCount">{{projectCount}}</span>
+        </div>
+      </div>
+      <!-- </ul> -->
+  {{else}}
+    <div class="card mb-3 all-projects-bg" style="min-height:332px">
+      <div class="card-header">{{t "tabular.sLoadingRecords"}}</div>
       <div class="card-body">
-        <!-- <h6 class="card-subtitle mb-1">All projects</h6> -->
-        <!-- <span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span> -->
-        {{> allprojectschart}}
-        <!-- <p>{{totalHours(_id)}} - {{currentMonthHours(_id)}} - {{previousMonthHours(_id)}}</p> -->
-        <!-- <br/> -->
-        <!-- <div class="row no-gutters" style="margin-left:-1em; margin-right:-1em;">
-          <div class="btn-group btn-group-m w-100"> -->
+        <div class="row">
+          <div class="col-12 col-md-4">
+            ... <br/>
+            ... <br/>
+          </div>
+          <div class="d-none d-md-block col-md-3 text-center">
+              <p>...</p>
+              <div style="margin:auto; width:122px; height:122px; border-radius:50%; background-color: rgba(0,0,0,0.1);"></div>
+          </div>
+          <div class="d-none d-md-block col-md-5 text-center">
+            <p>...</p>
+            <div style="margin:auto; width:428px; height:132px; background-color:rgba(0,0,0,0.1);"></div>
+          </div>
+        </div>
           <hr/>
-          <div class="row mt-2" id="{{project._id}}">
+          <div class="row mt-2">
             <div class="col-3 col-offset-9">
-              <a href="/list/timecards/all" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
+              <button class="btn btn-secondary border btn-block disabled"><i class="fa fa-list"></i></button>
             </div>
           </div>
-          <!-- </div>
-        </div> -->
       </div>
     </div>
   {{/if}}
-  {{#if adsenseClientId}}
-    <div class="card mb-3" style="border: 1px solid #455A64; overflow:hidden;">
-      <div class="card-body">
-          <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-format="fluid"
-             data-ad-layout-key="-gc+36+6u-7h-56"
-             data-ad-client="{{adsenseClientId}}"
-             data-ad-slot="{{adsenseAdSlot}}"></ins>
-       </div>
-     </div>
-   {{/if}}
-  <!-- <h5 style="text-align:center">Your projects</h5> -->
-    <!-- <ul class="list-group mb-2"> -->
-    <div class="js-project-list">
-      {{#each project in projects}}
-      <!-- <li class="list-group-item" id="{{_id}}"> -->
-        <!-- <div class="d-flex w-100 justify-content-between">
-          <a href="/list/timecards/{{_id}}">{{name}}</a><span><a href="/edit/project/{{_id}}"><i class="fa fa-edit"></i></a> <a href="#" class="js-delete-project"><i class="fa fa-trash"></i></a></span>
-        </div> -->
-        <!-- <br/> -->
-        <!-- <div class="mb-1" style="width:100%;padding-top:10px"> -->
-        <div class="card mb-3" style="border: 1px solid {{colorOpacity project.color 50}}">
-          <div class="card-header">{{project.name}} <span class="float-right handle"><i class="fa fa-arrows-alt"></i></span></div>
-          <div class="card-body">
-            <!-- <h6 class="card-subtitle mb-1">{{project.name}}</h6> -->
-            <!-- <span class="underline" style="background-image: linear-gradient(to bottom, {{colorOpacity project.color 50}} 60%, {{project.color}} 40%);">{{project.name}} </span> -->
-            {{> projectchart projectId=project._id}}
-            <!-- <p>{{totalHours(_id)}} - {{currentMonthHours(_id)}} - {{previousMonthHours(_id)}}</p> -->
-            <!-- <br/> -->
-            <!-- <div class="row no-gutters" style="margin-left:-1em; margin-right:-1em;">
-              <div class="btn-group btn-group-m w-100"> -->
-              <div class="row mt-2" id="{{project._id}}">
-                {{#if archived (project._id)}}
-                  <div class="col-3">
-                    <button class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-undo"></i> <span class="d-none d-md-inline">{{t "navigation.restore"}}</span></button>
-                  </div>
-                {{else}}
-                  <div class="col-3">
-                    <a href="/tracktime/{{project._id}}" class="btn btn-secondary border btn-block"><i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></a>
-                  </div>
-                {{/if}}
-                <div class="col-3">
-                  <a href="/list/timecards/{{project._id}}" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
-                </div>
-                {{#if isProjectOwner (project._id)}}
-                  <div class="col-3">
-                    <button class="btn btn-secondary border btn-block js-edit-project"><i class="fa fa-edit"></i> <span class="d-none d-md-inline">{{t "navigation.edit"}}</span></button>
-                  </div>
-                  {{#if archived (project._id)}}
-                  <div class="col-3">
-                    <button class="btn btn-secondary border btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">{{t "navigation.delete"}}</span></button>
-                  </div>
-                  {{else}}
-                  <div class="col-3">
-                    <button class="btn btn-secondary border btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">{{t "navigation.archive"}}</span></button>
-                  </div>
-                  {{/if}}
-                {{/if}}
-              </div>
-              <!-- </div>
-            </div> -->
-          </div>
-          {{#if project.target}}
-            {{#with project}}
-              {{>projectProgress}}
-            {{/with}}
-          {{/if}}
-        </div>
-      <!-- </li> -->
-      {{/each}}
-    </div>
-    <div class="row">
-      <div class="col-md-4 col-6">
-        <a href="/create/project" class="btn btn-primary" id="next">{{t "navigation.new_project"}}</a>
-      </div>
-      <div class="col-md-6 col-4">
-        {{#if hasArchivedProjects}}
-        <div class="form-check pull-right">
-            <input id="showArchived" type="checkbox" class="form-check-input"/>
-            <label class="form-check-label"> <span class="d-none d-sm-inline">{{t "navigation.show_archived"}} </span><i class="fa fa-archive d-inline d-sm-none"></i></label>
-        </div>
-        {{/if}}
-      </div>
-      <div class="col-2 text-right">
-        <!-- <input id="showArchived" type="checkbox"/>
-        <label for="showArchived">Show archived</label> -->
-        <span class="badge badge-secondary" data-toggle="tooltip" data-placement="right" title="{{t 'overview.number_projects'}}" id="projectCount">{{projectCount}}</span>
-      </div>
-    </div>
-    <!-- </ul> -->
 </template>

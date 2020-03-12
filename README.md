@@ -1,4 +1,4 @@
-![Docker Build Status](https://img.shields.io/docker/build/kromit/titra.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/kromit/titra.svg)
+![Docker Build Status](https://img.shields.io/docker/build/kromit/titra.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/kromit/titra.svg) ![Latest Release](https://img.shields.io/github/v/release/kromitgmbh/titra.svg)
 
 
 # ![titra logo](public/favicons/favicon-32x32.png) titra

@@ -246,7 +246,7 @@ Template.detailtimetable.events({
     for (const timeEntry of Timecards.find(templateInstance.selector[0], templateInstance.selector[1])
       .fetch().map(detailedDataTableMapper)) {
       if (getGlobalSetting('useState')) {
-        csvArray.push(`${timeEntry[0]},${timeEntry[1]},${timeEntry[2]},${timeEntry[3]},${timeEntry[4]},${i18next.t(`details.${timeEntry[5]}`)}\r\n`)
+        csvArray.push(`${timeEntry[0]},${timeEntry[1]},${timeEntry[2]},${timeEntry[3]},${timeEntry[4]},${i18next.t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)}\r\n`)
       } else {
         csvArray.push(`${timeEntry[0]},${timeEntry[1]},${timeEntry[2]},${timeEntry[3]},${timeEntry[4]}\r\n`)
       }
@@ -270,7 +270,7 @@ Template.detailtimetable.events({
     for (const timeEntry of Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
       .map(detailedDataTableMapper)) {
       if (getGlobalSetting('useState')) {
-        data.push([timeEntry[0], timeEntry[1], timeEntry[2], timeEntry[3], timeEntry[4], i18next.t(`details.${timeEntry[5]}`)])
+        data.push([timeEntry[0], timeEntry[1], timeEntry[2], timeEntry[3], timeEntry[4], i18next.t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)])
       } else {
         data.push([timeEntry[0], timeEntry[1], timeEntry[2], timeEntry[3], timeEntry[4]])
       }

@@ -15,12 +15,13 @@ Template.dailytimetable.onCreated(function dailytimetablecreated() {
   dayjs.extend(utc)
   this.dailyTimecards = new ReactiveVar()
   this.totalEntries = new ReactiveVar()
-  Tracker.autorun(() => {
+  this.autorun(() => {
     if (this.data.project.get()
       && this.data.resource.get()
       && this.data.period.get()
       && this.data.limit.get()
       && this.data.customer.get()) {
+      this.projectUsersHandle = this.subscribe('projectUsers', { projectId: this.data.project.get() })
       const methodParameters = {
         projectId: this.data.project.get(),
         userId: this.data.resource.get(),
@@ -124,7 +125,7 @@ Template.dailytimetable.events({
       unit = getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
     }
     const csvArray = [`\uFEFF${i18next.t('globals.date')},${i18next.t('globals.project')},${i18next.t('globals.resource')},${unit}\r\n`]
-    for (const timeEntry of templateInstance.dailyTimecards.get()) {
+    for (const timeEntry of templateInstance.dailyTimecards.get().map(dailyTimecardMapper)) {
       csvArray.push(`${dayjs(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_daily_time_${templateInstance.data.period.get()}.csv`)
@@ -136,7 +137,7 @@ Template.dailytimetable.events({
       unit = getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
     }
     const data = [[i18next.t('globals.date'), i18next.t('globals.project'), i18next.t('globals.resource'), unit]]
-    for (const timeEntry of templateInstance.dailyTimecards.get()) {
+    for (const timeEntry of templateInstance.dailyTimecards.get().map(dailyTimecardMapper)) {
       data.push([dayjs(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'daily').createDownloadUrl(), `titra_daily_time_${templateInstance.data.period.get()}.xlsx`)
