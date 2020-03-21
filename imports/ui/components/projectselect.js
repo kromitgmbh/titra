@@ -40,12 +40,9 @@ Template.projectselect.onCreated(function createTrackTime() {
   })
 })
 Template.projectselect.helpers({
-  projects() {
-    return Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] })
-  },
-  selectedId() {
-    return Template.instance().selectedId.get()
-  },
+  projects: () => Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] },
+    { sort: { priority: 1, name: 1 } }),
+  selectedId: () => Template.instance().selectedId.get(),
 })
 
 Template.projectselect.events({

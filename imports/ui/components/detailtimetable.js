@@ -28,7 +28,7 @@ function detailedDataTableMapper(entry) {
   const mapping = [Projects.findOne({ _id: entry.projectId }) ? Projects.findOne({ _id: entry.projectId }).name : '',
     dayjs.utc(entry.date).format(getGlobalSetting('dateformat')),
     entry.task,
-    projectUsers.findOne() ? projectUsers.findOne().users.find((elem) => elem._id === entry.userId).profile.name : '',
+    projectUsers.findOne() ? projectUsers.findOne().users.find((elem) => elem._id === entry.userId)?.profile?.name : '',
     Number(timeInUserUnit(entry.hours)),
     entry.state,
     entry._id]
@@ -89,7 +89,8 @@ Template.detailtimetable.onRendered(() => {
   const templateInstance = Template.instance()
   dayjs.extend(utc)
   templateInstance.autorun(() => {
-    if (templateInstance.detailedTimeEntriesForPeriodHandle.ready() && i18nextReady.get()) {
+    if (templateInstance.detailedTimeEntriesForPeriodHandle.ready()
+      && templateInstance.projectUsersHandle.ready() && i18nextReady.get()) {
       const data = Timecards.find(templateInstance.selector[0], templateInstance.selector[1])
         .fetch().map(detailedDataTableMapper)
       if (data.length === 0) {

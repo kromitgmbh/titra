@@ -95,7 +95,9 @@ Meteor.startup(() => {
       if (getUserSetting('language')) {
         language = getUserSetting('language') === 'auto' ? navigator.language.substring(0, 2) : getUserSetting('language')
       }
-      loadLanguage(language)
+      if (!i18nextReady.get() || i18next.language !== language) {
+        loadLanguage(language)
+      }
       import('popper.js').then((Popper) => {
         // window.Tether = Tether.default
         window.Popper = Popper.default
@@ -105,7 +107,9 @@ Meteor.startup(() => {
         })
       })
     } else if (!Meteor.user() && !Meteor.loggingIn()) {
-      loadLanguage(language)
+      if (!i18nextReady.get()) {
+        loadLanguage(language)
+      }
     }
     if (i18nextReady.get()) {
       import('sweetalert2/dist/sweetalert2.js').then((Swal) => {
@@ -206,6 +210,19 @@ Template.registerHelper('timeunit', () => {
         return i18next.t('globals.unit_day_short')
       default:
         return i18next.t('globals.unit_hour_short')
+    }
+  }
+  return false
+})
+Template.registerHelper('timeunitVerbose', () => {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && i18nextReady.get()) {
+    switch (getUserSetting('timeunit')) {
+      case 'h':
+        return i18next.t('globals.hour_plural')
+      case 'd':
+        return i18next.t('globals.day_plural')
+      default:
+        return i18next.t('globals.hour_plural')
     }
   }
   return false

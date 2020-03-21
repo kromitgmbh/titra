@@ -177,4 +177,7 @@ $font-weight-base: 200 !default;
 .swal2-popup.swal2-toast .swal2-title {
     color: #dfe2e5;
 }
+g > text {
+    fill: $gray-900;
+}
 @import "{}/imports/ui/styles/general.scss";

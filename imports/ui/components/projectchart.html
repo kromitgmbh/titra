@@ -11,10 +11,10 @@
           {{/each}}<br/>
         {{/if}}
         {{#if totalHours}}
-          <i class="fa fa-clock" style="width:18px;"></i> {{t "overview.total_time"}} {{timeInUserUnit(totalHours)}} ({{timeunit}}) {{{hourIndicator}}}<br/>
+          <i class="fa fa-clock" style="width:18px;"></i> {{t "overview.total_time"}} {{timeInUserUnit(totalHours)}} ({{timeunitVerbose}}) {{{hourIndicator}}}<br/>
         {{/if}}
         {{#if target}}
-          <i class="fa fa-bullseye" style="width:18px;"></i> {{t "overview.target"}}: {{timeInUserUnit(target)}} ({{timeunit}})<br/>
+          <i class="fa fa-bullseye" style="width:18px;"></i> {{t "overview.target"}}: {{timeInUserUnit(target)}} ({{timeunitVerbose}})<br/>
         {{/if}}
         {{#if turnOver}}
           <i class="fa fa-money-bill-alt" style="width:18px;"></i> {{t "overview.turnover"}}: {{turnOver}} {{unit}}
@@ -29,8 +29,8 @@
       {{else}}
         <p>&nbsp;</p>
       {{/if}}
-      <div class="js-pie-chart-container">
-        <div style="margin:auto; width:122px; height:122px; border-radius:50%; background-color: rgba(0,0,0,0.1);"></div>
+      <div class="js-pie-chart-container" style="max-height: 160px;">
+        <div style="margin:auto; width:130px; height:130px; border-radius:50%; background-color: rgba(0,0,0,0.1);"></div>
       </div>
       <!-- <ol>
         {{#each topTasks}}
@@ -41,8 +41,8 @@
     </div>
     <div class="d-none d-md-block col-md-5 text-center">
       <p>{{t "overview.three_month_history"}}</p>
-      <div class="js-chart-container p-3">
-        <div style="margin:auto; width:396px; height:122px; background-color:rgba(0,0,0,0.1);"></div>
+      <div class="js-hours-chart-container p-3" style="max-height: 160px;">
+        <div style="margin:auto; width:240px; height:130px; background-color:rgba(0,0,0,0.1);"></div>
       </div>
     </div>
   </div>

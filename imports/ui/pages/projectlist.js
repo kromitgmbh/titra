@@ -23,32 +23,34 @@ Template.projectlist.onRendered(() => {
   import('sortablejs').then((sortableImport) => {
     const Sortable = sortableImport.default
     const el = document.querySelector('.js-project-list')
-    Sortable.create(el, {
-      handle: '.handle',
-      onChoose: (evt) => {
-        document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
-          element.classList.add('d-none')
-        })
-        document.querySelectorAll('.progress-bar').forEach((element) => {
-          element.classList.add('d-none')
-        })
-      },
-      onEnd: (evt) => {
-        document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
-          element.classList.remove('d-none')
-        })
-        document.querySelectorAll('.progress-bar').forEach((element) => {
-          element.classList.remove('d-none')
-        })
-        const projectId = $(evt.item).children('.card-body').children('.row.mt-2')[0].id
-        const priority = evt.newIndex
-        Meteor.call('updatePriority', { projectId, priority }, (error, result) => {
-          if (error) {
-            console.error(error)
-          }
-        })
-      },
-    })
+    if (el) {
+      Sortable.create(el, {
+        handle: '.handle',
+        onChoose: (evt) => {
+          document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
+            element.classList.add('d-none')
+          })
+          document.querySelectorAll('.progress-bar').forEach((element) => {
+            element.classList.add('d-none')
+          })
+        },
+        onEnd: (evt) => {
+          document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
+            element.classList.remove('d-none')
+          })
+          document.querySelectorAll('.progress-bar').forEach((element) => {
+            element.classList.remove('d-none')
+          })
+          const projectId = $(evt.item).children('.card-body').children('.row.mt-2')[0].id
+          const priority = evt.newIndex
+          Meteor.call('updatePriority', { projectId, priority }, (error, result) => {
+            if (error) {
+              console.error(error)
+            }
+          })
+        },
+      })
+    }
   })
 })
 Template.projectlist.helpers({
@@ -133,4 +135,8 @@ Template.projectlist.events({
   'change #showArchived': (event) => {
     Template.instance().data.showArchived.set($(event.currentTarget).is(':checked'))
   },
+})
+
+Template.projectlist.onDestroyed(() => {
+  $(window).off()
 })

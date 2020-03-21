@@ -14,7 +14,16 @@ Template.resourceselect.onCreated(function createResourceSelect() {
 Template.resourceselect.helpers({
   resources() {
     return projectUsers.findOne({ _id: Template.currentData().get() })
-      ? projectUsers.findOne({ _id: Template.currentData().get() }).users : false
+      ? projectUsers.findOne({ _id: Template.currentData().get() }).users
+        .sort((a, b) => {
+          if (a.profile.name < b.profile.name) {
+            return -1
+          }
+          if (a.profile.name > b.profile.name) {
+            return 1
+          }
+          return 0
+        }) : false
   },
   selected(_id) {
     return _id === FlowRouter.getQueryParam('resource') ? 'selected' : false

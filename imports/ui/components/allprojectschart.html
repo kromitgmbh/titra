@@ -1,30 +1,23 @@
 <template name="allprojectschart">
   <div class="row">
     <div class="col-12 col-md-4">
-      <!-- {{#if allTeamMembers}} Team: {{allTeamMembers}}<br/> {{/if}} -->
       {{t "overview.total_time_tracked"}} <br/>
-      {{timeInUserUnit(totalHours)}} ({{timeunit}})<br/>
+      {{timeInUserUnit(totalHours)}} ({{timeunitVerbose}})<br/>
     </div>
     <div class="d-none d-md-block col-md-3 text-center">
       {{#if topTasks}}
-        <p>{{t "overview.top_tasks"}}</p>
+        <span>{{t "overview.top_tasks"}}</span>
       {{else}}
-        <p>&nbsp;</p>
+        <span>&nbsp;</span>
       {{/if}}
-      <div class="js-pie-chart-container">
-        <div style="margin:auto; width:122px; height:122px; border-radius:50%; background-color: rgba(0,0,0,0.1);"></div>
+      <div class="js-pie-chart-container" style="max-height: 160px;">
+        <div class="my-2" style="margin:auto; width:144px; height:144px; border-radius:50%; background-color: rgba(0,0,0,0.1);"></div>
       </div>
-      <!-- <ol>
-        {{#each topTasks}}
-          <li><span class="d-block text-truncate" style="max-width:100%;" data-toggle="tooltip" data-placement="top" title="{{_id}}">{{_id}}</span></li>
-        {{/each}}
-      </ol> -->
-      <!-- Top tasks: {{topTasks}} -->
     </div>
     <div class="d-none d-md-block col-md-5 text-center">
-      <p>{{t "overview.three_month_history"}}</p>
-      <div class="js-chart-container">
-        <div style="margin:auto; width:428px; height:132px; background-color:rgba(0,0,0,0.1);"></div>
+      <span>{{t "overview.three_month_history"}}</span>
+      <div class="js-chart-container" style="max-height: 160px;">
+        <div class="my-2" style="margin:auto; width:240px; height:135px; background-color:rgba(0,0,0,0.1);"></div>
       </div>
     </div>
   </div>
