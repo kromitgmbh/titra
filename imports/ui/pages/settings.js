@@ -16,30 +16,30 @@ Template.settings.onRendered(function settingsRendered() {
   templateInstance.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
         && Meteor.user().profile && this.subscriptionsReady()) {
-      templateInstance.$('#timeunit').val(getUserSetting('timeunit') ? getUserSetting('timeunit') : getGlobalSetting('timeunit'))
-      templateInstance.$('#timetrackview').val(getUserSetting('timetrackview') ? getUserSetting('timetrackview') : getGlobalSetting('timetrackview'))
-      templateInstance.$('#dailyStartTime').val(getUserSetting('dailyStartTime') ? getUserSetting('dailyStartTime') : getGlobalSetting('dailyStartTime'))
-      templateInstance.$('#breakStartTime').val(getUserSetting('breakStartTime') ? getUserSetting('breakStartTime') : getGlobalSetting('breakStartTime'))
-      templateInstance.$('#breakDuration').val(getUserSetting('breakDuration') ? getUserSetting('breakDuration') : getGlobalSetting('breakDuration'))
-      templateInstance.$('#regularWorkingTime').val(getUserSetting('regularWorkingTime') ? getUserSetting('regularWorkingTime') : getGlobalSetting('regularWorkingTime'))
+      templateInstance.$('#timeunit').val(getUserSetting('timeunit'))
+      templateInstance.$('#timetrackview').val(getUserSetting('timetrackview'))
+      templateInstance.$('#dailyStartTime').val(getUserSetting('dailyStartTime'))
+      templateInstance.$('#breakStartTime').val(getUserSetting('breakStartTime'))
+      templateInstance.$('#breakDuration').val(getUserSetting('breakDuration'))
+      templateInstance.$('#regularWorkingTime').val(getUserSetting('regularWorkingTime'))
     }
   })
 })
 
 Template.settings.helpers({
-  unit: () => (getUserSetting('timeunit') ? getUserSetting('timeunit') : getGlobalSetting('unit')),
-  dailyStartTime: () => (Meteor.user() ? getUserSetting('dailyStartTime') : getGlobalSetting('dailyStartTime')),
-  breakStartTime: () => (Meteor.user() ? getUserSetting('breakStartTime') : getGlobalSetting('breakStartTime')),
-  breakDuration: () => (Meteor.user() ? getUserSetting('breakDuration') : getGlobalSetting('breakDuration')),
-  regularWorkingTime: () => (Meteor.user() ? getUserSetting('regularWorkingTime') : getGlobalSetting('regularWorkingTime')),
-  precision: () => (getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')),
-  timetrackview: () => (getUserSetting('timetrackview') ? getUserSetting('timetrackview') : getGlobalSetting('timetrackview')),
-  hoursToDays: () => (getUserSetting('hoursToDays') ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')),
+  unit: () => getUserSetting('timeunit'),
+  dailyStartTime: () => getUserSetting('dailyStartTime'),
+  breakStartTime: () => getUserSetting('breakStartTime'),
+  breakDuration: () => getUserSetting('breakDuration'),
+  regularWorkingTime: () => getUserSetting('regularWorkingTime'),
+  precision: () => getUserSetting('precision'),
+  timetrackview: () => getUserSetting('timetrackview'),
+  hoursToDays: () => getUserSetting('hoursToDays'),
   displayHoursToDays: () => Template.instance().displayHoursToDays.get(),
-  enableWekan: () => (getUserSetting('enableWekan') ? getUserSetting('enableWekan') : getGlobalSetting('enableWekan')),
-  siwappurl: () => (getUserSetting('siwappurl') ? getUserSetting('siwappurl') : false),
-  siwapptoken: () => (getUserSetting('siwapptoken') ? getUserSetting('siwapptoken') : false),
-  titraAPItoken: () => (getUserSetting('APItoken') ? getUserSetting('APItoken') : false),
+  enableWekan: () => getUserSetting('enableWekan'),
+  siwappurl: () => getUserSetting('siwappurl'),
+  siwapptoken: () => getUserSetting('siwapptoken'),
+  titraAPItoken: () => getUserSetting('APItoken'),
 })
 
 

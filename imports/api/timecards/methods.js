@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import i18next from 'i18next'
+// import { VM } from 'vm2'
 import { HTTP } from 'meteor/http'
 import { check, Match } from 'meteor/check'
 import { Promise } from 'meteor/promise'
@@ -24,6 +25,19 @@ function insertTimeCard(projectId, task, date, hours, userId) {
   } else {
     Tasks.update({ userId, name: task.replace(/(:.*:)/g, emojify) }, { $set: { lastUsed: new Date() } })
   }
+  // const vm = new VM({
+  //   timeout: 1000,
+  //   sandbox: {
+  //     user: Meteor.users.findOne({ _id: userId }).profile,
+  //     timecard: {
+  //       projectId,
+  //       task,
+  //       date,
+  //       hours,
+  //     },
+  //   },
+  // })
+  // console.log(vm.run('this.user'))
   return Timecards.insert({
     userId,
     projectId,

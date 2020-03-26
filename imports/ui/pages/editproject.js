@@ -124,7 +124,7 @@ Template.editproject.events({
     const projectArray = templateInstance.$('#editProjectForm').serializeArray()
     projectArray.push({ name: 'desc', value: Template.instance().quill.getContents() })
     if (getUserSetting('timeunit') === 'd') {
-      templateInstance.$('#target').val(templateInstance.$('#target').val() * (getUserSetting('hoursToDays') ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')))
+      templateInstance.$('#target').val(templateInstance.$('#target').val() * (getUserSetting('hoursToDays')))
     }
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {

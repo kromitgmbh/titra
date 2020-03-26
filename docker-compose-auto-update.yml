@@ -15,7 +15,7 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
     restart: always
   mongodb:
-    image: mongo:4.0
+    image: mongo:4.2
     container_name: mongodb
     restart: always
     volumes:

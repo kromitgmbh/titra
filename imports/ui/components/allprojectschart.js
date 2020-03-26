@@ -33,7 +33,7 @@ Template.allprojectschart.helpers({
 })
 Template.allprojectschart.onRendered(() => {
   const templateInstance = Template.instance()
-  const precision = getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')
+  const precision = getUserSetting('precision')
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
       if (templateInstance.projectStats.get()) {
@@ -46,17 +46,14 @@ Template.allprojectschart.onRendered(() => {
                 if (getUserSetting('timeunit') === 'd') {
                   stats.beforePreviousMonthHours
                     /= getUserSetting('hoursToDays')
-                      ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')
                   stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
                     .toFixed(precision)
                   stats.previousMonthHours
                     /= getUserSetting('hoursToDays')
-                      ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')
                   stats.previousMonthHours = Number(stats.previousMonthHours)
                     .toFixed(precision)
                   stats.currentMonthHours
                     /= getUserSetting('hoursToDays')
-                      ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')
                   stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
                 }
                 templateInstance.chart = new Chart(templateInstance.$('.js-chart-container')[0], {

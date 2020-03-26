@@ -131,7 +131,7 @@ Template.tracktime.events({
     hours = templateInstance.math.eval(hours)
 
     if (getUserSetting('timeunit') === 'd') {
-      hours *= (getUserSetting('hoursToDays') ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays'))
+      hours *= getUserSetting('hoursToDays')
     }
     const buttonLabel = $('.js-save').text()
     templateInstance.$('.js-save').text(i18next.t('navigation.saving'))

@@ -5,13 +5,13 @@ import { Globalsettings } from '../api/globalsettings/globalsettings.js'
 const clientTimecards = new Mongo.Collection('clientTimecards')
 
 function getGlobalSetting(name) {
-  return Globalsettings.findOne({ name }) ? Globalsettings.findOne({ name }).value : ''
+  return Globalsettings.findOne({ name }) ? Globalsettings.findOne({ name }).value : false
 }
 
 function getUserSetting(field) {
   check(field, String)
   if ((Meteor.isClient && !Meteor.loggingIn()) && Meteor.user() && Meteor.user().profile) {
-    return Meteor.user().profile[field]
+    return Meteor.user().profile[field] ? Meteor.user().profile[field] : getGlobalSetting(field)
   }
   return false
 }
@@ -36,10 +36,9 @@ function timeInUserUnit(time) {
   if (!time || time === 0) {
     return false
   }
-  const precision = getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')
+  const precision = getUserSetting('precision')
   if (getUserSetting('timeunit') === 'd') {
-    const convertedTime = Number(time / (getUserSetting('hoursToDays')
-      ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays'))).toFixed(precision)
+    const convertedTime = Number(time / getUserSetting('hoursToDays')).toFixed(precision)
     return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
   }
   if (time) {

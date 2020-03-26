@@ -191,7 +191,7 @@ Meteor.startup(() => {
 Template.registerHelper('i18nextReady', () => i18nextReady.get())
 Template.registerHelper('unit', () => {
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    return getUserSetting('unit') ? getUserSetting('unit') : getGlobalSetting('unit')
+    return getUserSetting('unit')
   }
   return false
 })
@@ -229,7 +229,7 @@ Template.registerHelper('timeunitVerbose', () => {
 })
 Template.registerHelper('timetrackview', () => {
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    return getUserSetting('timetrackview') ? getUserSetting('timetrackview') : getGlobalSetting('timetrackview')
+    return getUserSetting('timetrackview')
   }
   return false
 })

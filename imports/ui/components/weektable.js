@@ -78,7 +78,7 @@ Template.weektable.events({
         }
         let hours = Number(value)
         if (getUserSetting('timeunit') === 'd') {
-          hours *= (getUserSetting('hoursToDays') ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays'))
+          hours *= (getUserSetting('hoursToDays'))
         }
         weekArray.push({
           projectId: $(element).data('project-id'),

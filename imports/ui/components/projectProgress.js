@@ -12,7 +12,7 @@ Template.projectProgress.onCreated(function projectProgressCreated() {
 })
 Template.projectProgress.helpers({
   totalHours() {
-    const precision = getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')
+    const precision = getUserSetting('precision')
     const projectStats = ProjectStats.findOne({ _id: Template.currentData()._id })
     return projectStats
       ? Number(projectStats.totalHours).toFixed(precision)

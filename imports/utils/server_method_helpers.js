@@ -59,8 +59,7 @@ function totalHoursForPeriodMapper(entry) {
   let { totalHours } = entry
   if (Meteor.user()) {
     if (getUserSetting('timeunit') === 'd') {
-      totalHours = Number(entry.totalHours / (getUserSetting('hoursToDays')
-        ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')))
+      totalHours = Number(entry.totalHours / getUserSetting('hoursToDays'))
     }
   }
   return {
@@ -74,8 +73,7 @@ function dailyTimecardMapper(entry) {
   let { totalHours } = entry
   if (Meteor.user()) {
     if (getUserSetting('timeunit') === 'd') {
-      totalHours = Number(entry.totalHours / (getUserSetting('hoursToDays')
-        ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')))
+      totalHours = Number(entry.totalHours / getUserSetting('hoursToDays'))
     }
   }
   return {
