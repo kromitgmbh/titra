@@ -29,7 +29,7 @@ Template.projectchart.onCreated(function projectchartCreated() {
 })
 Template.projectchart.helpers({
   totalHours() {
-    const precision = getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')
+    const precision = getUserSetting('precision')
     return ProjectStats.findOne({ _id: Template.instance().data.projectId })
       ? Number(ProjectStats.findOne({
         _id: Template.instance().data.projectId,
@@ -72,7 +72,7 @@ Template.projectchart.helpers({
     return Template.instance().topTasks.get()
   },
   turnOver() {
-    const precision = getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')
+    const precision = getUserSetting('precision')
     return Projects.findOne({ _id: Template.instance().data.projectId }).rate
       && ProjectStats.findOne({ _id: Template.instance().data.projectId })
       ? Number(Projects.findOne({ _id: Template.instance().data.projectId }).rate
@@ -89,7 +89,7 @@ Template.projectchart.helpers({
 })
 Template.projectchart.onRendered(() => {
   const templateInstance = Template.instance()
-  const precision = getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')
+  const precision = getUserSetting('precision')
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
       const stats = ProjectStats.findOne({ _id: templateInstance.data.projectId })
@@ -101,40 +101,37 @@ Template.projectchart.onRendered(() => {
               if (getUserSetting('timeunit') === 'd') {
                 stats.beforePreviousMonthHours
                   /= getUserSetting('hoursToDays')
-                    ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')
                 stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
                   .toFixed(precision)
                 stats.previousMonthHours
                   /= getUserSetting('hoursToDays')
-                    ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')
                 stats.previousMonthHours = Number(stats.previousMonthHours)
                   .toFixed(precision)
                 stats.currentMonthHours
                   /= getUserSetting('hoursToDays')
-                    ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')
-                stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-                templateInstance.chart = new Chart(templateInstance.$('.js-hours-chart-container')[0], {
-                  type: 'line',
-                  height: 160,
-                  colors: [Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688'],
-                  lineOptions: {
-                    regionFill: 1,
-                  },
-                  data: {
-                    labels:
-                    [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
-                    datasets: [{
-                      values:
-                      [stats.beforePreviousMonthHours,
-                        stats.previousMonthHours,
-                        stats.currentMonthHours],
-                    }],
-                  },
-                  tooltipOptions: {
-                    formatTooltipY: (value) => `${value} ${getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}`,
-                  },
-                })
               }
+              stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+              templateInstance.chart = new Chart(templateInstance.$('.js-hours-chart-container')[0], {
+                type: 'line',
+                height: 160,
+                colors: [Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688'],
+                lineOptions: {
+                  regionFill: 1,
+                },
+                data: {
+                  labels:
+                  [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
+                  datasets: [{
+                    values:
+                    [stats.beforePreviousMonthHours,
+                      stats.previousMonthHours,
+                      stats.currentMonthHours],
+                  }],
+                },
+                tooltipOptions: {
+                  formatTooltipY: (value) => `${value} ${getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}`,
+                },
+              })
             })
           })
         })
