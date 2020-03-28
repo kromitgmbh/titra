@@ -5,6 +5,7 @@ import '../../ui/pages/signIn.js'
 import '../../ui/pages/register.js'
 import '../../ui/pages/changePassword.js'
 import '../../ui/pages/404.html'
+import { getGlobalSetting } from '../../utils/frontend_helpers.js'
 
 if (!Meteor.settings.public.sandstorm) {
   FlowRouter.triggers.enter([(context, redirect) => {
@@ -157,24 +158,27 @@ FlowRouter.route('/changePwd/:token?', {
   name: 'changePassword',
 })
 
-if (Meteor.settings.public.enableAnonymousLogins) {
-  FlowRouter.route('/try', {
-    action() {
-      if (Meteor.userId()) {
-        FlowRouter.go('/')
-      } else {
-        AccountsAnonymous.login((error) => {
-          if (!error) {
-            FlowRouter.go('/')
-          } else {
-            console.error(error)
-          }
-        })
-      }
-    },
-    name: 'try',
-  })
-}
+FlowRouter.route('/try', {
+  waitOn() {
+    return Meteor.subscribe('globalsettings')
+  },
+  action() {
+    if (Meteor.userId()) {
+      FlowRouter.go('/')
+    } else if (getGlobalSetting('enableAnonymousLogins')) {
+      AccountsAnonymous.login((error) => {
+        if (!error) {
+          FlowRouter.go('/')
+        } else {
+          console.error(error)
+        }
+      })
+    } else {
+      this.render('appLayout', '404')
+    }
+  },
+  name: 'try',
+})
 FlowRouter.route('/claim/admin', {
   action() {
     if (Meteor.userId()) {

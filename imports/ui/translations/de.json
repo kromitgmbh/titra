@@ -129,7 +129,9 @@
     "verbose_date_format": "Detailliertes Datumsformat",
     "weekview_date_format": "Datumsformat Wochenansicht",
     "startof_week": "Wochenbeginn",
-    "use_state": "Status für Zeiteinträge verwenden?"
+    "use_state": "Status für Zeiteinträge verwenden?",
+    "disable_user_registration": "Registrierung neuer Benutzer deaktivieren?",
+    "enable_anonymous_logins": "Anonyme Benutzer erlauben (aktiviert die /try Route)?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -268,7 +270,8 @@
     "current_password": "Aktuelles Passwort",
     "password_mismatch": "Die eingegebenen Passwörter stimmen nicht überein. Bitte überprüfen Sie Ihre Eingabe.",
     "permanent_account": "Permanenten Zugang erstellen",
-    "anonymous_account_warning": "Sie verwenden aktuell einen temporären Account. Wenn Sie titra auf einem anderen Gerät verwenden möchten, erstellen Sie bitte einen Benutzer mit E-mail Addresse und Passwort."
+    "anonymous_account_warning": "Sie verwenden aktuell einen temporären Account. Wenn Sie titra auf einem anderen Gerät verwenden möchten, erstellen Sie bitte einen Benutzer mit E-mail Addresse und Passwort.",
+    "registration_disabled_warning": "Die Registrierung neuer Benutzer ist auf dieser titra Instanz deaktiviert."
   },
   "about": {
     "documentation": "Dokumentation",

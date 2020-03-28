@@ -9,7 +9,6 @@ import '../components/limitpicker.js'
 
 Template.administration.onCreated(function administrationCreated() {
   this.limit = new ReactiveVar(25)
-  this.subscribe('globalsettings')
   this.autorun(() => {
     if (FlowRouter.getQueryParam('limit')) {
       this.limit.set(Number(FlowRouter.getQueryParam('limit')))
@@ -129,4 +128,14 @@ Template.administration.events({
       }
     })
   },
+  'click .js-reset': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('resetGlobalsetting', { name: templateInstance.$(event.currentTarget).data('setting-name') }, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        $.Toast.fire(i18next.t('notifications.settings_saved_success'))
+      }
+    })
+  }
 })

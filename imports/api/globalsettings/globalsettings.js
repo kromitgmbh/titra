@@ -45,4 +45,10 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'useState', description: 'settings.use_state', type: 'text', value: true,
 })
+defaultSettings.push({
+  name: 'disableUserRegistration', description: 'settings.disable_user_registration', type: 'text', value: false,
+})
+defaultSettings.push({
+  name: 'enableAnonymousLogins', description: 'settings.enable_anonymous_logins', type: 'text', value: true,
+})
 export { defaultSettings, Globalsettings }

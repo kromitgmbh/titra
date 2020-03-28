@@ -41,7 +41,6 @@ Template.dashboard.onCreated(function dashboardCreated() {
   dayjs.extend(utc)
   dayjs.extend(customParseFormat)
   this.totalHours = new ReactiveVar(0)
-  this.subscribe('globalsettings')
   this.autorun(() => {
     if (FlowRouter.getParam('_id')) {
       this.subscribe('dashboardByIdDetails', FlowRouter.getParam('_id'))
@@ -98,7 +97,7 @@ Template.dashboard.onRendered(() => {
             templateInstance.totalHours.set(0)
             const taskmap = new Map()
             const datemap = new Map()
-            const precision = getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')
+            const precision = getUserSetting('precision')
             for (const timecard of Timecards.find({}, { sort: { date: 1 } }).fetch()) {
               taskmap.set(
                 timecard.task.replace(/(:.*:)/g, emojify),
@@ -180,7 +179,7 @@ Template.dashboard.helpers({
   totalHours: () => {
     if (Dashboards.findOne()) {
       if (Dashboards.findOne().timeunit === 'd') {
-        const precision = getUserSetting('precision') ? getUserSetting('precision') : getGlobalSetting('precision')
+        const precision = getUserSetting('precision')
         return Dashboards.findOne().hoursToDays
           ? Number(Template.instance().totalHours.get() / Dashboards.findOne().hoursToDays)
             .toFixed(precision)

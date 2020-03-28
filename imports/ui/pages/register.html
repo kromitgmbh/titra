@@ -2,6 +2,11 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
+        {{#if getGlobalSetting "disableUserRegistration"}}
+          <div class="alert alert-danger">
+            {{t "login.registration_disabled_warning"}}
+          </div>
+        {{else}}
         <div class="at-form">
           <div class="at-title">
             <h3>{{t "login.register"}}</h3>
@@ -53,6 +58,7 @@
             </p>
           </div>
         </div>
+        {{/if}}
       </div>
     </div>
   </div>

@@ -71,12 +71,12 @@ function loadLanguage(language) {
 }
 Meteor.startup(() => {
   window.BootstrapLoaded = new ReactiveVar(false)
+  Meteor.subscribe('globalsettings')
   let language = navigator.language.substring(0, 2)
   import('@fortawesome/fontawesome-free/js/all.js')
   Tracker.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
       && Meteor.user().profile) {
-      Meteor.subscribe('globalsettings')
       if (getUserSetting('theme') === 'dark') {
         import('../../ui/styles/dark.scss')
       } else if (getUserSetting('theme') === 'light') {
@@ -243,5 +243,5 @@ Template.registerHelper('projectColor', (_id) => {
   return '#d9d9d9'
 })
 Template.registerHelper('isSandstorm', () => Meteor.settings.public.sandstorm)
-
+Template.registerHelper('getGlobalSetting', (settingName) => getGlobalSetting(settingName))
 export default i18nextReady

@@ -19,4 +19,14 @@ Meteor.methods({
       Globalsettings.insert(setting)
     }
   },
+  resetGlobalsetting({ name }) {
+    checkAdminAuthentication(this)
+    Globalsettings.remove({ name })
+    for (const setting of defaultSettings) {
+      if (setting.name === name) {
+        Globalsettings.insert(setting)
+        break
+      }
+    }
+  },
 })
