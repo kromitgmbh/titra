@@ -44,7 +44,7 @@ function periodToDates(period) {
   return { startDate, endDate }
 }
 function timeInUserUnit(time, meteorUser) {
-  const precision = getUserSetting('precision')
+  const precision = meteorUser?.profile?.precision ? meteorUser.profile.precision : getGlobalSetting('precision')
   if (meteorUser?.profile?.timeunit === 'd') {
     let hoursToDays = getGlobalSetting('hoursToDays')
     if (meteorUser?.profile?.hoursToDays) {
