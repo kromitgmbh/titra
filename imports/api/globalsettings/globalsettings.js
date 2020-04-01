@@ -49,6 +49,6 @@ defaultSettings.push({
   name: 'disableUserRegistration', description: 'settings.disable_user_registration', type: 'text', value: false,
 })
 defaultSettings.push({
-  name: 'enableAnonymousLogins', description: 'settings.enable_anonymous_logins', type: 'text', value: true,
+  name: 'enableAnonymousLogins', description: 'settings.enable_anonymous_logins', type: 'text', value: false,
 })
 export { defaultSettings, Globalsettings }
