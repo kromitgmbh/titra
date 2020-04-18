@@ -87,10 +87,15 @@ function buildTotalHoursForPeriodSelector(projectId, period, dates, userId, cust
   let projectList = []
   const periodArray = []
   let matchSelector = {}
+  const addFields = {
+    $addFields: {
+      convertedHours: { $toDecimal: '$hours' },
+    },
+  }
   const groupSelector = {
     $group: {
       _id: { userId: '$userId', projectId: '$projectId' },
-      totalHours: { $sum: '$hours' },
+      totalHours: { $sum: '$convertedHours' },
     },
   }
   const sortSelector = {
@@ -152,6 +157,7 @@ function buildTotalHoursForPeriodSelector(projectId, period, dates, userId, cust
       },
     }
   }
+  periodArray.push(addFields)
   periodArray.push(matchSelector)
   periodArray.push(groupSelector)
   periodArray.push(sortSelector)

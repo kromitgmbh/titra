@@ -1,9 +1,11 @@
 <template name="projectchart">
   <div class="row">
     <div class="col-12 col-md-4">
-      <div class="text-truncate" title='{{projectDescAsHtml}}'><!-- {{t "overview.project_information"}} -->
-        {{{truncatedProjectDescAsHtml}}}
-      </div>
+      {{#if projectDescAsHtml}}
+        <div class="text-truncate" style="max-height:1.9em;cursor:pointer;" data-toggle="tooltip" data-html="true" data-placement="right" data-title='{{projectDescAsHtml}}'><!-- {{t "overview.project_information"}} -->
+          {{{truncatedProjectDescAsHtml}}}
+        </div>
+      {{/if}}
       {{#if Template.subscriptionsReady}}
         {{#if allTeamMembers}}
           <i class="fa fa-users" style="width:18px;"></i> {{t "overview.team"}} {{#each teamMember in allTeamMembers}}

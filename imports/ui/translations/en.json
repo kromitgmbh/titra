@@ -242,7 +242,8 @@
     "user_not_found": "No user with this e-mail address could be found, please create the corresponding user account first.",
     "project_priority_success": "Project priority updated successfully",
     "password_changed": "Your password has been changed.",
-    "connectioncheck": "Could not connect to server. Trying again in "
+    "connectioncheck": "Could not connect to server. Trying again in ",
+    "siwapp_success": "Siwapp invoice created successfully."
   },
   "login": {
     "password": "Password",

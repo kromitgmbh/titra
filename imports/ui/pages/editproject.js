@@ -122,7 +122,11 @@ Template.editproject.events({
       templateInstance.$('#target').val(Number(templateInstance.$('#target').val()) * 8)
     }
     const projectArray = templateInstance.$('#editProjectForm').serializeArray()
-    projectArray.push({ name: 'desc', value: Template.instance().quill.getContents() })
+    if (Template.instance().quill.getText().replace(/(\r\n|\n|\r)/gm, '')) {
+      projectArray.push({ name: 'desc', value: Template.instance().quill.getContents() })
+    } else {
+      projectArray.push({ name: 'desc', value: '' })
+    }
     if (getUserSetting('timeunit') === 'd') {
       templateInstance.$('#target').val(templateInstance.$('#target').val() * (getUserSetting('hoursToDays')))
     }

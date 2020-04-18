@@ -4,7 +4,7 @@ import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 import './projectchart.html'
 import Projects, { ProjectStats } from '../../api/projects/projects.js'
 import projectUsers from '../../api/users/users.js'
-import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
+import { getUserSetting } from '../../utils/frontend_helpers'
 
 Template.projectchart.onCreated(function projectchartCreated() {
   this.topTasks = new ReactiveVar()
@@ -22,7 +22,7 @@ Template.projectchart.onCreated(function projectchartCreated() {
     })
     if (this.subscriptionsReady()) {
       const converter = new QuillDeltaToHtmlConverter(Projects
-        .findOne({ _id: Template.instance().data.projectId }).desc.ops, {})
+        .findOne({ _id: Template.instance().data.projectId })?.desc?.ops, {})
       this.projectDescAsHtml.set(converter.convert())
     }
   })
@@ -83,9 +83,9 @@ Template.projectchart.helpers({
     return Number(Projects.findOne({ _id: Template.instance().data.projectId }).target) > 0
       ? Projects.findOne({ _id: Template.instance().data.projectId }).target : false
   },
-  projectDescAsHtml: () => Template.instance().projectDescAsHtml.get(),
+  projectDescAsHtml: () => encodeURI(Template.instance().projectDescAsHtml.get()),
   truncatedProjectDescAsHtml: () => (Template.instance().projectDescAsHtml.get()
-    ? Template.instance().projectDescAsHtml.get().replace('<p>', `<p class="text-truncate" data-toggle="tooltip" data-html="true" data-placement="right" data-title='${Template.instance().projectDescAsHtml.get()}'>`) : ''),
+    ? Template.instance().projectDescAsHtml.get().replace('<p>', '<p class="text-truncate">') : ''),
 })
 Template.projectchart.onRendered(() => {
   const templateInstance = Template.instance()
@@ -158,12 +158,19 @@ Template.projectchart.onRendered(() => {
         })
       }
       if (window.BootstrapLoaded.get()) {
-        $('[data-toggle="tooltip"]').tooltip()
+        window.requestAnimationFrame(() => {
+          templateInstance.$('[data-toggle="tooltip"]').tooltip({
+            sanitizeFn: decodeURI,
+            container: templateInstance.firstNode,
+            trigger: 'hover focus',
+          })
+        })
       }
     }
   })
 })
 Template.projectchart.onDestroyed(() => {
+  Template.instance().$('[data-toggle="tooltip"]').tooltip('dispose')
   // $(window).off()
   // const templateInstance = Template.instance()
   // if (templateInstance.chart) {

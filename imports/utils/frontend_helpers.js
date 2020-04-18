@@ -29,7 +29,7 @@ function getWeekDays(date) {
 }
 
 function numberWithUserPrecision(number) {
-  return getUserSetting('precision') ? number.toFixed(getUserSetting('precision')) : number.toFixed(getGlobalSetting('precision'))
+  return getUserSetting('precision') ? Number(number).toFixed(getUserSetting('precision')) : Number(number).toFixed(getGlobalSetting('precision'))
 }
 
 function timeInUserUnit(time) {

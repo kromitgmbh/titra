@@ -248,7 +248,8 @@
     "user_not_found": "Wir konnten keinen Benutzer mit dieser E-mail Adresse finden, bitte stellen Sie sicher dass der Benutzer existiert.",
     "project_priority_success": "Projekt Priorität aktualisiert",
     "password_changed": "Ihr Passwort wurde erfolgreich geändert.",
-    "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch in "
+    "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch in ",
+    "siwapp_success": "Die Rechnung wurde in Siwapp erfolgreich erstellt."
   },
   "login": {
     "password": "Passwort",

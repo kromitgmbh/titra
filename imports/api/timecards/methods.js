@@ -29,6 +29,8 @@ function insertTimeCard(projectId, task, date, hours, userId) {
   //   timeout: 1000,
   //   sandbox: {
   //     user: Meteor.users.findOne({ _id: userId }).profile,
+  //     project: Projects.findOne({ _id: projectId }),
+  //     dayjs,
   //     timecard: {
   //       projectId,
   //       task,
@@ -247,15 +249,20 @@ Meteor.methods({
         })
       }
     })
-    HTTP.post(`${meteorUser.profile.siwappurl}/api/v1/invoices`, {
-      data: invoiceJSON,
-      headers: {
-        Authorization: `Token token=${meteorUser.profile.siwapptoken}`,
-        'Content-type': 'application/json',
-      },
-    })
+    try {
+      HTTP.post(`${meteorUser.profile.siwappurl}/api/v1/invoices`, {
+        data: invoiceJSON,
+        headers: {
+          Authorization: `Token token=${meteorUser.profile.siwapptoken}`,
+          'Content-type': 'application/json',
+        },
+      })
+    } catch (error) {
+      console.error(error)
+      throw new Meteor.Error(error)
+    }
     Timecards.update({ _id: { $in: timeEntries } }, { $set: { state: 'billed' } }, { multi: true })
-    return 'Siwapp invoice created successfully.'
+    return 'notifications.siwapp_success'
   },
   getDailyTimecards({
     projectId,
@@ -317,6 +324,9 @@ Meteor.methods({
       .toArray()).length
     const totalHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
       .toArray())
+    for (const entry of totalHours) {
+      entry.totalHours = Number(JSON.parse(JSON.stringify(entry)).totalHours.$numberDecimal)
+    }
     totalHoursObject.totalHours = totalHours
     totalHoursObject.totalEntries = totalEntries
     return totalHoursObject

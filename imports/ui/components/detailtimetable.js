@@ -318,7 +318,7 @@ Template.detailtimetable.events({
         if (error) {
           $.Toast.fire({ text: i18next.t('notifications.export_failed', { error }), icon: 'error' })
         } else {
-          $.Toast.fire(result)
+          $.Toast.fire({ text: i18next.t(result) })
         }
       })
     } else {
