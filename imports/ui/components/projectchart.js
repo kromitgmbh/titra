@@ -52,7 +52,7 @@ Template.projectchart.helpers({
   },
   avatarImg(avatar, name, avatarColor) {
     if (avatar) {
-      return `<img src="${avatar}" alt="${name}" style="height:25px" class="rounded" data-toggle="tooltip" data-placement="top" title="${name}"/>`
+      return `<img src="${avatar}" alt="${name}" style="height:25px; cursor:pointer;" class="rounded js-avatar-tooltip" data-placement="top" title="${name}"/>`
     }
     namedavatar.config({
       nameType: 'initials',
@@ -60,12 +60,11 @@ Template.projectchart.helpers({
       minFontSize: 2,
     })
     const rawSVG = namedavatar.getSVG(name)
-    rawSVG.classList = 'rounded'
+    rawSVG.classList = 'rounded js-avatar-tooltip'
     rawSVG.style.width = '25px'
     rawSVG.style.height = '25px'
+    rawSVG.style.cursor = 'pointer'
     rawSVG.setAttribute('title', name)
-    rawSVG.setAttribute('data-toggle', 'tooltip')
-    rawSVG.setAttribute('data-placement', 'top')
     return rawSVG.outerHTML
   },
   topTasks() {
@@ -85,7 +84,7 @@ Template.projectchart.helpers({
   },
   projectDescAsHtml: () => encodeURI(Template.instance().projectDescAsHtml.get()),
   truncatedProjectDescAsHtml: () => (Template.instance().projectDescAsHtml.get()
-    ? Template.instance().projectDescAsHtml.get().replace('<p>', '<p class="text-truncate">') : ''),
+    ? Template.instance().projectDescAsHtml.get().replace('<p>', '<p style="max-height:1.9em;" class="text-truncate p-0 m-0">') : ''),
 })
 Template.projectchart.onRendered(() => {
   const templateInstance = Template.instance()
@@ -136,6 +135,10 @@ Template.projectchart.onRendered(() => {
           })
         })
       }
+    }
+  })
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady()) {
       if (templateInstance.topTasks.get() && templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
         import('frappe-charts/dist/frappe-charts.min.css').then(() => {
           import('./frappe-charts.esm.js').then((chartModule) => {
@@ -157,20 +160,11 @@ Template.projectchart.onRendered(() => {
           })
         })
       }
-      if (window.BootstrapLoaded.get()) {
-        window.requestAnimationFrame(() => {
-          templateInstance.$('[data-toggle="tooltip"]').tooltip({
-            sanitizeFn: decodeURI,
-            container: templateInstance.firstNode,
-            trigger: 'hover focus',
-          })
-        })
-      }
     }
   })
 })
 Template.projectchart.onDestroyed(() => {
-  Template.instance().$('[data-toggle="tooltip"]').tooltip('dispose')
+  Template.instance().$('.js-tooltip').tooltip('dispose')
   // $(window).off()
   // const templateInstance = Template.instance()
   // if (templateInstance.chart) {
@@ -181,4 +175,37 @@ Template.projectchart.onDestroyed(() => {
   //   // templateInstance.piechart.unbindWindowEvents()
   //   templateInstance.piechart.destroy()
   // }
+})
+Template.projectchart.events({
+  'mouseenter .js-tooltip': (event, templateInstance) => {
+    event.preventDefault()
+    event.stopPropagation()
+    templateInstance.$(event.currentTarget).tooltip({
+      title: templateInstance.projectDescAsHtml.get(),
+      html: true,
+      placement: 'right',
+      container: templateInstance.firstNode,
+      trigger: 'manual',
+    })
+    templateInstance.$(event.currentTarget).tooltip('show')
+  },
+  'mouseleave .js-tooltip': (event, templateInstance) => {
+    event.preventDefault()
+    event.stopPropagation()
+    templateInstance.$(event.currentTarget).tooltip('hide')
+  },
+  'mouseenter .js-avatar-tooltip': (event, templateInstance) => {
+    event.preventDefault()
+    event.stopPropagation()
+    templateInstance.$(event.currentTarget).tooltip({
+      container: templateInstance.firstNode,
+      trigger: 'manual',
+    })
+    templateInstance.$(event.currentTarget).tooltip('show')
+  },
+  'mouseleave .js-avatar-tooltip': (event, templateInstance) => {
+    event.preventDefault()
+    event.stopPropagation()
+    templateInstance.$(event.currentTarget).tooltip('hide')
+  },
 })

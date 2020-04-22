@@ -28,7 +28,12 @@ Template.timecardlist.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && window.BootstrapLoaded.get()) {
-      $('[data-toggle="tooltip"]').tooltip()
+      window.requestAnimationFrame(() => {
+        templateInstance.$('[data-toggle="tooltip"]').tooltip({
+          container: templateInstance.firstNode,
+          trigger: 'hover focus',
+        })
+      })
     }
     if (FlowRouter.getParam('projectId')) {
       templateInstance.project.set(FlowRouter.getParam('projectId'))

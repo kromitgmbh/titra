@@ -103,7 +103,12 @@ Template.dailytimetable.onRendered(() => {
         if (templateInstance.dailyTimecards.get().length === 0) {
           $('.dt-scrollable').height('auto')
         } else {
-          $('[data-toggle="tooltip"]').tooltip()
+          window.requestAnimationFrame(() => {
+            templateInstance.$('[data-toggle="tooltip"]').tooltip({
+              container: templateInstance.firstNode,
+              trigger: 'hover focus',
+            })
+          })
         }
       }
     }

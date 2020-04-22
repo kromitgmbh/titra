@@ -3,7 +3,6 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import i18next from 'i18next'
 import './projectlist.html'
 import Projects from '../../api/projects/projects'
-import '../components/timetracker.js'
 import '../components/projectchart.js'
 import '../components/allprojectschart.js'
 import '../components/projectProgress.js'
@@ -14,6 +13,12 @@ Template.projectlist.onCreated(function createProjectList() {
   this.data.showArchived = new ReactiveVar(false)
 })
 Template.projectlist.onRendered(() => {
+  const templateInstance = Template.instance()
+  templateInstance.autorun(() => {
+    if (window.BootstrapLoaded.get()) {
+      $('[data-toggle="tooltip"]').tooltip()
+    }
+  })
   if (Meteor.settings.public.adsenseClientId) {
     Meteor.setTimeout(() => {
       import('../../startup/client/googleads.js');
@@ -134,6 +139,9 @@ Template.projectlist.events({
   },
   'change #showArchived': (event) => {
     Template.instance().data.showArchived.set($(event.currentTarget).is(':checked'))
+  },
+  'mouseenter .js-tooltip': (event, templateInstance) => {
+    templateInstance.$('.js-tooltip').tooltip()
   },
 })
 

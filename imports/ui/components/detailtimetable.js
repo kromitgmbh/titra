@@ -215,7 +215,9 @@ Template.detailtimetable.onRendered(() => {
         if (data.length === 0) {
           $('.dt-scrollable').height('auto')
         } else {
-          $('[data-toggle="tooltip"]').tooltip()
+          // window.requestAnimationFrame(() => {
+
+          // })
         }
       }
     }
@@ -355,6 +357,13 @@ Template.detailtimetable.events({
   },
   'change .js-project-filter>.js-target-project': (event, templateInstance) => {
     templateInstance.data.project.set(templateInstance.$('.js-target-project').val())
+  },
+  'mouseenter .js-tooltip': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.$('.js-tooltip').tooltip({
+      container: templateInstance.firstNode,
+      trigger: 'hover click',
+    })
   },
 })
 Template.detailtimetable.onDestroyed(() => {

@@ -34,7 +34,7 @@
 <template name="weektablerow">
     <tr>
       <td scope="row">
-        <a href="#" style="color:inherit" class="week-row" data-toggle="collapse" data-target="#{{projectId}}" aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-toggle="tooltip" data-placement="top" data-title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
+        <a href="#" style="color:inherit" class="week-row js-collapse" data-target="#{{projectId}}" aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-toggle="tooltip" data-placement="top" data-title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
       </td>
       {{#if weekDays}}
         {{#each weekday in weekDays}}

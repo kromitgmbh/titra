@@ -31,14 +31,16 @@ Template.profile.helpers({
 Template.profile.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
-    Meteor.call('updateProfile', {
+    const updateJSON = {
       name: templateInstance.$('#name').val(),
       theme: templateInstance.$('#theme').val(),
       language: templateInstance.$('#language').val(),
-      avatar: templateInstance.$('#avatarData').val(),
       avatarColor: templateInstance.$('#avatarColor').val(),
-    },
-    (error) => {
+    }
+    if (!templateInstance.$('#avatarData').val() || templateInstance.$('#avatarData').val() !== 'false') {
+      updateJSON.avatar = templateInstance.$('#avatarData').val()
+    }
+    Meteor.call('updateProfile', updateJSON, (error) => {
       if (error) {
         $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
       } else {

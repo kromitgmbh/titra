@@ -1,19 +1,20 @@
 import i18next from 'i18next'
 import './allprojectschart.html'
-import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
+import { getUserSetting } from '../../utils/frontend_helpers'
 
 Template.allprojectschart.onCreated(function allprojectschartCreated() {
   this.topTasks = new ReactiveVar()
   this.projectStats = new ReactiveVar()
+  this.includeNotBillableTime = new ReactiveVar(false)
   this.autorun(() => {
-    Meteor.call('getAllProjectStats', (error, result) => {
+    Meteor.call('getAllProjectStats', { includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived.get() }, (error, result) => {
       if (error) {
         console.error(error)
       } else {
         this.projectStats.set(result)
       }
     })
-    Meteor.call('getTopTasks', { projectId: 'all' }, (error, result) => {
+    Meteor.call('getTopTasks', { projectId: 'all', includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived.get() }, (error, result) => {
       if (error) {
         console.error(error)
       } else {
@@ -29,6 +30,17 @@ Template.allprojectschart.helpers({
   totalHours() {
     return Template.instance().projectStats.get()
       ? Template.instance().projectStats.get().totalHours : false
+  },
+  showNotBillableTime: () => Template.instance().includeNotBillableTime.get(),
+})
+Template.allprojectschart.events({
+  'change #showNotBillableTime': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.includeNotBillableTime.set(templateInstance.$(event.currentTarget).is(':checked'))
+  },
+  'change #showArchived': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.data.showArchived.set(templateInstance.$(event.currentTarget).is(':checked'))
   },
 })
 Template.allprojectschart.onRendered(() => {
@@ -65,7 +77,9 @@ Template.allprojectschart.onRendered(() => {
                   },
                   data: {
                     labels:
-                    [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
+                    [stats.beforePreviousMonthName,
+                      stats.previousMonthName,
+                      stats.currentMonthName],
                     datasets: [{
                       values:
                       [stats.beforePreviousMonthHours,

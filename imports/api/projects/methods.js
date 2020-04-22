@@ -1,21 +1,31 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import isBetween from 'dayjs/plugin/isBetween'
+import { check, Match } from 'meteor/check'
 import Timecards from '../timecards/timecards'
 import Projects from './projects.js'
 import { checkAuthentication } from '../../utils/server_method_helpers.js'
 import { addNotification } from '../notifications/notifications.js'
-import { emojify } from '../../utils/frontend_helpers'
+import { emojify, getGlobalSetting } from '../../utils/frontend_helpers'
 
 Meteor.methods({
-  getAllProjectStats() {
+  getAllProjectStats({ includeNotBillableTime, showArchived }) {
+    check(includeNotBillableTime, Match.Maybe(Boolean))
+    check(showArchived, Match.Maybe(Boolean))
+    const notbillable = includeNotBillableTime
     checkAuthentication(this)
     dayjs.extend(utc)
     dayjs.extend(isBetween)
-    const projectList = Projects.find(
-      { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
-      { _id: 1 },
-    ).fetch().map((value) => value._id)
+    const andCondition = [{
+      $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+    }]
+    if (!showArchived) {
+      andCondition.push({ $or: [{ archived: false }, { archived: { $exists: false } }] })
+    }
+    if (!notbillable) {
+      andCondition.push({ $or: [{ notbillable }, { notbillable: { $exists: false } }] })
+    }
+    const projectList = Projects.find({ $and: andCondition }, { _id: 1 }).fetch().map((value) => value._id)
     let totalHours = 0
     let currentMonthHours = 0
     let previousMonthHours = 0
@@ -67,6 +77,11 @@ Meteor.methods({
     } else {
       updateJSON.public = true
     }
+    if (!updateJSON.notbillable) {
+      updateJSON.notbillable = false
+    } else {
+      updateJSON.notbillable = true
+    }
     Projects.update({ userId: this.userId, _id: projectId }, { $set: updateJSON })
   },
   createProject({ projectArray }) {
@@ -108,16 +123,25 @@ Meteor.methods({
     Projects.update({ _id: projectId }, { $set: { archived: false } })
     return true
   },
-  getTopTasks({ projectId }) {
+  getTopTasks({ projectId, includeNotBillableTime, showArchived }) {
     check(projectId, String)
     checkAuthentication(this)
-    const projectList = Projects.find(
-      { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
-      { _id: 1 },
-    ).fetch().map((value) => value._id)
     const rawCollection = Timecards.rawCollection()
     // const aggregate = Meteor.wrapAsync(rawCollection.aggregate, rawCollection)
     if (projectId === 'all') {
+      check(showArchived, Match.Maybe(Boolean))
+      check(includeNotBillableTime, Match.Maybe(Boolean))
+      const notbillable = includeNotBillableTime
+      const andCondition = [{
+        $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+      }]
+      if (!showArchived) {
+        andCondition.push({ $or: [{ archived: false }, { archived: { $exists: false } }] })
+      }
+      if (!notbillable) {
+        andCondition.push({ $or: [{ notbillable }, { notbillable: { $exists: false } }] })
+      }
+      const projectList = Projects.find({ $and: andCondition }, { _id: 1 }).fetch().map((value) => value._id)
       return rawCollection.aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: '$task', count: { $sum: '$hours' } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()
     }
     return rawCollection.aggregate([{ $match: { projectId } }, { $group: { _id: '$task', count: { $sum: '$hours' } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()

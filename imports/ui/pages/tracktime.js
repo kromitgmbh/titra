@@ -147,7 +147,12 @@ Template.tracktime.events({
           $.Toast.fire(i18next.t('notifications.time_entry_updated'))
           templateInstance.$(event.currentTarget).text(buttonLabel)
           templateInstance.$(event.currentTarget).prop('disabled', false)
-          $('[data-toggle="tooltip"]').tooltip()
+          window.requestAnimationFrame(() => {
+            templateInstance.$('[data-toggle="tooltip"]').tooltip({
+              container: templateInstance.firstNode,
+              trigger: 'hover focus',
+            })
+          })
           if (templateInstance.data.tcid) {
             $('#edit-tc-entry-modal').modal('hide')
           }
@@ -206,7 +211,12 @@ Template.tracktime.events({
   'click .js-toggle-timecards': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-show-timecards').slideToggle('fast')
-    templateInstance.$('[data-toggle="tooltip"]').tooltip()
+    window.requestAnimationFrame(() => {
+      templateInstance.$('[data-toggle="tooltip"]').tooltip({
+        container: templateInstance.firstNode,
+        trigger: 'hover focus',
+      })
+    })
   },
   'click .js-time-row': (event, templateInstance) => {
     event.preventDefault()

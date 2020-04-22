@@ -91,7 +91,10 @@
     "public_project": "Public project (visible to all users)",
     "owner": "owner",
     "project_placeholder": "Select a project",
-    "my_project_placeholder": "My project"
+    "my_project_placeholder": "My project",
+    "not_billable": "Not billable",
+    "billing_budget": "Verrechnung & Budget",
+    "show_not_billable_time": "Include not billable projects?"
   },
   "settings": {
     "user_profile": "User profile",

@@ -119,6 +119,11 @@ Template.weektablerow.events({
     event.preventDefault()
     templateInstance.tempTimeEntries.set(templateInstance.tempTimeEntries.get().push({ _id: '' }))
   },
+  'click .js-collapse': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.$(event.currentTarget)
+    templateInstance.$(templateInstance.$(event.currentTarget).data('target')).collapse('toggle')
+  },
 })
 Template.weektablerow.helpers({
   weekDays() {

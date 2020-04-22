@@ -4,7 +4,7 @@ import { ReactiveVar } from 'meteor/reactive-var'
 import dayjs from 'dayjs'
 import preciseDiff from 'dayjs-precise-range'
 import './timetracker.html'
-import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
+import { getUserSetting } from '../../utils/frontend_helpers'
 
 Template.timetracker.onCreated(function createTimeTracker() {
   this.timer = new ReactiveVar(null)

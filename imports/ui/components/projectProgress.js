@@ -2,7 +2,7 @@ import './projectProgress.html'
 
 import hex2rgba from '../../utils/hex2rgba.js'
 import { ProjectStats } from '../../api/projects/projects.js'
-import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
+import { getUserSetting } from '../../utils/frontend_helpers'
 
 Template.projectProgress.onCreated(function projectProgressCreated() {
   this.autorun(() => {

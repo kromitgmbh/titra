@@ -7,7 +7,7 @@ import i18next from 'i18next'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
-import { validateEmail, getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
+import { validateEmail, getUserSetting } from '../../utils/frontend_helpers'
 
 function validateWekanUrl() {
   const templateInstance = Template.instance()
@@ -41,14 +41,19 @@ function validateWekanUrl() {
 }
 
 Template.editproject.onCreated(function editprojectSetup() {
-  this.autorun(() => {
-    const projectId = FlowRouter.getParam('id')
-    if (projectId) {
-      this.handle = this.subscribe('singleProject', projectId)
-    }
-    this.deletion = new ReactiveVar(false)
-  })
+  this.deletion = new ReactiveVar(false)
   this.wekanLists = new ReactiveVar()
+  this.projectId = new ReactiveVar()
+  this.project = new ReactiveVar()
+  this.notbillable = new ReactiveVar(false)
+  this.autorun(() => {
+    this.projectId.set(FlowRouter.getParam('id'))
+    this.project.set(Projects.findOne({ _id: this.projectId.get() }))
+    this.notbillable.set(this.project.get()?.notbillable)
+    if (this.projectId.get()) {
+      this.handle = this.subscribe('singleProject', this.projectId.get())
+    }
+  })
 })
 Template.editproject.onRendered(() => {
   const templateInstance = Template.instance()
@@ -79,34 +84,41 @@ Template.editproject.onRendered(() => {
   templateInstance.pickr.on('change', (color) => {
     $('#color').val(color.toHEXA().toString())
   })
-  import('quill').then((quillImport) => {
-    import('quill/dist/quill.snow.css')
-    templateInstance.quill = new quillImport.default('#richDesc', {
-      theme: 'snow',
-    })
-    if (Projects.findOne() && Projects.findOne().desc instanceof Object && templateInstance.quill) {
-      templateInstance.quill.setContents(Projects.findOne().desc)
-    } else if (Projects.findOne() && Projects.findOne().desc && templateInstance.quill) {
-      templateInstance.quill.setText(Projects.findOne().desc)
-    }
-  })
 
   templateInstance.autorun(() => {
+    const project = templateInstance.project.get()
     if (templateInstance.handle && templateInstance.handle.ready()) {
-      if (Projects.findOne()) {
-        templateInstance.pickr.setColor(Projects.findOne().color
-          ? Projects.findOne().color : templateInstance.color)
-        if (Projects.findOne().desc instanceof Object && templateInstance.quill) {
-          templateInstance.quill.setContents(Projects.findOne().desc)
-        } else if (Projects.findOne().desc && templateInstance.quill) {
-          templateInstance.quill.setText(Projects.findOne().desc)
+      if (project) {
+        if (!templateInstance.quill) {
+          import('quill').then((quillImport) => {
+            import('quill/dist/quill.snow.css')
+            templateInstance.quill = new quillImport.default('#richDesc', {
+              theme: 'snow',
+            })
+            if (project.desc instanceof Object && templateInstance.quill) {
+              templateInstance.quill.setContents(project.desc)
+            } else if (project.desc && templateInstance.quill) {
+              templateInstance.quill.setText(project.desc)
+            }
+          })
+        } else if (project.desc instanceof Object && templateInstance.quill) {
+          templateInstance.quill.setContents(project.desc)
+        } else if (project.desc && templateInstance.quill) {
+          templateInstance.quill.setText(project.desc)
+        }
+        templateInstance.pickr.setColor(project.color
+          ? project.color : templateInstance.color)
+        if (project.desc instanceof Object && templateInstance.quill) {
+          templateInstance.quill.setContents(project.desc)
+        } else if (project.desc && templateInstance.quill) {
+          templateInstance.quill.setText(project.desc)
         }
       } else if (FlowRouter.getRouteName() !== 'createProject' && !templateInstance.deletion) {
         FlowRouter.go('404')
       }
     }
-    if (Projects.findOne()) {
-      const userIds = Projects.findOne().team ? Projects.findOne().team : []
+    if (project) {
+      const userIds = project.team ? project.team : []
       templateInstance.subscribe('projectTeam', { userIds })
     }
   })
@@ -241,27 +253,36 @@ Template.editproject.events({
     event.preventDefault()
     validateWekanUrl()
   },
+  'change #notbillable': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.notbillable.set(templateInstance.$(event.currentTarget).is(':checked'))
+  },
 })
 Template.editproject.helpers({
   newProject: () => (!FlowRouter.getParam('id')),
-  name: () => (Projects.findOne() ? Projects.findOne().name : false),
-  desc: () => (Projects.findOne() ? Projects.findOne().desc : false),
-  color: () => (Projects.findOne() ? Projects.findOne().color : Template.instance().color),
-  customer: () => (Projects.findOne() ? Projects.findOne().customer : false),
-  rate: () => (Projects.findOne() ? Projects.findOne().rate : false),
-  wekanurl: () => (Projects.findOne() ? Projects.findOne().wekanurl : false),
+  name: () => (Template.instance().project.get() ? Template.instance().project.get().name : false),
+  desc: () => (Template.instance().project.get() ? Template.instance().project.get().desc : false),
+  color: () => (Template.instance().project.get()
+    ? Template.instance().project.get().color : Template.instance().color),
+  customer: () => (Template.instance().project.get()
+    ? Template.instance().project.get().customer : false),
+  rate: () => (Template.instance().project.get() ? Template.instance().project.get().rate : false),
+  wekanurl: () => (Template.instance().project.get()
+    ? Template.instance().project.get().wekanurl : false),
   wekanLists: () => Template.instance().wekanLists.get(),
-  public: () => (Projects.findOne() ? Projects.findOne().public : false),
+  public: () => (Template.instance().project.get() ? Template.instance().project.public : false),
   team: () => {
-    if (Projects.findOne() && Projects.findOne().team) {
-      return Meteor.users.find({ _id: { $in: Projects.findOne().team } })
+    if (Template.instance().project.get() && Template.instance().project.get().team) {
+      return Meteor.users.find({ _id: { $in: Template.instance().project.get().team } })
     }
     return false
   },
   projectId: () => FlowRouter.getParam('id'),
   disablePublic: () => Meteor.settings.public.disablePublic,
   archived: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).archived : false),
-  target: () => (Projects.findOne() ? Projects.findOne().target : false),
+  target: () => (Template.instance().project.get()
+    ? Template.instance().project.get().target : false),
+  notbillable: () => Template.instance().notbillable.get(),
 })
 
 Template.editproject.onDestroyed(function editprojectDestroyed() {

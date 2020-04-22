@@ -91,7 +91,9 @@
     "public_project": "Öffentliches Projekt (für alle sichtbar)",
     "owner": "Ersteller",
     "project_placeholder": "Projekt auswählen",
-    "my_project_placeholder": "Mein Projekt"
+    "my_project_placeholder": "Mein Projekt",
+    "not_billable": "Nicht verrechenbar",
+    "billing_budget": "Verrechnung & Budget"
   },
   "settings": {
     "user_profile": "Benutzer Profil",
@@ -131,7 +133,8 @@
     "startof_week": "Wochenbeginn",
     "use_state": "Status für Zeiteinträge verwenden?",
     "disable_user_registration": "Registrierung neuer Benutzer deaktivieren?",
-    "enable_anonymous_logins": "Anonyme Benutzer erlauben (aktiviert die /try Route)?"
+    "enable_anonymous_logins": "Anonyme Benutzer erlauben (aktiviert die /try Route)?",
+    "show_not_billable_time": "Nicht verrechenbare Projekte berücksichtigen?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

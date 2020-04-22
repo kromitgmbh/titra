@@ -99,11 +99,10 @@ Meteor.startup(() => {
         loadLanguage(language)
       }
       import('popper.js').then((Popper) => {
-        // window.Tether = Tether.default
         window.Popper = Popper.default
         import('bootstrap').then(() => {
           window.BootstrapLoaded.set(true)
-          $('[data-toggle="tooltip"]').tooltip()
+          // $('[data-toggle="tooltip"]').tooltip()
         })
       })
     } else if (!Meteor.user() && !Meteor.loggingIn()) {

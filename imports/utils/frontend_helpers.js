@@ -18,7 +18,7 @@ function getUserSetting(field) {
 
 function addToolTipToTableCell(value) {
   if (value) {
-    return `<span data-toggle="tooltip" data-placement="left" title="${value}">${value}</span>`
+    return `<span class="js-tooltip" data-toggle="tooltip" data-placement="left" title="${value}">${value}</span>`
   }
   return ''
 }
