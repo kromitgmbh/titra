@@ -55,7 +55,7 @@
               {{#each timecard in timecards}}
               <a href="#" class="list-group-item list-group-item-action js-time-row" data-toggle="popover" data-placement="bottom" data-title="Actions">
               <div class="d-none js-popover-content">
-                <a class="btn btn-secondary border" href="/edit/timecard/{{timecard._id}}">
+                <a class="btn btn-secondary border js-edit-time-entry" data-tcid="{{timecard._id}}" href="{{timecard._id}}">
                   <i class="fa fa-edit"></i> <span class="d-none d-md-inline-block">{{t "navigation.edit"}}</span>
                 </a>
                 <span>&nbsp;</span>
@@ -120,6 +120,7 @@
         {{/if}}
     </div>
   </form>
+  {{>editTimeEntryModal tcid=edittcid}}
 </template>
 
 

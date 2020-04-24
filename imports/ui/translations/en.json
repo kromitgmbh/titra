@@ -135,7 +135,8 @@
     "global_defaults": "Default settings:",
     "use_state": "Use time entry state?",
     "disable_user_registration": "Disable new user registration?",
-    "enable_anonymous_logins": "Allow anonymous user creation (activates the /try route)?"
+    "enable_anonymous_logins": "Allow anonymous user creation (activates the /try route)?",
+    "show_not_billable_time": "Include not billable projects?"
   },
   "customer": {
     "select_customer": "Select a customer",

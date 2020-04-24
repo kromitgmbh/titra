@@ -48,6 +48,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
   this.projectId = new ReactiveVar()
   this.tcid = new ReactiveVar()
   this.totalTime = new ReactiveVar(0)
+  this.edittcid = new ReactiveVar()
   let handle
   this.autorun(() => {
     if (this.data.tcid && this.data.tcid.get()) {
@@ -100,6 +101,9 @@ Template.tracktime.onCreated(function tracktimeCreated() {
 Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
+    if (templateInstance.edittcid.get()) {
+      return
+    }
     const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > .js-target-project')
     let hours = templateInstance.$('#hours').val()
 
@@ -108,13 +112,13 @@ Template.tracktime.events({
       $.Toast.fire({ text: i18next.t('notifications.select_project'), icon: 'error' })
       return
     }
-    if (!$('.js-tasksearch-input').val()) {
-      $('.js-tasksearch-input').addClass('is-invalid')
+    if (!templateInstance.$('.js-tasksearch-input').val()) {
+      templateInstance.$('.js-tasksearch-input').addClass('is-invalid')
       $.Toast.fire({ text: i18next.t('notifications.enter_task'), icon: 'error' })
       return
     }
     if (!hours) {
-      $('#hours').addClass('is-invalid')
+      templateInstance.$('#hours').addClass('is-invalid')
       $.Toast.fire({ text: i18next.t('notifications.enter_time'), icon: 'error' })
       return
     }
@@ -143,7 +147,7 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
         } else {
-          $('.js-tasksearch-results').addClass('d-none')
+          templateInstance.$('.js-tasksearch-results').addClass('d-none')
           $.Toast.fire(i18next.t('notifications.time_entry_updated'))
           templateInstance.$(event.currentTarget).text(buttonLabel)
           templateInstance.$(event.currentTarget).prop('disabled', false)
@@ -254,6 +258,15 @@ Template.tracktime.events({
       templateInstance.$('.js-save').click()
     }
   },
+  'click .js-edit-time-entry': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.$('.js-time-row').popover('hide')
+    templateInstance.edittcid.set(event.currentTarget.href.split('/').pop())
+    templateInstance.$('#edit-tc-entry-modal').modal({ focus: false })
+    $('#edit-tc-entry-modal').on('hidden.bs.modal', () => {
+      templateInstance.edittcid.set(undefined)
+    })
+  },
 })
 Template.tracktime.helpers({
   date: () => dayjs.utc(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose')),
@@ -275,6 +288,7 @@ Template.tracktime.helpers({
   borderClass: () => (Template.instance().tcid.get()
     || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
     || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()) ? '' : 'tab-borders'),
+  edittcid: () => Template.instance().edittcid,
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

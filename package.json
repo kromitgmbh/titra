@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -16,7 +16,7 @@
     "bcrypt": "^4.0.1",
     "bootstrap": ">=4.4.1",
     "content-type": "^1.0.4",
-    "dayjs": "^1.8.24",
+    "dayjs": "^1.8.25",
     "dayjs-precise-range": "^1.0.1",
     "docker-names": "^1.1.1",
     "file-saver": "^2.0.2",
