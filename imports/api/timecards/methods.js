@@ -1,13 +1,13 @@
 import dayjs from 'dayjs'
 import i18next from 'i18next'
-// import { VM } from 'vm2'
+import { NodeVM } from 'vm2'
 import { HTTP } from 'meteor/http'
 import { check, Match } from 'meteor/check'
 import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'
 import Tasks from '../tasks/tasks.js'
 import Projects from '../projects/projects.js'
-import { emojify } from '../../utils/frontend_helpers'
+import { emojify, getGlobalSetting } from '../../utils/frontend_helpers'
 import { periodToDates, timeInUserUnit } from '../../utils/periodHelpers.js'
 import {
   checkAuthentication,
@@ -18,28 +18,38 @@ import {
   workingTimeEntriesMapper,
 } from '../../utils/server_method_helpers.js'
 
-
+function checkTimeEntryRule({
+  userId, projectId, task, date, hours,
+}) {
+  const vm = new NodeVM({
+    wrapper: 'none',
+    timeout: 1000,
+    sandbox: {
+      user: Meteor.users.findOne({ _id: userId }).profile,
+      project: Projects.findOne({ _id: projectId }),
+      dayjs,
+      timecard: {
+        projectId,
+        task,
+        date,
+        hours,
+      },
+    },
+  })
+  try {
+    if (!vm.run(getGlobalSetting('timeEntryRule'))) {
+      throw new Meteor.Error('notifications.time_entry_rule_failed')
+    }
+  } catch (error) {
+    throw new Meteor.Error(error.error)
+  }
+}
 function insertTimeCard(projectId, task, date, hours, userId) {
   if (!Tasks.findOne({ userId, name: task.replace(/(:.*:)/g, emojify) })) {
     Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, emojify) })
   } else {
     Tasks.update({ userId, name: task.replace(/(:.*:)/g, emojify) }, { $set: { lastUsed: new Date() } })
   }
-  // const vm = new VM({
-  //   timeout: 1000,
-  //   sandbox: {
-  //     user: Meteor.users.findOne({ _id: userId }).profile,
-  //     project: Projects.findOne({ _id: projectId }),
-  //     dayjs,
-  //     timecard: {
-  //       projectId,
-  //       task,
-  //       date,
-  //       hours,
-  //     },
-  //   },
-  // })
-  // console.log(vm.run('this.user'))
   return Timecards.insert({
     userId,
     projectId,
@@ -103,6 +113,9 @@ Meteor.methods({
     check(date, Date)
     check(hours, Number)
     checkAuthentication(this)
+    checkTimeEntryRule({
+      userId: this.userId, projectId, task, date, hours,
+    })
     insertTimeCard(projectId, task, date, hours, this.userId)
   },
   upsertWeek(weekArray) {
@@ -113,6 +126,13 @@ Meteor.methods({
       check(element.task, String)
       check(element.date, Date)
       check(element.hours, Number)
+      checkTimeEntryRule({
+        userId: this.userId,
+        projectId: element.projectId,
+        task: element.task,
+        date: element.date,
+        hours: element.hours,
+      })
       upsertTimecard(element.projectId, element.task, element.date, element.hours, this.userId)
     })
   },
@@ -129,6 +149,9 @@ Meteor.methods({
     check(date, Date)
     check(hours, Number)
     checkAuthentication(this)
+    checkTimeEntryRule({
+      userId: this.userId, projectId, task, date, hours,
+    })
     if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, emojify) })) {
       Tasks.insert({ userId: this.userId, name: task.replace(/(:.*:)/g, emojify) })
     }
@@ -143,6 +166,14 @@ Meteor.methods({
   },
   deleteTimeCard({ timecardId }) {
     checkAuthentication(this)
+    const timecard = Timecards.findOne({ _id: timecardId })
+    checkTimeEntryRule({
+      userId: this.userId,
+      projectId: timecard.projectId,
+      task: timecard.task,
+      date: timecard.date,
+      hours: timecard.hours,
+    })
     return Timecards.remove({ userId: this.userId, _id: timecardId })
   },
   sendToSiwapp({

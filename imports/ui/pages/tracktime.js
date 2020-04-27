@@ -146,11 +146,12 @@ Template.tracktime.events({
       }, (error) => {
         if (error) {
           console.error(error)
+          if (typeof error.error === 'string' && error.error.indexOf('notifications') >= 0) {
+            $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
+          }
         } else {
           templateInstance.$('.js-tasksearch-results').addClass('d-none')
           $.Toast.fire(i18next.t('notifications.time_entry_updated'))
-          templateInstance.$(event.currentTarget).text(buttonLabel)
-          templateInstance.$(event.currentTarget).prop('disabled', false)
           window.requestAnimationFrame(() => {
             templateInstance.$('[data-toggle="tooltip"]').tooltip({
               container: templateInstance.firstNode,
@@ -161,6 +162,8 @@ Template.tracktime.events({
             $('#edit-tc-entry-modal').modal('hide')
           }
         }
+        templateInstance.$(event.currentTarget).text(buttonLabel)
+        templateInstance.$(event.currentTarget).prop('disabled', false)
       })
     } else {
       Meteor.call('insertTimeCard', {
@@ -168,18 +171,21 @@ Template.tracktime.events({
       }, (error) => {
         if (error) {
           console.error(error)
+          if (typeof error.error === 'string' && error.error.indexOf('notifications') >= 0) {
+            $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
+          }
         } else {
           templateInstance.$('.js-tasksearch-input').val('')
           templateInstance.$('.js-tasksearch-input').keyup()
           templateInstance.$('#hours').val('')
           templateInstance.$('.js-tasksearch-results').addClass('d-none')
           $.Toast.fire(i18next.t('notifications.time_entry_saved'))
-          templateInstance.$('.js-save').text(buttonLabel)
-          templateInstance.$('.js-save').prop('disabled', false)
           templateInstance.$('.js-show-timecards').slideDown('fast')
           templateInstance.$('[data-toggle="tooltip"]').tooltip()
           $('#edit-tc-entry-modal').modal('hide')
         }
+        templateInstance.$('.js-save').text(buttonLabel)
+        templateInstance.$('.js-save').prop('disabled', false)
       })
     }
   },

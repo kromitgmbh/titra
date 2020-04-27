@@ -51,4 +51,27 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableAnonymousLogins', description: 'settings.enable_anonymous_logins', type: 'text', value: false,
 })
+defaultSettings.push({
+  name: 'disablePublicProjects', description: 'settings.disable_public_projects', type: 'text', value: false,
+})
+defaultSettings.push({
+  name: 'timeEntryRule',
+  description: 'settings.time_entry_rule',
+  type: 'textarea',
+  value: `// this code will run for every time entry creation / modification in a sandbox
+  // it has access to the following properties:
+  // this.user
+  // this.project
+  // this.dayjs
+  // this.timecard: {
+  //   projectId,
+  //   task,
+  //   state,
+  //   date,
+  //   hours,
+  // }
+  // has to return true or false to allow/prevent the creation/modification of time entries
+  return true;
+  `,
+})
 export { defaultSettings, Globalsettings }

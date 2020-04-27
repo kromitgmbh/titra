@@ -24,6 +24,7 @@ Template.administration.helpers({
   dayjs: (date) => dayjs(date).format('DD.MM.YYYY (HH:mm)'),
   globalsettings: () => Globalsettings.find(),
   stringify: (string) => string.toString(),
+  isTextArea: (setting) => setting.type === 'textarea',
 })
 
 Template.administration.events({

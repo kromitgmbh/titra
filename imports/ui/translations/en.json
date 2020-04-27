@@ -136,7 +136,9 @@
     "use_state": "Use time entry state?",
     "disable_user_registration": "Disable new user registration?",
     "enable_anonymous_logins": "Allow anonymous user creation (activates the /try route)?",
-    "show_not_billable_time": "Include not billable projects?"
+    "show_not_billable_time": "Include not billable projects?",
+    "disable_public_projects": "Disable public projects?",
+    "time_entry_rule": "Timetracking rules (creation & modification)"
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -247,7 +249,9 @@
     "project_priority_success": "Project priority updated successfully",
     "password_changed": "Your password has been changed.",
     "connectioncheck": "Could not connect to server. Trying again in ",
-    "siwapp_success": "Siwapp invoice created successfully."
+    "siwapp_success": "Siwapp invoice created successfully.",
+    "time_entry_rule_failed": "Time entry does not follow the specified rules."
+
   },
   "login": {
     "password": "Password",

@@ -134,7 +134,9 @@
     "use_state": "Status für Zeiteinträge verwenden?",
     "disable_user_registration": "Registrierung neuer Benutzer deaktivieren?",
     "enable_anonymous_logins": "Anonyme Benutzer erlauben (aktiviert die /try Route)?",
-    "show_not_billable_time": "Nicht verrechenbare Projekte berücksichtigen?"
+    "show_not_billable_time": "Nicht verrechenbare Projekte berücksichtigen?",
+    "disable_public_projects": "Öffentliche Projekte deaktivieren?",
+    "time_entry_rule": "Regeln für die Zeiterfassung (Erstellung & Bearbeitung)"
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -252,7 +254,8 @@
     "project_priority_success": "Projekt Priorität aktualisiert",
     "password_changed": "Ihr Passwort wurde erfolgreich geändert.",
     "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch in ",
-    "siwapp_success": "Die Rechnung wurde in Siwapp erfolgreich erstellt."
+    "siwapp_success": "Die Rechnung wurde in Siwapp erfolgreich erstellt.",
+    "time_entry_rule_failed": "Die Daten entsprechen nicht den definierten Regeln."
   },
   "login": {
     "password": "Passwort",

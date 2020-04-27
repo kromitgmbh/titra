@@ -7,7 +7,7 @@ import i18next from 'i18next'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
-import { validateEmail, getUserSetting } from '../../utils/frontend_helpers'
+import { validateEmail, getUserSetting, getGlobalSetting } from '../../utils/frontend_helpers'
 
 function validateWekanUrl() {
   const templateInstance = Template.instance()
@@ -80,42 +80,47 @@ Template.editproject.onRendered(() => {
     $('#color').val(templateInstance.color)
     pickrOptions.default = templateInstance.color
   }
-  templateInstance.pickr = Pickr.create(pickrOptions)
-  templateInstance.pickr.on('change', (color) => {
-    $('#color').val(color.toHEXA().toString())
-  })
-
+  if (!templateInstance.pickr) {
+    window.requestAnimationFrame(() => {
+      templateInstance.pickr = Pickr.create(pickrOptions)
+      templateInstance.pickr.on('change', (color) => {
+        $('#color').val(color.toHEXA().toString())
+      })
+    })
+  }
+  if (!templateInstance.quill) {
+    import('quill').then((quillImport) => {
+      import('quill/dist/quill.snow.css')
+      window.requestAnimationFrame(() => {
+        templateInstance.quill = new quillImport.default('#richDesc', {
+          theme: 'snow',
+        })
+      })
+    })
+  }
   templateInstance.autorun(() => {
     const project = templateInstance.project.get()
     if (templateInstance.handle && templateInstance.handle.ready()) {
       if (project) {
-        if (!templateInstance.quill) {
-          import('quill').then((quillImport) => {
-            import('quill/dist/quill.snow.css')
-            templateInstance.quill = new quillImport.default('#richDesc', {
-              theme: 'snow',
-            })
-            if (project.desc instanceof Object && templateInstance.quill) {
-              templateInstance.quill.setContents(project.desc)
-            } else if (project.desc && templateInstance.quill) {
-              templateInstance.quill.setText(project.desc)
-            }
-          })
-        } else if (project.desc instanceof Object && templateInstance.quill) {
-          templateInstance.quill.setContents(project.desc)
-        } else if (project.desc && templateInstance.quill) {
-          templateInstance.quill.setText(project.desc)
-        }
-        templateInstance.pickr.setColor(project.color
-          ? project.color : templateInstance.color)
         if (project.desc instanceof Object && templateInstance.quill) {
           templateInstance.quill.setContents(project.desc)
         } else if (project.desc && templateInstance.quill) {
           templateInstance.quill.setText(project.desc)
         }
-      } else if (FlowRouter.getRouteName() !== 'createProject' && !templateInstance.deletion) {
-        FlowRouter.go('404')
+      } else if (project.desc instanceof Object && templateInstance.quill) {
+        templateInstance.quill.setContents(project.desc)
+      } else if (project.desc && templateInstance.quill) {
+        templateInstance.quill.setText(project.desc)
       }
+      templateInstance.pickr.setColor(project.color
+        ? project.color : templateInstance.color)
+      if (project.desc instanceof Object && templateInstance.quill) {
+        templateInstance.quill.setContents(project.desc)
+      } else if (project.desc && templateInstance.quill) {
+        templateInstance.quill.setText(project.desc)
+      }
+    } else if (FlowRouter.getRouteName() !== 'createProject' && !templateInstance.deletion) {
+      FlowRouter.go('404')
     }
     if (project) {
       const userIds = project.team ? project.team : []
@@ -278,7 +283,7 @@ Template.editproject.helpers({
     return false
   },
   projectId: () => FlowRouter.getParam('id'),
-  disablePublic: () => Meteor.settings.public.disablePublic,
+  disablePublic: () => getGlobalSetting('disablePublicProjects'),
   archived: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).archived : false),
   target: () => (Template.instance().project.get()
     ? Template.instance().project.get().target : false),
