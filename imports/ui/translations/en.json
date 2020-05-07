@@ -93,8 +93,7 @@
     "project_placeholder": "Select a project",
     "my_project_placeholder": "My project",
     "not_billable": "Not billable",
-    "billing_budget": "Verrechnung & Budget",
-    "show_not_billable_time": "Include not billable projects?"
+    "billing_budget": "Billing & Budget"
   },
   "settings": {
     "user_profile": "User profile",
