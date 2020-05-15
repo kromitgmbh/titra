@@ -64,7 +64,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
     }
     if (this.data.projectIdArg && this.data.projectIdArg.get()) {
       this.projectId.set(this.data.projectIdArg.get())
-    } else if (!(this.data.projectIdArg && this.data.projectIdArg.get()) && FlowRouter.getParam('projectId')) {
+    } else if (!((this.data.projectIdArg && this.data.projectIdArg.get()) || (this.data.tcid && this.data.tcid.get())) && FlowRouter.getParam('projectId')) {
       this.projectId.set(FlowRouter.getParam('projectId'))
     }
     if (this.tcid.get()) {
@@ -73,6 +73,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
         this.date.set(Timecards.findOne({ _id: this.tcid.get() })
           ? dayjs.utc(Timecards.findOne({ _id: this.tcid.get() }).date).toDate()
           : dayjs.utc().toDate())
+        this.projectId.set(Timecards.findOne({ _id: this.tcid.get() }) ? Timecards.findOne({ _id: this.tcid.get() }).projectId : '')
       }
     }
   })
@@ -107,7 +108,6 @@ Template.tracktime.events({
     const buttonLabel = $('.js-save').first().text()
     const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > .js-target-project')
     let hours = templateInstance.$('#hours').val()
-
     if (!templateInstance.projectId.get()) {
       selectedProjectElement.addClass('is-invalid')
       $.Toast.fire({ text: i18next.t('notifications.select_project'), icon: 'error' })
@@ -202,6 +202,7 @@ Template.tracktime.events({
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
   'change .js-target-project': (event, templateInstance) => {
+    event.preventDefault()
     templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
     templateInstance.$('.js-tasksearch').first().focus()
   },

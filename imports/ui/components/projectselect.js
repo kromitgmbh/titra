@@ -31,8 +31,7 @@ Template.projectselect.onCreated(function createTrackTime() {
           this.$('.js-target-project').val(FlowRouter.getParam('projectId'))
           this.selectedId.set('all')
         }
-      }
-      if (this.tcid.get()) {
+      } else if (this.tcid.get()) {
         this.$('.js-target-project').val(Timecards.findOne({ _id: this.tcid.get() }).projectId)
         this.selectedId.set(Timecards.findOne({ _id: this.tcid.get() }).projectId)
       }
