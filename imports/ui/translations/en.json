@@ -250,7 +250,6 @@
     "connectioncheck": "Could not connect to server. Trying again in ",
     "siwapp_success": "Siwapp invoice created successfully.",
     "time_entry_rule_failed": "Time entry does not follow the specified rules."
-
   },
   "login": {
     "password": "Password",

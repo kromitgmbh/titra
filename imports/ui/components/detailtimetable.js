@@ -342,6 +342,9 @@ Template.detailtimetable.events({
             $.Toast.fire(i18next.t('notifications.time_entry_deleted'))
           } else {
             console.error(error)
+            if (typeof error.error === 'string') {
+              $.Toast.fire({ text: i18next.t(error.error.replace('[', '').replace(']', '')), icon: 'error' })
+            }
           }
         })
       }

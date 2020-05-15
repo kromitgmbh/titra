@@ -104,10 +104,11 @@ Template.tracktime.events({
     if (templateInstance.edittcid.get()) {
       return
     }
+    const buttonLabel = $('.js-save').first().text()
     const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > .js-target-project')
     let hours = templateInstance.$('#hours').val()
 
-    if (!selectedProjectElement.val()) {
+    if (!templateInstance.projectId.get()) {
       selectedProjectElement.addClass('is-invalid')
       $.Toast.fire({ text: i18next.t('notifications.select_project'), icon: 'error' })
       return
@@ -129,7 +130,7 @@ Template.tracktime.events({
       $.Toast.fire({ text: i18next.t('notifications.check_time_input'), icon: 'error' })
       return
     }
-    const projectId = selectedProjectElement.val()
+    const projectId = templateInstance.projectId.get()
     const task = templateInstance.$('.js-tasksearch-input').val()
     const date = dayjs.utc($('#date').val(), getGlobalSetting('dateformatVerbose')).toDate()
     hours = templateInstance.math.eval(hours)
@@ -137,7 +138,6 @@ Template.tracktime.events({
     if (getUserSetting('timeunit') === 'd') {
       hours *= getUserSetting('hoursToDays')
     }
-    const buttonLabel = $('.js-save').text()
     templateInstance.$('.js-save').text(i18next.t('navigation.saving'))
     templateInstance.$('.js-save').prop('disabled', true)
     if (templateInstance.tcid.get()) {
@@ -146,8 +146,8 @@ Template.tracktime.events({
       }, (error) => {
         if (error) {
           console.error(error)
-          if (typeof error.error === 'string' && error.error.indexOf('notifications') >= 0) {
-            $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
+          if (typeof error.error === 'string') {
+            $.Toast.fire({ text: i18next.t(error.error.replace('[', '').replace(']', '')), icon: 'error' })
           }
         } else {
           templateInstance.$('.js-tasksearch-results').addClass('d-none')
@@ -203,7 +203,7 @@ Template.tracktime.events({
   },
   'change .js-target-project': (event, templateInstance) => {
     templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
-    templateInstance.$('.js-tasksearch').focus()
+    templateInstance.$('.js-tasksearch').first().focus()
   },
   'change #date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
@@ -247,6 +247,9 @@ Template.tracktime.events({
         $.Toast.fire(i18next.t('notifications.time_entry_deleted'))
       } else {
         console.error(error)
+        if (typeof error.error === 'string') {
+          $.Toast.fire({ text: i18next.t(error.error.replace('[', '').replace(']', '')), icon: 'error' })
+        }
       }
     })
   },
