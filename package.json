@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.20.1",
+  "version": "0.21.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -22,7 +22,7 @@
     "file-saver": "^2.0.2",
     "frappe-charts": "1.4.1",
     "frappe-datatable": "^1.15.2",
-    "hotkeys-js": "^3.7.6",
+    "hotkeys-js": "^3.8.1",
     "i18next": "^19.4.4",
     "is-dark": "^1.0.4",
     "jquery": "3.5.1",
@@ -37,14 +37,14 @@
     "randomcolor": "^0.5.4",
     "raw-body": "^2.4.1",
     "sortablejs": "^1.10.2",
-    "sweetalert2": "^9.10.13",
+    "sweetalert2": "^9.13.1",
     "tether": "^1.4.7",
     "tiny-date-picker": "^3.2.8",
     "vm2": "^3.9.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.0.0",
+    "eslint": "^7.1.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^3.7.0",

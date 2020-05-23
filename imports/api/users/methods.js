@@ -140,4 +140,13 @@ Meteor.methods({
       },
     })
   },
+  setTimer({ timestamp }) {
+    checkAuthentication(this)
+    check(timestamp, Match.Maybe(Date))
+    if (!timestamp) {
+      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer': '' } })
+    } else {
+      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer': timestamp } })
+    }
+  },
 })
