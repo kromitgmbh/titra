@@ -181,6 +181,7 @@
     "totalTime": "Total",
     "regularWorkingTime": "Regular work time",
     "regularWorkingTimeDifference": "Difference",
+    "addBreakToWorkingTime": "Add break to working time?",
     "state": "State",
     "new": "New",
     "exported": "Exported",

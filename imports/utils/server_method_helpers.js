@@ -345,7 +345,10 @@ function workingTimeEntriesMapper(entry) {
   const userBreakEndTime = dayjs(userBreakStartTime, 'HH:mm').add(userBreakDuration, 'hour')
   const userRegularWorkingTime = meteorUser?.profile?.regularWorkingTime ? meteorUser.profile.regularWorkingTime : '8'
   const userStartTime = meteorUser?.profile?.dailyStartTime ? meteorUser.profile.dailyStartTime : '09:00'
-  const userEndTime = dayjs(userStartTime, 'HH:mm').add(entry.totalTime, 'hour')
+  let userEndTime = dayjs(userStartTime, 'HH:mm').add(entry.totalTime, 'hour')
+  if (getGlobalSetting('addBreakToWorkingTime')) {
+    userEndTime = userEndTime.add(userBreakDuration, 'hour')
+  }
   return {
     date: entry._id.date,
     resource: meteorUser?.profile?.name,

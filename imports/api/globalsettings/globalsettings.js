@@ -29,7 +29,12 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'regularWorkingTime', description: 'details.regularWorkingTime', type: 'number', value: 8,
 })
-defaultSettings.push({ name: 'enableWekan', description: 'settings.enable_wekan_integration', value: true })
+defaultSettings.push({
+  name: 'addBreakToWorkingTime', description: 'details.addBreakToWorkingTime', type: 'text', value: true,
+})
+defaultSettings.push({
+  name: 'enableWekan', description: 'settings.enable_wekan_integration', type: 'text', value: true,
+})
 defaultSettings.push({
   name: 'dateformat', description: 'settings.date_format', type: 'text', value: 'DD.MM.YYYY',
 })
@@ -71,7 +76,6 @@ defaultSettings.push({
   //   hours,
   // }
   // has to return true or false to allow/prevent the creation/modification of time entries
-  return true;
-  `,
+  return true;`,
 })
 export { defaultSettings, Globalsettings }

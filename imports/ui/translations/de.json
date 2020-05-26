@@ -180,6 +180,7 @@
     "totalTime": "Gesamt",
     "regularWorkingTime": "Normalarbeitszeit",
     "regularWorkingTimeDifference": "Differenz",
+    "addBreakToWorkingTime": "Pause zu Arbeitszeit addieren?",
     "state": "Status",
     "new": "Neu",
     "exported": "Exportiert",
