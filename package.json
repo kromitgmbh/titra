@@ -1,22 +1,22 @@
 {
   "name": "titra",
-  "version": "0.22.0",
+  "version": "0.22.1",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.9.6",
+    "@babel/runtime": "^7.10.1",
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "@fullcalendar/core": "^4.4.0",
-    "@fullcalendar/daygrid": "^4.4.0",
-    "@fullcalendar/interaction": "^4.4.0",
+    "@fullcalendar/core": "^4.4.2",
+    "@fullcalendar/daygrid": "^4.4.2",
+    "@fullcalendar/interaction": "^4.4.2",
     "@neovici/nullxlsx": "^3.0.4",
     "@simonwep/pickr": "^1.6.0",
     "bcrypt": "^4.0.1",
     "bootstrap": ">=4.5.0",
     "content-type": "^1.0.4",
-    "dayjs": "^1.8.27",
+    "dayjs": "^1.8.28",
     "dayjs-precise-range": "^1.0.1",
     "docker-names": "^1.1.1",
     "file-saver": "^2.0.2",
@@ -37,7 +37,7 @@
     "randomcolor": "^0.5.4",
     "raw-body": "^2.4.1",
     "sortablejs": "^1.10.2",
-    "sweetalert2": "^9.13.1",
+    "sweetalert2": "^9.13.4",
     "tether": "^1.4.7",
     "tiny-date-picker": "^3.2.8",
     "vm2": "^3.9.2"

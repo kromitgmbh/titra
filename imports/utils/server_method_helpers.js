@@ -340,11 +340,11 @@ function buildworkingTimeSelector(projectId, period, dates, userId, limit, page)
 function workingTimeEntriesMapper(entry) {
   dayjs.extend(customParseFormat)
   const meteorUser = Meteor.users.findOne({ _id: entry._id.userId })
-  const userBreakStartTime = dayjs(meteorUser?.profile?.breakStartTime ? meteorUser.profile.breakStartTime : '12:00', 'HH:mm')
-  const userBreakDuration = meteorUser?.profile?.breakDuration ? meteorUser.profile.breakDuration : '0.5'
+  const userBreakStartTime = dayjs(meteorUser?.profile?.breakStartTime ? meteorUser.profile.breakStartTime : getGlobalSetting('breakStartTime'), 'HH:mm')
+  const userBreakDuration = meteorUser?.profile?.breakDuration ? meteorUser.profile.breakDuration : getGlobalSetting('breakDuration')
   const userBreakEndTime = dayjs(userBreakStartTime, 'HH:mm').add(userBreakDuration, 'hour')
-  const userRegularWorkingTime = meteorUser?.profile?.regularWorkingTime ? meteorUser.profile.regularWorkingTime : '8'
-  const userStartTime = meteorUser?.profile?.dailyStartTime ? meteorUser.profile.dailyStartTime : '09:00'
+  const userRegularWorkingTime = meteorUser?.profile?.regularWorkingTime ? meteorUser.profile.regularWorkingTime : getGlobalSetting('regularWorkingTime')
+  const userStartTime = meteorUser?.profile?.dailyStartTime ? meteorUser.profile.dailyStartTime : getGlobalSetting('dailyStartTime')
   let userEndTime = dayjs(userStartTime, 'HH:mm').add(entry.totalTime, 'hour')
   if (getGlobalSetting('addBreakToWorkingTime')) {
     userEndTime = userEndTime.add(userBreakDuration, 'hour')

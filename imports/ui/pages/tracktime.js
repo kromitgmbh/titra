@@ -22,18 +22,19 @@ import '../components/backbutton.js'
 
 Template.tracktime.onRendered(() => {
   if (!Template.instance().tinydatepicker) {
-    Template.instance().tinydatepicker = TinyDatePicker('#date', {
+    Template.instance().tinydatepicker = TinyDatePicker(Template.instance().$('.js-date')[0], {
       format(date) {
         return date ? dayjs(date).format(getGlobalSetting('dateformatVerbose')) : dayjs().format(getGlobalSetting('dateformatVerbose'))
       },
       parse(date) {
         return dayjs(date, getGlobalSetting('dateformatVerbose'))
       },
+      appendTo: Template.instance().firstNode,
       mode: 'dp-modal',
       dayOffset: getGlobalSetting('startOfWeek'),
     }).on('select', (_, dp) => {
       if (!dp.state.selectedDate) {
-        $('#date').val(dayjs().format(getGlobalSetting('dateformatVerbose')))
+        Template.instance().$('.js-date').first().val(dayjs().format(getGlobalSetting('dateformatVerbose')))
       }
     })
   }
@@ -99,6 +100,9 @@ Template.tracktime.onCreated(function tracktimeCreated() {
     }
   })
 })
+Template.tracktime.onDestroyed(() => {
+  Template.instance().tinydatepicker.destroy()
+})
 Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
@@ -132,7 +136,7 @@ Template.tracktime.events({
     }
     const projectId = templateInstance.projectId.get()
     const task = templateInstance.$('.js-tasksearch-input').val()
-    const date = dayjs.utc($('#date').val(), getGlobalSetting('dateformatVerbose')).toDate()
+    const date = dayjs.utc(templateInstance.$('.js-date').val(), getGlobalSetting('dateformatVerbose')).toDate()
     hours = templateInstance.math.eval(hours)
 
     if (getUserSetting('timeunit') === 'd') {
@@ -206,7 +210,7 @@ Template.tracktime.events({
     templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
     templateInstance.$('.js-tasksearch').first().focus()
   },
-  'change #date': (event, templateInstance) => {
+  'change .js-date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
       let date = dayjs.utc(templateInstance.$(event.currentTarget).val(), getGlobalSetting('dateformatVerbose'))
       if (!date.isValid()) {
@@ -256,6 +260,9 @@ Template.tracktime.events({
   },
   'click .js-open-calendar': (event, templateInstance) => {
     event.preventDefault()
+    if (templateInstance.$('.js-open-calendar').length > 1) {
+      return
+    }
     templateInstance.tinydatepicker.open()
   },
   'focus #hours': (event, templateInstance) => {
