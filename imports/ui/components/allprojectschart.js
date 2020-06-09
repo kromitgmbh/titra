@@ -50,7 +50,7 @@ Template.allprojectschart.onRendered(() => {
     if (templateInstance.subscriptionsReady()) {
       if (templateInstance.projectStats.get()) {
         import('frappe-charts/dist/frappe-charts.min.css').then(() => {
-          import('./frappe-charts.esm.js').then((chartModule) => {
+          import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
             window.requestAnimationFrame(() => {
               const { Chart } = chartModule
               const stats = templateInstance.projectStats.get()
@@ -67,6 +67,9 @@ Template.allprojectschart.onRendered(() => {
                   stats.currentMonthHours
                     /= getUserSetting('hoursToDays')
                   stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+                }
+                if (templateInstance.chart) {
+                  templateInstance.chart.destroy()
                 }
                 templateInstance.chart = new Chart(templateInstance.$('.js-chart-container')[0], {
                   type: 'line',
@@ -98,9 +101,12 @@ Template.allprojectschart.onRendered(() => {
       }
       if (templateInstance.topTasks.get() && templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
         import('frappe-charts/dist/frappe-charts.min.css').then(() => {
-          import('./frappe-charts.esm.js').then((chartModule) => {
+          import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
             window.requestAnimationFrame(() => {
               const { Chart } = chartModule
+              if (templateInstance.piechart) {
+                templateInstance.piechart.destroy()
+              }
               templateInstance.piechart = new Chart(templateInstance.$('.js-pie-chart-container')[0], {
                 type: 'pie',
                 colors: ['#009688', '#455A64', '#e4e4e4'],
@@ -121,14 +127,11 @@ Template.allprojectschart.onRendered(() => {
   })
 })
 Template.allprojectschart.onDestroyed(() => {
-  // const templateInstance = Template.instance()
-  // // $(window).off()
-  // if (templateInstance.chart) {
-  //   // templateInstance.chart.unbindWindowEvents()
-  //   templateInstance.chart.destroy()
-  // }
-  // if (templateInstance.piechart) {
-  //   // templateInstance.piechart.unbindWindowEvents()
-  //   templateInstance.piechart.destroy()
-  // }
+  const templateInstance = Template.instance()
+  if (templateInstance.chart) {
+    templateInstance.chart.destroy()
+  }
+  if (templateInstance.piechart) {
+    templateInstance.piechart.destroy()
+  }
 })

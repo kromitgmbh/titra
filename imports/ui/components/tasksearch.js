@@ -99,19 +99,28 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
             ddpcon.subscribe('board', 'sandstorm')
           } else if (project.selectedWekanList) {
+            let wekanLists = []
+            if (typeof project.selectedWekanList === 'string') {
+              wekanLists.push(project.selectedWekanList)
+            } else if (project.selectedWekanList instanceof Array) {
+              wekanLists = project.selectedWekanList
+            }
             const authToken = project.wekanurl.match(/authToken=(.*)/)[1]
             const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
-
-            try {
-              HTTP.get(`${url}lists/${project.selectedWekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }, (innerError, innerResult) => {
-                if (innerError) {
-                  console.error(innerError)
-                } else {
-                  this.wekanAPITasks.set(innerResult.data)
-                }
-              })
-            } catch (error) {
-              console.error(error)
+            const wekanAPITasks = []
+            for (const wekanList of wekanLists) {
+              try {
+                HTTP.get(`${url}lists/${wekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }, (innerError, innerResult) => {
+                  if (innerError) {
+                    console.error(innerError)
+                  } else {
+                    Array.prototype.push.apply(wekanAPITasks, innerResult.data)
+                    this.wekanAPITasks.set(wekanAPITasks)
+                  }
+                })
+              } catch (error) {
+                console.error(error)
+              }
             }
           }
         }
@@ -127,14 +136,15 @@ Template.tasksearch.helpers({
       // return Template.instance().lastTimecards.get()
     }
     const finalArray = []
+    const wekanAPITasks = Template.instance().wekanAPITasks.get()
     const regex = `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`
     if (Template.instance().wekanTasks) {
       const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: regex, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: 5 })
       if (wekanResult.count() > 0) {
         finalArray.push(...wekanResult.map((elem) => ({ name: elem.title, wekan: true })))
       }
-    } else if (Template.instance().wekanAPITasks.get()) {
-      if (Template.instance().wekanAPITasks.get().length > 0) {
+    } else if (wekanAPITasks) {
+      if (wekanAPITasks.length > 0) {
         finalArray.push(...Template.instance().wekanAPITasks.get().map((elem) => ({ name: elem.title, wekan: true })).filter((element) => new RegExp(regex, 'i').exec(element.name)))
       }
     }

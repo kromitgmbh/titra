@@ -147,6 +147,10 @@ Template.editproject.events({
     if (getUserSetting('timeunit') === 'd') {
       templateInstance.$('#target').val(templateInstance.$('#target').val() * (getUserSetting('hoursToDays')))
     }
+    const selectedWekanLists = $('.js-wekan-list-entry:checked').toArray().map((entry) => entry.value)
+    if (selectedWekanLists.length > 0) {
+      projectArray.push({ name: 'selectedWekanList', value: $('.js-wekan-list-entry:checked').toArray().map((entry) => entry.value) })
+    }
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {
         projectId: FlowRouter.getParam('id'),

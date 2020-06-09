@@ -94,7 +94,7 @@ Template.projectchart.onRendered(() => {
       const stats = ProjectStats.findOne({ _id: templateInstance.data.projectId })
       if (stats && templateInstance.$('.js-hours-chart-container')[0] && templateInstance.$('.js-hours-chart-container').is(':visible')) {
         import('frappe-charts/dist/frappe-charts.min.css').then(() => {
-          import('./frappe-charts.esm.js').then((chartModule) => {
+          import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
             window.requestAnimationFrame(() => {
               const { Chart } = chartModule
               if (getUserSetting('timeunit') === 'd') {
@@ -110,6 +110,9 @@ Template.projectchart.onRendered(() => {
                   /= getUserSetting('hoursToDays')
               }
               stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+              if (templateInstance.chart) {
+                templateInstance.chart.destroy()
+              }
               templateInstance.chart = new Chart(templateInstance.$('.js-hours-chart-container')[0], {
                 type: 'line',
                 height: 160,
@@ -141,9 +144,12 @@ Template.projectchart.onRendered(() => {
     if (templateInstance.subscriptionsReady()) {
       if (templateInstance.topTasks.get() && templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
         import('frappe-charts/dist/frappe-charts.min.css').then(() => {
-          import('./frappe-charts.esm.js').then((chartModule) => {
+          import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
             window.requestAnimationFrame(() => {
               const { Chart } = chartModule
+              if (templateInstance.piechart) {
+                templateInstance.piechart.destroy()
+              }
               templateInstance.piechart = new Chart(templateInstance.$('.js-pie-chart-container')[0], {
                 type: 'pie',
                 colors: [Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', '#66c0b8', '#e4e4e4'],
@@ -165,16 +171,13 @@ Template.projectchart.onRendered(() => {
 })
 Template.projectchart.onDestroyed(() => {
   Template.instance().$('.js-tooltip').tooltip('dispose')
-  // $(window).off()
-  // const templateInstance = Template.instance()
-  // if (templateInstance.chart) {
-  //   // templateInstance.chart.unbindWindowEvents()
-  //   templateInstance.chart.destroy()
-  // }
-  // if (templateInstance.piechart) {
-  //   // templateInstance.piechart.unbindWindowEvents()
-  //   templateInstance.piechart.destroy()
-  // }
+  const templateInstance = Template.instance()
+  if (templateInstance.chart) {
+    templateInstance.chart.destroy()
+  }
+  if (templateInstance.piechart) {
+    templateInstance.piechart.destroy()
+  }
 })
 Template.projectchart.events({
   'mouseenter .js-tooltip': (event, templateInstance) => {

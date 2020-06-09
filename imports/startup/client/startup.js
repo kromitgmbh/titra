@@ -34,6 +34,7 @@ function loadLanguage(language) {
           i18nextReady.set(true)
         })
       })
+      $('html').attr('lang', 'en')
       break
     case 'en':
       import('../../ui/translations/en.json').then((en) => {
@@ -50,6 +51,7 @@ function loadLanguage(language) {
           i18nextReady.set(true)
         })
       })
+      $('html').attr('lang', 'en')
       break
     case 'de':
       import('../../ui/translations/de.json').then((de) => {
@@ -66,6 +68,7 @@ function loadLanguage(language) {
           i18nextReady.set(true)
         })
       })
+      $('html').attr('lang', 'de')
       break
   }
 }
@@ -186,6 +189,10 @@ Meteor.startup(() => {
         break
     }
   })
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      .register('/sw.js')
+  }
 })
 Template.registerHelper('i18nextReady', () => i18nextReady.get())
 Template.registerHelper('unit', () => {
