@@ -91,8 +91,14 @@ Template.dashboard.onRendered(() => {
     if (templateInstance.subscriptionsReady() && Timecards.find().fetch().length > 0) {
       window.requestAnimationFrame(() => {
         import('frappe-charts/dist/frappe-charts.min.css').then(() => {
-          import('../components/frappe-charts.esm.js').then((chartModule) => {
+          import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
             const { Chart } = chartModule
+            if (templateInstance.linechart) {
+              templateInstance.linechart.destroy()
+            }
+            if (templateInstance.piechart) {
+              templateInstance.piechart.destroy()
+            }
             let temphours = 0
             templateInstance.totalHours.set(0)
             const taskmap = new Map()
@@ -152,13 +158,11 @@ Template.dashboard.onRendered(() => {
       })
     } else {
       if (templateInstance.linechart) {
-        templateInstance.linechart.unbindWindowEvents()
-        // templateInstance.linechart.destroy()
+        templateInstance.linechart.destroy()
         templateInstance.$('.js-linechart-container')[0].innerHTML = ''
       }
       if (templateInstance.piechart) {
-        templateInstance.piechart.unbindWindowEvents()
-        // templateInstance.piechart.destroy()
+        templateInstance.piechart.destroy()
         templateInstance.$('.js-piechart-container')[0].innerHTML = ''
       }
     }
@@ -192,14 +196,11 @@ Template.dashboard.helpers({
 })
 
 Template.dashboard.onDestroyed(() => {
-  $(window).off()
-  // const templateInstance = Template.instance()
-  // if (templateInstance.linechart) {
-  //   // templateInstance.linechart.unbindWindowEvents()
-  //   templateInstance.linechart.destroy()
-  // }
-  // if (templateInstance.piechart) {
-  //   // templateInstance.piechart.unbindWindowEvents()
-  //   templateInstance.piechart.destroy()
-  // }
+  const templateInstance = Template.instance()
+  if (templateInstance.linechart) {
+    templateInstance.linechart.destroy()
+  }
+  if (templateInstance.piechart) {
+    templateInstance.piechart.destroy()
+  }
 })
