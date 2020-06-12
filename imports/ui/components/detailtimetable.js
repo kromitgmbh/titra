@@ -5,13 +5,14 @@ import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
 import Timecards from '../../api/timecards/timecards'
-import i18nextReady from '../../startup/client/startup.js'
 import {
+  i18nextReady,
   addToolTipToTableCell,
   timeInUserUnit,
   getGlobalSetting,
   numberWithUserPrecision,
   getUserSetting,
+  getUserTimeUnitVerbose,
 } from '../../utils/frontend_helpers'
 import projectUsers from '../../api/users/users.js'
 import Projects from '../../api/projects/projects'
@@ -107,7 +108,7 @@ Template.detailtimetable.onRendered(() => {
         { name: i18next.t('globals.task'), editable: false, format: addToolTipToTableCell },
         { name: i18next.t('globals.resource'), editable: false, format: addToolTipToTableCell },
         {
-          name: Meteor.user() && Meteor.user().profile && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
+          name: getUserTimeUnitVerbose(),
           editable: false,
           format: numberWithUserPrecision,
         },
@@ -242,9 +243,9 @@ Template.detailtimetable.events({
     event.preventDefault()
     let csvArray
     if (getGlobalSetting('useState')) {
-      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')},${i18next.t('details.state')}\r\n`]
+      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${getUserTimeUnitVerbose()},${i18next.t('details.state')}\r\n`]
     } else {
-      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}\r\n`]
+      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${getUserTimeUnitVerbose()}\r\n`]
     }
     for (const timeEntry of Timecards.find(templateInstance.selector[0], templateInstance.selector[1])
       .fetch().map(detailedDataTableMapper)) {
@@ -266,9 +267,9 @@ Template.detailtimetable.events({
     event.preventDefault()
     let data
     if (getGlobalSetting('useState')) {
-      data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'), i18next.t('details.state')]]
+      data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), getUserTimeUnitVerbose(), i18next.t('details.state')]]
     } else {
-      data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')]]
+      data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), getUserTimeUnitVerbose()]]
     }
     for (const timeEntry of Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
       .map(detailedDataTableMapper)) {

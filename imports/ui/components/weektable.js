@@ -80,6 +80,9 @@ Template.weektable.events({
         if (getUserSetting('timeunit') === 'd') {
           hours *= (getUserSetting('hoursToDays'))
         }
+        if (getUserSetting('timeunit') === 'm') {
+          hours /= 60
+        }
         weekArray.push({
           projectId: $(element).data('project-id'),
           task,

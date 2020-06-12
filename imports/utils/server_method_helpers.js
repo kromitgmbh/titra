@@ -61,6 +61,9 @@ function totalHoursForPeriodMapper(entry) {
     if (getUserSetting('timeunit') === 'd') {
       totalHours = Number(entry.totalHours / getUserSetting('hoursToDays'))
     }
+    if (getUserSetting('timeunit') === 'm') {
+      totalHours = Number(entry.totalHours * 60)
+    }
   }
   return {
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
@@ -75,11 +78,15 @@ function dailyTimecardMapper(entry) {
     if (getUserSetting('timeunit') === 'd') {
       totalHours = Number(entry.totalHours / getUserSetting('hoursToDays'))
     }
+    if (getUserSetting('timeunit') === 'm') {
+      totalHours = Number(entry.totalHours * 60)
+    }
   }
   return {
     date: entry._id.date,
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-    userId: projectUsers.findOne().users.find((elem) => elem._id === entry._id.userId)?.profile?.name,
+    userId: projectUsers.findOne().users
+      .find((elem) => elem._id === entry._id.userId)?.profile?.name,
     totalHours,
   }
 }

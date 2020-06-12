@@ -7,8 +7,13 @@ import { NullXlsx } from '@neovici/nullxlsx'
 import './dailytimetable.html'
 import './pagination.js'
 import './limitpicker.js'
-import i18nextReady from '../../startup/client/startup.js'
-import { getGlobalSetting, numberWithUserPrecision, getUserSetting } from '../../utils/frontend_helpers'
+import {
+  i18nextReady,
+  getGlobalSetting,
+  numberWithUserPrecision,
+  getUserSetting,
+  getUserTimeUnitVerbose,
+} from '../../utils/frontend_helpers'
 import { dailyTimecardMapper } from '../../utils/server_method_helpers'
 
 Template.dailytimetable.onCreated(function dailytimetablecreated() {
@@ -67,7 +72,7 @@ Template.dailytimetable.onRendered(() => {
         { name: i18next.t('globals.project'), editable: false, width: 2 },
         { name: i18next.t('globals.resource'), editable: false, width: 2 },
         {
-          name: Meteor.user() && getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural'),
+          name: getUserTimeUnitVerbose(),
           editable: false,
           width: 1,
           format: numberWithUserPrecision,
@@ -127,7 +132,7 @@ Template.dailytimetable.events({
     event.preventDefault()
     let unit = i18next.t('globals.hour_plural')
     if (Meteor.user()) {
-      unit = getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
+      unit = getUserTimeUnitVerbose()
     }
     const csvArray = [`\uFEFF${i18next.t('globals.date')},${i18next.t('globals.project')},${i18next.t('globals.resource')},${unit}\r\n`]
     for (const timeEntry of templateInstance.dailyTimecards.get().map(dailyTimecardMapper)) {
@@ -139,7 +144,7 @@ Template.dailytimetable.events({
     event.preventDefault()
     let unit = i18next.t('globals.hour_plural')
     if (Meteor.user()) {
-      unit = getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
+      unit = getUserTimeUnitVerbose()
     }
     const data = [[i18next.t('globals.date'), i18next.t('globals.project'), i18next.t('globals.resource'), unit]]
     for (const timeEntry of templateInstance.dailyTimecards.get().map(dailyTimecardMapper)) {

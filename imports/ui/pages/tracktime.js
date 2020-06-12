@@ -142,6 +142,9 @@ Template.tracktime.events({
     if (getUserSetting('timeunit') === 'd') {
       hours *= getUserSetting('hoursToDays')
     }
+    if (getUserSetting('timeunit') === 'm') {
+      hours /= 60
+    }
     templateInstance.$('.js-save').text(i18next.t('navigation.saving'))
     templateInstance.$('.js-save').prop('disabled', true)
     if (templateInstance.tcid.get()) {

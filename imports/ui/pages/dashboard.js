@@ -1,5 +1,4 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import { $, jQuery } from 'meteor/jquery'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
@@ -10,6 +9,7 @@ import {
   getUserSetting,
   getGlobalSetting,
   timeInUserUnit,
+  getUserTimeUnitVerbose,
 } from '../../utils/frontend_helpers'
 import './dashboard.html'
 import Timecards from '../../api/timecards/timecards'
@@ -22,6 +22,9 @@ function timeInUnitHelper(hours) {
       return Dashboards.findOne().hoursToDays
         ? Number(hours / Dashboards.findOne().hoursToDays).toFixed(getGlobalSetting('precision')) : Number(hours / getGlobalSetting('hoursToDays')).toFixed(getGlobalSetting('precision'))
     }
+    if (Dashboards.findOne().timeunit === 'm') {
+      return Number(hours * 60).toFixed(getGlobalSetting('precision'))
+    }
   } else if (Meteor.user()) {
     return timeInUserUnit(hours)
   }
@@ -29,12 +32,30 @@ function timeInUnitHelper(hours) {
 }
 function timeUnitHelper() {
   if (Dashboards.findOne()) {
-    return Dashboards.findOne().timeunit === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
+    switch (Dashboards.findOne().timeunit) {
+      case 'd':
+        return i18next.t('globals.day_plural')
+      case 'h':
+        return i18next.t('globals.hour_plural')
+      case 'm':
+        return i18next.t('globals.minute_plural')
+      default:
+        return i18next.t('globals.hour_plural')
+    }
   }
   if (Meteor.user() && getUserSetting('timeunit')) {
-    return getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
+    return getUserTimeUnitVerbose()
   }
-  return getGlobalSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')
+  if (getGlobalSetting('timeunit') === 'd') {
+    return i18next.t('globals.day_plural')
+  }
+  if (getGlobalSetting('timeunit') === 'h') {
+    return i18next.t('globals.hour_plural')
+  }
+  if (getGlobalSetting('timeunit') === 'm') {
+    return i18next.t('globals.minute_plural')
+  }
+  return i18next.t('globals.hour_plural')
 }
 Template.dashboard.onCreated(function dashboardCreated() {
   let handle
@@ -134,7 +155,7 @@ Template.dashboard.onRendered(() => {
                   spaceRatio: 0.2, // default: 1
                 },
                 tooltipOptions: {
-                  formatTooltipY: (value) => `${Number(value).toFixed(precision)} ${getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}`,
+                  formatTooltipY: (value) => `${Number(value).toFixed(precision)} ${getUserTimeUnitVerbose()}`,
                   // formatTooltipX: (value) => dayjs(value, 'DDMMYYYY').format(getGlobalSetting('dateformat')),
                 },
               })
@@ -188,6 +209,13 @@ Template.dashboard.helpers({
           ? Number(Template.instance().totalHours.get() / Dashboards.findOne().hoursToDays)
             .toFixed(precision)
           : Number(Template.instance().totalHours.get() / getGlobalSetting('hoursToDays')).toFixed(precision)
+      }
+      if (Dashboards.findOne().timeunit === 'm') {
+        const precision = getUserSetting('precision')
+        return Dashboards.findOne().hoursToDays
+          ? Number(Template.instance().totalHours.get() * 60)
+            .toFixed(precision)
+          : Number(Template.instance().totalHours.get() * 60).toFixed(precision)
       }
     }
     return Template.instance().totalHours.get().toFixed(getGlobalSetting('precision'))

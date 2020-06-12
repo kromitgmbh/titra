@@ -3,7 +3,7 @@ import { Random } from 'meteor/random'
 import i18next from 'i18next'
 import './settings.html'
 import '../components/backbutton.js'
-import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
+import { getUserSetting } from '../../utils/frontend_helpers'
 
 Template.settings.onCreated(function settingsCreated() {
   this.displayHoursToDays = new ReactiveVar()
@@ -27,7 +27,7 @@ Template.settings.onRendered(function settingsRendered() {
 })
 
 Template.settings.helpers({
-  unit: () => getUserSetting('timeunit'),
+  unit: () => getUserSetting('unit'),
   dailyStartTime: () => getUserSetting('dailyStartTime'),
   breakStartTime: () => getUserSetting('breakStartTime'),
   breakDuration: () => getUserSetting('breakDuration'),

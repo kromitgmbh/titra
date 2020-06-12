@@ -1,6 +1,6 @@
 import i18next from 'i18next'
 import './allprojectschart.html'
-import { getUserSetting } from '../../utils/frontend_helpers'
+import { getUserSetting, getUserTimeUnitVerbose } from '../../utils/frontend_helpers'
 
 Template.allprojectschart.onCreated(function allprojectschartCreated() {
   this.topTasks = new ReactiveVar()
@@ -68,6 +68,16 @@ Template.allprojectschart.onRendered(() => {
                     /= getUserSetting('hoursToDays')
                   stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
                 }
+                if (getUserSetting('timeunit') === 'm') {
+                  stats.beforePreviousMonthHours *= 60
+                  stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+                    .toFixed(precision)
+                  stats.previousMonthHours *= 60
+                  stats.previousMonthHours = Number(stats.previousMonthHours)
+                    .toFixed(precision)
+                  stats.currentMonthHours *= 60
+                  stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+                }
                 if (templateInstance.chart) {
                   templateInstance.chart.destroy()
                 }
@@ -91,7 +101,7 @@ Template.allprojectschart.onRendered(() => {
                     }],
                   },
                   tooltipOptions: {
-                    formatTooltipY: (value) => `${value} ${getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}`,
+                    formatTooltipY: (value) => `${value} ${getUserTimeUnitVerbose()}`,
                   },
                 })
               }

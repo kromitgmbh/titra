@@ -2,6 +2,7 @@
   "globals": {
     "unit_day_short": "T",
     "unit_hour_short": "S",
+    "unit_minute_short": "M",
     "name": "Name",
     "prj_name": "Projektname",
     "description": "Beschreibung",
@@ -10,6 +11,7 @@
     "day_plural": "Tage",
     "month": "Monat",
     "hour": "Stunde",
+    "minute": "Minute",
     "hour_plural": "Stunden",
     "minute_plural": "Minuten",
     "loading": "Lade Daten ...",

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { getGlobalSetting, getUserSetting } from './frontend_helpers'
+import { getGlobalSetting } from './frontend_helpers'
 
 function periodToDates(period) {
   check(period, String)
@@ -51,6 +51,10 @@ function timeInUserUnit(time, meteorUser) {
       hoursToDays = meteorUser.profile.hoursToDays
     }
     const convertedTime = Number(time / hoursToDays).toFixed(precision)
+    return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
+  }
+  if (meteorUser?.profile?.timeunit === 'm') {
+    const convertedTime = Number(time * 60).toFixed(precision)
     return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
   }
   return Number(time).toFixed(precision)

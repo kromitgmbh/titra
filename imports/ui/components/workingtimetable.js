@@ -4,8 +4,8 @@ import i18next from 'i18next'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
-import i18nextReady from '../../startup/client/startup.js'
 import {
+  i18nextReady,
   addToolTipToTableCell,
   getGlobalSetting,
   numberWithUserPrecision,

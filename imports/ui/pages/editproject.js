@@ -7,7 +7,7 @@ import i18next from 'i18next'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
-import { validateEmail, getUserSetting, getGlobalSetting } from '../../utils/frontend_helpers'
+import { validateEmail, getUserSetting, getGlobalSetting, getUserTimeUnitVerbose } from '../../utils/frontend_helpers'
 
 function validateWekanUrl() {
   const templateInstance = Template.instance()
@@ -136,7 +136,10 @@ Template.editproject.events({
       return
     }
     if (getUserSetting('timeunit') === 'd') {
-      templateInstance.$('#target').val(Number(templateInstance.$('#target').val()) * 8)
+      templateInstance.$('#target').val(Number(templateInstance.$('#target').val()) * getUserSetting('hoursToDays'))
+    }
+    if (getUserSetting('timeunit') === 'm') {
+      templateInstance.$('#target').val(Number(templateInstance.$('#target').val()) / 60)
     }
     const projectArray = templateInstance.$('#editProjectForm').serializeArray()
     if (Template.instance().quill.getText().replace(/(\r\n|\n|\r)/gm, '')) {
@@ -146,6 +149,9 @@ Template.editproject.events({
     }
     if (getUserSetting('timeunit') === 'd') {
       templateInstance.$('#target').val(templateInstance.$('#target').val() * (getUserSetting('hoursToDays')))
+    }
+    if (getUserSetting('timeunit') === 'm') {
+      templateInstance.$('#target').val(templateInstance.$('#target').val() / 60)
     }
     const selectedWekanLists = $('.js-wekan-list-entry:checked').toArray().map((entry) => entry.value)
     if (selectedWekanLists.length > 0) {
