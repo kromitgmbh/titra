@@ -92,7 +92,7 @@ function loadLanguage(language, i18nextDebugMode) {
             },
           },
         }).then((t) => {
-          // globalT = t
+          globalT = t
           i18nextReady.set(true)
         })
       })
