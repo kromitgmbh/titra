@@ -73,17 +73,6 @@
   background-size: 1px 5px;
 }
 
-// Fullcalender adjustments
-#cal {
-  margin-top: .5rem;
-  .fc-event {
-    color: #292b2c;
-    font-size: 80%;
-  }
-}
-.fc-event:hover {
-  color: map-get($theme-colors, primary);
-}
 
 // draggable
 .drag {
@@ -100,9 +89,6 @@
   }
 }
 
-#cal > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2 {
-  font-size: 1.5rem;
-}
 
 .card-block {
     -webkit-box-flex: 1;
@@ -116,45 +102,6 @@
   cursor: pointer;
 }
 
-.dp-below, .dp-modal {
-  z-index: 1060 !important;
-}
-.dp-selected {
-  background: map-get($theme-colors, primary) !important;
-}
-.dp-day:hover, .dp-prev:hover, .dp-cal-month:hover, .dp-cal-year:hover, .dp-next:hover, .dp-today:hover, .dp-clear:hover, .dp-close:hover {
-  background: map-get($theme-colors, primary) !important;
-}
-.dp-day-today:after {
-  content: '';
-  height: 0 !important;
-  width: 0 !important;
-  border: 7px solid map-get($theme-colors, dark) !important;
-  border-bottom-color: transparent !important;
-  border-left-color: transparent !important;
-  position: absolute !important;
-  top: 0 !important;
-  right: 0 !important;
-}
-.dp:before {
-  background: map-get($theme-colors, primary) !important;
-}
-.dp-modal {
-  background: rgba(0, 0, 0, 0.75);
-}
-.dp {
-  background: $body-bg;
-}
-.dp-cal-header {
-  background: map-get($theme-colors, secondary);
-  color: $gray-900;
-}
-.dp-cal-month, .dp-cal-year, .dp-day, .dp-month, .dp-year {
-  color: $gray-900;
-}
-.dp-cal-footer {
-  background: map-get($theme-colors, secondary);
-}
 .pickr .pcr-button {
   height: 100% !important;
 }
@@ -176,10 +123,6 @@
   border-radius: 0 0 0.25rem 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   outline-offset: -2px;
-}
-
-#cal > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2 {
-  font-weight: lighter;
 }
 
 @include media-breakpoint-down(sm) {
@@ -235,16 +178,6 @@
     transition: 0.25s ease-in-out;
   }
 }
-.input-group-append:hover {
-  .fa-calendar {
-    color: map-get($theme-colors, secondary)
-  }
-}
-.dp-current:focus {
-    outline: none !important;
-    background: #006d626c !important;
-}
-
 .js-hours::placeholder {
   color: #eeeeee
 }
@@ -260,4 +193,38 @@ g.y.axis {
 }
 g.chart-legend {
   display:none;
+}
+
+#cal {
+    margin-top: .5rem;
+    .fc-event {
+        color: #292b2c;
+        font-size: 80%;
+    }
+    .fc-toolbar-title {
+      font-weight: lighter;
+      font-size: 1.5rem;
+    }
+    .fc-event:hover {
+      color: map-get($theme-colors, primary) !important;
+    }
+    .fc-below, .fc-modal {
+      z-index: 1060 !important;
+    }
+    .fc-daygrid-day.fc-day-today {
+      background: rgba(0,150,136,.5) !important;
+    }
+    .fc-modal {
+      background: rgba(0, 0, 0, 0.75);
+    }
+    .fc-cal-header {
+      background: map-get($theme-colors, primary) !important;
+      color: $gray-900;
+    }
+    .fc-cal-month, .fc-cal-year, .fc-day, .fc-month, .fc-year {
+      color: $gray-900;
+    }
+    .fc-cal-footer {
+      background: map-get($theme-colors, primary) !important;
+    }
 }

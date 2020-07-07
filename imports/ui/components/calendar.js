@@ -24,8 +24,6 @@ Template.calendar.onRendered(() => {
   templateInstance.calendarInitialized = new ReactiveVar(false)
   templateInstance.autorun(() => {
     if (window.BootstrapLoaded.get()) {
-      import('@fullcalendar/core/main.css')
-      import('@fullcalendar/daygrid/main.css')
       import('@fullcalendar/core').then((calendar) => {
         const { Calendar } = calendar
         import('@fullcalendar/daygrid').then((dayGridPlugin) => {
@@ -39,7 +37,7 @@ Template.calendar.onRendered(() => {
             calendarEl.innerHTML = ''
             templateInstance.calendar = new Calendar(calendarEl, {
               plugins: [dayGridPlugin.default, interactionPlugin],
-              defaultView: 'dayGridMonth',
+              initialView: 'dayGridMonth',
               droppable: true,
               aspectRatio: 2,
               height: 'auto',
@@ -70,15 +68,18 @@ Template.calendar.onRendered(() => {
                   }))
                 successCallback(events)
               },
-              eventRender: (info) => {
+              eventDidMount: (info) => {
                 if (window.innerWidth >= 768) {
-                  $(info.el).tooltip({
-                    html: true,
-                    placement: 'right',
-                    trigger: 'hover',
-                    title: `<span>${safeReplacer(info.event.title)}: ${info.event.extendedProps.hours} hours</span>`,
-                  })
+                  return {
+                    domNodes: $(info.el).tooltip({
+                      html: true,
+                      placement: 'right',
+                      trigger: 'hover',
+                      title: `<span>${safeReplacer(info.event.title)}: ${info.event.extendedProps.hours} hours</span>`,
+                    }),
+                  }
                 }
+                return ''
               },
               drop: function dropEvent(dropInfo) {
                 templateInstance.tcid.set(undefined)
