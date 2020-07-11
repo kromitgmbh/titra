@@ -24,7 +24,8 @@
     "sum": "Sum",
     "not_found": "Sorry, either our server is on fire or we couldn't find what you are looking for.",
     "color": "Color",
-    "email": "E-mail"
+    "email": "E-mail",
+    "or": "or"
   },
   "navigation": {
     "track": "Track",
@@ -85,7 +86,8 @@
     "target": "Target / Budget",
     "wekan_integration": "Wekan integration",
     "wekan_help": "Need help with the setup? Checkout the titra ",
-    "wekan_list": "Please select the wekan list you want to use for time tracking:",
+    "wekan_list": "Please select the Wekan lists you want to use for time tracking:",
+    "wekan_swimline": "Please select the Wekan siwmlanes you want to use for time tracking:",
     "access_rights": "Access rights",
     "check": "Check",
     "add": "Add",

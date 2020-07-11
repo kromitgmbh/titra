@@ -98,6 +98,24 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
             this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
             ddpcon.subscribe('board', 'sandstorm')
+          } else if (project.selectedWekanSwimlanes) {
+            const authToken = project.wekanurl.match(/authToken=(.*)/)[1]
+            const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
+            const wekanAPITasks = []
+            for (const swimlane of project.selectedWekanSwimlanes) {
+              try {
+                HTTP.get(`${url}swimlanes/${swimlane}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }, (innerError, innerResult) => {
+                  if (innerError) {
+                    console.error(innerError)
+                  } else {
+                    Array.prototype.push.apply(wekanAPITasks, innerResult.data)
+                    this.wekanAPITasks.set(wekanAPITasks)
+                  }
+                })
+              } catch (error) {
+                console.error(error)
+              }
+            }
           } else if (project.selectedWekanList) {
             let wekanLists = []
             if (typeof project.selectedWekanList === 'string') {

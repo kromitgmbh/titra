@@ -24,7 +24,8 @@
     "sum": "Summe",
     "not_found": "Es tut uns leid aber entweder unser Server brennt oder wir können die gewünschte Seite nicht finden.",
     "color": "Farbe",
-    "email": "E-mail"
+    "email": "E-mail",
+    "or": "oder"
   },
   "navigation": {
     "track": "Erfassen",
@@ -85,7 +86,8 @@
     "target": "Ziel / Budget",
     "wekan_integration": "Wekan Integration",
     "wekan_help": "Benötigen Sie Hilfe bei der Konfiguration? Werfen Sie einen Blick in unser titra ",
-    "wekan_list": "Bitte wählen Sie die Wekan Liste für die Zeiterfassung aus:",
+    "wekan_list": "Bitte wählen Sie die Wekan Listen für die Zeiterfassung aus:",
+    "wekan_swimlane": "Bitte wählen Sie die Wekan Swimlanes für die Zeiterfassung aus:",
     "access_rights": "Berechtigungen",
     "check": "Prüfen",
     "add": "Hinzufügen",

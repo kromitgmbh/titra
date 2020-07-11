@@ -38,11 +38,30 @@ function validateWekanUrl() {
     templateInstance.$('#wekanurl').addClass('is-invalid')
     templateInstance.$('#wekan-status').html('check')
   }
+  try {
+    HTTP.get(`${url}swimlanes`, { headers: { Authorization: `Bearer ${authToken}` } }, (error, result) => {
+      templateInstance.$('#wekan-status').removeClass()
+      templateInstance.$('#wekanurl').prop('disabled', false)
+      if (error || result.data.error) {
+        templateInstance.$('#wekanurl').addClass('is-invalid')
+        templateInstance.$('#wekan-status').html('<i class="fa fa-times"></i>')
+      } else if (result.data.length > 1) {
+        templateInstance.wekanSwimlanes.set(result.data)
+        templateInstance.$('#wekanurl').removeClass('is-invalid')
+        templateInstance.$('#wekan-status').html('<i class="fa fa-check"></i>')
+      }
+    })
+  } catch (error) {
+    console.error(error)
+    templateInstance.$('#wekanurl').addClass('is-invalid')
+    templateInstance.$('#wekan-status').html('check')
+  }
 }
 
 Template.editproject.onCreated(function editprojectSetup() {
   this.deletion = new ReactiveVar(false)
   this.wekanLists = new ReactiveVar()
+  this.wekanSwimlanes = new ReactiveVar()
   this.projectId = new ReactiveVar()
   this.project = new ReactiveVar()
   this.notbillable = new ReactiveVar(false)
@@ -112,7 +131,7 @@ Template.editproject.onRendered(() => {
       } else if (project.desc && templateInstance.quill) {
         templateInstance.quill.setText(project.desc)
       }
-      templateInstance.pickr.setColor(project.color
+      templateInstance.pickr.setColor(project?.color
         ? project.color : templateInstance.color)
       if (project.desc instanceof Object && templateInstance.quill) {
         templateInstance.quill.setContents(project.desc)
@@ -154,8 +173,13 @@ Template.editproject.events({
       templateInstance.$('#target').val(templateInstance.$('#target').val() / 60)
     }
     const selectedWekanLists = $('.js-wekan-list-entry:checked').toArray().map((entry) => entry.value)
+    const selectedWekanSwimlanes = $('.js-wekan-swimlane-entry:checked').toArray().map((entry) => entry.value)
+
     if (selectedWekanLists.length > 0) {
       projectArray.push({ name: 'selectedWekanList', value: $('.js-wekan-list-entry:checked').toArray().map((entry) => entry.value) })
+    }
+    if (selectedWekanSwimlanes.length > 0) {
+      projectArray.push({ name: 'selectedWekanSwimlanes', value: $('.js-wekan-swimlane-entry:checked').toArray().map((entry) => entry.value) })
     }
     if (FlowRouter.getParam('id')) {
       Meteor.call('updateProject', {
@@ -285,6 +309,7 @@ Template.editproject.helpers({
   wekanurl: () => (Template.instance().project.get()
     ? Template.instance().project.get().wekanurl : false),
   wekanLists: () => Template.instance().wekanLists.get(),
+  wekanSwimlanes: () => Template.instance().wekanSwimlanes.get(),
   public: () => (Template.instance().project.get() ? Template.instance().project.public : false),
   team: () => {
     if (Template.instance().project.get() && Template.instance().project.get().team) {

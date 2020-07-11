@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.25.0",
+  "version": "0.26.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -20,10 +20,10 @@
     "dayjs-precise-range": "^1.0.1",
     "docker-names": "^1.1.1",
     "file-saver": "^2.0.2",
-    "frappe-charts": "1.5.1",
+    "frappe-charts": "1.5.2",
     "frappe-datatable": "^1.15.2",
     "hotkeys-js": "^3.8.1",
-    "i18next": "^19.5.4",
+    "i18next": "^19.6.0",
     "is-dark": "^1.0.4",
     "jquery": "3.5.1",
     "jquery-serializejson": "^2.9.0",
@@ -37,7 +37,7 @@
     "randomcolor": "^0.5.4",
     "raw-body": "^2.4.1",
     "sortablejs": "^1.10.2",
-    "sweetalert2": "^9.15.2",
+    "sweetalert2": "^9.15.3",
     "tether": "^1.4.7",
     "tiny-date-picker": "^3.2.8",
     "vm2": "^3.9.2"

@@ -74,6 +74,20 @@
             {{/each}}
         </div>
       {{/if}}
+      {{#if wekanSwimlanes}}
+        <p>{{t "globals.or"}}</p>
+        <div class="form-group">
+          <small class="form-text text-muted">{{t "project.wekan_swimlane"}}</small>
+            {{#each swimlane in wekanSwimlanes}}
+              <div class="form-check form-check-inline">
+                <input class="form-check-input js-wekan-swimlane-entry" type="checkbox" value="{{swimlane._id}}">
+                <label class="form-check-label">
+                  {{swimlane.title}}
+                </label>
+              </div>
+            {{/each}}
+        </div>
+      {{/if}}
       {{/if}} {{#unless newProject}}
         <div class="form-group">
           <div class="card">
