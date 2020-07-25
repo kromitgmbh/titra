@@ -18,13 +18,13 @@
             {{#each project in projects}}
               {{>weektablerow projectName=project.name projectId=project._id startDate=startDate endDate=endDate}}
             {{/each}}
-          <tr>
-            <td></td>
+          <tfoot style="border-top-style:double;border-top-color:#dee2e6;">
+            <td class="text-center">{{#if hasData}}{{getWeekTotal}}{{/if}}</td>
             {{#each weekday in weekDays}}
               <td class="pl-3">{{getTotalForDay weekday}}</td>
             {{/each}}
             <td class="text-center">{{#if hasData}}Σ{{/if}}</td>
-          </tr>
+          </tfoot>
         </table>
       </div>
     </div>

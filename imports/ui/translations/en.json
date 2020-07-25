@@ -301,6 +301,7 @@
     "user_updated": "The user information has been updated.",
     "user_deleted": "The users has been deleted",
     "user_deletion_confirmation": "Do you really want to delete this user (it cannot be undone)?",
-    "value": "Value"
+    "value": "Value",
+    "globalsettings_help": "Need help setting the correct values? Checkout the titra"
   }
 }

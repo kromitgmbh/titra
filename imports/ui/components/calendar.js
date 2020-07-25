@@ -19,7 +19,7 @@ Template.calendar.onCreated(function calendarCreated() {
 })
 
 Template.calendar.onRendered(() => {
-  const safeReplacer = (transform) => transform.replace(/(:.*:)/g, emojify).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
+  const safeReplacer = (transform) => transform.replace(/(:.*:)/g, emojify).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
   const templateInstance = Template.instance()
   templateInstance.calendarInitialized = new ReactiveVar(false)
   templateInstance.autorun(() => {

@@ -23,9 +23,11 @@ function sendResponse(res, statusCode, message, payload) {
 }
 function checkAuthorization(req, res) {
   const authHeader = req.headers.authorization
-  const meteorUser = Meteor.users.findOne({ 'profile.APItoken': authHeader.split(' ')[1] })
-  if (authHeader && authHeader.split(' ')[1] && meteorUser) {
-    return meteorUser
+  if (authHeader) {
+    const meteorUser = Meteor.users.findOne({ 'profile.APItoken': authHeader.split(' ')[1] })
+    if (authHeader && authHeader.split(' ')[1] && meteorUser) {
+      return meteorUser
+    }
   }
   sendResponse(res, 401, 'Missing authorization header or invalid authorization token supplied.')
   return false
@@ -129,13 +131,12 @@ WebApp.connectHandlers.use('/timeentry/list/', async (req, res, next) => {
 })
 
 /**
-   * @api {get} /projects/list/ Get all projects
+   * @api {get} /project/list/ Get all projects
    * @apiDescription Lists all projects visible to the user assigned to the provided API token
    * @apiName getProjects
    * @apiGroup Project
    *
    * @apiHeader {String} Token The authorization header Bearer API token.
-
    * @apiSuccess {json} response An array of all projects visible for the user with the provided API token.
    * @apiUse AuthError
    */
@@ -151,7 +152,7 @@ WebApp.connectHandlers.use('/project/list/', async (req, res, next) => {
 })
 
 /**
-   * @api {post} /projects/create/ Create a new project
+   * @api {post} /project/create/ Create a new project
    * @apiDescription Creates a new titra project based on the parameters provided
    * @apiName CreateProject
    * @apiGroup Project

@@ -49,6 +49,19 @@ Template.weektable.helpers({
     }
     return false
   },
+  getWeekTotal() {
+    let total = 0
+    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
+      clientTimecards.find().fetch().forEach((element) => {
+        if (element.entries) {
+          total += element.entries
+            .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
+        }
+      })
+      return total !== 0 ? timeInUserUnit(total) : false
+    }
+    return false
+  },
   hasData() {
     return clientTimecards.find().fetch().length > 0
   },

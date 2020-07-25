@@ -308,6 +308,7 @@
     "user_deleted": "Der Benutzer wurde gelöscht.",
     "user_deletion_confirmation": "Möchten Sie diesen Benutzer wirklich löschen (dies kann nicht rückgängig gemacht werden)?",
     "value": "Wert",
-    "global_defaults": "Voreinstellungen:"
+    "global_defaults": "Voreinstellungen:",
+    "globalsettings_help": "Benötigen Sie Hilfe bei der Konfiguration? Werfen Sie einen Blick in das titra"
   }
 }
