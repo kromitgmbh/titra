@@ -8,11 +8,13 @@ require.config({
         locales: './locales/locale',
         lodash: './vendor/lodash.custom.min',
         pathToRegexp: './vendor/path-to-regexp/index',
-        prettify: './vendor/prettify/prettify',
+        prismjs: './vendor/prism',
         semver: './vendor/semver.min',
         utilsSampleRequest: './utils/send_sample_request',
         webfontloader: './vendor/webfontloader',
-        list: './vendor/list.min'
+        list: './vendor/list.min',
+        apiData: './api_data',
+        apiProject: './api_project',
     },
     shim: {
         bootstrap: {
@@ -28,12 +30,12 @@ require.config({
             deps: ['jquery', 'handlebars'],
             exports: 'Handlebars'
         },
-        prettify: {
-            exports: 'prettyPrint'
-        }
+        prismjs: {
+            exports: 'Prism'
+        },
     },
     urlArgs: 'v=' + (new Date()).getTime(),
-    waitSeconds: 15
+    waitSeconds: 150
 });
 
 require([
@@ -41,20 +43,34 @@ require([
     'lodash',
     'locales',
     'handlebarsExtended',
-    './api_project.js',
-    './api_data.js',
-    'prettify',
+    'apiProject',
+    'apiData',
+    'prismjs',
     'utilsSampleRequest',
     'semver',
     'webfontloader',
     'bootstrap',
     'pathToRegexp',
     'list'
-], function($, _, locale, Handlebars, apiProject, apiData, prettyPrint, sampleRequest, semver, WebFont) {
+], function($, _, locale, Handlebars, apiProject, apiData, Prism, sampleRequest, semver, WebFont) {
 
-    // load google web fonts
-    loadGoogleFontCss();
+    // Load google web fonts.
+    WebFont.load({
+        active: function() {
+            // Only init after fonts are loaded.
+            init($, _, locale, Handlebars, apiProject, apiData, Prism, sampleRequest, semver);
+        },
+        inactive: function() {
+            // Run init, even if loading fonts fails
+            init($, _, locale, Handlebars, apiProject, apiData, Prism, sampleRequest, semver);
+        },
+        google: {
+            families: ['Source Code Pro', 'Source Sans Pro:n4,n6,n7']
+        }
+    });
+});
 
+function init($, _, locale, Handlebars, apiProject, apiData, Prism, sampleRequest, semver) {
     var api = apiData.api;
 
     //
@@ -83,6 +99,9 @@ require([
 
     if (apiProject.template.forceLanguage)
         locale.setLanguage(apiProject.template.forceLanguage);
+
+    if (apiProject.template.aloneDisplay == null)
+        apiProject.template.aloneDisplay = false;
 
     // Setup jQuery Ajax
     $.ajaxSetup(apiProject.template.jQueryAjaxSetup);
@@ -186,7 +205,8 @@ require([
                         group: group,
                         name: entry.name,
                         type: entry.type,
-                        version: entry.version
+                        version: entry.version,
+                        url: entry.url
                     });
                 } else {
                     nav.push({
@@ -195,7 +215,8 @@ require([
                         hidden: true,
                         name: entry.name,
                         type: entry.type,
-                        version: entry.version
+                        version: entry.version,
+                        url: entry.url
                     });
                 }
                 oldName = entry.name;
@@ -341,9 +362,12 @@ require([
                     };
                 }
 
-                // add prefix URL for endpoint
-                if (apiProject.url)
-                    fields.article.url = apiProject.url + fields.article.url;
+                // add prefix URL for endpoint unless it's already absolute
+                if (apiProject.url) {
+                    if (fields.article.url.substr(0, 4).toLowerCase() !== 'http') {
+                        fields.article.url = apiProject.url + fields.article.url;
+                    }
+                }
 
                 addArticleSettings(fields, entry);
 
@@ -357,7 +381,8 @@ require([
                 articles.push({
                     article: templateArticle(fields),
                     group: entry.group,
-                    name: entry.name
+                    name: entry.name,
+                    aloneDisplay: apiProject.template.aloneDisplay
                 });
                 oldName = entry.name;
             }
@@ -368,14 +393,15 @@ require([
             group: groupEntry,
             title: title,
             description: description,
-            articles: articles
+            articles: articles,
+            aloneDisplay: apiProject.template.aloneDisplay
         };
         content += templateSections(fields);
     });
     $('#sections').append( content );
 
     // Bootstrap Scrollspy
-    $(this).scrollspy({ target: '#scrollingNav', offset: 18 });
+    $(this).scrollspy({ target: '#scrollingNav' });
 
     // Content-Scroll on Navigation click.
     $('.sidenav').find('a').on('click', function(e) {
@@ -385,13 +411,6 @@ require([
             $('html,body').animate({ scrollTop: parseInt($(id).offset().top) }, 400);
         window.location.hash = $(this).attr('href');
     });
-
-    // Quickjump on Pageload to hash position.
-    if(window.location.hash) {
-        var id = window.location.hash;
-        if ($(id).length > 0)
-            $('html,body').animate({ scrollTop: parseInt($(id).offset().top) }, 0);
-    }
 
     /**
      * Check if Parameter (sub) List has a type Field.
@@ -437,33 +456,99 @@ require([
         });
         $('.nav-tabs-examples').find('a:first').tab('show');
 
+        // sample header-content-type switch
+        $('.sample-header-content-type-switch').change(function () {
+            var paramName = '.' + $(this).attr('name') + '-fields';
+            var bodyName = '.' + $(this).attr('name') + '-body';
+            var selectName = 'select[name=' + $(this).attr('name') + ']';
+            if ($(this).val() == 'body-json') {
+                $(selectName).val('undefined');
+                $(this).val('body-json');
+                $(paramName).removeClass('hide');
+                $(this).parent().nextAll(paramName).first().addClass('hide');
+                $(bodyName).addClass('hide');
+                $(this).parent().nextAll(bodyName).first().removeClass('hide');
+            } else if ($(this).val() == "body-form-data") {
+                $(selectName).val('undefined');
+                $(this).val('body-form-data');
+                $(bodyName).addClass('hide');
+                $(paramName).removeClass('hide');
+            } else {
+                $(this).parent().nextAll(paramName).first().removeClass('hide')
+                $(this).parent().nextAll(bodyName).first().addClass('hide');
+            }
+            $(this).prev('.sample-request-switch').prop('checked', true);
+        });
+
         // sample request switch
         $('.sample-request-switch').click(function (e) {
-            var name = '.' + $(this).attr('name') + '-fields';
-            $(name).addClass('hide');
-            $(this).parent().next(name).removeClass('hide');
+            var paramName = '.' + $(this).attr('name') + '-fields';
+            var bodyName = '.' + $(this).attr('name') + '-body';
+            var select = $(this).next('.' + $(this).attr('name') + '-select').val();
+            if($(this).prop("checked")){
+                if (select == 'body-json'){
+                    $(this).parent().nextAll(bodyName).first().removeClass('hide');
+                }else {
+                    $(this).parent().nextAll(paramName).first().removeClass('hide');
+                }
+            }else {
+                if (select == 'body-json'){
+                    $(this).parent().nextAll(bodyName).first().addClass('hide');
+                }else {
+                    $(this).parent().nextAll(paramName).first().addClass('hide');
+                }
+            }
         });
+
+        if (apiProject.template.aloneDisplay){
+            //show group
+            $('.show-group').click(function () {
+                var apiGroup = '.' + $(this).attr('data-group') + '-group';
+                var apiGroupArticle = '.' + $(this).attr('data-group') + '-article';
+                $(".show-api-group").addClass('hide');
+                $(apiGroup).removeClass('hide');
+                $(".show-api-article").addClass('hide');
+                $(apiGroupArticle).removeClass('hide');
+            });
+
+            //show api
+            $('.show-api').click(function () {
+                var apiName = '.' + $(this).attr('data-name') + '-article';
+                var apiGroup = '.' + $(this).attr('data-group') + '-group';
+                $(".show-api-group").addClass('hide');
+                $(apiGroup).removeClass('hide');
+                $(".show-api-article").addClass('hide');
+                $(apiName).removeClass('hide');
+            });
+        }
 
         // call scrollspy refresh method
         $(window).scrollspy('refresh');
 
         // init modules
         sampleRequest.initDynamic();
+        Prism.highlightAll()
     }
     initDynamic();
 
-    // Pre- / Code-Format
-    prettyPrint();
+    if (apiProject.template.aloneDisplay) {
+        var hashVal = window.location.hash;
+        if (hashVal != null && hashVal.length !== 0) {
+            $("." + hashVal.slice(1) + "-init").click();
+        }
+    }
 
     //
     // HTML-Template specific jQuery-Functions
     //
     // Change Main Version
-    $('#versions li.version a').on('click', function(e) {
-        e.preventDefault();
-
-        var selectedVersion = $(this).html();
-        $('#version strong').html(selectedVersion);
+    function setMainVersion(selectedVersion) {
+        if (typeof(selectedVersion) === 'undefined') {
+            selectedVersion = $('#version strong').html();
+        }
+        else {
+            $('#version strong').html(selectedVersion);
+        }
 
         // hide all
         $('article').addClass('hide');
@@ -499,6 +584,13 @@ require([
 
         initDynamic();
         return;
+    }
+    setMainVersion();
+
+    $('#versions li.version a').on('click', function(e) {
+        e.preventDefault();
+
+        setMainVersion($(this).html());
     });
 
     // compare all article with their predecessor
@@ -516,18 +608,24 @@ require([
     if ($.urlParam('compare')) {
         // URL Paramter ?compare=1 is set
         $('#compareAllWithPredecessor').trigger('click');
+    }
 
-        if (window.location.hash) {
-            var id = window.location.hash;
-            $('html,body').animate({ scrollTop: parseInt($(id).offset().top) - 18 }, 0);
-        }
+    // Quick jump on page load to hash position.
+    // Should happen after setting the main version
+    // and after triggering the click on the compare button,
+    // as these actions modify the content
+    // and would make it jump to the wrong position or not jump at all.
+    if (window.location.hash) {
+        var id = window.location.hash;
+        if ($(id).length > 0)
+            $('html,body').animate({ scrollTop: parseInt($(id).offset().top) }, 0);
     }
 
     /**
      * Initialize search
      */
     var options = {
-      valueNames: [ 'nav-list-item' ]
+      valueNames: [ 'nav-list-item','nav-list-url-item']
     };
     var endpointsList = new List('scrollingNav', options);
 
@@ -769,28 +867,13 @@ require([
         $root.after(content);
         var $content = $root.next();
 
-        // Event on.click muss neu zugewiesen werden (sollte eigentlich mit on automatisch funktionieren... sollte)
+        // Event on.click needs to be reassigned (should actually work with on ... automatically)
         $content.find('.versions li.version a').on('click', changeVersionCompareTo);
 
         $('#sidenav li[data-group=\'' + group + '\'][data-name=\'' + name + '\'][data-version=\'' + version + '\']').removeClass('has-modifications');
 
         $root.remove();
         return;
-    }
-
-    /**
-     * Load google fonts.
-     */
-    function loadGoogleFontCss() {
-        WebFont.load({
-            active: function() {
-                // Update scrollspy
-                $(window).scrollspy('refresh')
-            },
-            google: {
-                families: ['Source Code Pro', 'Source Sans Pro:n4,n6,n7']
-            }
-        });
     }
 
     /**
@@ -806,8 +889,8 @@ require([
             if (splitBy)
                 elements.forEach (function(element) {
                     var parts = element.split(splitBy);
-                    var key = parts[1]; // reference keep for sorting
-                    if (key == name)
+                    var key = parts[0]; // reference keep for sorting
+                    if (key == name || parts[1] == name)
                         results.push(element);
                 });
             else
@@ -823,5 +906,5 @@ require([
         });
         return results;
     }
-
-});
+    Prism.highlightAll()
+}
