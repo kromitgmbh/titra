@@ -374,7 +374,7 @@ function buildDetailedTimeEntriesForPeriodSelector({
 }) {
   const detailedTimeArray = []
   let projectList = getProjectListById(projectId)
-  if (customer !== 'all') {
+  if (customer !== 'all' && projectId === 'all') {
     projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
   }
   const query = { projectId: { $in: projectList } }

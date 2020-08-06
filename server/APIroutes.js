@@ -49,13 +49,13 @@ function checkAuthorization(req, res) {
  * @apiGroup TimeEntry
  *
  * @apiHeader {String} Token The authorization header Bearer API token.
- * @apiParam {String} projectID The project ID.
+ * @apiParam {String} projectId The project ID.
  * @apiParam {String} task The task description of the new time entry.
  * @apiParam {Date} date The date for the new time entry in format YYYY-MM-DD.
  * @apiParam {Number} hours The number of hours to track.
  * @apiParamExample {json} Request-Example:
  *                  {
- *                    "projectID": "123456",
+ *                    "projectId": "123456",
  *                    "task": "Work done.",
  *                    "date": "2019-11-10",
  *                    "hours": 8

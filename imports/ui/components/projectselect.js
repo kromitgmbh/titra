@@ -39,8 +39,17 @@ Template.projectselect.onCreated(function createTrackTime() {
   })
 })
 Template.projectselect.helpers({
-  projects: () => Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] },
-    { sort: { priority: 1, name: 1 } }),
+  projects: () => {
+    if (FlowRouter.getQueryParam('customer') && FlowRouter.getQueryParam('customer') !== 'all') {
+      return Projects.find({
+        customer: FlowRouter.getQueryParam('customer'),
+        $or: [{ archived: { $exists: false } }, { archived: false }],
+      },
+      { sort: { priority: 1, name: 1 } })
+    }
+    return Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] },
+      { sort: { priority: 1, name: 1 } })
+  },
   selectedId: () => Template.instance().selectedId.get(),
 })
 
