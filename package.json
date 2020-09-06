@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.28.0",
+  "version": "0.29.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -8,22 +8,22 @@
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@fortawesome/fontawesome-free": "^5.14.0",
-    "@fullcalendar/core": "^5.2.1",
-    "@fullcalendar/daygrid": "^5.2.0",
-    "@fullcalendar/interaction": "^5.2.0",
+    "@fullcalendar/core": "^5.3.1",
+    "@fullcalendar/daygrid": "^5.3.1",
+    "@fullcalendar/interaction": "^5.3.1",
     "@neovici/nullxlsx": "^3.0.4",
     "@simonwep/pickr": "^1.7.2",
     "bcrypt": "^5.0.0",
-    "bootstrap": ">=4.5.1",
+    "bootstrap": "^4.5.2",
     "content-type": "^1.0.4",
-    "dayjs": "^1.8.32",
+    "dayjs": "^1.8.35",
     "dayjs-precise-range": "^1.0.1",
     "docker-names": "^1.1.1",
     "file-saver": "^2.0.2",
     "frappe-charts": "1.5.2",
     "frappe-datatable": "^1.15.2",
     "hotkeys-js": "^3.8.1",
-    "i18next": "^19.6.3",
+    "i18next": "^19.7.0",
     "is-dark": "^1.0.4",
     "jquery": "3.5.1",
     "jquery-serializejson": "^2.9.0",
@@ -37,23 +37,23 @@
     "randomcolor": "^0.6.2",
     "raw-body": "^2.4.1",
     "sortablejs": "^1.10.2",
-    "sweetalert2": "^9.17.1",
+    "sweetalert2": "^9.17.2",
     "tether": "^1.4.7",
     "tiny-date-picker": "^3.2.8",
     "vm2": "^3.9.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.6.0",
+    "eslint": "^7.8.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-import-resolver-meteor": "^0.4.0",
-    "eslint-plugin-i18next": "^4.4.0",
+    "eslint-plugin-i18next": "^4.5.0",
     "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-meteor": "^7.0.0"
+    "eslint-plugin-meteor": "^7.2.0"
   },
   "apidoc": {
     "name": "titra API",
-    "version": "0.28.0",
+    "version": "0.29.0",
     "description": "<div class='h5'>This is the official titra API documentation. For more information about the open source timetracking application developed with lots of ❤️ and ☕️ by <a href='https://kromit.at'>kromit</a> checkout <a href='https://titra.io'>titra.io</a>.</div>",
     "sampleUrl": "https://app.titra.io"
   },

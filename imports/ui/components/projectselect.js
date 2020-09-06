@@ -1,6 +1,7 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import Projects from '../../api/projects/projects.js'
 import Timecards from '../../api/timecards/timecards.js'
+import './projectInfoPopup.js'
 import './projectselect.html'
 
 Template.projectselect.onCreated(function createTrackTime() {
@@ -51,6 +52,8 @@ Template.projectselect.helpers({
       { sort: { priority: 1, name: 1 } })
   },
   selectedId: () => Template.instance().selectedId.get(),
+  displayProjectInfo: () => Template.instance().data.displayProjectInfo
+    && Template.instance().selectedId.get(),
 })
 
 Template.projectselect.events({

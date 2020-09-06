@@ -18,13 +18,13 @@ ecmascript@0.14.3              # Enable ECMAScript2015+ syntax in app code
 shell-server@0.5.0            # Server-side component of the `meteor shell` command
 
 fourseven:scss@4.5.0
-accounts-password@1.6.0
+accounts-password@1.6.2
 check@1.3.1
 random@1.2.0
 dynamic-import@0.5.2
 ostrio:loggerconsole
 faburem:client-server-logger
-email@1.2.3
+email@2.0.0
 http@1.4.2
 brettle:accounts-anonymous
 brettle:accounts-add-service

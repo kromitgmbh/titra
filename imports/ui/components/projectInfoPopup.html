@@ -1,0 +1,41 @@
+<template name="projectInfoPopup">
+    <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="projectInfoPopup">
+        <div class="modal-dialog modal-l" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{name}}</h5>
+                <button type="button" class="close" data-toggle="modal" data-target="#projectInfoPopup" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{#if projectDescAsHtml}}
+                <div>
+                    <label><strong>{{t "globals.description"}}</strong></label>
+                    {{{projectDescAsHtml}}}
+                </div>
+                {{/if}}
+                {{#if customer}}
+                <div>
+                    <label for="customer"><strong>{{t "globals.customer"}}</strong></label>
+                    <p>{{customer}}</p>
+                </div>
+                {{/if}}
+                {{#unless notbillable}}
+                <div>
+                    <label for="rate"><strong>{{t "project.rate"}} ({{unit}}/h)</strong></label>
+                    <p>{{rate}}</p>
+                    <label for="target"><strong>{{t "project.target"}} ({{timeunit}})</strong></label>
+                    <p>{{timeInUserUnit (target)}}</p>
+                </div>
+                {{/unless}}
+            </div>
+            {{#if target}}
+                {{#with project}}
+                    {{>projectProgress}}
+                {{/with}}
+            {{/if}}
+          </div>
+        </div>
+    </div>
+</template>

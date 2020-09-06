@@ -1,4 +1,4 @@
-FROM node:12.16
+FROM node:12.18
 ENV METEOR_ALLOW_SUPERUSER true
 RUN curl https://install.meteor.com/ | sh
 RUN meteor --version
@@ -12,7 +12,7 @@ COPY imports/ ./imports/
 COPY .meteor/ ./.meteor/
 RUN meteor build /build/ --server-only --architecture os.linux.x86_64
 
-FROM node:12.16-slim
+FROM node:12.18-slim
 RUN apt-get update && apt-get install -y python make g++ && rm -rf /var/lib/apt/lists/*
 COPY --from=0 /build/*.tar.gz /app/bundle.tar.gz
 WORKDIR /app/

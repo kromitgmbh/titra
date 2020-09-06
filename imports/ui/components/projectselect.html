@@ -1,11 +1,23 @@
 <template name ="projectselect">
-  <select class="custom-select form-control js-target-project" style="border-left-color: {{projectColor (selectedId)}}; border-left-width:thick;">
-    <option value="" disabled selected>{{t "project.project_placeholder"}}</option>
-    {{#if allProjects}}
-      <option value="all">{{t "overview.all_projects"}}</option>
+  <div class="row">
+    <div class="col pr-0">
+    <select class="custom-select form-control js-target-project" style="border-left-color: {{projectColor (selectedId)}}; border-left-width:thick;">
+      <option value="" disabled selected>{{t "project.project_placeholder"}}</option>
+      {{#if allProjects}}
+        <option value="all">{{t "overview.all_projects"}}</option>
+      {{/if}}
+      {{#each projects}}
+        <option value="{{_id}}">{{name}}</option>
+      {{/each}}
+    </select>
+    </div>
+    {{#if displayProjectInfo}}
+      <div class="col-auto px-0">
+        <a href="#" class="btn text-primary" data-toggle="modal" data-target="#projectInfoPopup"><i class="fa fa-info-circle"></i></a>
+      </div>
+      {{>projectInfoPopup projectId=selectedId}}
+    {{else}}
+      <div class="pr-3"></div>
     {{/if}}
-    {{#each projects}}
-      <option value="{{_id}}">{{name}}</option>
-    {{/each}}
-  </select>
+  </div>
 </template>
