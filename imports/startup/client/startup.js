@@ -93,7 +93,7 @@ Meteor.startup(() => {
           showConfirmButton: false,
           timer: 2000,
           timerProgressBar: true,
-          onOpen: (toast) => {
+          didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
             toast.addEventListener('mouseleave', Swal.resumeTimer)
           },
