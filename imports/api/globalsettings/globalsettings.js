@@ -78,4 +78,7 @@ defaultSettings.push({
   // has to return true or false to allow/prevent the creation/modification of time entries
   return true;`,
 })
+defaultSettings.push({
+  name: 'useStartTime', description: 'settings.use_start_time', type: 'text', value: false,
+})
 export { defaultSettings, Globalsettings }

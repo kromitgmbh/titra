@@ -137,6 +137,14 @@ Template.tracktime.events({
     const projectId = templateInstance.projectId.get()
     const task = templateInstance.$('.js-tasksearch-input').val()
     const date = dayjs.utc(templateInstance.$('.js-date').val(), getGlobalSetting('dateformatVerbose')).toDate()
+    if (getGlobalSetting('useStartTime')) {
+      if ($('#startTime').val()) {
+        date.setHours($('#startTime').val().split(':')[0], $('#startTime').val().split(':')[1])
+      } else {
+        $.Toast.fire({ text: i18next.t('notifications.check_time_input'), icon: 'error' })
+        return
+      }
+    }
     hours = templateInstance.math.eval(hours)
 
     if (getUserSetting('timeunit') === 'd') {
@@ -302,6 +310,7 @@ Template.tracktime.helpers({
   hours: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
     ? Timecards.findOne({ _id: Template.instance().tcid.get() }).hours : false),
   showTracker: () => (getUserSetting('timeunit') !== 'd'),
+  showStartTime: () => (getGlobalSetting('useStartTime')),
   totalTime: () => Template.instance().totalTime.get(),
   previousDay: () => dayjs(Template.instance().date.get()).subtract(1, 'day').format(getGlobalSetting('dateformatVerbose')),
   nextDay: () => dayjs(Template.instance().date.get()).add(1, 'day').format(getGlobalSetting('dateformatVerbose')),

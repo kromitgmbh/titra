@@ -77,9 +77,13 @@ Meteor.publish('userTimeCardsForPeriodByProjectByTask', function periodTimecards
 Meteor.publish('myTimecardsForDate', function myTimecardsForDate({ date }) {
   check(date, String)
   checkAuthentication(this)
+  const startDate = new Date(date)
+  const endDate = new Date(date)
+  startDate.setHours(0)
+  endDate.setHours(23, 59)
   return Timecards.find({
     userId: this.userId,
-    date: new Date(date),
+    date: { $gte: startDate, $lte: endDate },
   })
 })
 Meteor.publish('getDetailedTimeEntriesForPeriodCount', function getDetailedTimeEntriesForPeriodCount({

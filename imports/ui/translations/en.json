@@ -63,7 +63,8 @@
     "month_drag_help_text": "You can drag projects on a date to track time",
     "today": "Today",
     "actions": "Actions",
-    "start_timer": "Start"
+    "start_timer": "Start",
+    "start_time": "Start time"
   },
   "overview": {
     "all_projects": "All projects",
@@ -141,7 +142,8 @@
     "enable_anonymous_logins": "Allow anonymous user creation (activates the /try route)?",
     "show_not_billable_time": "Include not billable projects?",
     "disable_public_projects": "Disable public projects?",
-    "time_entry_rule": "Timetracking rules (creation & modification)"
+    "time_entry_rule": "Timetracking rules (creation & modification)",
+    "use_start_time": "Track start time?"
   },
   "customer": {
     "select_customer": "Select a customer",

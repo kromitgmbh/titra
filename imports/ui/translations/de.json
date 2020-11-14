@@ -63,7 +63,8 @@
     "month_drag_help_text": "Sie können ein Projekt auf ein Datum ziehen um Zeiten zu erfassen",
     "today": "Heute",
     "actions": "Aktionen",
-    "start_timer": "Starten"
+    "start_timer": "Starten",
+    "start_time": "Beginn"
   },
   "overview": {
     "all_projects": "Alle Projekte",
@@ -140,7 +141,8 @@
     "enable_anonymous_logins": "Anonyme Benutzer erlauben (aktiviert die /try Route)?",
     "show_not_billable_time": "Nicht verrechenbare Projekte berücksichtigen?",
     "disable_public_projects": "Öffentliche Projekte deaktivieren?",
-    "time_entry_rule": "Regeln für die Zeiterfassung (Erstellung & Bearbeitung)"
+    "time_entry_rule": "Regeln für die Zeiterfassung (Erstellung & Bearbeitung)",
+    "use_start_time": "Startzeit erfassen?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

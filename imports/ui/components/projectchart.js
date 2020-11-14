@@ -170,6 +170,8 @@ Template.projectchart.onRendered(() => {
                     values: templateInstance.topTasks.get().map((task) => task.count),
                   }],
                 },
+                tooltipOptions: {
+                },
               })
               templateInstance.$('.frappe-chart').height(160)
             })

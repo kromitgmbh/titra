@@ -196,7 +196,9 @@ Template.detailtimetable.onRendered(() => {
               }
             }
             try {
-              templateInstance.datatable = new DataTable('#datatable-container', datatableConfig)
+              window.requestAnimationFrame(() => {
+                templateInstance.datatable = new DataTable('#datatable-container', datatableConfig)
+              })
             } catch (error) {
               console.error(`Caught error: ${error}`)
             }
