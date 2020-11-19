@@ -76,4 +76,37 @@ $dropdown-link-hover-bg: map-get($theme-colors, dark) !default;
 .at-link {
   color: map-get($theme-colors, dark);
 }
+.dp-current {
+  background-color: map-get($theme-colors, primary) !important;
+}
+.dp-cal-month:hover {
+  background-color: map-get($theme-colors, primary) !important;
+}
+.dp-cal-year:hover {
+  background-color: map-get($theme-colors, primary) !important;
+}
+.dp-day:hover {
+  background-color: map-get($theme-colors, primary) !important;
+}
+.dp-day:hover {
+  background-color: map-get($theme-colors, primary) !important;
+}
+.dp-prev:hover {
+  background-color: map-get($theme-colors, primary) !important;
+}
+.dp-next:hover {
+  background-color: map-get($theme-colors, primary) !important;
+}
+.dp-today:hover {
+  background-color: map-get($theme-colors, primary) !important;
+}
+.dp-clear:hover {
+  background-color: map-get($theme-colors, primary) !important;
+}
+.dp-close:hover {
+  background-color: map-get($theme-colors, primary) !important;
+}
+.dp:before {
+  background: map-get($theme-colors, primary) !important;
+}
 @import "{}/imports/ui/styles/general.scss";

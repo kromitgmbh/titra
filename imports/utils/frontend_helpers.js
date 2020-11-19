@@ -1,6 +1,5 @@
 import namedavatar from 'namedavatar'
 import i18next from 'i18next'
-
 import { Globalsettings } from '../api/globalsettings/globalsettings.js'
 
 const clientTimecards = new Mongo.Collection('clientTimecards')
@@ -75,8 +74,8 @@ function validateEmail(email) {
   return re.test(String(email).toLowerCase())
 }
 
-function emojify(match) {
-  const emojiImport = Promise.await(import('node-emoji'))
+async function emojify(match) {
+  const emojiImport = await import('node-emoji')
   return emojiImport.default.emojify(match)
 }
 function loadLanguage(language, i18nextDebugMode) {

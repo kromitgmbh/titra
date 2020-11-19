@@ -180,4 +180,73 @@ $font-weight-base: 200 !default;
 g > text {
     fill: $gray-900;
 }
+
+.fc-theme-standard td, .fc-theme-standard th {
+    border-color: map-get($theme-colors, dark) !important;
+    background-color: map-get($theme-colors, secondary) !important;
+}
+.fc-theme-standard td, .fc-theme-standard th {
+    border-color: map-get($theme-colors, dark) !important;
+    background-color: map-get($theme-colors, secondary) !important;
+}
+.fc-theme-standard .fc-scrollgrid {
+    border-color: map-get($theme-colors, dark) !important;
+}
+.fc .fc-col-header-cell-cushion {
+    color: $gray-900 !important;
+}
+
+.dp {
+    background-color: map-get($theme-colors, secondary) !important;
+    color: $body-color !important;
+}
+.dp-cal-header {
+    background-color: inherit;
+    color: $body-color !important;
+}
+.dp-cal-footer {
+    background-color: inherit;
+}
+.dp-cal-month {
+    color: $body-color !important;
+}
+.dp-cal-year {
+    color: $body-color !important;
+}
+.dp-day {
+    color: $body-color !important;
+}
+.dp-current {
+    background-color: map-get($theme-colors, primary) !important;
+}
+.dp-cal-month:hover {
+    background-color: map-get($theme-colors, primary) !important;
+}
+.dp-cal-year:hover {
+    background-color: map-get($theme-colors, primary) !important;
+}
+.dp-day:hover {
+    background-color: map-get($theme-colors, primary) !important;
+}
+.dp-day:hover {
+    background-color: map-get($theme-colors, primary) !important;
+}
+.dp-prev:hover {
+    background-color: map-get($theme-colors, primary) !important;
+}
+.dp-next:hover {
+    background-color: map-get($theme-colors, primary) !important;
+}
+.dp-today:hover {
+    background-color: map-get($theme-colors, primary) !important;
+}
+.dp-clear:hover {
+    background-color: map-get($theme-colors, primary) !important;
+}
+.dp-close:hover {
+    background-color: map-get($theme-colors, primary) !important;
+}
+.dp:before {
+    background: map-get($theme-colors, primary) !important;
+}
 @import "{}/imports/ui/styles/general.scss";
