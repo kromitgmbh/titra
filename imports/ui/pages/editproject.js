@@ -7,16 +7,16 @@ import i18next from 'i18next'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
-import { validateEmail, getUserSetting, getGlobalSetting, getUserTimeUnitVerbose } from '../../utils/frontend_helpers'
+import { validateEmail, getUserSetting, getGlobalSetting } from '../../utils/frontend_helpers'
 
 function validateWekanUrl() {
   const templateInstance = Template.instance()
   const wekanUrl = templateInstance.$('#wekanurl').val()
-  if (!wekanUrl) {
+  if (!wekanUrl || wekanUrl === undefined) {
     templateInstance.$('#wekanurl').addClass('is-invalid')
     return
   }
-  const authToken = wekanUrl.match(/authToken=(.*)/)[1]
+  const authToken = wekanUrl?.match(/authToken=(.*)/)[1]
   const url = wekanUrl.substring(0, wekanUrl.indexOf('export?'))
   templateInstance.$('#wekan-status').html('<i class="fa fa-spinner fa-spin"></i>')
   templateInstance.$('#wekanurl').prop('disabled', true)

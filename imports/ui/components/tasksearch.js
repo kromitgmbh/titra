@@ -99,7 +99,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
             ddpcon.subscribe('board', 'sandstorm')
           } else if (project.selectedWekanSwimlanes) {
-            const authToken = project.wekanurl.match(/authToken=(.*)/)[1]
+            const authToken = project?.wekanurl?.match(/authToken=(.*)/)[1]
             const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
             const wekanAPITasks = []
             for (const swimlane of project.selectedWekanSwimlanes) {
@@ -123,7 +123,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             } else if (project.selectedWekanList instanceof Array) {
               wekanLists = project.selectedWekanList
             }
-            const authToken = project.wekanurl.match(/authToken=(.*)/)[1]
+            const authToken = project?.wekanurl?.match(/authToken=(.*)/)[1]
             const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
             const wekanAPITasks = []
             for (const wekanList of wekanLists) {
