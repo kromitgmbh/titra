@@ -20,5 +20,9 @@ RUN tar xvzf bundle.tar.gz
 ENV PORT 3000
 RUN cd /app/bundle/programs/server; npm install --production --silent;
 #RUN apk del python make g++
+
+FROM node:12.18-slim
 EXPOSE 3000
+WORKDIR app/
+COPY --from=1 app/bundle bundle
 CMD ["node", "bundle/main.js"]
