@@ -98,7 +98,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
             this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
             ddpcon.subscribe('board', 'sandstorm')
-          } else if (project.selectedWekanSwimlanes) {
+          } else if (project.selectedWekanSwimlanes.length > 0) {
             const authToken = project?.wekanurl?.match(/authToken=(.*)/)[1]
             const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
             const wekanAPITasks = []
@@ -116,7 +116,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
                 console.error(error)
               }
             }
-          } else if (project.selectedWekanList) {
+          } else if (project.selectedWekanList.length > 0) {
             let wekanLists = []
             if (typeof project.selectedWekanList === 'string') {
               wekanLists.push(project.selectedWekanList)

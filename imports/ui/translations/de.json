@@ -87,8 +87,8 @@
     "target": "Ziel / Budget",
     "wekan_integration": "Wekan Integration",
     "wekan_help": "Benötigen Sie Hilfe bei der Konfiguration? Werfen Sie einen Blick in unser titra ",
-    "wekan_list": "Bitte wählen Sie die Wekan Listen für die Zeiterfassung aus:",
-    "wekan_swimlane": "Bitte wählen Sie die Wekan Swimlanes für die Zeiterfassung aus:",
+    "wekan_list": "Wekan Liste(n) für die Zeiterfassung",
+    "wekan_swimlane": "Wekan Swimlane(s) für die Zeiterfassung",
     "access_rights": "Berechtigungen",
     "check": "Prüfen",
     "add": "Hinzufügen",
@@ -312,5 +312,10 @@
     "value": "Wert",
     "global_defaults": "Voreinstellungen:",
     "globalsettings_help": "Benötigen Sie Hilfe bei der Konfiguration? Werfen Sie einen Blick in das titra"
+  },
+  "wekan": {
+    "list": "Wekan Liste",
+    "swimlane": "Wekan Swimlane",
+    "instance_url": "API URL der Wekan Instanz"
   }
 }

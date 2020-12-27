@@ -87,8 +87,8 @@
     "target": "Target / Budget",
     "wekan_integration": "Wekan integration",
     "wekan_help": "Need help with the setup? Checkout the titra ",
-    "wekan_list": "Please select the Wekan lists you want to use for time tracking:",
-    "wekan_swimline": "Please select the Wekan siwmlanes you want to use for time tracking:",
+    "wekan_list": "Wekan list(s) used for time tracking",
+    "wekan_swimlane": "Wekan swimlane(s) used for time tracking",
     "access_rights": "Access rights",
     "check": "Check",
     "add": "Add",
@@ -305,5 +305,10 @@
     "user_deletion_confirmation": "Do you really want to delete this user (it cannot be undone)?",
     "value": "Value",
     "globalsettings_help": "Need help setting the correct values? Checkout the titra"
+  },
+  "wekan": {
+    "list": "Wekan list",
+    "swimlane": "Wekan swimlane",
+    "instance_url": "API URL of the Wekan instance"
   }
 }
