@@ -75,7 +75,9 @@ Template.projectlist.helpers({
   hasArchivedProjects: () => Projects.find({}).count()
     !== Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count(),
   isProjectOwner(_id) {
-    return Projects.findOne({ _id }) ? Projects.findOne({ _id }).userId === Meteor.userId() : false
+    return Projects.findOne({ _id })
+      ? (Projects.findOne({ _id }).userId === Meteor.userId()
+        || Projects.findOne({ _id }).admins.indexOf(Meteor.userId() >= 0)) : false
   },
   colorOpacity(hex, op) {
     return hex2rgba(hex || '#009688', !isNaN(op) ? op : 50)

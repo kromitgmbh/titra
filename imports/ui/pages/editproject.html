@@ -65,28 +65,7 @@
           <div class="card">
             <div class="card-header">{{t "project.access_rights"}}</div>
             <div class="card-block">
-              {{#unless public}}
-              <label><strong>{{t "overview.team"}}</strong></label>
-              <div class="input-group mb-1">
-                <input id="newmembermail" type="email" class="form-control" placeholder="{{t 'project.access_rights_placeholder'}}" aria-label="{{t 'project.access_rights_placeholder'}}">
-                <div class="input-group-append">
-                  <button class="btn btn-secondary border" type="button" id="addNewMember">{{t "project.add"}}</button>
-                </div>
-              </div>
-              <ul class="list-group mb-2">
-                <li class="list-group-item">{{currentUser.profile.name}} (owner)</li>
-                {{#each member in team}}
-                <li id="{{member._id}}" class="list-group-item">{{member.profile.name}} <span class="float-right"><a href="#removeMember" id="removeTeamMember"><i class="fa fa-trash"></i></a></span></li>
-                {{/each}}
-              </ul>
-              {{/unless}} {{#unless disablePublic}}
-              <div class="form-check">
-                {{#if public}}
-                <input name="public" id="public" type="checkbox" checked class="form-check-input" /> {{else}}
-                <input name="public" id="public" type="checkbox" class="form-check-input" /> {{/if}}
-                <label class="form-check-label">{{t "project.public_project"}}</label>
-              </div>
-              {{/unless}}
+              {{> projectAccessRights projectId=projectId}}
             </div>
           </div>
         </div>

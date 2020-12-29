@@ -82,7 +82,10 @@ Meteor.methods({
     } else {
       updateJSON.notbillable = true
     }
-    Projects.update({ userId: this.userId, _id: projectId }, { $set: updateJSON })
+    Projects.update({
+      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+      _id: projectId,
+    }, { $set: updateJSON })
   },
   createProject({ projectArray }) {
     check(projectArray, Array)
@@ -106,7 +109,7 @@ Meteor.methods({
     check(projectId, String)
     checkAuthentication(this)
     Projects.remove({
-      $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+      $or: [{ userId: this.userId }, { public: true }],
       _id: projectId,
     })
     return true
@@ -114,13 +117,21 @@ Meteor.methods({
   archiveProject({ projectId }) {
     check(projectId, String)
     checkAuthentication(this)
-    Projects.update({ _id: projectId }, { $set: { archived: true } })
+    Projects.update({
+      _id: projectId,
+      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+    },
+    { $set: { archived: true } })
     return true
   },
   restoreProject({ projectId }) {
     check(projectId, String)
     checkAuthentication(this)
-    Projects.update({ _id: projectId }, { $set: { archived: false } })
+    Projects.update({
+      _id: projectId,
+      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+    },
+    { $set: { archived: false } })
     return true
   },
   getTopTasks({ projectId, includeNotBillableTime, showArchived }) {
@@ -150,11 +161,10 @@ Meteor.methods({
     check(projectId, String)
     check(eMail, String)
     checkAuthentication(this)
-    if (!this.userId) {
-      throw new Meteor.Error('notifications.auth_error_method')
-    }
     const targetProject = Projects.findOne({ _id: projectId })
-    if (!targetProject || targetProject.userId !== this.userId) {
+    if (!targetProject
+      || !(targetProject.userId === this.userId
+        || targetProject.admins.indexOf(this.userId) >= 0)) {
       throw new Meteor.Error('notifications.only_owner_can_add_team_members')
     }
     const targetUser = Meteor.users.findOne({ 'emails.0.address': eMail })
@@ -170,11 +180,32 @@ Meteor.methods({
     check(userId, String)
     checkAuthentication(this)
     const targetProject = Projects.findOne({ _id: projectId })
-    if (!targetProject || targetProject.userId !== this.userId) {
+    if (!targetProject
+      || !(targetProject.userId === this.userId
+        || targetProject.admins.indexOf(this.userId) >= 0)) {
       throw new Meteor.Error('notifications.only_owner_can_remove_team_members')
     }
     Projects.update({ _id: targetProject._id }, { $pull: { team: userId } })
+    Projects.update({ _id: targetProject._id }, { $pull: { admins: userId } })
     return 'notifications.team_member_removed_success'
+  },
+  changeProjectRole({ projectId, userId, administrator }) {
+    check(projectId, String)
+    check(userId, String)
+    check(administrator, Boolean)
+    checkAuthentication(this)
+    const targetProject = Projects.findOne({ _id: projectId })
+    if (!targetProject
+      || !(targetProject.userId === this.userId
+        || targetProject.admins.indexOf(this.userId) >= 0)) {
+      throw new Meteor.Error('notifications.only_owner_can_remove_team_members')
+    }
+    if (administrator) {
+      Projects.update({ _id: targetProject._id }, { $push: { admins: userId } })
+    } else {
+      Projects.update({ _id: targetProject._id }, { $pull: { admins: userId } })
+    }
+    return 'notifications.access_rights_updated'
   },
   updatePriority({ projectId, priority }) {
     check(projectId, String)

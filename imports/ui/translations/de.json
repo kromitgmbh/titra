@@ -73,7 +73,7 @@
     "three_month_history": "3-Monats-Ansicht",
     "details_button": "Details",
     "project_information": "Projekt Informationen",
-    "team": "Team: ",
+    "team": "Team",
     "total_time": "Gesamte Zeit: ",
     "target": "Ziel: ",
     "turnover": "Umsatz: ",
@@ -262,7 +262,8 @@
     "password_changed": "Ihr Passwort wurde erfolgreich geändert.",
     "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch in ",
     "siwapp_success": "Die Rechnung wurde in Siwapp erfolgreich erstellt.",
-    "time_entry_rule_failed": "Die Daten entsprechen nicht den definierten Regeln."
+    "time_entry_rule_failed": "Die Daten entsprechen nicht den definierten Regeln.",
+    "access_rights_updated": "Die Projekt Zugriffsrechte wurden aktualisiert."
   },
   "login": {
     "password": "Passwort",

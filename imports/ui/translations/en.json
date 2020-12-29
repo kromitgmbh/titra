@@ -73,7 +73,7 @@
     "three_month_history": "3-month history",
     "details_button": "Details",
     "project_information": "Project information",
-    "team": "Team: ",
+    "team": "Team ",
     "total_time": "Total time: ",
     "target": "Target: ",
     "turnover": "Turnover: ",
@@ -94,7 +94,7 @@
     "add": "Add",
     "access_rights_placeholder": "E-mail address of team member to add",
     "public_project": "Public project (visible to all users)",
-    "owner": "owner",
+    "owner": "Owner",
     "project_placeholder": "Select a project",
     "my_project_placeholder": "My project",
     "not_billable": "Not billable",
@@ -256,7 +256,8 @@
     "password_changed": "Your password has been changed.",
     "connectioncheck": "Could not connect to server. Trying again in ",
     "siwapp_success": "Siwapp invoice created successfully.",
-    "time_entry_rule_failed": "Time entry does not follow the specified rules."
+    "time_entry_rule_failed": "Time entry does not follow the specified rules.",
+    "access_rights_updated": "Project access rights have been updated."
   },
   "login": {
     "password": "Password",

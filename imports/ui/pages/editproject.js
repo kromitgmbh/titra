@@ -8,11 +8,11 @@ import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
 import '../components/wekanInterfaceSettings.js'
-import { validateEmail, getUserSetting, getGlobalSetting } from '../../utils/frontend_helpers'
+import '../components/projectAccessRights.js'
+import { getUserSetting, getGlobalSetting } from '../../utils/frontend_helpers'
 
 Template.editproject.onCreated(function editprojectSetup() {
   this.deletion = new ReactiveVar(false)
-
   this.projectId = new ReactiveVar()
   this.project = new ReactiveVar()
   this.notbillable = new ReactiveVar(false)
@@ -94,6 +94,10 @@ Template.editproject.onRendered(() => {
     }
     if (project) {
       const userIds = project.team ? project.team : []
+      if (project.admins) {
+        userIds.concat(project.admins)
+      }
+      userIds.push(project.userId)
       templateInstance.subscribe('projectTeam', { userIds })
     }
   })
@@ -164,34 +168,6 @@ Template.editproject.events({
     event.preventDefault()
     FlowRouter.go('/list/projects')
   },
-  'click #addNewMember': (event, templateInstance) => {
-    event.preventDefault()
-    const newmembermail = templateInstance.$('#newmembermail').val()
-    if (newmembermail && validateEmail(newmembermail)) {
-      Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: templateInstance.$('#newmembermail').val() }, (error, result) => {
-        if (error) {
-          $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
-        } else {
-          templateInstance.$('#newmembermail').val('')
-          $.Toast.fire(i18next.t(result))
-        }
-      })
-      templateInstance.$('#newmembermail').removeClass('is-invalid')
-    } else {
-      templateInstance.$('#newmembermail').addClass('is-invalid')
-    }
-  },
-  'click #removeTeamMember': (event) => {
-    event.preventDefault()
-    const userId = event.currentTarget.parentElement.parentElement.id
-    Meteor.call('removeTeamMember', { projectId: FlowRouter.getParam('id'), userId }, (error, result) => {
-      if (error) {
-        $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
-      } else {
-        $.Toast.fire(i18next.t(result))
-      }
-    })
-  },
   'click .js-delete-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
@@ -232,6 +208,9 @@ Template.editproject.events({
     })
   },
   'change #color': (event, templateInstance) => {
+    if (!templateInstance.$(event.currentTarget).val()) {
+      templateInstance.$(event.currentTarget).val('#009688')
+    }
     if (!Template.instance().pickr?.setColor(templateInstance.$(event.currentTarget).val())) {
       templateInstance.$('#color').addClass('is-invalid')
     } else {
@@ -268,6 +247,6 @@ Template.editproject.helpers({
 })
 
 Template.editproject.onDestroyed(function editprojectDestroyed() {
-  this.pickr.destroy()
+  this.pickr?.destroy()
   delete this.pickr
 })
