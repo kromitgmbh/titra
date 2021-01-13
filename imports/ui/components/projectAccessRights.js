@@ -50,10 +50,12 @@ Template.projectAccessRights.onRendered(() => {
         Meteor.users.findOne({ _id: templateInstance.project?.get()?.userId })?.profile?.name,
         templateInstance.project?.get()?.userId,
         templateInstance.project?.get()?.userId])
-      for (const member of templateInstance.project.get().team) {
-        const user = Meteor.users.findOne({ _id: member })
-        if (user !== undefined) {
-          data.push([user?.profile?.name, user?._id, user?._id])
+      if (templateInstance.project.get()?.team) {
+        for (const member of templateInstance.project.get().team) {
+          const user = Meteor.users.findOne({ _id: member })
+          if (user !== undefined) {
+            data.push([user?.profile?.name, user?._id, user?._id])
+          }
         }
       }
       if (!templateInstance.projectAccessRightsDataTable) {
