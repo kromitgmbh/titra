@@ -1,5 +1,17 @@
 <template name="tasksearch">
-  <input type="text" value="{{task}}" class="js-tasksearch-input form-control" placeholder="{{t "tracktime.task_placeholder"}}"/>
+      <div class="input-group">
+        <input type="text" value="{{task}}" class="js-tasksearch-input form-control" placeholder='{{t "tracktime.task_placeholder"}}'/>
+        {{#if displayTaskSelectionIcon}}
+          <div class="input-group-append">
+            <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#taskSelectPopup">
+                <i class="fas fa-list-alt"></i>
+            </button>
+          </div>
+        {{/if}}
+      </div>
+      {{#if displayTaskSelectionIcon}}
+        {{> taskSelectPopup projectId=projectId}}
+      {{/if}}
   {{#if tasks}}
     <div class="list-group js-tasksearch-results position-absolute d-none" style="z-index:999;">
       {{#unless Template.subscriptionsReady}}

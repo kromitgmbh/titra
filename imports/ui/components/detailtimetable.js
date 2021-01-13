@@ -374,6 +374,6 @@ Template.detailtimetable.events({
 })
 Template.detailtimetable.onDestroyed(() => {
   FlowRouter.setQueryParams({ page: null })
-  Template.instance().datatable.destroy()
+  Template.instance().datatable?.destroy()
   Template.instance().datatable = undefined
 })

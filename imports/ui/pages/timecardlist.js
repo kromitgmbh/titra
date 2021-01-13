@@ -29,10 +29,12 @@ Template.timecardlist.onRendered(() => {
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && window.BootstrapLoaded.get()) {
       window.requestAnimationFrame(() => {
-        templateInstance.$('[data-toggle="tooltip"]').tooltip({
-          container: templateInstance.firstNode,
-          trigger: 'hover focus',
-        })
+        if (templateInstance.$('[data-toggle="tooltip"]').get(0)) {
+          templateInstance.$('[data-toggle="tooltip"]').tooltip({
+            container: templateInstance.firstNode,
+            trigger: 'hover focus',
+          })
+        }
       })
     }
     if (FlowRouter.getParam('projectId')) {

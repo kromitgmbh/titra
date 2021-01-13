@@ -1,4 +1,3 @@
-import i18next from 'i18next'
 import './allprojectschart.html'
 import { getUserSetting, getUserTimeUnitVerbose } from '../../utils/frontend_helpers'
 
@@ -51,61 +50,63 @@ Template.allprojectschart.onRendered(() => {
       if (templateInstance.projectStats.get()) {
         import('frappe-charts/dist/frappe-charts.min.css').then(() => {
           import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
-            window.requestAnimationFrame(() => {
-              const { Chart } = chartModule
-              const stats = templateInstance.projectStats.get()
-              if (stats && templateInstance.$('.js-chart-container')[0] && templateInstance.$('.js-chart-container').is(':visible')) {
-                if (getUserSetting('timeunit') === 'd') {
-                  stats.beforePreviousMonthHours
+            const { Chart } = chartModule
+            const stats = templateInstance.projectStats.get()
+            if (stats) {
+              if (getUserSetting('timeunit') === 'd') {
+                stats.beforePreviousMonthHours
                     /= getUserSetting('hoursToDays')
-                  stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-                    .toFixed(precision)
-                  stats.previousMonthHours
+                stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+                  .toFixed(precision)
+                stats.previousMonthHours
                     /= getUserSetting('hoursToDays')
-                  stats.previousMonthHours = Number(stats.previousMonthHours)
-                    .toFixed(precision)
-                  stats.currentMonthHours
+                stats.previousMonthHours = Number(stats.previousMonthHours)
+                  .toFixed(precision)
+                stats.currentMonthHours
                     /= getUserSetting('hoursToDays')
-                  stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-                }
-                if (getUserSetting('timeunit') === 'm') {
-                  stats.beforePreviousMonthHours *= 60
-                  stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-                    .toFixed(precision)
-                  stats.previousMonthHours *= 60
-                  stats.previousMonthHours = Number(stats.previousMonthHours)
-                    .toFixed(precision)
-                  stats.currentMonthHours *= 60
-                  stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-                }
-                if (templateInstance.chart) {
-                  templateInstance.chart.destroy()
-                }
-                templateInstance.chart = new Chart(templateInstance.$('.js-chart-container')[0], {
-                  type: 'line',
-                  height: 160,
-                  colors: ['#009688'],
-                  lineOptions: {
-                    regionFill: 1,
-                  },
-                  data: {
-                    labels:
+                stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+              }
+              if (getUserSetting('timeunit') === 'm') {
+                stats.beforePreviousMonthHours *= 60
+                stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+                  .toFixed(precision)
+                stats.previousMonthHours *= 60
+                stats.previousMonthHours = Number(stats.previousMonthHours)
+                  .toFixed(precision)
+                stats.currentMonthHours *= 60
+                stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+              }
+              if (templateInstance.chart) {
+                templateInstance.chart.destroy()
+              }
+              window.requestAnimationFrame(() => {
+                if (templateInstance.$('.js-chart-container')[0] && templateInstance.$('.js-chart-container').is(':visible')) {
+                  templateInstance.chart = new Chart(templateInstance.$('.js-chart-container')[0], {
+                    type: 'line',
+                    height: 160,
+                    colors: ['#009688'],
+                    lineOptions: {
+                      regionFill: 1,
+                    },
+                    data: {
+                      labels:
                     [stats.beforePreviousMonthName,
                       stats.previousMonthName,
                       stats.currentMonthName],
-                    datasets: [{
-                      values:
+                      datasets: [{
+                        values:
                       [stats.beforePreviousMonthHours,
                         stats.previousMonthHours,
                         stats.currentMonthHours],
-                    }],
-                  },
-                  tooltipOptions: {
-                    formatTooltipY: (value) => `${value} ${getUserTimeUnitVerbose()}`,
-                  },
-                })
-              }
-            })
+                      }],
+                    },
+                    tooltipOptions: {
+                      formatTooltipY: (value) => `${value} ${getUserTimeUnitVerbose()}`,
+                    },
+                  })
+                }
+              })
+            }
           })
         })
       }

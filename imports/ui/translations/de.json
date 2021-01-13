@@ -17,6 +17,7 @@
     "loading": "Lade Daten ...",
     "project": "Projekt",
     "task": "Tätigkeit",
+    "task_plural": "Tätigkeiten",
     "time": "Zeit",
     "date": "Datum",
     "resource": "Ressource",
@@ -171,7 +172,10 @@
     "all": "Alle Ressourcen"
   },
   "task": {
-    "searching": "Nach Tätigkeit suchen ..."
+    "searching": "Nach Tätigkeit suchen ...",
+    "storedTasks": "Gespeicherte Tätigkeiten",
+    "search": "Tätigkeit suchen",
+    "lastUsed": "Zuletzt verwendet"
   },
   "details": {
     "filter": "Filter",
@@ -260,7 +264,7 @@
     "user_not_found": "Wir konnten keinen Benutzer mit dieser E-mail Adresse finden, bitte stellen Sie sicher dass der Benutzer existiert.",
     "project_priority_success": "Projekt Priorität aktualisiert",
     "password_changed": "Ihr Passwort wurde erfolgreich geändert.",
-    "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch in ",
+    "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch ",
     "siwapp_success": "Die Rechnung wurde in Siwapp erfolgreich erstellt.",
     "time_entry_rule_failed": "Die Daten entsprechen nicht den definierten Regeln.",
     "access_rights_updated": "Die Projekt Zugriffsrechte wurden aktualisiert."

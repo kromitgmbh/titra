@@ -18,7 +18,7 @@
         <div class="input-group">
           <input type="text" class="js-date form-control text-center bg-primary text-white" value="{{date}}">
           <div class="input-group-append">
-            <span class="input-group-text bg-primary js-open-calendar" style="cursor:pointer"><i class="fa fa-calendar"></i></span>
+            <span class="input-group-text bg-primary text-white js-open-calendar" style="cursor:pointer"><i class="fa fa-calendar"></i></span>
           </div>
         </div>
       </div>
@@ -80,7 +80,7 @@
     </div>
     <div class="form-group">
       <label for="task">{{t "globals.task"}}</label>
-      {{>tasksearch tcid=tcid}}
+      {{>tasksearch tcid=tcid projectId=reactiveProjectId}}
     </div>
     <div class="form-group">
       <div class="row">

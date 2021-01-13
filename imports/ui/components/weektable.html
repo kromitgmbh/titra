@@ -50,7 +50,7 @@
           {{#if task._id}}
             <div class="card form-control" style="overflow:hidden" data-toggle="tooltip" data-placement="bottom" title="{{task._id}}">{{task._id}}</div>
           {{else}}
-            {{>tasksearch}}
+            {{>tasksearch projectId=false}}
           {{/if}}
         </td>
         {{#each weekday in weekDays}}

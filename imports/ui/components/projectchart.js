@@ -92,58 +92,60 @@ Template.projectchart.onRendered(() => {
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
       const stats = ProjectStats.findOne({ _id: templateInstance.data.projectId })
-      if (stats && templateInstance.$('.js-hours-chart-container')[0] && templateInstance.$('.js-hours-chart-container').is(':visible')) {
+      if (stats) {
         import('frappe-charts/dist/frappe-charts.min.css').then(() => {
           import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
-            window.requestAnimationFrame(() => {
-              const { Chart } = chartModule
-              if (getUserSetting('timeunit') === 'd') {
-                stats.beforePreviousMonthHours
+            const { Chart } = chartModule
+            if (getUserSetting('timeunit') === 'd') {
+              stats.beforePreviousMonthHours
                   /= getUserSetting('hoursToDays')
-                stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-                  .toFixed(precision)
-                stats.previousMonthHours
+              stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+                .toFixed(precision)
+              stats.previousMonthHours
                   /= getUserSetting('hoursToDays')
-                stats.previousMonthHours = Number(stats.previousMonthHours)
-                  .toFixed(precision)
-                stats.currentMonthHours
+              stats.previousMonthHours = Number(stats.previousMonthHours)
+                .toFixed(precision)
+              stats.currentMonthHours
                   /= getUserSetting('hoursToDays')
-              }
-              if (getUserSetting('timeunit') === 'm') {
-                stats.beforePreviousMonthHours *= 60
-                stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-                  .toFixed(precision)
-                stats.previousMonthHours *= 60
-                stats.previousMonthHours = Number(stats.previousMonthHours)
-                  .toFixed(precision)
-                stats.currentMonthHours *= 60
-                stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-              }
+            }
+            if (getUserSetting('timeunit') === 'm') {
+              stats.beforePreviousMonthHours *= 60
+              stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+                .toFixed(precision)
+              stats.previousMonthHours *= 60
+              stats.previousMonthHours = Number(stats.previousMonthHours)
+                .toFixed(precision)
+              stats.currentMonthHours *= 60
               stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-              if (templateInstance.chart) {
-                templateInstance.chart.destroy()
-              }
-              templateInstance.chart = new Chart(templateInstance.$('.js-hours-chart-container')[0], {
-                type: 'line',
-                height: 160,
-                colors: [Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688'],
-                lineOptions: {
-                  regionFill: 1,
-                },
-                data: {
-                  labels:
+            }
+            stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+            if (templateInstance.chart) {
+              templateInstance.chart.destroy()
+            }
+            window.requestAnimationFrame(() => {
+              if (templateInstance.$('.js-hours-chart-container')[0] && templateInstance.$('.js-hours-chart-container').is(':visible')) {
+                templateInstance.chart = new Chart(templateInstance.$('.js-hours-chart-container')[0], {
+                  type: 'line',
+                  height: 160,
+                  colors: [Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688'],
+                  lineOptions: {
+                    regionFill: 1,
+                  },
+                  data: {
+                    labels:
                   [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
-                  datasets: [{
-                    values:
+                    datasets: [{
+                      values:
                     [stats.beforePreviousMonthHours,
                       stats.previousMonthHours,
                       stats.currentMonthHours],
-                  }],
-                },
-                tooltipOptions: {
-                  formatTooltipY: (value) => `${value} ${getUserTimeUnitVerbose()}`,
-                },
-              })
+                    }],
+                  },
+                  tooltipOptions: {
+                    formatTooltipY: (value) => `${value} ${getUserTimeUnitVerbose()}`,
+                  },
+                })
+              }
             })
           })
         })
@@ -152,7 +154,7 @@ Template.projectchart.onRendered(() => {
   })
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
-      if (templateInstance.topTasks.get() && templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
+      if (templateInstance.topTasks.get()) {
         import('frappe-charts/dist/frappe-charts.min.css').then(() => {
           import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
             window.requestAnimationFrame(() => {
@@ -160,20 +162,22 @@ Template.projectchart.onRendered(() => {
               if (templateInstance.piechart) {
                 templateInstance.piechart.destroy()
               }
-              templateInstance.piechart = new Chart(templateInstance.$('.js-pie-chart-container')[0], {
-                type: 'pie',
-                colors: [Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', '#66c0b8', '#e4e4e4'],
-                height: 230,
-                data: {
-                  labels: templateInstance.topTasks.get().map((task) => task._id),
-                  datasets: [{
-                    values: templateInstance.topTasks.get().map((task) => task.count),
-                  }],
-                },
-                tooltipOptions: {
-                },
-              })
-              templateInstance.$('.frappe-chart').height(160)
+              if (templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
+                templateInstance.piechart = new Chart(templateInstance.$('.js-pie-chart-container')[0], {
+                  type: 'pie',
+                  colors: [Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', '#66c0b8', '#e4e4e4'],
+                  height: 230,
+                  data: {
+                    labels: templateInstance.topTasks.get().map((task) => task._id),
+                    datasets: [{
+                      values: templateInstance.topTasks.get().map((task) => task.count),
+                    }],
+                  },
+                  tooltipOptions: {
+                  },
+                })
+                templateInstance.$('.frappe-chart').height(160)
+              }
             })
           })
         })

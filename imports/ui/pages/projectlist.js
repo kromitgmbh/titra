@@ -87,7 +87,7 @@ Template.projectlist.helpers({
   },
   adsenseClientId: () => Meteor.settings.public.adsenseClientId,
   adsenseAdSlot: () => Meteor.settings.public.adsenseAdSlot,
-  projectCount: () => (Template.instance().data.showArchived.get()
+  projectCount: () => (Template.instance().data?.showArchived?.get()
     ? Projects.find({}).count()
     : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count()),
 })

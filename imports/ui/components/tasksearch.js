@@ -3,6 +3,7 @@ import { DDP } from 'meteor/ddp-client'
 import { Mongo } from 'meteor/mongo'
 import { HTTP } from 'meteor/http'
 import './tasksearch.html'
+import './taskSelectPopup.js'
 import Tasks from '../../api/tasks/tasks.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
@@ -170,4 +171,7 @@ Template.tasksearch.helpers({
     return finalArray.length > 0 ? finalArray.slice(0, 4) : false
   },
   task: () => Template.instance().data.task,
+  projectId: () => Template.instance()?.data?.projectId,
+  displayTaskSelectionIcon: () => (Template.instance()?.data?.projectId
+    ? Template.instance()?.data?.projectId?.get() : false)
 })

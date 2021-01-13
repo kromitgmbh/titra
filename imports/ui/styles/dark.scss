@@ -60,6 +60,14 @@ $font-weight-base: 200 !default;
 @import "{}/node_modules/sweetalert2/src/sweetalert2.scss";
 
 //++++ [custom] ++++
+.btn-outline-secondary {
+    border-color: #5B5B5B !important;
+    color: $gray-900 !important;
+}
+.btn-outline-secondary:hover {
+    background-color: $titra-dark !important;
+}
+
 .ql-editor {
     line-height: 1em;
     background-color: #444444 !important;

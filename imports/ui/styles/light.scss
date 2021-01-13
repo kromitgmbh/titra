@@ -36,6 +36,13 @@ $dropdown-link-hover-bg: map-get($theme-colors, dark) !default;
     background-color: #ffffff;
     border-color: #e8e8e8;
 }
+.btn-outline-secondary {
+  border-color: #ced4da !important;
+  color: #212529 !important;
+}
+.btn-outline-secondary:hover{
+  background-color: #ececec !important;
+}
 .fc-button-primary {
     color: #000000 !important;
     background-color: map-get($theme-colors, secondary) !important;
