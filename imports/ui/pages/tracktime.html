@@ -3,7 +3,7 @@
     <div class="row pb-3">
       {{#unless isEdit}}
         <div class="col-2">
-            <button class="btn btn-secondary border form-control js-previous"><i class="fa fa-chevron-left"></i></button>
+            <button type="button" class="btn btn-secondary border form-control js-previous"><i class="fa fa-chevron-left"></i></button>
         </div>
         <div class="col d-none d-lg-block text-right">
           <div class="text-muted pt-2 js-previous" style="cursor:pointer;">
@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="col-2 text-right">
-            <button class="btn btn-secondary border form-control js-next"><i class="fa fa-chevron-right"></i></button>
+            <button type="button" class="btn btn-secondary border form-control js-next"><i class="fa fa-chevron-right"></i></button>
         </div>
       {{/unless}}
     </div>
@@ -115,17 +115,17 @@
     <div class="row">
         {{#if isEdit}}
           <div class="col-6 mr-auto">
-            <button class="btn btn-secondary border form-control" data-dismiss="modal" aria-label="Close">{{t "navigation.cancel"}}</button>
+            <button type="button" class="btn btn-secondary border form-control" data-dismiss="modal" aria-label="Close">{{t "navigation.cancel"}}</button>
           </div>
           <div class="col-6">
-            <button class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
+            <button type="button" class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
           </div>
         {{else}}
           <div class="col-6 col-md-3 mr-auto">
             {{>backbutton}}
           </div>
           <div class="col-6 col-md-3">
-            <button class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
+            <button type="button" class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
           </div>
         {{/if}}
     </div>

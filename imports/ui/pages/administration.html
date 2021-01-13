@@ -26,7 +26,7 @@
                                     <input id="{{setting.name}}" name="{{setting.name}}" type="{{setting.type}}" value="{{stringify setting.value}}" class="form-control js-setting-input"/>
                                 {{/if}}
                             </td>
-                            <td><button class="btn js-reset" data-setting-name="{{setting.name}}"><i class="fa fa-undo" title='{{t "settings.reset"}}'></i></button></td>
+                            <td><button type="button" class="btn js-reset" data-setting-name="{{setting.name}}"><i class="fa fa-undo" title='{{t "settings.reset"}}'></i></button></td>
                         </tr>
                     {{/each}}
                 </table>
@@ -37,8 +37,8 @@
                 </div>
             </div>
             <hr/>
-            <button class="btn btn-danger" id="reset">{{t "settings.reset"}}</button>
-            <button class="btn btn-primary js-save float-right">{{t "navigation.save"}}</button>
+            <button type="button" class="btn btn-danger" id="reset">{{t "settings.reset"}}</button>
+            <button type="button" class="btn btn-primary js-save float-right">{{t "navigation.save"}}</button>
         </div>
         <div class="tab-pane fade table-responsive p-3 tab-borders" id="users">
             <div class="card form-group">
@@ -54,7 +54,7 @@
                         <div class="input-group mr-sm-2">
                             <input class="form-control" placeholder='{{t "login.password"}}' type="text" name="password" id="password"/>
                             <div class="input-group-append">
-                                <button class="btn btn-outline-dark js-generate-password" type="button"><i class="fa fa-random"></i></button>
+                                <button type="button" class="btn btn-outline-dark js-generate-password"><i class="fa fa-random"></i></button>
                             </div>
                         </div>
                         <div class="form-check mr-sm-2">
@@ -63,7 +63,7 @@
                             {{t "administration.admin"}}
                             </label>
                         </div>
-                        <button class="btn btn-primary" id="js-create-user">{{t "administration.create"}}</button>
+                        <button type="button" class="btn btn-primary" id="js-create-user">{{t "administration.create"}}</button>
                     </form>
                 </div>
             </div>

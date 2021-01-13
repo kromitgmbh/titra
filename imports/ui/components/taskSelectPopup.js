@@ -28,7 +28,7 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
         templateInstance.localTasksColumns = new ReactiveVar([{
           name: i18next.t('globals.task'),
           editable: false,
-          format: (value) => `<button class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
+          format: (value) => `<button type="button" class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
         }, {
           name: i18next.t('task.lastUsed'),
           editable: false,
@@ -108,7 +108,7 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
         templateInstance.wekanTasksColumns = new ReactiveVar([
           {
             name: i18next.t('globals.task'),
-            format: (value) => `<button class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
+            format: (value) => `<button type="button" class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
           },
           {
             name: i18next.t('globals.description'),

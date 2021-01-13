@@ -77,7 +77,7 @@ Template.projectlist.helpers({
   isProjectOwner(_id) {
     return Projects.findOne({ _id })
       ? (Projects.findOne({ _id }).userId === Meteor.userId()
-        || Projects.findOne({ _id }).admins.indexOf(Meteor.userId() >= 0)) : false
+        || Projects.findOne({ _id })?.admins?.indexOf(Meteor.userId() >= 0)) : false
   },
   colorOpacity(hex, op) {
     return hex2rgba(hex || '#009688', !isNaN(op) ? op : 50)

@@ -19,7 +19,7 @@
                     <label class="d-block">{{t "settings.current"}}</label>
                     {{#if currentUser.profile.avatar}}
                         <img id="avatar" src="{{currentUser.profile.avatar}}" alt='{{t "settings.avatar"}}' class="img-responsive"/>
-                        <button class="btn btn-secondary d-block" id="removeAvatar">{{t "settings.reset"}}</button>
+                        <button type="button" class="btn btn-secondary d-block" id="removeAvatar">{{t "settings.reset"}}</button>
                     {{else}}
                         {{{svgAvatar}}}
                     {{/if}}
@@ -31,7 +31,7 @@
                         <div class="input-group" id="colpick">
                             <input name="avatarColor" id="avatarColor" type="text" value="{{avatarColor}}" data-color="{{avatarColor}}" class="form-control" />
                             <div class="input-group-append">
-                            <button class="btn" id="avatarColorPickr" type="button"></button>
+                            <button type="button" class="btn" id="avatarColorPickr"></button>
                             </div>
                         </div>
                         </div>
@@ -101,7 +101,7 @@
               {{>backbutton}}
             </div>
             <div class="col-6 col-md-3">
-              <button class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
+              <button type="button" class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
             </div>
           </div>
     </form>
