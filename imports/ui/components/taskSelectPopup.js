@@ -59,13 +59,9 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
             const wekanAPITasks = []
             for (const swimlane of project.selectedWekanSwimlanes) {
               try {
-                HTTP.get(`${url}swimlanes/${swimlane}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }, (innerError, innerResult) => {
-                  if (innerError) {
-                    console.error(innerError)
-                  } else {
-                    Array.prototype.push.apply(wekanAPITasks, innerResult.data)
-                    this.wekanAPITasks.set(wekanAPITasks)
-                  }
+                window.fetch(`${url}swimlanes/${swimlane}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((innerResult) => {
+                  Array.prototype.push.apply(wekanAPITasks, innerResult)
+                  this.wekanAPITasks.set(wekanAPITasks)
                 })
               } catch (error) {
                 console.error(error)
@@ -83,13 +79,9 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
             const wekanAPITasks = []
             for (const wekanList of wekanLists) {
               try {
-                HTTP.get(`${url}lists/${wekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }, (innerError, innerResult) => {
-                  if (innerError) {
-                    console.error(innerError)
-                  } else {
-                    Array.prototype.push.apply(wekanAPITasks, innerResult.data)
-                    this.wekanAPITasks.set(wekanAPITasks)
-                  }
+                window.fetch(`${url}lists/${wekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((innerResult) => {
+                  Array.prototype.push.apply(wekanAPITasks, innerResult)
+                  this.wekanAPITasks.set(wekanAPITasks)
                 })
               } catch (error) {
                 console.error(error)

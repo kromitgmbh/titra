@@ -11,17 +11,17 @@ blaze-html-templates@1.0.4 # Compile .html files into Meteor Blaze views
 reactive-var@1.0.11            # Reactive variable for tracker
 tracker@1.2.0                 # Meteor's client-side reactive programming library
 
-standard-minifier-css@1.7.1   # CSS minifier run for production mode
+standard-minifier-css@1.7.2   # CSS minifier run for production mode
 standard-minifier-js@2.6.0    # JS minifier run for production mode
 es5-shim@4.8.0                # ECMAScript 5 compatibility for older browsers.
-ecmascript@0.14.4              # Enable ECMAScript2015+ syntax in app code
+ecmascript@0.15.0              # Enable ECMAScript2015+ syntax in app code
 shell-server@0.5.0            # Server-side component of the `meteor shell` command
 
 fourseven:scss@4.5.0
-accounts-password@1.6.3
+accounts-password@1.7.0
 check@1.3.1
 random@1.2.0
-dynamic-import@0.5.5
+dynamic-import@0.6.0
 ostrio:loggerconsole
 faburem:client-server-logger
 email@2.0.0

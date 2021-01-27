@@ -9,20 +9,14 @@
     {{#unless displayHelp}}
         <small class="form-text text-muted">{{t "project.wekan_help"}} <a href="https://github.com/faburem/titra/wiki/Wekan-integration" target="_blank">wiki</a>.</small>
     {{/unless}}
-    {{#if wekanLists}}
-      <br/>
-      <div class="form-group">
-        <!-- <small class="form-text text-muted">{{t "project.wekan_list"}}</small> -->
-        <div id="wekan-list-container">
-        </div>
-      </div>
-    {{/if}}
-    {{#if wekanSwimlanes}}
-      <p>{{t "globals.or"}}</p>
-      <div class="form-group">
-        <!-- <small class="form-text text-muted">{{t "project.wekan_swimlane"}}</small> -->
-        <div id="wekan-swimlane-container">
-        </div>
-      </div>
-    {{/if}}
+    <div class="form-group">
+      {{#if wekanLists}}
+        <br/>
+      {{/if}}
+      <div id="wekan-list-container"></div>
+      {{#if wekanSwimlanes}}
+        <p>{{t "globals.or"}}</p>
+      {{/if}}
+      <div id="wekan-swimlane-container"></div>
+    </div>
 </template>

@@ -1,7 +1,6 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { DDP } from 'meteor/ddp-client'
 import { Mongo } from 'meteor/mongo'
-import { HTTP } from 'meteor/http'
 import './tasksearch.html'
 import './taskSelectPopup.js'
 import Tasks from '../../api/tasks/tasks.js'
@@ -99,25 +98,21 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
             this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
             ddpcon.subscribe('board', 'sandstorm')
-          } else if (project.selectedWekanSwimlanes.length > 0) {
+          } else if (project.selectedWekanSwimlanes?.length > 0) {
             const authToken = project?.wekanurl?.match(/authToken=(.*)/)[1]
             const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
             const wekanAPITasks = []
             for (const swimlane of project.selectedWekanSwimlanes) {
               try {
-                HTTP.get(`${url}swimlanes/${swimlane}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }, (innerError, innerResult) => {
-                  if (innerError) {
-                    console.error(innerError)
-                  } else {
-                    Array.prototype.push.apply(wekanAPITasks, innerResult.data)
-                    this.wekanAPITasks.set(wekanAPITasks)
-                  }
+                window.fetch(`${url}swimlanes/${swimlane}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((innerResult) => {
+                  Array.prototype.push.apply(wekanAPITasks, innerResult)
+                  this.wekanAPITasks.set(wekanAPITasks)
                 })
               } catch (error) {
                 console.error(error)
               }
             }
-          } else if (project.selectedWekanList.length > 0) {
+          } else if (project.selectedWekanList?.length > 0) {
             let wekanLists = []
             if (typeof project.selectedWekanList === 'string') {
               wekanLists.push(project.selectedWekanList)
@@ -129,13 +124,9 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             const wekanAPITasks = []
             for (const wekanList of wekanLists) {
               try {
-                HTTP.get(`${url}lists/${wekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }, (innerError, innerResult) => {
-                  if (innerError) {
-                    console.error(innerError)
-                  } else {
-                    Array.prototype.push.apply(wekanAPITasks, innerResult.data)
-                    this.wekanAPITasks.set(wekanAPITasks)
-                  }
+                window.fetch(`${url}lists/${wekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((innerResult) => {
+                  Array.prototype.push.apply(wekanAPITasks, innerResult)
+                  this.wekanAPITasks.set(wekanAPITasks)
                 })
               } catch (error) {
                 console.error(error)

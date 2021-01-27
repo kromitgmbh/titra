@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import i18next from 'i18next'
 import { NodeVM } from 'vm2'
-import { HTTP } from 'meteor/http'
+import fetch from 'node-fetch'
 import { check, Match } from 'meteor/check'
 import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'
@@ -284,20 +284,23 @@ Meteor.methods({
         })
       }
     })
-    try {
-      HTTP.post(`${meteorUser.profile.siwappurl}/api/v1/invoices`, {
-        data: invoiceJSON,
-        headers: {
-          Authorization: `Token token=${meteorUser.profile.siwapptoken}`,
-          'Content-type': 'application/json',
-        },
-      })
-    } catch (error) {
+    return fetch(`${meteorUser.profile.siwappurl}/api/v1/invoices`, {
+      method: 'POST',
+      body: JSON.stringify(invoiceJSON),
+      headers: {
+        Authorization: `Token token=${meteorUser.profile.siwapptoken}`,
+        'Content-type': 'application/json',
+      },
+    }).then((response) => {
+      if (response.status === 201) {
+        Timecards.update({ _id: { $in: timeEntries } }, { $set: { state: 'billed' } }, { multi: true })
+        return 'notifications.siwapp_success'
+      }
+      return 'notifications.siwapp_configuration'
+    }).catch((error) => {
       console.error(error)
       throw new Meteor.Error(error)
-    }
-    Timecards.update({ _id: { $in: timeEntries } }, { $set: { state: 'billed' } }, { multi: true })
-    return 'notifications.siwapp_success'
+    })
   },
   getDailyTimecards({
     projectId,
