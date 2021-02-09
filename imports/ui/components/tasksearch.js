@@ -6,6 +6,7 @@ import './taskSelectPopup.js'
 import Tasks from '../../api/tasks/tasks.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
+import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
 
 Template.tasksearch.events({
   'mousedown .js-tasksearch-result': (event, templateInstance) => {
@@ -74,6 +75,7 @@ Template.tasksearch.events({
 Template.tasksearch.onCreated(function tasksearchcreated() {
   this.filter = new ReactiveVar()
   this.wekanAPITasks = new ReactiveVar()
+  this.zammadAPITasks = new ReactiveVar()
   // this.lastTimecards = new ReactiveVar()
   this.autorun(() => {
     let tcid
@@ -136,6 +138,13 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
         }
       }
     }
+    this.autorun(() => {
+      if (!this.zammadAPITasks.get() && getGlobalSetting('enableZammad') && getUserSetting('zammadurl') && getUserSetting('zammadtoken')) {
+        window.fetch(`${getUserSetting('zammadurl')}api/v1/tickets`, { headers: { Authorization: `Token token=${getUserSetting('zammadtoken')}` } }).then((response) => response.json()).then((result) => {
+          this.zammadAPITasks.set(result)
+        })
+      }
+    })
     this.subscribe('mytasks', this.filter.get() ? this.filter.get() : '')
   })
 })
@@ -147,6 +156,7 @@ Template.tasksearch.helpers({
     }
     const finalArray = []
     const wekanAPITasks = Template.instance().wekanAPITasks.get()
+    const zammadAPITasks = Template.instance().zammadAPITasks.get()
     const regex = `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`
     if (Template.instance().wekanTasks) {
       const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: regex, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: 5 })
@@ -157,6 +167,9 @@ Template.tasksearch.helpers({
       if (wekanAPITasks.length > 0) {
         finalArray.push(...Template.instance().wekanAPITasks.get().map((elem) => ({ name: elem.title, wekan: true })).filter((element) => new RegExp(regex, 'i').exec(element.name)))
       }
+    }
+    if (zammadAPITasks && zammadAPITasks.length > 0) {
+      finalArray.push(...zammadAPITasks.map((elem) => ({ name: elem.title, zammad: true })).filter((element) => new RegExp(regex, 'i').exec(element.name)))
     }
     finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { lastUsed: -1 }, limit: 5 }).fetch())
     return finalArray.length > 0 ? finalArray.slice(0, 4) : false

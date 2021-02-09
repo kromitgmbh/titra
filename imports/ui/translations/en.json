@@ -144,7 +144,10 @@
     "show_not_billable_time": "Include not billable projects?",
     "disable_public_projects": "Disable public projects?",
     "time_entry_rule": "Timetracking rules (creation & modification)",
-    "use_start_time": "Track start time?"
+    "use_start_time": "Track start time?",
+    "enable_zammad_integration": "Enable Zammad integration?",
+    "zammad_url": "URL of the Zammad instance",
+    "zammad_api_token": "Zammad Personal Access Token"
   },
   "customer": {
     "select_customer": "Select a customer",

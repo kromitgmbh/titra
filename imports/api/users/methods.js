@@ -17,6 +17,8 @@ Meteor.methods({
     breakDuration,
     regularWorkingTime,
     APItoken,
+    zammadtoken,
+    zammadurl,
   }) {
     check(unit, String)
     check(timeunit, String)
@@ -31,6 +33,8 @@ Meteor.methods({
     check(breakDuration, String)
     check(regularWorkingTime, String)
     check(APItoken, String)
+    check(zammadtoken, String)
+    check(zammadurl, String)
     checkAuthentication(this)
     Meteor.users.update({ _id: this.userId }, {
       $set: {
@@ -47,6 +51,8 @@ Meteor.methods({
         'profile.breakStartTime': breakStartTime,
         'profile.breakDuration': breakDuration,
         'profile.regularWorkingTime': regularWorkingTime,
+        'profile.zammadtoken': zammadtoken,
+        'profile.zammadurl': zammadurl,
       },
     })
   },

@@ -40,6 +40,11 @@
                       <a class="nav-link" id="wekan-tab" data-toggle="tab" href="#wekan" role="tab" aria-controls="wekan" aria-selected="false">Wekan</a>
                     </li>
                   {{/if}}
+                  {{#if zammadEnabled}}
+                    <li class="nav-item">
+                      <a class="nav-link" id="zammad-tab" data-toggle="tab" href="#zammad" role="tab" aria-controls="zammad" aria-selected="false">Zammad</a>
+                    </li>
+                  {{/if}}
               </ul>
               <div class="tab-content" id="taskSourceContent">
                 <div class="tab-pane fade show active" id="local" role="tabpanel" aria-labelledby="local-tab">
@@ -54,6 +59,11 @@
                 <div class="tab-pane fade" id="wekan" role="tabpanel" aria-labelledby="wekan-tab">
                   {{#if isActive "wekan-tab"}}
                     {{> datatable columns=wekanTasksColumns data=wekanTasksData}}
+                  {{/if}}
+                </div>
+                <div class="tab-pane fade" id="zammad" role="tabpanel" aria-labelledby="zammad-tab">
+                  {{#if isActive "zammad-tab"}}
+                    {{> datatable columns=zammadTicketsColumns data=zammadTicketsData}}
                   {{/if}}
                 </div>
               </div>

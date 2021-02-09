@@ -22,6 +22,7 @@
       {{#each tasks}}
         <button type="button" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result" tabindex="{{@index}}">
           {{#if wekan}}<img src="/img/wekan.png"/>{{/if}}
+          {{#if zammad}}<img style="width:15px;" src="/img/zammad.svg"/>{{/if}}
           &nbsp;<span class="js-tasksearch-task-name">{{emojify (name)}}</span>
         </button>
       {{/each}}

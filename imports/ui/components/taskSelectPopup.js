@@ -5,7 +5,7 @@ import './taskSelectPopup.html'
 import './datatable.js'
 import Tasks from '../../api/tasks/tasks.js'
 import Projects from '../../api/projects/projects.js'
-import { getGlobalSetting, i18nextReady, addToolTipToTableCell } from '../../utils/frontend_helpers'
+import { getGlobalSetting, getUserSetting, i18nextReady, addToolTipToTableCell } from '../../utils/frontend_helpers'
 
 Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
   dayjs.extend(utc)
@@ -17,6 +17,7 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
   templateInstance.limit = new ReactiveVar(10)
   templateInstance.localTasksData = new ReactiveVar([])
   templateInstance.wekanTasksData = new ReactiveVar([])
+  templateInstance.zammadTicketsData = new ReactiveVar()
   templateInstance.autorun(() => {
     if (templateInstance.modalDisplayed.get()) {
       templateInstance.subscribe('allmytasks', { limit: this.limit.get(), filter: templateInstance.taskSelectSearchValue.get() })
@@ -120,6 +121,26 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
       }
     }
   })
+  templateInstance.autorun(() => {
+    if (templateInstance.modalDisplayed.get()) {
+      if (i18nextReady.get()) {
+        templateInstance.zammadTicketsColumns = new ReactiveVar([
+          {
+            name: i18next.t('globals.task'),
+            format: (value) => `<button type="button" class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
+          },
+          {
+            name: i18next.t('globals.description'),
+            format: addToolTipToTableCell,
+          }])
+        if (!templateInstance.zammadTicketsData.get() && getGlobalSetting('enableZammad') && getUserSetting('zammadurl') && getUserSetting('zammadtoken')) {
+          window.fetch(`${getUserSetting('zammadurl')}api/v1/tickets`, { headers: { Authorization: `Token token=${getUserSetting('zammadtoken')}` } }).then((response) => response.json()).then((result) => {
+            templateInstance.zammadTicketsData.set(result)
+          })
+        }
+      }
+    }
+  })
 })
 
 Template.taskSelectPopup.helpers({
@@ -131,6 +152,17 @@ Template.taskSelectPopup.helpers({
   wekanTasksData: () => Template.instance().wekanTasksData,
   wekanTasksColumns: () => Template.instance().wekanTasksColumns,
   wekanTasksDataContent: () => Template.instance().wekanTasksData.get(),
+  zammadTicketsColumns: () => Template.instance().zammadTicketsColumns,
+  zammadTicketsData: () => new ReactiveVar(Template.instance().zammadTicketsData.get()
+    .slice(0, Template.instance().limit.get())
+    .filter((item) => {
+      if (Template.instance().taskSelectSearchValue.get()) {
+        return item.title.indexOf(Template.instance().taskSelectSearchValue.get()) >= 0
+      }
+      return true
+    }).sort((a, b) => (a.title > b.title ? 1 : -1))
+    .map((element) => [element.title, element.note])),
+  zammadEnabled: () => getGlobalSetting('enableZammad'),
   modalDisplayed: () => Template.instance().modalDisplayed.get(),
   isActive: (tab) => Template.instance().activeTab.get() === tab,
 })

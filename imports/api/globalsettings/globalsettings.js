@@ -81,4 +81,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'useStartTime', description: 'settings.use_start_time', type: 'text', value: false,
 })
+defaultSettings.push({
+  name: 'enableZammad', description: 'settings.enable_zammad_integration', type: 'text', value: true,
+})
 export { defaultSettings, Globalsettings }

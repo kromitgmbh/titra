@@ -40,8 +40,9 @@ Template.settings.helpers({
   siwappurl: () => getUserSetting('siwappurl'),
   siwapptoken: () => getUserSetting('siwapptoken'),
   titraAPItoken: () => getUserSetting('APItoken'),
+  zammadurl: () => getUserSetting('zammadurl'),
+  zammadtoken: () => getUserSetting('zammadtoken'),
 })
-
 
 Template.settings.events({
   'click .js-save': (event, templateInstance) => {
@@ -60,6 +61,8 @@ Template.settings.events({
       siwapptoken: templateInstance.$('#siwapptoken').val(),
       siwappurl: templateInstance.$('#siwappurl').val(),
       APItoken: templateInstance.$('#titraAPItoken').val(),
+      zammadtoken: templateInstance.$('#zammadtoken').val(),
+      zammadurl: templateInstance.$('#zammadurl').val(),
     },
     (error) => {
       if (error) {
