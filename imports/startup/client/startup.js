@@ -16,11 +16,9 @@ import {
   getUserTimeUnitAbbreviated,
 } from '../../utils/frontend_helpers.js'
 
-
 const i18nextDebugMode = window.location.href.indexOf('localhost') > 0
 
 Template.registerHelper('t', (param) => (i18nextReady.get() ? globalT(param) : 'Loading ...'))
-
 
 Meteor.startup(() => {
   window.BootstrapLoaded = new ReactiveVar(false)
@@ -109,6 +107,14 @@ Meteor.startup(() => {
           },
         })
       })
+    }
+  })
+  Tracker.autorun(() => {
+    if (getGlobalSetting('customCSS')) {
+      $('head').append(`<style>${getGlobalSetting('customCSS')}</style>`)
+    }
+    if (getGlobalSetting('customHTML')) {
+      $('body').append(`<div>${getGlobalSetting('customHTML')}</div>`)
     }
   })
 

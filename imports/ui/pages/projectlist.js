@@ -19,44 +19,40 @@ Template.projectlist.onRendered(() => {
       $('[data-toggle="tooltip"]').tooltip()
     }
   })
-  if (Meteor.settings.public.adsenseClientId) {
-    Meteor.setTimeout(() => {
-      import('../../startup/client/googleads.js');
-      (adsbygoogle = window.adsbygoogle || []).push({})
-    }, 5000)
-  }
-  import('sortablejs').then((sortableImport) => {
-    const Sortable = sortableImport.default
-    const el = document.querySelector('.js-project-list')
-    if (el) {
-      Sortable.create(el, {
-        handle: '.handle',
-        onChoose: (evt) => {
-          document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
-            element.classList.add('d-none')
-          })
-          document.querySelectorAll('.progress-bar').forEach((element) => {
-            element.classList.add('d-none')
-          })
-        },
-        onEnd: (evt) => {
-          document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
-            element.classList.remove('d-none')
-          })
-          document.querySelectorAll('.progress-bar').forEach((element) => {
-            element.classList.remove('d-none')
-          })
-          const projectId = $(evt.item).children('.card-body').children('.row.mt-2')[0].id
-          const priority = evt.newIndex
-          Meteor.call('updatePriority', { projectId, priority }, (error, result) => {
-            if (error) {
-              console.error(error)
-            }
-          })
-        },
-      })
-    }
-  })
+  Meteor.setTimeout(() => {
+    import('sortablejs').then((sortableImport) => {
+      const Sortable = sortableImport.default
+      const el = document.querySelector('.js-project-list')
+      if (el) {
+        Sortable.create(el, {
+          handle: '.handle',
+          onChoose: (evt) => {
+            document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
+              element.classList.add('d-none')
+            })
+            document.querySelectorAll('.progress-bar').forEach((element) => {
+              element.classList.add('d-none')
+            })
+          },
+          onEnd: (evt) => {
+            document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
+              element.classList.remove('d-none')
+            })
+            document.querySelectorAll('.progress-bar').forEach((element) => {
+              element.classList.remove('d-none')
+            })
+            const projectId = $(evt.item).children('.card-body').children('.row.mt-2')[0].id
+            const priority = evt.newIndex
+            Meteor.call('updatePriority', { projectId, priority }, (error, result) => {
+              if (error) {
+                console.error(error)
+              }
+            })
+          },
+        })
+      }
+    })
+  }, 1000)
 })
 Template.projectlist.helpers({
   projects() {
@@ -85,8 +81,6 @@ Template.projectlist.helpers({
   archived(_id) {
     return Projects.findOne({ _id }).archived
   },
-  adsenseClientId: () => Meteor.settings.public.adsenseClientId,
-  adsenseAdSlot: () => Meteor.settings.public.adsenseAdSlot,
   projectCount: () => (Template.instance().data?.showArchived?.get()
     ? Projects.find({}).count()
     : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count()),

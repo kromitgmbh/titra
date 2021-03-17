@@ -133,7 +133,10 @@ Template.weektablerow.onCreated(function weektablerowCreated() {
 Template.weektablerow.events({
   'click .js-newline': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.tempTimeEntries.set(templateInstance.tempTimeEntries.get().push({ _id: '' }))
+    const timeEntries = templateInstance.tempTimeEntries?.get() instanceof Array
+      ? templateInstance.tempTimeEntries?.get() : []
+    timeEntries.push({ _id: '' })
+    templateInstance.tempTimeEntries.set(timeEntries)
   },
   'click .js-collapse': (event, templateInstance) => {
     event.preventDefault()

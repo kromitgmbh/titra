@@ -147,7 +147,10 @@
     "use_start_time": "Track start time?",
     "enable_zammad_integration": "Enable Zammad integration?",
     "zammad_url": "URL of the Zammad instance",
-    "zammad_api_token": "Zammad Personal Access Token"
+    "zammad_api_token": "Zammad Personal Access Token",
+    "custom_css": "Custom CSS",
+    "custom_html": "Custom HTML",
+    "custom_placeholder_content": "Custom Placeholder Content"
   },
   "customer": {
     "select_customer": "Select a customer",

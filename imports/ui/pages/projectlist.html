@@ -29,15 +29,10 @@
         </div>
       </div>
     {{/if}}
-    {{#if adsenseClientId}}
+    {{#if getGlobalSetting "customPlaceholderContent" }}
       <div class="card mb-3" style="border: 1px solid #455A64; overflow:hidden;">
         <div class="card-body">
-            <ins class="adsbygoogle"
-              style="display:block"
-              data-ad-format="fluid"
-              data-ad-layout-key="-gc+36+6u-7h-56"
-              data-ad-client="{{adsenseClientId}}"
-              data-ad-slot="{{adsenseAdSlot}}"></ins>
+            <div class="js-placeholder">{{{ getGlobalSetting "customPlaceholderContent" }}}</div>
         </div>
       </div>
     {{/if}}

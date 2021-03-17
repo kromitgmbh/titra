@@ -84,4 +84,14 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableZammad', description: 'settings.enable_zammad_integration', type: 'text', value: true,
 })
+defaultSettings.push({
+  name: 'customCSS', description: 'settings.custom_css', type: 'textarea', value: '',
+})
+defaultSettings.push({
+  name: 'customHTML', description: 'settings.custom_html', type: 'textarea', value: '',
+})
+defaultSettings.push({
+  name: 'customPlaceholderContent', description: 'settings.custom_placeholder_content', type: 'textarea', value: '',
+})
+
 export { defaultSettings, Globalsettings }
