@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.44.0",
+  "version": "0.44.1",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -38,7 +38,7 @@
     "randomcolor": "^0.6.2",
     "raw-body": "^2.4.1",
     "sortablejs": "^1.13.0",
-    "sweetalert2": "^10.15.5",
+    "sweetalert2": "^10.15.6",
     "tether": "^1.4.7",
     "tiny-date-picker": "^3.2.8",
     "vm2": "^3.9.2"

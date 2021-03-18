@@ -231,7 +231,8 @@ Template.detailtimetable.helpers({
     return Timecards.find(Template.instance().selector[0], Template.instance().selector[1])
   },
   detailTimeSum() {
-    return timeInUserUnit(Timecards.find(Template.instance().selector[0], Template.instance().selector[1])
+    return timeInUserUnit(Timecards
+      .find(Template.instance().selector[0], Template.instance().selector[1])
       .fetch().reduce(((total, element) => total + element.hours), 0))
   },
   totalDetailTimeEntries() {
@@ -249,7 +250,8 @@ Template.detailtimetable.events({
     } else {
       csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${getUserTimeUnitVerbose()}\r\n`]
     }
-    for (const timeEntry of Timecards.find(templateInstance.selector[0], templateInstance.selector[1])
+    for (const timeEntry of Timecards
+      .find(templateInstance.selector[0], templateInstance.selector[1])
       .fetch().map(detailedDataTableMapper)) {
       if (getGlobalSetting('useState')) {
         csvArray.push(`${timeEntry[0]},${timeEntry[1]},${timeEntry[2]},${timeEntry[3]},${timeEntry[4]},${i18next.t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)}\r\n`)
@@ -273,7 +275,8 @@ Template.detailtimetable.events({
     } else {
       data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), getUserTimeUnitVerbose()]]
     }
-    for (const timeEntry of Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
+    for (const timeEntry of Timecards
+      .find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
       .map(detailedDataTableMapper)) {
       if (getGlobalSetting('useState')) {
         data.push([timeEntry[0], timeEntry[1], timeEntry[2], timeEntry[3], timeEntry[4], i18next.t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)])
@@ -374,6 +377,10 @@ Template.detailtimetable.events({
 })
 Template.detailtimetable.onDestroyed(() => {
   FlowRouter.setQueryParams({ page: null })
-  Template.instance().datatable?.destroy()
+  try {
+    Template.instance().datatable?.destroy()
+  } catch (error) {
+    console.error(error)
+  }
   Template.instance().datatable = undefined
 })

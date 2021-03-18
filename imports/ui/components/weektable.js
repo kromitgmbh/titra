@@ -79,14 +79,16 @@ Template.weektable.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
     const weekArray = []
+    let inputError = false
     templateInstance.$('.js-hours').each((index, element) => {
       const startDate = templateInstance.startDate.get().clone().startOf('week')
       const value = templateInstance.$(element).val()
       if (value) {
         const newTaskInput = templateInstance.$(element.parentElement.parentElement).find('.js-tasksearch-input').val()
         const task = templateInstance.$(element).data('task') ? templateInstance.$(element).data('task') : newTaskInput
-        if (!task) {
+        if (!task || task.length === 0) {
           $.Toast.fire({ text: i18next.t('notifications.enter_task'), icon: 'error' })
+          inputError = true
           return
         }
         let hours = Number(value)
@@ -96,15 +98,24 @@ Template.weektable.events({
         if (getUserSetting('timeunit') === 'm') {
           hours /= 60
         }
-        weekArray.push({
-          projectId: $(element).data('project-id'),
-          task,
-          date: dayjs.utc(startDate.add(Number(templateInstance.$(element).data('week-day')) + 1, 'day').format('YYYY-MM-DD')).toDate(),
-          hours,
-        })
+        const projectId = $(element).data('project-id')
+        const date = dayjs.utc(startDate.add(Number(templateInstance.$(element).data('week-day')) + 1, 'day').format('YYYY-MM-DD')).toDate()
+        const existingElement = weekArray
+          .findIndex((arrayElement) => arrayElement.projectId === projectId
+          && arrayElement.task === task && dayjs(arrayElement.date).isSame(dayjs(date)))
+        if (existingElement >= 0) {
+          weekArray[existingElement].hours += hours
+        } else {
+          weekArray.push({
+            projectId,
+            task,
+            date,
+            hours,
+          })
+        }
       }
     })
-    if (weekArray.length > 0) {
+    if (weekArray.length > 0 && !inputError) {
       Meteor.call('upsertWeek', weekArray, (error) => {
         if (error) {
           console.error(error)
@@ -113,6 +124,7 @@ Template.weektable.events({
           templateInstance.$('.js-tasksearch-input').parent().parent().find('.js-hours')
             .val('')
           $.Toast.fire(i18next.t('notifications.time_entry_updated'))
+          $('tr').trigger('save')
         }
       })
     }
@@ -129,6 +141,11 @@ Template.weektablerow.onCreated(function weektablerowCreated() {
         endDate: Template.instance().data.endDate.get().toDate(),
       })
   })
+  this.autorun(() => {
+    if (this.data.timeEntries) {
+      this.tempTimeEntries = this.timeEntries
+    }
+  })
 })
 Template.weektablerow.events({
   'click .js-newline': (event, templateInstance) => {
@@ -142,6 +159,10 @@ Template.weektablerow.events({
     event.preventDefault()
     templateInstance.$(event.currentTarget)
     templateInstance.$(templateInstance.$(event.currentTarget).data('target')).collapse('toggle')
+  },
+  'save tr': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.tempTimeEntries.set([])
   },
 })
 Template.weektablerow.helpers({
