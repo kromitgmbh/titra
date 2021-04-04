@@ -1,7 +1,7 @@
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import { Accounts } from 'meteor/accounts-base'
 
 Accounts.onResetPasswordLink((token, done) => {
-  FlowRouter.go('changePassword', { token })
+  document.location.href = `/changePwd/${token}`
   done()
 })
 Accounts.onLogout(() => {

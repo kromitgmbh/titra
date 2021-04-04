@@ -25,3 +25,6 @@ Accounts.onCreateUser((options, user) => {
   }
   return localUser
 })
+Accounts.emailTemplates.from = 'titra <no-reply@titra.io>'
+Accounts.emailTemplates.enrollAccount.subject = (user) => `Welcome to Awesome Town, ${user.profile.name}`
+Accounts.emailTemplates.resetPassword.from = () => 'titra Password Reset <no-reply@titra.io>'

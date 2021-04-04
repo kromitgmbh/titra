@@ -157,7 +157,6 @@ FlowRouter.route('/changePwd/:token?', {
   },
   name: 'changePassword',
 })
-
 FlowRouter.route('/try', {
   waitOn() {
     return Meteor.subscribe('globalsettings')
