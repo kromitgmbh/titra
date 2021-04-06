@@ -50,7 +50,7 @@
             {{/unless}}
           </div>
         </div>
-      {{#if currentUser.profile.enableWekan}}
+      {{#if getGlobalSetting "enableWekan"}}
       <div class="form-group">
         <div class="card">
           <div class="card-header">{{t "project.wekan_integration"}}</div>
