@@ -82,52 +82,67 @@ function loadLanguage(language, i18nextDebugMode) {
   switch (language) {
     default:
       import('../ui/translations/en.json').then((en) => {
-        i18next.init({
-          lng: 'en',
-          debug: i18nextDebugMode,
-          resources: {
-            en: {
-              translation: en.default,
+        if (!i18next.isInitialized) {
+          i18next.init({
+            lng: 'en',
+            debug: i18nextDebugMode,
+            resources: {
+              en: {
+                translation: en.default,
+              },
             },
-          },
-        }).then((t) => {
-          globalT = t
-          i18nextReady.set(true)
-        })
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        } else {
+          i18next.addResourceBundle('en', 'translation', en.default, true, true)
+          i18next.changeLanguage('en').then((t) => { globalT = t })
+        }
       })
       $('html').attr('lang', 'en')
       break
     case 'en':
       import('../ui/translations/en.json').then((en) => {
-        i18next.init({
-          lng: 'en',
-          debug: i18nextDebugMode,
-          resources: {
-            en: {
-              translation: en.default,
+        if (!i18next.isInitialized) {
+          i18next.init({
+            lng: 'en',
+            debug: i18nextDebugMode,
+            resources: {
+              en: {
+                translation: en.default,
+              },
             },
-          },
-        }).then((t) => {
-          globalT = t
-          i18nextReady.set(true)
-        })
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        } else {
+          i18next.addResourceBundle('en', 'translation', en.default, true, true)
+          i18next.changeLanguage('en').then((t) => { globalT = t })
+        }
       })
       $('html').attr('lang', 'en')
       break
     case 'de':
       import('../ui/translations/de.json').then((de) => {
-        i18next.init({
-          lng: 'de',
-          debug: i18nextDebugMode,
-          resources: {
-            de: {
-              translation: de.default,
+        if (!i18next.isInitialized) {
+          i18next.init({
+            lng: 'de',
+            debug: i18nextDebugMode,
+            resources: {
+              de: {
+                translation: de.default,
+              },
             },
-          },
-        }).then((t) => {
-          globalT = t
-          i18nextReady.set(true)
-        })
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        } else {
+          i18next.addResourceBundle('de', 'translation', de.default, true, true)
+          i18next.changeLanguage('de').then((t) => { globalT = t })
+        }
       })
       $('html').attr('lang', 'de')
       break

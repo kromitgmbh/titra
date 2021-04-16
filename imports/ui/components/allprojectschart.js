@@ -48,91 +48,87 @@ Template.allprojectschart.onRendered(() => {
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
       if (templateInstance.projectStats.get()) {
-        import('frappe-charts/dist/frappe-charts.min.css').then(() => {
-          import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
-            const { Chart } = chartModule
-            const stats = templateInstance.projectStats.get()
-            if (stats) {
-              if (getUserSetting('timeunit') === 'd') {
-                stats.beforePreviousMonthHours
-                    /= getUserSetting('hoursToDays')
-                stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-                  .toFixed(precision)
-                stats.previousMonthHours
-                    /= getUserSetting('hoursToDays')
-                stats.previousMonthHours = Number(stats.previousMonthHours)
-                  .toFixed(precision)
-                stats.currentMonthHours
-                    /= getUserSetting('hoursToDays')
-                stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-              }
-              if (getUserSetting('timeunit') === 'm') {
-                stats.beforePreviousMonthHours *= 60
-                stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-                  .toFixed(precision)
-                stats.previousMonthHours *= 60
-                stats.previousMonthHours = Number(stats.previousMonthHours)
-                  .toFixed(precision)
-                stats.currentMonthHours *= 60
-                stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-              }
-              if (templateInstance.chart) {
-                templateInstance.chart.destroy()
-              }
-              window.requestAnimationFrame(() => {
-                if (templateInstance.$('.js-chart-container')[0] && templateInstance.$('.js-chart-container').is(':visible')) {
-                  templateInstance.chart = new Chart(templateInstance.$('.js-chart-container')[0], {
-                    type: 'line',
-                    height: 160,
-                    colors: ['#009688'],
-                    lineOptions: {
-                      regionFill: 1,
-                    },
-                    data: {
-                      labels:
-                    [stats.beforePreviousMonthName,
-                      stats.previousMonthName,
-                      stats.currentMonthName],
-                      datasets: [{
-                        values:
-                      [stats.beforePreviousMonthHours,
-                        stats.previousMonthHours,
-                        stats.currentMonthHours],
-                      }],
-                    },
-                    tooltipOptions: {
-                      formatTooltipY: (value) => `${value} ${getUserTimeUnitVerbose()}`,
-                    },
-                  })
-                }
-              })
+        import('frappe-charts').then((chartModule) => {
+          const { Chart } = chartModule
+          const stats = templateInstance.projectStats.get()
+          if (stats) {
+            if (getUserSetting('timeunit') === 'd') {
+              stats.beforePreviousMonthHours
+                  /= getUserSetting('hoursToDays')
+              stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+                .toFixed(precision)
+              stats.previousMonthHours
+                  /= getUserSetting('hoursToDays')
+              stats.previousMonthHours = Number(stats.previousMonthHours)
+                .toFixed(precision)
+              stats.currentMonthHours
+                  /= getUserSetting('hoursToDays')
+              stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
             }
-          })
+            if (getUserSetting('timeunit') === 'm') {
+              stats.beforePreviousMonthHours *= 60
+              stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+                .toFixed(precision)
+              stats.previousMonthHours *= 60
+              stats.previousMonthHours = Number(stats.previousMonthHours)
+                .toFixed(precision)
+              stats.currentMonthHours *= 60
+              stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+            }
+            if (templateInstance.chart) {
+              templateInstance.chart.destroy()
+            }
+            window.requestAnimationFrame(() => {
+              if (templateInstance.$('.js-chart-container')[0] && templateInstance.$('.js-chart-container').is(':visible')) {
+                templateInstance.chart = new Chart(templateInstance.$('.js-chart-container')[0], {
+                  type: 'line',
+                  height: 160,
+                  colors: ['#009688'],
+                  lineOptions: {
+                    regionFill: 1,
+                  },
+                  data: {
+                    labels:
+                  [stats.beforePreviousMonthName,
+                    stats.previousMonthName,
+                    stats.currentMonthName],
+                    datasets: [{
+                      values:
+                    [stats.beforePreviousMonthHours,
+                      stats.previousMonthHours,
+                      stats.currentMonthHours],
+                    }],
+                  },
+                  tooltipOptions: {
+                    formatTooltipY: (value) => `${value} ${getUserTimeUnitVerbose()}`,
+                  },
+                })
+              }
+            })
+          }
         })
       }
       if (templateInstance.topTasks.get() && templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
-        import('frappe-charts/dist/frappe-charts.min.css').then(() => {
-          import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
-            window.requestAnimationFrame(() => {
-              const { Chart } = chartModule
-              if (templateInstance.piechart) {
-                templateInstance.piechart.destroy()
-              }
-              templateInstance.piechart = new Chart(templateInstance.$('.js-pie-chart-container')[0], {
-                type: 'pie',
-                colors: ['#009688', '#455A64', '#e4e4e4'],
-                height: 230,
-                data: {
-                  labels: templateInstance.topTasks.get().map((task) => task._id),
-                  datasets: [{
-                    values: templateInstance.topTasks.get().map((task) => task.count),
-                  }],
-                },
-                tooltipOptions: {
-                },
-              })
-              templateInstance.$('.frappe-chart').height(160)
+        import('frappe-charts').then((chartModule) => {
+          window.requestAnimationFrame(() => {
+            const { Chart } = chartModule
+            if (templateInstance.piechart) {
+              templateInstance.piechart.destroy()
+            }
+            templateInstance.piechart = new Chart(templateInstance.$('.js-pie-chart-container')[0], {
+              type: 'pie',
+              colors: ['#009688', '#455A64', '#e4e4e4'],
+              height: 230,
+              data: {
+                labels: templateInstance.topTasks.get().map((task) => task._id),
+                datasets: [{
+                  values: templateInstance.topTasks.get().map((task) => task.count),
+                }],
+              },
+              tooltipOptions: {
+              },
             })
+            templateInstance.$('.frappe-chart').height(160)
           })
         })
       }

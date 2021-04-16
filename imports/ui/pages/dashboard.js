@@ -111,70 +111,68 @@ Template.dashboard.onRendered(() => {
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && Timecards.find().fetch().length > 0) {
       window.requestAnimationFrame(() => {
-        import('frappe-charts/dist/frappe-charts.min.css').then(() => {
-          import('frappe-charts/dist/frappe-charts.esm.js').then((chartModule) => {
-            const { Chart } = chartModule
-            if (templateInstance.linechart) {
-              templateInstance.linechart.destroy()
-            }
-            if (templateInstance.piechart) {
-              templateInstance.piechart.destroy()
-            }
-            let temphours = 0
-            templateInstance.totalHours.set(0)
-            const taskmap = new Map()
-            const datemap = new Map()
-            const precision = getUserSetting('precision')
-            for (const timecard of Timecards.find({}, { sort: { date: 1 } }).fetch()) {
-              taskmap.set(
-                timecard.task.replace(/(:.*:)/g, emojify),
-                taskmap.get(timecard.task.replace(/(:.*:)/g, emojify))
-                  ? Number(Number(taskmap.get(timecard.task.replace(/(:.*:)/g, emojify))) + Number(timeInUnitHelper(timecard.hours)))
-                  : Number(timeInUnitHelper(timecard.hours)),
-              )
-              datemap.set(
-                dayjs.utc(timecard.date).format('DDMMYYYY'),
-                datemap.get(dayjs.utc(timecard.date).format('DDMMYYYY'))
-                  ? Number(Number(datemap.get(dayjs(timecard.date).format('DDMMYYYY'))) + Number(timeInUnitHelper(timecard.hours)))
-                  : Number(timeInUnitHelper(timecard.hours)),
-              )
-              temphours += timecard.hours
-            }
-            templateInstance.totalHours.set(temphours)
-            if (templateInstance.$('.js-linechart-container')[0] && templateInstance.$('.js-piechart-container')[0]) {
-              templateInstance.linechart = new Chart(templateInstance.$('.js-linechart-container')[0], {
-                type: 'bar',
-                colors: ['#009688'],
-                data: {
-                  labels: [...datemap.keys()].map((value) => dayjs.utc(value, 'DDMMYYYY').format(getGlobalSetting('dateformat'))),
-                  datasets: [{
-                    values: [...datemap.values()],
-                  }],
-                },
-                barOptions: {
-                  spaceRatio: 0.2, // default: 1
-                },
-                tooltipOptions: {
-                  formatTooltipY: (value) => `${Number(value).toFixed(precision)} ${getUserTimeUnitVerbose()}`,
-                  // formatTooltipX: (value) => dayjs(value, 'DDMMYYYY').format(getGlobalSetting('dateformat')),
-                },
-              })
-              templateInstance.piechart = new Chart(templateInstance.$('.js-piechart-container')[0], {
-                type: 'pie',
-                colors: randomColor({ hue: '#455A64', luminosity: 'dark', count: taskmap.size }),
-                maxSlices: 6,
-                data: {
-                  labels: [...taskmap.keys()],
-                  datasets: [{
-                    values: [...taskmap.values()],
-                  }],
-                },
-                tooltipOptions: {
-                  formatTooltipY: (value) => `${value} ${getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}`,
-                },
-              })
-            }
-          })
+        import('frappe-charts').then((chartModule) => {
+          const { Chart } = chartModule
+          if (templateInstance.linechart) {
+            templateInstance.linechart.destroy()
+          }
+          if (templateInstance.piechart) {
+            templateInstance.piechart.destroy()
+          }
+          let temphours = 0
+          templateInstance.totalHours.set(0)
+          const taskmap = new Map()
+          const datemap = new Map()
+          const precision = getUserSetting('precision')
+          for (const timecard of Timecards.find({}, { sort: { date: 1 } }).fetch()) {
+            taskmap.set(
+              timecard.task.replace(/(:.*:)/g, emojify),
+              taskmap.get(timecard.task.replace(/(:.*:)/g, emojify))
+                ? Number(Number(taskmap.get(timecard.task.replace(/(:.*:)/g, emojify))) + Number(timeInUnitHelper(timecard.hours)))
+                : Number(timeInUnitHelper(timecard.hours)),
+            )
+            datemap.set(
+              dayjs.utc(timecard.date).format('DDMMYYYY'),
+              datemap.get(dayjs.utc(timecard.date).format('DDMMYYYY'))
+                ? Number(Number(datemap.get(dayjs(timecard.date).format('DDMMYYYY'))) + Number(timeInUnitHelper(timecard.hours)))
+                : Number(timeInUnitHelper(timecard.hours)),
+            )
+            temphours += timecard.hours
+          }
+          templateInstance.totalHours.set(temphours)
+          if (templateInstance.$('.js-linechart-container')[0] && templateInstance.$('.js-piechart-container')[0]) {
+            templateInstance.linechart = new Chart(templateInstance.$('.js-linechart-container')[0], {
+              type: 'bar',
+              colors: ['#009688'],
+              data: {
+                labels: [...datemap.keys()].map((value) => dayjs.utc(value, 'DDMMYYYY').format(getGlobalSetting('dateformat'))),
+                datasets: [{
+                  values: [...datemap.values()],
+                }],
+              },
+              barOptions: {
+                spaceRatio: 0.2, // default: 1
+              },
+              tooltipOptions: {
+                formatTooltipY: (value) => `${Number(value).toFixed(precision)} ${getUserTimeUnitVerbose()}`,
+                // formatTooltipX: (value) => dayjs(value, 'DDMMYYYY').format(getGlobalSetting('dateformat')),
+              },
+            })
+            templateInstance.piechart = new Chart(templateInstance.$('.js-piechart-container')[0], {
+              type: 'pie',
+              colors: randomColor({ hue: '#455A64', luminosity: 'dark', count: taskmap.size }),
+              maxSlices: 6,
+              data: {
+                labels: [...taskmap.keys()],
+                datasets: [{
+                  values: [...taskmap.values()],
+                }],
+              },
+              tooltipOptions: {
+                formatTooltipY: (value) => `${value} ${getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}`,
+              },
+            })
+          }
         })
       })
     } else {

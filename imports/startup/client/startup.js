@@ -25,6 +25,13 @@ Meteor.startup(() => {
   Meteor.subscribe('globalsettings')
   let language = navigator.language.substring(0, 2)
   import('@fortawesome/fontawesome-free/js/all.js')
+  import('popper.js').then((Popper) => {
+    window.Popper = Popper.default
+    import('bootstrap').then(() => {
+      window.BootstrapLoaded.set(true)
+      // $('[data-toggle="tooltip"]').tooltip()
+    })
+  })
   Tracker.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
       && Meteor.user().profile) {
@@ -42,6 +49,8 @@ Meteor.startup(() => {
     } else {
       import('../../ui/styles/light.scss')
     }
+  })
+  Tracker.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       if (getUserSetting('language')) {
         language = getUserSetting('language') === 'auto' ? navigator.language.substring(0, 2) : getUserSetting('language')
@@ -49,18 +58,13 @@ Meteor.startup(() => {
       if (!i18nextReady.get() || i18next.language !== language) {
         loadLanguage(language, i18nextDebugMode)
       }
-      import('popper.js').then((Popper) => {
-        window.Popper = Popper.default
-        import('bootstrap').then(() => {
-          window.BootstrapLoaded.set(true)
-          // $('[data-toggle="tooltip"]').tooltip()
-        })
-      })
     } else if (!Meteor.user() && !Meteor.loggingIn()) {
       if (!i18nextReady.get()) {
         loadLanguage(language, i18nextDebugMode)
       }
     }
+  })
+  Tracker.autorun(() => {
     if (i18nextReady.get()) {
       import('sweetalert2/dist/sweetalert2.js').then((Swal) => {
         $.ConfirmBox = Swal.default.mixin({
