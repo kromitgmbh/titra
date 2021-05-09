@@ -175,9 +175,7 @@ Template.registerHelper('timetrackview', () => {
   }
   return false
 })
-Template.registerHelper('timeInUserUnit', (time) => {
-  return timeInUserUnit(time)
-})
+Template.registerHelper('timeInUserUnit', (time) => timeInUserUnit(time))
 Template.registerHelper('projectColor', (_id) => {
   if (Projects.findOne({ _id })) {
     return Projects.findOne({ _id }).color ? Projects.findOne({ _id }).color : '#009688'

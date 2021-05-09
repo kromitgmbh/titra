@@ -9,8 +9,8 @@ Template.projectselect.onCreated(function createTrackTime() {
   this.selectedId = new ReactiveVar()
   this.tcid = new ReactiveVar()
   this.autorun(() => {
-    if (this.data.tcid && this.data.tcid.get()) {
-      this.tcid.set(this.data.tcid.get())
+    if (this.data.tcid && this.data.tcid?.get()) {
+      this.tcid.set(this.data.tcid?.get())
     } else if (FlowRouter.getParam('tcid')) {
       this.tcid.set(FlowRouter.getParam('tcid'))
     }

@@ -137,7 +137,7 @@ Template.tracktime.events({
     const projectId = templateInstance.projectId.get()
     const task = templateInstance.$('.js-tasksearch-input').val()
     const date = dayjs.utc(templateInstance.$('.js-date').val(), getGlobalSetting('dateformatVerbose')).toDate()
-    if (getGlobalSetting('useStartTime')) {
+    if (getGlobalSetting('useStartTime') && !templateInstance.tcid?.get()) {
       if ($('#startTime').val()) {
         date.setHours($('#startTime').val().split(':')[0], $('#startTime').val().split(':')[1])
       } else {
@@ -318,6 +318,7 @@ Template.tracktime.helpers({
     || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
     || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()) ? '' : 'tab-borders'),
   edittcid: () => Template.instance().edittcid,
+  startTime: () => dayjs(Template.instance().date.get()).format('HH:mm'),
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

@@ -1,12 +1,12 @@
 {
   "name": "titra",
-  "version": "0.47.0",
+  "version": "0.48.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.10",
+    "@babel/runtime": "^7.14.0",
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@fullcalendar/core": "^5.6.0",
     "@fullcalendar/daygrid": "^5.6.0",
@@ -20,10 +20,10 @@
     "dayjs-precise-range": "^1.0.1",
     "docker-names": "^1.1.1",
     "file-saver": "^2.0.5",
-    "frappe-charts": "1.6.0",
+    "frappe-charts": "1.6.1",
     "frappe-datatable": "^1.15.3",
     "hotkeys-js": "^3.8.3",
-    "i18next": "^20.2.1",
+    "i18next": "^20.2.2",
     "is-dark": "^1.0.4",
     "jquery": "3.6.0",
     "jquery-serializejson": "^3.2.1",
@@ -38,13 +38,13 @@
     "randomcolor": "^0.6.2",
     "raw-body": "^2.4.1",
     "sortablejs": "^1.13.0",
-    "sweetalert2": "^10.16.2",
+    "sweetalert2": "^10.16.7",
     "tiny-date-picker": "^3.2.8",
     "vm2": "^3.9.3"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.24.0",
+    "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^5.1.1",

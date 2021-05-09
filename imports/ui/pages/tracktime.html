@@ -84,16 +84,14 @@
     </div>
     <div class="form-group">
       <div class="row">
-        {{#unless isEdit}}
           {{#if showStartTime}}
-            <div class="col-md-2">
+            <div class="col">
               <div class="form-group">
                 <label for="startTime">{{t "tracktime.start_time"}}</label>
                 <input id="startTime" type="time" class="form-control" value="{{startTime}}"/>
               </div>
             </div>
           {{/if}}
-        {{/unless}}
         <div class="col">
           <div class="form-group">
             <label for="hours">{{t "tracktime.working_time"}} ({{timeunit}})</label>
