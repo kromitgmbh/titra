@@ -4,7 +4,7 @@
 # ![titra logo](public/favicons/favicon-32x32.png) titra
 Modern open source project time tracking for freelancers and small teams
 
-We believe in the philosophy ["Do One Thing And Do It Well."](https://en.wikipedia.org/wiki/Unix_philosophy#Do_One_Thing_and_Do_It_Well) and try to follow it in the design and implementation of titra. A great companion for titra is [Wekan](https://wekan.io), where you can plan your tasks and track your time against later on.
+We believe in the philosophy ["Do One Thing And Do It Well."](https://en.wikipedia.org/wiki/Unix_philosophy#Do_One_Thing_and_Do_It_Well) and try to follow it in the design and implementation of titra. A great companion for titra is [Wekan](https://wekan.github.io/), where you can plan your tasks and track your time against later on.
 
 ## No risk, no fun, just time tracking
 According to the philosophy described above, titra has been built to be the easiest, most convenient and modern way to track your time spent on projects. We want you to get started tracking your time as fast and with the least distractions as possible. After tracking your time, the second most important aspect is the ability to report and export your tracked time efficiently.
