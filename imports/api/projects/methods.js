@@ -71,7 +71,7 @@ Meteor.methods({
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
     }
-    updateJSON.name = updateJSON.name.replace(/(:.*:)/g, emojify)
+    updateJSON.name = updateJSON.name.replace(/(:\S*:)/g, emojify)
     if (!updateJSON.public) {
       updateJSON.public = false
     } else {
@@ -99,7 +99,7 @@ Meteor.methods({
     } else {
       updateJSON.public = true
     }
-    updateJSON.name = updateJSON.name.replace(/(:.*:)/g, emojify)
+    updateJSON.name = updateJSON.name.replace(/(:\S*:)/g, emojify)
     updateJSON._id = Random.id()
     updateJSON.userId = this.userId
     Projects.insert(updateJSON)

@@ -4,7 +4,7 @@ import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './administration.html'
 import { Globalsettings } from '../../api/globalsettings/globalsettings'
-import { displayUserAvatar, validateEmail } from '../../utils/frontend_helpers'
+import { displayUserAvatar, validateEmail, showToast } from '../../utils/frontend_helpers'
 import '../components/limitpicker.js'
 
 Template.administration.onCreated(function administrationCreated() {
@@ -30,17 +30,15 @@ Template.administration.helpers({
 Template.administration.events({
   'click .js-delete': (event, templateInstance) => {
     event.preventDefault()
-    $.ConfirmBox.fire(i18next.t('administration.user_deletion_confirmation')).then((result) => {
-      if (result.value) {
-        Meteor.call('adminDeleteUser', { userId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
-          if (error) {
-            console.error(error)
-          } else {
-            $.Toast.fire({ text: i18next.t('administration.user_deleted'), icon: 'success' })
-          }
-        })
-      }
-    })
+    if (confirm(i18next.t('administration.user_deletion_confirmation'))) {
+      Meteor.call('adminDeleteUser', { userId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
+        if (error) {
+          console.error(error)
+        } else {
+          showToast(i18next.t('administration.user_deleted'))
+        }
+      })
+    }
   },
   'click #js-create-user': (event, templateInstance) => {
     event.preventDefault()
@@ -60,13 +58,13 @@ Template.administration.events({
       }, (error) => {
         if (error) {
           console.error(error)
-          $.Toast.fire({ text: error.message, icon: 'error' })
+          showToast(error.message)
         } else {
           templateInstance.$('#name').val('')
           templateInstance.$('#email').val('')
           templateInstance.$('#password').val('')
           templateInstance.$('#isAdmin').prop('checked', false)
-          $.Toast.fire({ text: i18next.t('administration.user_created'), icon: 'success' })
+          showToast(i18next.t('administration.user_created'))
         }
         templateInstance.$('#email').removeClass('is-invalid')
       })
@@ -78,7 +76,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        $.Toast.fire(i18next.t('administration.user_updated'))
+        showToast(i18next.t('administration.user_updated'))
       }
     })
   },
@@ -88,7 +86,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        $.Toast.fire(i18next.t('administration.user_updated'))
+        showToast(i18next.t('administration.user_updated'))
       }
     })
   },
@@ -102,7 +100,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        $.Toast.fire(i18next.t('notifications.settings_saved_success'))
+        showToast(i18next.t('notifications.settings_saved_success'))
       }
     })
   },
@@ -125,7 +123,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        $.Toast.fire(i18next.t('notifications.settings_saved_success'))
+        showToast(i18next.t('notifications.settings_saved_success'))
       }
     })
   },
@@ -135,8 +133,8 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        $.Toast.fire(i18next.t('notifications.settings_saved_success'))
+        showToast(i18next.t('notifications.settings_saved_success'))
       }
     })
-  }
+  },
 })

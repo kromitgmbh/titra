@@ -6,11 +6,13 @@ import Projects from '../projects'
 import Timecards from '../../timecards/timecards.js'
 import { checkAuthentication } from '../../../utils/server_method_helpers.js'
 
-Meteor.publish('myprojects', function myProjects() {
+Meteor.publish('myprojects', function myProjects({ projectLimit }) {
   checkAuthentication(this)
+  check(projectLimit, Match.Maybe(Number))
+  const limit = projectLimit || 25
   return Projects.find({
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
-  })
+  }, { limit })
 })
 Meteor.publish('singleProject', function singleProject(projectId) {
   check(projectId, String)
@@ -23,8 +25,9 @@ Meteor.publish('singleProject', function singleProject(projectId) {
   })
 })
 
-Meteor.publish('myProjectStats', function myProjectStats() {
+Meteor.publish('myProjectStats', function myProjectStats({ limit }) {
   checkAuthentication(this)
+  check(limit, Match.Maybe(Number))
   dayjs.extend(utc)
   dayjs.extend(isBetween)
   let initializing = true
@@ -40,7 +43,7 @@ Meteor.publish('myProjectStats', function myProjectStats() {
   const handle = Projects.find({
     $or: [{ userId: this.userId },
       { public: true }, { team: this.userId }],
-  }).observeChanges({
+  }, { limit }).observeChanges({
     added: (projectId) => {
       if (!initializing) {
         let totalHours = 0

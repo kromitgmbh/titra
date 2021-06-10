@@ -4,16 +4,16 @@
       {{t "overview.total_time_tracked"}} <br/>
       {{timeInUserUnit(totalHours)}} ({{timeunitVerbose}})
       <br/>
-      <button type="button" class="btn btn-link" data-toggle="collapse" data-target=".js-allproject-filter"><i class="fa fa-funnel-dollar"></i>&nbsp; {{t "details.filter"}}</button>
+      <button type="button" class="btn btn-link" data-bs-toggle="collapse" data-bs-target=".js-allproject-filter"><i class="fa fa-funnel-dollar"></i>&nbsp; {{t "details.filter"}}</button>
       <div class="collapse card js-allproject-filter all-projects-bg">
         <div class="card-body p-2">
-          <div class="custom-control custom-switch">
-            <input id="showNotBillableTime" type="checkbox" class="custom-control-input"/>
-            <label class="custom-control-label" for="showNotBillableTime">{{t "settings.show_not_billable_time"}}</label>
+          <div class="form-check form-switch">
+            <input id="showNotBillableTime" type="checkbox" class="form-check-input"/>
+            <label class="form-label" for="showNotBillableTime">{{t "settings.show_not_billable_time"}}</label>
           </div>
-          <div class="custom-control custom-switch form-check pull-right">
-            <input id="showArchived" type="checkbox" class="custom-control-input"/>
-            <label class="custom-control-label" for="showArchived">{{t "navigation.show_archived"}}</label>
+          <div class="form-check form-switch pull-right">
+            <input id="showArchived" type="checkbox" class="form-check-input"/>
+            <label class="form-check-label" for="showArchived">{{t "navigation.show_archived"}}</label>
           </div>
         </div>
       </div>

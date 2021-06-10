@@ -29,8 +29,8 @@ Template.timecardlist.onRendered(() => {
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && window.BootstrapLoaded.get()) {
       window.requestAnimationFrame(() => {
-        if (templateInstance.$('[data-toggle="tooltip"]').get(0)) {
-          templateInstance.$('[data-toggle="tooltip"]').tooltip({
+        if (templateInstance.$('[data-bs-toggle="tooltip"]').get(0)) {
+          templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
             container: templateInstance.firstNode,
             trigger: 'hover focus',
           })
@@ -100,7 +100,7 @@ Template.timecardlist.events({
   'change #customerselect': (event, templateInstance) => {
     FlowRouter.setQueryParams({ customer: templateInstance.$(event.currentTarget).val() })
   },
-  'click .nav-link[data-toggle]': (event, templateInstance) => {
+  'click .nav-link[data-bs-toggle]': (event, templateInstance) => {
     FlowRouter.setQueryParams({ activeTab: templateInstance.$(event.currentTarget)[0].id })
   },
 })

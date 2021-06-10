@@ -1,9 +1,9 @@
 <template name="weektable">
   <div class="tab-borders p-3">
-    <div class="row form-group">
+    <div class="row mb-3">
       <div class="col-3"><button type="button" class="btn btn-secondary border js-previous-week"><i class="fa fa-chevron-left"></i><span class="d-none d-lg-inline"> {{t "navigation.lastWeek"}}</span></button></div>
       <div class="col text-center"><button type="button" class="btn btn-primary js-save">{{t "navigation.save"}}</button></div>
-      <div class="col-3 text-right"><button type="button" class="btn btn-secondary border js-next-week"><span class="d-none d-lg-inline">{{t "navigation.nextWeek"}} </span><i class="fa fa-chevron-right"></i></button></div>
+      <div class="col-3 text-end"><button type="button" class="btn btn-secondary border js-next-week"><span class="d-none d-lg-inline">{{t "navigation.nextWeek"}} </span><i class="fa fa-chevron-right"></i></button></div>
     </div>
     <div class="row">
       <div class="table-responsive">
@@ -21,7 +21,7 @@
           <tfoot style="border-top-style:double;border-top-color:#dee2e6;">
             <td class="text-center">{{#if hasData}}{{getWeekTotal}}{{/if}}</td>
             {{#each weekday in weekDays}}
-              <td class="pl-3">{{getTotalForDay weekday}}</td>
+              <td class="ps-3">{{getTotalForDay weekday}}</td>
             {{/each}}
             <td class="text-center">{{#if hasData}}Σ{{/if}}</td>
           </tfoot>
@@ -34,11 +34,11 @@
 <template name="weektablerow">
     <tr>
       <td scope="row">
-        <a href="#" style="color:inherit" class="week-row js-collapse" data-target="#{{projectId}}" aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-toggle="tooltip" data-placement="top" data-title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
+        <a href="#" style="color:inherit" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target="#{{projectId}}" aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
       </td>
       {{#if weekDays}}
         {{#each weekday in weekDays}}
-          <td class="pl-3">{{getTotalForDayPerProject projectId weekday}}</td>
+          <td class="ps-3">{{getTotalForDayPerProject projectId weekday}}</td>
         {{/each}}
       {{/if}}
       <td class="text-center">{{#if tasks}}Σ{{/if}}</td>
@@ -48,9 +48,9 @@
       <tr>
         <td>
           {{#if task._id}}
-            <div class="card form-control" style="overflow:hidden" data-toggle="tooltip" data-placement="bottom" title="{{task._id}}">{{task._id}}</div>
+            <div class="input-group-text bg-secondary" style="overflow:hidden" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{task._id}}">{{task._id}}</div>
           {{else}}
-            {{>tasksearch projectId=false}}
+            {{>tasksearch projectId=false isComponent=true}}
           {{/if}}
         </td>
         {{#each weekday in weekDays}}

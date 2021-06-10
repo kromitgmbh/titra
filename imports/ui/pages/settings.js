@@ -3,7 +3,7 @@ import { Random } from 'meteor/random'
 import i18next from 'i18next'
 import './settings.html'
 import '../components/backbutton.js'
-import { getUserSetting } from '../../utils/frontend_helpers'
+import { getUserSetting, showToast } from '../../utils/frontend_helpers'
 
 Template.settings.onCreated(function settingsCreated() {
   this.displayHoursToDays = new ReactiveVar()
@@ -66,9 +66,9 @@ Template.settings.events({
     },
     (error) => {
       if (error) {
-        $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
+        showToast(i18next.t(error.error))
       } else {
-        $.Toast.fire(i18next.t('notifications.settings_saved_success'))
+        showToast(i18next.t('notifications.settings_saved_success'))
         templateInstance.$('#imagePreview').hide()
       }
     })
@@ -88,7 +88,7 @@ Template.settings.events({
       if (error) {
         console.error(error)
       } else {
-        $.Toast.fire(i18next.t('notifications.settings_saved_success'))
+        showToast(i18next.t('notifications.settings_saved_success'))
       }
     })
   },

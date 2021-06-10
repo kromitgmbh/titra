@@ -2,10 +2,10 @@
   <form class="p-3 {{borderClass}}">
     <div class="row pb-3">
       {{#unless isEdit}}
-        <div class="col-2">
-            <button type="button" class="btn btn-secondary border form-control js-previous"><i class="fa fa-chevron-left"></i></button>
+        <div class="col-2 d-grid">
+            <button type="button" class="btn btn-secondary border js-previous"><i class="fa fa-chevron-left"></i></button>
         </div>
-        <div class="col d-none d-lg-block text-right">
+        <div class="col d-none d-lg-block text-end">
           <div class="text-muted pt-2 js-previous" style="cursor:pointer;">
             {{previousDay}}
           </div>
@@ -17,28 +17,26 @@
         {{/if}}
         <div class="input-group">
           <input type="text" class="js-date form-control text-center bg-primary text-white" value="{{date}}">
-          <div class="input-group-append">
-            <span class="input-group-text bg-primary text-white js-open-calendar" style="cursor:pointer"><i class="fa fa-calendar"></i></span>
-          </div>
+          <span class="input-group-text bg-primary text-white js-open-calendar" style="cursor:pointer"><i class="fa fa-calendar"></i></span>
         </div>
       </div>
       {{#unless isEdit}}
-        <div class="col d-none d-lg-block text-left">
+        <div class="col d-none d-lg-block text-start">
           <div class="text-muted pt-2 js-next" style="cursor:pointer;">
             {{nextDay}}
           </div>
         </div>
-        <div class="col-2 text-right">
-            <button type="button" class="btn btn-secondary border form-control js-next"><i class="fa fa-chevron-right"></i></button>
+        <div class="col-2 d-grid text-end">
+            <button type="button" class="btn btn-secondary border js-next"><i class="fa fa-chevron-right"></i></button>
         </div>
       {{/unless}}
     </div>
     {{#unless isEdit}}
-      <div class="card form-group">
+      <div class="card mb-3 mb-3">
         <div class="card-header js-toggle-timecards">
           {{#if totalTime}}
             {{t "tracktime.time_tracked"}} {{timeInUserUnit(totalTime)}} {{timeunit}}
-            <a href="#" class="text-body"><i class="fa fa-chevron-down float-right"></i></a>
+            <a href="#" class="text-body"><i class="fa fa-chevron-down float-end"></i></a>
             {{else}}
             {{t "tracktime.no_time"}}
           {{/if}}
@@ -53,7 +51,7 @@
               </div>
             </li>
               {{#each timecard in timecards}}
-              <a href="#" class="list-group-item list-group-item-action js-time-row" data-toggle="popover" data-placement="bottom" data-title="Actions">
+              <a href="#" class="list-group-item list-group-item-action js-time-row" data-bs-toggle="popover" data-bs-placement="bottom" title="Actions">
               <div class="d-none js-popover-content">
                 <a class="btn btn-secondary border js-edit-time-entry" data-tcid="{{timecard._id}}" href="{{timecard._id}}">
                   <i class="fa fa-edit"></i> <span class="d-none d-md-inline-block">{{t "navigation.edit"}}</span>
@@ -64,8 +62,8 @@
                 </a>
               </div>
                 <div class="row">
-                  <div class="col-4 col-md-4"><span class="d-inline-block text-truncate" style="max-width:100%" data-toggle="tooltip" data-placement="top" title="{{projectName(timecard.projectId)}}">{{projectName(timecard.projectId)}}</span></div>
-                  <div class="col-5 col-md-6"><span class="d-inline-block text-truncate" style="max-width:100%" data-toggle="tooltip" data-placement="top" title="{{timecard.task}}">{{timecard.task}}</span></div>
+                  <div class="col-4 col-md-4"><span class="d-inline-block text-truncate" style="max-width:100%" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName(timecard.projectId)}}">{{projectName(timecard.projectId)}}</span></div>
+                  <div class="col-5 col-md-6"><span class="d-inline-block text-truncate" style="max-width:100%" data-bs-toggle="tooltip" data-bs-placement="top" title="{{timecard.task}}">{{timecard.task}}</span></div>
                   <div class="col-3 col-md-2 text-centered">{{timeInUserUnit(timecard.hours)}}</div>
                 </div>
               </a>
@@ -74,35 +72,32 @@
           </ul>
       </div>
     {{/unless}}
-    <div class="form-group js-tracktime-projectselect">
-      <label>{{t "globals.project"}}</label>
+    <div class="mb-3 js-tracktime-projectselect mb-3">
       {{>projectselect tcid=tcid projectId=reactiveProjectId displayProjectInfo=true}}
     </div>
-    <div class="form-group">
-      <label for="task">{{t "globals.task"}}</label>
+    <div class="mb-3 mb-3">
       {{>tasksearch tcid=tcid projectId=reactiveProjectId}}
     </div>
-    <div class="form-group">
+    <div class="mb-3">
       <div class="row">
           {{#if showStartTime}}
             <div class="col">
-              <div class="form-group">
-                <label for="startTime">{{t "tracktime.start_time"}}</label>
+              <div class="mb-3 form-floating mb-3">
                 <input id="startTime" type="time" class="form-control" value="{{startTime}}"/>
+                <label class="form-label" for="startTime">{{t "tracktime.start_time"}}</label>
               </div>
             </div>
           {{/if}}
         <div class="col">
-          <div class="form-group">
-            <label for="hours">{{t "tracktime.working_time"}} ({{timeunit}})</label>
+          <div class="mb-3 form-floating mb-3">
             <input id="hours" type="string" class="form-control" value="{{timeInUserUnit (hours)}}" placeholder="0.00"/>
+            <label class="form-label" for="hours">{{t "tracktime.working_time"}} ({{timeunit}})</label>
           </div>
         </div>
         {{#unless isEdit}}
           {{#if showTracker}}
-            <div class="col-6 col-md-3 text-right">
-              <div class="form-group">
-                <label>&nbsp;</label>
+            <div class="col-6 col-md-3 text-end">
+              <div class="mb-3 mb-3">
                   {{>timetracker}}
               </div>
             </div>
@@ -112,18 +107,18 @@
     </div>
     <div class="row">
         {{#if isEdit}}
-          <div class="col-6 mr-auto">
-            <button type="button" class="btn btn-secondary border form-control" data-dismiss="modal" aria-label="Close">{{t "navigation.cancel"}}</button>
+          <div class="col-6 me-auto d-grid">
+            <button type="button" class="btn btn-secondary border" data-bs-dismiss="modal" aria-label="Close">{{t "navigation.cancel"}}</button>
           </div>
-          <div class="col-6">
-            <button type="button" class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
+          <div class="col-6 d-grid">
+            <button type="button" class="btn btn-primary js-save">{{t "navigation.save"}}</button>
           </div>
         {{else}}
-          <div class="col-6 col-md-3 mr-auto">
+          <div class="col-6 col-md-3 me-auto d-grid">
             {{>backbutton}}
           </div>
-          <div class="col-6 col-md-3">
-            <button type="button" class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
+          <div class="col-6 col-md-3 d-grid">
+            <button type="button" class="btn btn-primary js-save">{{t "navigation.save"}}</button>
           </div>
         {{/if}}
     </div>
@@ -133,15 +128,15 @@
 
 
 <template name="tracktimemain">
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-link {{showDay}} js-day" href="#">{{t "globals.day"}}</a>
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link {{showDay}} js-day">{{t "globals.day"}}</button>
     </li>
-    <li class="nav-item">
-      <a class="nav-link {{showWeek}} js-week" href="#">{{t "globals.week"}}</a>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link {{showWeek}} js-week">{{t "globals.week"}}</button>
     </li>
-    <li class="nav-item">
-      <a class="nav-link {{showMonth}} js-month" href="#">{{t "globals.month"}}</a>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link {{showMonth}} js-month">{{t "globals.month"}}</button>
     </li>
   </ul>
   {{#if showDay}}

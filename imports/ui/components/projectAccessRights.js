@@ -1,7 +1,9 @@
 import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './projectAccessRights.html'
-import { validateEmail, getGlobalSetting, i18nextReady } from '../../utils/frontend_helpers'
+import {
+  validateEmail, getGlobalSetting, i18nextReady, showToast,
+} from '../../utils/frontend_helpers'
 import Projects from '../../api/projects/projects.js'
 
 Template.projectAccessRights.onCreated(function projectAccessRightsCreated() {
@@ -33,8 +35,8 @@ Template.projectAccessRights.onRendered(() => {
           format: (value) => {
             if (value !== templateInstance.project?.get()?.userId) {
               return templateInstance.project?.get()?.admins?.indexOf(value) >= 0
-                ? `<select class="js-rw-rights" data-id="${value}"><option value="team">Team member</option><option value="admin" selected>Administrator</option></select>`
-                : `<select class="js-rw-rights" data-id="${value}"><option value="team" selected>Team member</option><option value="admin">Administrator</option></select>`
+                ? `<select class="form-select js-rw-rights" data-id="${value}"><option value="team">Team member</option><option value="admin" selected>Administrator</option></select>`
+                : `<select class="form-select js-rw-rights" data-id="${value}"><option value="team" selected>Team member</option><option value="admin">Administrator</option></select>`
             }
             return i18next.t('project.owner')
           },
@@ -106,10 +108,10 @@ Template.projectAccessRights.events({
     if (newmembermail && validateEmail(newmembermail)) {
       Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: templateInstance.$('#newmembermail').val() }, (error, result) => {
         if (error) {
-          $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
+          showToast(i18next.t(error.error))
         } else {
           templateInstance.$('#newmembermail').val('')
-          $.Toast.fire(i18next.t(result))
+          showToast(i18next.t(result))
         }
       })
       templateInstance.$('#newmembermail').removeClass('is-invalid')
@@ -122,9 +124,9 @@ Template.projectAccessRights.events({
     const userId = $(event.currentTarget).data('id')
     Meteor.call('removeTeamMember', { projectId: templateInstance.data.projectId, userId }, (error, result) => {
       if (error) {
-        $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
+        showToast(i18next.t(error.error))
       } else {
-        $.Toast.fire(i18next.t(result))
+        showToast(i18next.t(result))
       }
     })
   },
@@ -133,9 +135,9 @@ Template.projectAccessRights.events({
     const userId = $(event.currentTarget).data('id')
     Meteor.call('changeProjectRole', { projectId: templateInstance.data.projectId, userId, administrator: $(event.currentTarget).val() === 'admin' }, (error, result) => {
       if (error) {
-        $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
+        showToast(i18next.t(error.error))
       } else {
-        $.Toast.fire(i18next.t(result))
+        showToast(i18next.t(result))
       }
     })
   },

@@ -1,6 +1,6 @@
 <template name="about">
     <form>
-        <div class="card form-group">
+        <div class="card mb-3">
             <div class="card-header">{{t "about.documentation"}}</div>
             <div class="card-block">
                 <a href="https://titra.io/wiki" target="_blank" class="btn btn-outline-primary m-2"><i class="fa fa-book"></i> Wiki</a>
@@ -8,7 +8,7 @@
                 <a href="https://github.com/kromitgmbh/titra" target="_blank" class="btn btn-outline-primary m-2"><i class="fab fa-github"></i> {{t "about.source_code"}}</a>
             </div>
         </div>
-        <div class="card form-group">
+        <div class="card mb-3">
             <div class="card-header">{{t "about.runtime"}}</div>
             <div class="card-block">
                 <label>{{t "about.versions"}}:</label>
@@ -32,9 +32,9 @@
                 </ul>
             </div>
         </div>
-        <div class="card form-group">
+        <div class="card mb-3">
             <div class="card-header">
-                {{t "settings.titra_changelog"}} <a href="#" class="week-row float-right" data-toggle="collapse" data-target="#changelog" id="retrieveChangeLog"><i class="fa fa-chevron-right"></i></a>
+                {{t "settings.titra_changelog"}} <a href="#" class="week-row float-end" data-bs-toggle="collapse" data-bs-target="#changelog" id="retrieveChangeLog"><i class="fa fa-chevron-right"></i></a>
             </div>
             <div class="card-block collapse" id="changelog">
                 <!-- <button class="btn btn-outline-primary" id="retrieveChangeLog">Retrieve change log from GitHub</button> -->

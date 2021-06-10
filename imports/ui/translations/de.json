@@ -64,8 +64,9 @@
     "month_drag_help_text": "Sie können ein Projekt auf ein Datum ziehen um Zeiten zu erfassen",
     "today": "Heute",
     "actions": "Aktionen",
-    "start_timer": "Starten",
-    "start_time": "Beginn"
+    "start_timer": "Timer starten",
+    "start_time": "Beginn",
+    "timer": "Stoppuhr"
   },
   "overview": {
     "all_projects": "Alle Projekte",

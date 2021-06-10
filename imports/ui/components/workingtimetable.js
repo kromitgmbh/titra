@@ -106,7 +106,7 @@ Template.workingtimetable.onRendered(() => {
           $('.dt-scrollable').height('auto')
         } else {
           window.requestAnimationFrame(() => {
-            templateInstance.$('[data-toggle="tooltip"]').tooltip({
+            templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
               container: templateInstance.firstNode,
               trigger: 'hover focus',
             })

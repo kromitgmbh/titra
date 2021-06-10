@@ -4,6 +4,7 @@ import i18next from 'i18next'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
+import bootstrap from 'bootstrap'
 import Timecards from '../../api/timecards/timecards'
 import {
   i18nextReady,
@@ -13,6 +14,7 @@ import {
   numberWithUserPrecision,
   getUserSetting,
   getUserTimeUnitVerbose,
+  showToast,
 } from '../../utils/frontend_helpers'
 import projectUsers from '../../api/users/users.js'
 import Projects from '../../api/projects/projects'
@@ -49,7 +51,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
       && this.data.customer.get()
       && this.data.period.get()
       && this.data.limit.get()) {
-      this.myProjectsHandle = this.subscribe('myprojects')
+      this.myProjectsHandle = this.subscribe('myprojects', {})
       this.projectUsersHandle = this.subscribe('projectUsers', { projectId: this.data.project.get() })
       this.selector = buildDetailedTimeEntriesForPeriodSelector({
         projectId: this.data.project.get(),
@@ -183,7 +185,7 @@ Template.detailtimetable.onRendered(() => {
                         if (error) {
                           console.error(error)
                         } else {
-                          $.Toast.fire(i18next.t('notifications.time_entry_updated'))
+                          showToast(i18next.t('notifications.time_entry_updated'))
                         }
                       })
                     },
@@ -295,24 +297,24 @@ Template.detailtimetable.events({
   'click .js-track-time': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.tcid.set(undefined)
-    $('#edit-tc-entry-modal').modal({ focus: false })
+    new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
     // FlowRouter.go('tracktime', { projectId: templateInstance.$('.js-target-project').val() })
   },
   'click .js-share': (event, templateInstance) => {
     event.preventDefault()
     if ($('#period').val() === 'all' || $('.js-target-project').val() === 'all') {
-      $.Toast.fire({ text: i18next.t('notifications.sanity') }, { type: 'danger' })
+      showToast(i18next.t('notifications.sanity'))
       return
     }
     Meteor.call('addDashboard', {
       projectId: $('.js-target-project').val(), resourceId: $('#resourceselect').val(), customer: $('#customerselect').val(), timePeriod: $('#period').val(),
     }, (error, _id) => {
       if (error) {
-        $.Toast.fire({ text: i18next.t('notifications.dashboard_creation_failed', { error }), icon: 'error' })
+        showToast(i18next.t('notifications.dashboard_creation_failed', { error }))
         // console.error(error)
       } else {
         $('#dashboardURL').val(FlowRouter.url('dashboard', { _id }))
-        $('.js-dashboard-modal').modal('toggle')
+        new bootstrap.Modal($('.js-dashboard-modal')[0], { focus: false }).toggle()
         // FlowRouter.go('dashboard', { _id })
       }
     })
@@ -324,9 +326,9 @@ Template.detailtimetable.events({
         projectId: $('.js-target-project').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
       }, (error, result) => {
         if (error) {
-          $.Toast.fire({ text: i18next.t('notifications.export_failed', { error }), icon: 'error' })
+          showToast(i18next.t('notifications.export_failed', { error }))
         } else {
-          $.Toast.fire({ text: i18next.t(result) })
+          showToast(i18next.t(result))
         }
       })
     } else {
@@ -334,45 +336,36 @@ Template.detailtimetable.events({
         if (error) {
           console.error(error)
         } else {
-          $.Toast.fire({ text: i18next.t('notifications.time_entry_updated') })
+          showToast(i18next.t('notifications.time_entry_updated'))
         }
       })
     }
   },
   'click .js-delete': (event, templateInstance) => {
     event.preventDefault()
-    $.ConfirmBox.fire({ text: i18next.t('notifications.delete_confirm') }).then((result) => {
-      if (result.value) {
-        Meteor.call('deleteTimeCard', { timecardId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
-          if (!error) {
-            $.Toast.fire(i18next.t('notifications.time_entry_deleted'))
-          } else {
-            console.error(error)
-            if (typeof error.error === 'string') {
-              $.Toast.fire({ text: i18next.t(error.error.replace('[', '').replace(']', '')), icon: 'error' })
-            }
+    if (confirm(i18next.t('notifications.delete_confirm'))) {
+      Meteor.call('deleteTimeCard', { timecardId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
+        if (!error) {
+          showToast(i18next.t('notifications.time_entry_deleted'))
+        } else {
+          console.error(error)
+          if (typeof error.error === 'string') {
+            showToast(i18next.t(error.error.replace('[', '').replace(']', '')))
           }
-        })
-      }
-    })
+        }
+      })
+    }
   },
   'click .js-edit': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.tcid.set(templateInstance.$(event.currentTarget).data('id'))
-    $('#edit-tc-entry-modal').modal({ focus: false })
+    new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
   },
   'change .js-search': (event, templateInstance) => {
     templateInstance.search.set($(event.currentTarget).val())
   },
   'change .js-project-filter>.js-target-project': (event, templateInstance) => {
     templateInstance.data.project.set(templateInstance.$('.js-target-project').val())
-  },
-  'mouseenter .js-tooltip': (event, templateInstance) => {
-    event.preventDefault()
-    templateInstance.$('.js-tooltip').tooltip({
-      container: templateInstance.firstNode,
-      trigger: 'hover click',
-    })
   },
 })
 Template.detailtimetable.onDestroyed(() => {

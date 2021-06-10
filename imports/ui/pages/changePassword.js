@@ -1,5 +1,6 @@
 import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import { showToast } from '../../utils/frontend_helpers.js'
 import './changePassword.html'
 
 Template.changePassword.events({
@@ -18,7 +19,7 @@ Template.changePassword.events({
           templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
           document.querySelector('.notification').classList.toggle('d-none')
         } else {
-          $.Toast.fire(i18next.t('notifications.password_changed'))
+          showToast(i18next.t('notifications.password_changed'))
           FlowRouter.go('projectlist')
         }
       })
@@ -28,7 +29,7 @@ Template.changePassword.events({
           templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
           document.querySelector('.notification').classList.toggle('d-none')
         } else {
-          $.Toast.fire(i18next.t('notifications.password_changed'))
+          showToast(i18next.t('notifications.password_changed'))
           FlowRouter.go('projectlist')
         }
       })

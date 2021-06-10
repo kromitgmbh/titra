@@ -46,37 +46,37 @@ function checkTimeEntryRule({
   }
 }
 function insertTimeCard(projectId, task, date, hours, userId) {
-  if (!Tasks.findOne({ userId, name: task.replace(/(:.*:)/g, emojify) })) {
-    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, emojify) })
+  if (!Tasks.findOne({ userId, name: task.replace(/(:\S*:)/g, emojify) })) {
+    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:\S*:)/g, emojify) })
   } else {
-    Tasks.update({ userId, name: task.replace(/(:.*:)/g, emojify) }, { $set: { lastUsed: new Date() } })
+    Tasks.update({ userId, name: task.replace(/(:\S*:)/g, emojify) }, { $set: { lastUsed: new Date() } })
   }
   return Timecards.insert({
     userId,
     projectId,
     date,
     hours,
-    task: task.replace(/(:.*:)/g, emojify),
+    task: task.replace(/(:\S*:)/g, emojify),
   })
 }
 function upsertTimecard(projectId, task, date, hours, userId) {
-  if (!Tasks.findOne({ userId, name: task.replace(/(:.*:)/g, emojify) })) {
-    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:.*:)/g, emojify) })
+  if (!Tasks.findOne({ userId, name: task.replace(/(:\S*:)/g, emojify) })) {
+    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:\S*:)/g, emojify) })
   } else {
-    Tasks.update({ userId, name: task.replace(/(:.*:)/g, emojify) }, { $set: { lastUsed: new Date() } })
+    Tasks.update({ userId, name: task.replace(/(:\S*:)/g, emojify) }, { $set: { lastUsed: new Date() } })
   }
   if (hours === 0) {
     Timecards.remove({
       userId,
       projectId,
       date,
-      task: task.replace(/(:.*:)/g, emojify),
+      task: task.replace(/(:\S*:)/g, emojify),
     })
   } else if (Timecards.find({
     userId,
     projectId,
     date,
-    task: task.replace(/(:.*:)/g, emojify),
+    task: task.replace(/(:\S*:)/g, emojify),
   }).count() > 1) {
     // if there are more time entries with the same task description for one day,
     // we remove all of them and create a new entry for the total sum
@@ -84,21 +84,21 @@ function upsertTimecard(projectId, task, date, hours, userId) {
       userId,
       projectId,
       date,
-      task: task.replace(/(:.*:)/g, emojify),
+      task: task.replace(/(:\S*:)/g, emojify),
     })
   }
   return Timecards.update({
     userId,
     projectId,
     date,
-    task: task.replace(/(:.*:)/g, emojify),
+    task: task.replace(/(:\S*:)/g, emojify),
   },
   {
     userId,
     projectId,
     date,
     hours,
-    task: task.replace(/(:.*:)/g, emojify),
+    task: task.replace(/(:\S*:)/g, emojify),
   }, { upsert: true })
 }
 
@@ -155,15 +155,15 @@ Meteor.methods({
     checkTimeEntryRule({
       userId: this.userId, projectId, task, state: timecard.state, date, hours,
     })
-    if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:.*:)/g, emojify) })) {
-      Tasks.insert({ userId: this.userId, name: task.replace(/(:.*:)/g, emojify) })
+    if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:\S*:)/g, emojify) })) {
+      Tasks.insert({ userId: this.userId, name: task.replace(/(:\S*:)/g, emojify) })
     }
     Timecards.update({ _id }, {
       $set: {
         projectId,
         date,
         hours,
-        task: task.replace(/(:.*:)/g, emojify),
+        task: task.replace(/(:\S*:)/g, emojify),
       },
     })
   },

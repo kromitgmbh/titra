@@ -5,7 +5,7 @@ import './projectInfoPopup.js'
 import './projectselect.html'
 
 Template.projectselect.onCreated(function createTrackTime() {
-  this.subscribe('myprojects')
+  this.subscribe('myprojects', {})
   this.selectedId = new ReactiveVar()
   this.tcid = new ReactiveVar()
   this.autorun(() => {

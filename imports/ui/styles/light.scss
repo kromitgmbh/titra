@@ -1,29 +1,28 @@
-$theme-colors: (
-  primary: #009688,
-  secondary: #ffffff,
-  success: #009688,
-  info: #b2dfdb,
-  warning: #ffc107,
-  danger: #ff5722,
-  light: #BDBDBD,
-  dark: #455A64
-);
-$dropdown-link-hover-bg: map-get($theme-colors, dark) !default;
+$primary: #009688;
+$secondary: #ffffff;
+$success: #009688;
+$info: #b2dfdb;
+$warning: #ffc107;
+$danger: #ff5722;
+$light: #BDBDBD;
+$dark: #455A64;
 
-@import "{}/node_modules/sweetalert2/src/sweetalert2.scss";
+$dropdown-link-hover-bg: $dark !default;
+
+// @import "{}/node_modules/sweetalert2/src/sweetalert2.scss";
 
 
 .list-group-item {
   color: #495057;
 }
 .tab-borders {
-  background-color: map-get($theme-colors, secondary);
+  background-color: $secondary;
   border-left: 1px solid #dee2e6;
   border-right: 1px solid #dee2e6;
   border-bottom: 1px solid #dee2e6;
 }
-.custom-select {
-  background: map-get($theme-colors, secondary) !important;
+.form-select {
+  background: $secondary !important;
 }
 .all-projects-bg {
   background: rgba(0,112,101,0.05) !important;
@@ -45,13 +44,13 @@ $dropdown-link-hover-bg: map-get($theme-colors, dark) !default;
 }
 .fc-button-primary {
     color: #000000 !important;
-    background-color: map-get($theme-colors, secondary) !important;
-    border-color: map-get($theme-colors, light) !important;
+    background-color: $secondary !important;
+    border-color: $light !important;
 } 
 .fc-button-primary:hover {
     color: #000000 !important;
     background-color: #eee !important;
-    border-color: map-get($theme-colors, light) !important;
+    border-color: $light !important;
 }
 .datatable {
     --dt-border-color: #d1d8dd;
@@ -75,45 +74,45 @@ $dropdown-link-hover-bg: map-get($theme-colors, dark) !default;
   border-color: #dee2e6 #dee2e6 #fff;
 }
 .drag.card {
-  background-color: map-get($theme-colors, secondary);  
+  background-color: $secondary;  
 }
 .card-block .list-group-item {
-  background-color: map-get($theme-colors, secondary);
+  background-color: $secondary;
 }
 .at-link {
-  color: map-get($theme-colors, dark);
+  color: $dark;
 }
 .dp-current {
-  background-color: map-get($theme-colors, primary) !important;
+  background-color: $primary !important;
 }
 .dp-cal-month:hover {
-  background-color: map-get($theme-colors, primary) !important;
+  background-color: $primary !important;
 }
 .dp-cal-year:hover {
-  background-color: map-get($theme-colors, primary) !important;
+  background-color: $primary !important;
 }
 .dp-day:hover {
-  background-color: map-get($theme-colors, primary) !important;
+  background-color: $primary !important;
 }
 .dp-day:hover {
-  background-color: map-get($theme-colors, primary) !important;
+  background-color: $primary !important;
 }
 .dp-prev:hover {
-  background-color: map-get($theme-colors, primary) !important;
+  background-color: $primary !important;
 }
 .dp-next:hover {
-  background-color: map-get($theme-colors, primary) !important;
+  background-color: $primary !important;
 }
 .dp-today:hover {
-  background-color: map-get($theme-colors, primary) !important;
+  background-color: $primary !important;
 }
 .dp-clear:hover {
-  background-color: map-get($theme-colors, primary) !important;
+  background-color: $primary !important;
 }
 .dp-close:hover {
-  background-color: map-get($theme-colors, primary) !important;
+  background-color: $primary !important;
 }
 .dp:before {
-  background: map-get($theme-colors, primary) !important;
+  background: $primary !important;
 }
 @import "{}/imports/ui/styles/general.scss";

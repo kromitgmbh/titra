@@ -1,9 +1,12 @@
 <template name="resourceselect">
-  <select class="form-control custom-select" id="resourceselect">
-    <option value="" disabled>{{t "resource.select"}}</option>
-    <option value="all" selected="{{selected 'all'}}">{{t "resource.all"}}</option>
-    {{#each resources}}
-      <option value="{{_id}}" selected="{{selected(_id)}}">{{profile.name}}</option>
-    {{/each}}
-  </select>
+  <div class="form-floating">
+    <select class="form-control form-select" id="resourceselect">
+      <option value="" disabled>{{t "resource.select"}}</option>
+      <option value="all" selected="{{selected 'all'}}">{{t "resource.all"}}</option>
+      {{#each resources}}
+        <option value="{{_id}}" selected="{{selected(_id)}}">{{profile.name}}</option>
+      {{/each}}
+    </select>
+    <label>{{t "globals.resource"}}</label>
+  </div>
 </template>

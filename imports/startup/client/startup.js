@@ -25,11 +25,15 @@ Meteor.startup(() => {
   Meteor.subscribe('globalsettings')
   let language = navigator.language.substring(0, 2)
   import('@fortawesome/fontawesome-free/js/all.js')
-  import('popper.js').then((Popper) => {
-    window.Popper = Popper.default
-    import('bootstrap').then(() => {
-      window.BootstrapLoaded.set(true)
-      // $('[data-toggle="tooltip"]').tooltip()
+  import('bootstrap').then((bs) => {
+    window.BootstrapLoaded.set(true)
+    new bs.Tooltip(document.body, {
+      selector: '[data-bs-toggle="tooltip"]',
+      trigger: 'hover focus',
+    })
+    new bs.Tooltip(document.body, {
+      selector: '.js-avatar-tooltip',
+      trigger: 'hover focus',
     })
   })
   Tracker.autorun(() => {
@@ -64,55 +68,55 @@ Meteor.startup(() => {
       }
     }
   })
-  Tracker.autorun(() => {
-    if (i18nextReady.get()) {
-      import('sweetalert2/dist/sweetalert2.js').then((Swal) => {
-        $.ConfirmBox = Swal.default.mixin({
-          showCancelButton: true,
-          cancelButtonText: i18next.t('navigation.cancel'),
-          reverseButtons: true,
-          buttonsStyling: false,
-          backdrop: 'rgba(0, 0, 0, 0.5)',
-          customClass: {
-            confirmButton: 'btn btn-primary',
-            cancelButton: 'btn btn-secondary border mr-3',
-          },
-          showClass: {
-            popup: '',
-            backdrop: '',
-            icon: '',
-          },
-          hideClass: {
-            popup: '',
-            backdrop: '',
-            icon: '',
-          },
-        })
-        $.Toast = Swal.default.mixin({
-          toast: true,
-          icon: 'success',
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-          },
-          showClass: {
-            popup: '',
-            backdrop: '',
-            icon: '',
-          },
-          hideClass: {
-            popup: '',
-            backdrop: '',
-            icon: '',
-          },
-        })
-      })
-    }
-  })
+  // Tracker.autorun(() => {
+  //   if (i18nextReady.get()) {
+  //     // import('sweetalert2/dist/sweetalert2.js').then((Swal) => {
+  //     //   $.ConfirmBox = Swal.default.mixin({
+  //     //     showCancelButton: true,
+  //     //     cancelButtonText: i18next.t('navigation.cancel'),
+  //     //     reverseButtons: true,
+  //     //     buttonsStyling: false,
+  //     //     backdrop: 'rgba(0, 0, 0, 0.5)',
+  //     //     customClass: {
+  //     //       confirmButton: 'btn btn-primary',
+  //     //       cancelButton: 'btn btn-secondary border me-3',
+  //     //     },
+  //     //     showClass: {
+  //     //       popup: '',
+  //     //       backdrop: '',
+  //     //       icon: '',
+  //     //     },
+  //     //     hideClass: {
+  //     //       popup: '',
+  //     //       backdrop: '',
+  //     //       icon: '',
+  //     //     },
+  //     //   })
+  //     //   $.Toast = Swal.default.mixin({
+  //     //     toast: true,
+  //     //     icon: 'success',
+  //     //     position: 'top-end',
+  //     //     showConfirmButton: false,
+  //     //     timer: 2000,
+  //     //     timerProgressBar: true,
+  //     //     didOpen: (toast) => {
+  //     //       toast.addEventListener('mouseenter', Swal.stopTimer)
+  //     //       toast.addEventListener('mouseleave', Swal.resumeTimer)
+  //     //     },
+  //     //     showClass: {
+  //     //       popup: '',
+  //     //       backdrop: '',
+  //     //       icon: '',
+  //     //     },
+  //     //     hideClass: {
+  //     //       popup: '',
+  //     //       backdrop: '',
+  //     //       icon: '',
+  //     //     },
+  //     //   })
+  //     // })
+  //   }
+  // })
   Tracker.autorun(() => {
     if (getGlobalSetting('customCSS')) {
       $('head').append(`<style>${getGlobalSetting('customCSS')}</style>`)
@@ -163,7 +167,7 @@ Template.registerHelper('unit', () => {
 })
 Template.registerHelper('emojify', (text) => {
   if (text) {
-    return text.replace(/(:.*:)/g, emojify)
+    return text.replace(/(:\S*:)/g, emojify)
   }
   return false
 })
