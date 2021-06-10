@@ -41,6 +41,4 @@ jobs:
         with:
           context: .
           push: true
-          tags:
-            kromit/titra:latest
-            kromit/titra:${{steps.autotag.outputs.tagname}}
+          tags: kromit/titra:latest, kromit/titra:${{steps.autotag.outputs.tagname}}
