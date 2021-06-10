@@ -1,36 +1,36 @@
 <template name="editproject">
   <form id="editProjectForm">
-    <div class="card form-group">
+    <div class="card mb-3">
       <div class="card-header">{{#if newProject}}{{t "navigation.new_project"}}{{else}}{{t "navigation.edit"}}:{{/if}}
-        <label for="placeholder">{{name}}</label>
+        <label class="form-label" for="placeholder">{{name}}</label>
       </div>
       <div class="card-block">
-        <div class="form-group">
-          <label for="name"><strong>{{t "globals.prj_name"}}</strong></label>
+        <div class="mb-3 form-floating">
           <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="{{t 'project.my_project_placeholder'}}" />
+          <label class="form-label" for="name"><strong>{{t "globals.prj_name"}}</strong></label>
         </div>
-        <div class="form-group">
-          <label for="desc"><strong>{{t "globals.description"}}</strong></label>
-          <div id="richDesc">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="color"><strong>{{t "globals.color"}}</strong></label>
-          <div class="input-group" id="colpick">
-            <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
-            <div class="input-group-append">
-              <button type="button" class="btn" id="pickr"></button>
+        <div class="card mb-3">
+          <div class="card-header">{{t "globals.description"}}</div>
+          <div class="card-block">
+            <div id="richDesc">
             </div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="customer"><strong>{{t "globals.customer"}}</strong></label>
+        <div class="mb-3">
+          <div class="input-group form-floating" id="colpick">
+            <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
+            <button type="button" class="btn" id="pickr"></button>
+            <label class="form-label" for="color"><strong>{{t "globals.color"}}</strong></label>
+          </div>
+        </div>
+        <div class="mb-3 form-floating">
           <input name="customer" id="customer" type="text" value={{customer}} class="form-control" placeholder="{{t 'project.customer_placeholder'}}"/>
+          <label class="form-label" for="customer"><strong>{{t "globals.customer"}}</strong></label>
         </div>
         <div class="card mb-3">
           <div class="card-header">{{t "project.billing_budget"}}</div>
           <div class="card-block">
-            <div class="form-group">
+            <div class="mb-3 form-floating">
               <div class="form-check">
                 {{#if notbillable}}
                   <input name="notbillable" id="notbillable" type="checkbox" checked class="form-check-input" />
@@ -41,17 +41,19 @@
               </div>
             </div>
             {{#unless notbillable}}
-              <div class="form-group">
-                <label for="rate"><strong>{{t "project.rate"}} ({{unit}}/h)</strong></label>
+              <div class="mb-3 form-floating">
                 <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100" step="any" />
+                <label class="form-label" for="rate"><strong>{{t "project.rate"}} ({{unit}}/h)</strong></label>
               </div>
-              <label for="target"><strong>{{t "project.target"}} ({{timeunit}})</strong></label>
-              <input name="target" id="target" type="number" value="{{timeInUserUnit (target)}}" class="form-control" placeholder="1000" step="any"/>
+              <div class="form-floating">
+                <input name="target" id="target" type="number" value="{{timeInUserUnit (target)}}" class="form-control" placeholder="1000" step="any"/>
+                <label class="form-label" for="target"><strong>{{t "project.target"}} ({{timeunit}})</strong></label>
+              </div>
             {{/unless}}
           </div>
         </div>
       {{#if getGlobalSetting "enableWekan"}}
-      <div class="form-group">
+      <div class="mb-3">
         <div class="card">
           <div class="card-header">{{t "project.wekan_integration"}}</div>
           <div class="card-block">
@@ -61,7 +63,7 @@
       </div>
       {{/if}}
       {{#unless newProject}}
-        <div class="form-group">
+        <div>
           <div class="card">
             <div class="card-header">{{t "project.access_rights"}}</div>
             <div class="card-block">
@@ -74,26 +76,26 @@
     </div>
   </form>
   <div class="row text-center">
-    <div class="col-3 mr-auto">
-      <button type="button" class="btn btn-secondary border js-backbutton form-control">{{t "navigation.back"}}</button>
+    <div class="col-3 d-grid gap-2">
+      <button type="button" class="btn btn-secondary border js-backbutton">{{t "navigation.back"}}</button>
     </div>
     {{#unless newProject}} {{#if archived (projectId)}}
-    <div class="col-3">
-      <button type="button" class="btn btn-secondary border btn-block js-restore-project"><i class="fa fa-undo"></i> <span class="d-none d-md-inline">{{t "navigation.restore"}}</span></button>
+    <div class="col-3 d-grid gap-2">
+      <button type="button" class="btn btn-secondary border js-restore-project"><i class="fa fa-undo"></i> <span class="d-none d-md-inline">{{t "navigation.restore"}}</span></button>
     </div>
-    <div class="col-3">
-      <button type="button" class="btn btn-secondary border btn-block js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">{{t "navigation.delete"}}</span></button>
+    <div class="col-3 d-grid gap-2">
+      <button type="button" class="btn btn-secondary border js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">{{t "navigation.delete"}}</span></button>
     </div>
     {{else}}
-    <div class="col-3">
-      <a href="/list/timecards/{{projectId}}" class="btn btn-secondary border btn-block"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
+    <div class="col-3 d-grid gap-2">
+      <a href="/list/timecards/{{projectId}}" class="btn btn-secondary border"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
     </div>
-    <div class="col-3">
-      <button type="button" class="btn btn-secondary border btn-block js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">{{t "navigation.archive"}}</span></button>
+    <div class="col-3 d-grid gap-2">
+      <button type="button" class="btn btn-secondary border js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">{{t "navigation.archive"}}</span></button>
     </div>
     {{/if}} {{/unless}}
-    <div class="col-3">
-      <button type="button" class="btn btn-primary form-control js-save" id="save">{{t "navigation.save"}}</button>
+    <div class="col-3 d-grid gap-2">
+      <button type="button" class="btn btn-primary js-save" id="save">{{t "navigation.save"}}</button>
     </div>
   </div>
 </template>

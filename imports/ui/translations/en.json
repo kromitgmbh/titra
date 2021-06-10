@@ -64,8 +64,9 @@
     "month_drag_help_text": "You can drag projects on a date to track time",
     "today": "Today",
     "actions": "Actions",
-    "start_timer": "Start",
-    "start_time": "Start time"
+    "start_timer": "Start timer",
+    "start_time": "Start time",
+    "timer": "Timer"
   },
   "overview": {
     "all_projects": "All projects",

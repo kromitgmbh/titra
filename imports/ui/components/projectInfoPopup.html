@@ -4,8 +4,7 @@
           <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{name}}</h5>
-                <button type="button" class="close" data-toggle="modal" data-target="#projectInfoPopup" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#projectInfoPopup" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
@@ -17,15 +16,15 @@
                 {{/if}}
                 {{#if customer}}
                 <div>
-                    <label for="customer"><strong>{{t "globals.customer"}}</strong></label>
+                    <label class="form-label" for="customer"><strong>{{t "globals.customer"}}</strong></label>
                     <p>{{customer}}</p>
                 </div>
                 {{/if}}
                 {{#unless notbillable}}
                 <div>
-                    <label for="rate"><strong>{{t "project.rate"}} ({{unit}}/h)</strong></label>
+                    <label class="form-label" for="rate"><strong>{{t "project.rate"}} ({{unit}}/h)</strong></label>
                     <p>{{rate}}</p>
-                    <label for="target"><strong>{{t "project.target"}} ({{timeunit}})</strong></label>
+                    <label class="form-label" for="target"><strong>{{t "project.target"}} ({{timeunit}})</strong></label>
                     <p>{{timeInUserUnit (target)}}</p>
                 </div>
                 {{/unless}}

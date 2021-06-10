@@ -177,5 +177,5 @@ Template.tasksearch.helpers({
   task: () => Template.instance().data.task,
   projectId: () => Template.instance()?.data?.projectId,
   displayTaskSelectionIcon: () => (Template.instance()?.data?.projectId
-    ? Template.instance()?.data?.projectId?.get() : false)
+    ? Template.instance()?.data?.projectId?.get() : false),
 })

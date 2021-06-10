@@ -7,13 +7,13 @@ import './weektable.html'
 import './tasksearch'
 import Projects from '../../api/projects/projects'
 import {
-  clientTimecards, getWeekDays, timeInUserUnit, getGlobalSetting, getUserSetting,
+  clientTimecards, getWeekDays, timeInUserUnit, getGlobalSetting, getUserSetting, showToast,
 } from '../../utils/frontend_helpers'
 
 Template.weektable.onCreated(function weekTableCreated() {
   dayjs.extend(utc)
   dayjs.extend(customParseFormat)
-  this.subscribe('myprojects')
+  this.subscribe('myprojects', {})
   // attention: this is a workaround because we are currently hard coding the european week format
   // where weeks start on Monday - in the future this needs to be updated based on a user specific
   // 'start of the week' setting
@@ -87,7 +87,7 @@ Template.weektable.events({
         const newTaskInput = templateInstance.$(element.parentElement.parentElement).find('.js-tasksearch-input').val()
         const task = templateInstance.$(element).data('task') ? templateInstance.$(element).data('task') : newTaskInput
         if (!task || task.length === 0) {
-          $.Toast.fire({ text: i18next.t('notifications.enter_task'), icon: 'error' })
+          showToast(i18next.t('notifications.enter_task'))
           inputError = true
           return
         }
@@ -123,7 +123,7 @@ Template.weektable.events({
           templateInstance.$('.js-tasksearch-input').val('')
           templateInstance.$('.js-tasksearch-input').parent().parent().find('.js-hours')
             .val('')
-          $.Toast.fire(i18next.t('notifications.time_entry_updated'))
+          showToast(i18next.t('notifications.time_entry_updated'))
           $('tr').trigger('save')
         }
       })

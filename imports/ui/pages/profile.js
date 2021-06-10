@@ -5,7 +5,7 @@ import i18next from 'i18next'
 
 import '../components/backbutton.js'
 import './profile.html'
-import { getUserSetting } from '../../utils/frontend_helpers.js'
+import { getUserSetting, showToast } from '../../utils/frontend_helpers.js'
 
 Template.profile.helpers({
   name: () => getUserSetting('name'),
@@ -27,7 +27,6 @@ Template.profile.helpers({
     ? getUserSetting('avatarColor') : Template.instance().selectedAvatarColor.get()),
 })
 
-
 Template.profile.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
@@ -42,9 +41,9 @@ Template.profile.events({
     }
     Meteor.call('updateProfile', updateJSON, (error) => {
       if (error) {
-        $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
+        showToast(i18next.t(error.error))
       } else {
-        $.Toast.fire(i18next.t('notifications.settings_saved_success'))
+        showToast(i18next.t('notifications.settings_saved_success'))
         templateInstance.$('#imagePreview').hide()
       }
     })

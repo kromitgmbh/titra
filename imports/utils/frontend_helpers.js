@@ -20,7 +20,7 @@ function getUserSetting(field) {
 
 function addToolTipToTableCell(value) {
   if (value) {
-    return `<span class="js-tooltip" data-toggle="tooltip" data-placement="left" title="${value}">${value}</span>`
+    return `<span class="js-tooltip" data-bs-toggle="tooltip" data-bs-placement="left" title="${value}">${value}</span>`
   }
   return ''
 }
@@ -76,7 +76,7 @@ function validateEmail(email) {
 
 async function emojify(match) {
   const emojiImport = await import('node-emoji')
-  return emojiImport.default.emojify(match)
+  return emojiImport.default.emojify(match, (name) => name)
 }
 function loadLanguage(language, i18nextDebugMode) {
   switch (language) {
@@ -178,6 +178,13 @@ function getUserTimeUnitAbbreviated() {
   }
   return false
 }
+function showToast(message) {
+  import('bootstrap').then((bs) => {
+    $('.toast').removeClass('d-none')
+    $('.toast-body').text(message)
+    new bs.Toast($('.toast').get(0)).show()
+  })
+}
 export {
   addToolTipToTableCell,
   getWeekDays,
@@ -194,4 +201,5 @@ export {
   getUserTimeUnitVerbose,
   getUserTimeUnitAbbreviated,
   globalT,
+  showToast,
 }

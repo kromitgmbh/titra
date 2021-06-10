@@ -1,6 +1,7 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import bootstrap from 'bootstrap'
 import './periodpicker.html'
 import { getUserSetting } from '../../utils/frontend_helpers'
 
@@ -14,7 +15,7 @@ Template.periodpicker.events({
     templateInstance.period.set($(event.currentTarget).val())
     FlowRouter.setQueryParams({ period: $(event.currentTarget).val() })
     if ($(event.currentTarget).val() === 'custom') {
-      templateInstance.$('.js-custom-period-modal').modal('toggle')
+      new bootstrap.Modal(templateInstance.$('.js-custom-period-modal')[0], { focus: false }).toggle()
     }
   },
   'click .js-save': (event, templateInstance) => {
@@ -33,7 +34,7 @@ Template.periodpicker.events({
         } else {
           templateInstance.$('#customStartDate').removeClass('is-invalid')
           templateInstance.$('#customEndDate').removeClass('is-invalid')
-          templateInstance.$('.js-custom-period-modal').modal('toggle')
+          new bootstrap.Modal(templateInstance.$('.js-custom-period-modal')[0], { focus: false }).toggle()
         }
       })
     } else {

@@ -182,7 +182,7 @@ Template.taskSelectPopup.events({
     event.preventDefault()
     templateInstance.limit.set(Number.parseInt(templateInstance.$(event.currentTarget).val(), 10))
   },
-  'click .nav-link[data-toggle]': (event, templateInstance) => {
+  'click .nav-link[data-bs-toggle]': (event, templateInstance) => {
     event.preventDefault()
     window.requestAnimationFrame(() => {
       templateInstance.activeTab.set(templateInstance.$(event.currentTarget).get(0).id)

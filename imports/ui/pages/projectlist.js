@@ -7,16 +7,17 @@ import '../components/projectchart.js'
 import '../components/allprojectschart.js'
 import '../components/projectProgress.js'
 import hex2rgba from '../../utils/hex2rgba.js'
+import { showToast } from '../../utils/frontend_helpers.js'
 
 Template.projectlist.onCreated(function createProjectList() {
-  this.subscribe('myprojects')
+  this.subscribe('myprojects', {})
   this.data.showArchived = new ReactiveVar(false)
 })
 Template.projectlist.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
     if (window.BootstrapLoaded.get()) {
-      $('[data-toggle="tooltip"]').tooltip()
+      $('[data-bs-toggle="tooltip"]').tooltip()
     }
   })
   Meteor.setTimeout(() => {
@@ -95,7 +96,7 @@ Template.projectlist.events({
       if (result.value) {
         Meteor.call('deleteProject', { projectId }, (error) => {
           if (!error) {
-            $.Toast.fire(i18next.t('notifications.project_delete_success'))
+            showToast(i18next.t('notifications.project_delete_success'))
           } else {
             console.error(error)
           }
@@ -109,7 +110,7 @@ Template.projectlist.events({
     const projectId = event.currentTarget.parentElement.parentElement.id
     Meteor.call('archiveProject', { projectId }, (error) => {
       if (!error) {
-        $.Toast.fire(i18next.t('notifications.project_archive_success'))
+        showToast(i18next.t('notifications.project_archive_success'))
       } else {
         console.error(error)
       }
@@ -121,7 +122,7 @@ Template.projectlist.events({
     const projectId = event.currentTarget.parentElement.parentElement.id
     Meteor.call('restoreProject', { projectId }, (error) => {
       if (!error) {
-        $.Toast.fire(i18next.t('notifications.project_restore_success'))
+        showToast(i18next.t('notifications.project_restore_success'))
       } else {
         console.error(error)
       }

@@ -126,9 +126,9 @@ Template.dashboard.onRendered(() => {
           const precision = getUserSetting('precision')
           for (const timecard of Timecards.find({}, { sort: { date: 1 } }).fetch()) {
             taskmap.set(
-              timecard.task.replace(/(:.*:)/g, emojify),
-              taskmap.get(timecard.task.replace(/(:.*:)/g, emojify))
-                ? Number(Number(taskmap.get(timecard.task.replace(/(:.*:)/g, emojify))) + Number(timeInUnitHelper(timecard.hours)))
+              timecard.task.replace(/(:\S*:)/g, emojify),
+              taskmap.get(timecard.task.replace(/(:\S*:)/g, emojify))
+                ? Number(Number(taskmap.get(timecard.task.replace(/(:\S*:)/g, emojify))) + Number(timeInUnitHelper(timecard.hours)))
                 : Number(timeInUnitHelper(timecard.hours)),
             )
             datemap.set(

@@ -1,6 +1,6 @@
 <template name ="projectselect">
-  <div class="input-group">
-    <select class="custom-select form-control js-target-project" style="border-left-color: {{projectColor (selectedId)}}; border-left-width:thick;">
+  <div class="input-group form-floating">
+    <select class="form-select form-control js-target-project" style="border-left-color: {{projectColor (selectedId)}}; border-left-width:thick;">
       <option value="" disabled selected>{{t "project.project_placeholder"}}</option>
       {{#if allProjects}}
         <option value="all">{{t "overview.all_projects"}}</option>
@@ -10,10 +10,9 @@
       {{/each}}
     </select>
     {{#if displayProjectInfo}}
-      <div class="input-group-append">
-        <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#projectInfoPopup"><i class="fa fa-info-circle"></i></button>
-      </div>
+      <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#projectInfoPopup"><i class="fa fa-info-circle"></i></button>
     {{/if}}
+    <label class="form-label">{{t "globals.project"}}</label>
   </div>
   {{#if displayProjectInfo}}
     {{>projectInfoPopup projectId=selectedId}}

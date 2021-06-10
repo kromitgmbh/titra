@@ -96,13 +96,6 @@ Template.periodtimetable.onRendered(() => {
           .refresh(data, columns)
         if (templateInstance.periodTimecards.get().length === 0) {
           $('.dt-scrollable').height('auto')
-        } else {
-          window.requestAnimationFrame(() => {
-            templateInstance.$('[data-toggle="tooltip"]').tooltip({
-              container: templateInstance.firstNode,
-              trigger: 'hover focus',
-            })
-          })
         }
       }
     }

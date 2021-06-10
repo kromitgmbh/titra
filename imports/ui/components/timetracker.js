@@ -22,7 +22,7 @@ Template.timetracker.onCreated(function createTimeTracker() {
       if (!this.intervalHandle) {
         this.intervalHandle = Meteor.setInterval(() => {
           const duration = dayjs.preciseDiff(dayjs(), storedTimer, true)
-          $('.js-timer').text(`${pad(duration.hours, 2)}:${pad(duration.minutes, 2)}:${pad(duration.seconds, 2)}`)
+          $('.js-timer').val(`${pad(duration.hours, 2)}:${pad(duration.minutes, 2)}:${pad(duration.seconds, 2)}`)
         }, 1000)
       }
     }

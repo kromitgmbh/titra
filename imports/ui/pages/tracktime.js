@@ -5,12 +5,13 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import i18next from 'i18next'
+import bootstrap from 'bootstrap'
 import TinyDatePicker from 'tiny-date-picker'
 import 'tiny-date-picker/tiny-date-picker.css'
 
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
-import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers.js'
+import { getGlobalSetting, getUserSetting, showToast } from '../../utils/frontend_helpers.js'
 
 import './tracktime.html'
 import '../components/projectselect.js'
@@ -92,7 +93,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
         .fetch().reduce((a, b) => (a === 0 ? b.hours : a + b.hours), 0))
       if (FlowRouter.getParam('projectId') && !FlowRouter.getQueryParam('date')) {
         if (FlowRouter.getParam('projectId') !== 'all') {
-          if ($('.js-tasksearch-input')) {
+          if ($('.js-tasksearch-input').length) {
             $('.js-tasksearch-input').focus()
           }
         }
@@ -114,24 +115,24 @@ Template.tracktime.events({
     let hours = templateInstance.$('#hours').val()
     if (!templateInstance.projectId.get()) {
       selectedProjectElement.addClass('is-invalid')
-      $.Toast.fire({ text: i18next.t('notifications.select_project'), icon: 'error' })
+      showToast(i18next.t('notifications.select_project'))
       return
     }
     if (!templateInstance.$('.js-tasksearch-input').val()) {
       templateInstance.$('.js-tasksearch-input').addClass('is-invalid')
-      $.Toast.fire({ text: i18next.t('notifications.enter_task'), icon: 'error' })
+      showToast(i18next.t('notifications.enter_task'))
       return
     }
     if (!hours) {
       templateInstance.$('#hours').addClass('is-invalid')
-      $.Toast.fire({ text: i18next.t('notifications.enter_time'), icon: 'error' })
+      showToast(i18next.t('notifications.enter_time'))
       return
     }
     try {
       hours = hours.replace(',', '.')
       templateInstance.math.eval(hours)
     } catch (exception) {
-      $.Toast.fire({ text: i18next.t('notifications.check_time_input'), icon: 'error' })
+      showToast(i18next.t('notifications.check_time_input'))
       return
     }
     const projectId = templateInstance.projectId.get()
@@ -141,7 +142,7 @@ Template.tracktime.events({
       if ($('#startTime').val()) {
         date.setHours($('#startTime').val().split(':')[0], $('#startTime').val().split(':')[1])
       } else {
-        $.Toast.fire({ text: i18next.t('notifications.check_time_input'), icon: 'error' })
+        showToast(i18next.t('notifications.check_time_input'))
         return
       }
     }
@@ -162,13 +163,13 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
           if (typeof error.error === 'string') {
-            $.Toast.fire({ text: i18next.t(error.error.replace('[', '').replace(']', '')), icon: 'error' })
+            showToast(i18next.t(error.error.replace('[', '').replace(']', '')))
           }
         } else {
           templateInstance.$('.js-tasksearch-results').addClass('d-none')
-          $.Toast.fire(i18next.t('notifications.time_entry_updated'))
+          showToast(i18next.t('notifications.time_entry_updated'))
           window.requestAnimationFrame(() => {
-            templateInstance.$('[data-toggle="tooltip"]').tooltip({
+            templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
               container: templateInstance.firstNode,
               trigger: 'hover focus',
             })
@@ -187,16 +188,16 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
           if (typeof error.error === 'string' && error.error.indexOf('notifications') >= 0) {
-            $.Toast.fire({ text: i18next.t(error.error), icon: 'error' })
+            showToast(i18next.t(error.error))
           }
         } else {
           templateInstance.$('.js-tasksearch-input').val('')
           templateInstance.$('.js-tasksearch-input').keyup()
           templateInstance.$('#hours').val('')
           templateInstance.$('.js-tasksearch-results').addClass('d-none')
-          $.Toast.fire(i18next.t('notifications.time_entry_saved'))
+          showToast(i18next.t('notifications.time_entry_saved'))
           templateInstance.$('.js-show-timecards').slideDown('fast')
-          templateInstance.$('[data-toggle="tooltip"]').tooltip()
+          templateInstance.$('[data-bs-toggle="tooltip"]').tooltip()
           $('#edit-tc-entry-modal').modal('hide')
         }
         templateInstance.$('.js-save').text(buttonLabel)
@@ -238,7 +239,7 @@ Template.tracktime.events({
     event.preventDefault()
     templateInstance.$('.js-show-timecards').slideToggle('fast')
     window.requestAnimationFrame(() => {
-      templateInstance.$('[data-toggle="tooltip"]').tooltip({
+      templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
         container: templateInstance.firstNode,
         trigger: 'hover focus',
       })
@@ -260,11 +261,11 @@ Template.tracktime.events({
     const timecardId = event.currentTarget.href.split('/').pop()
     Meteor.call('deleteTimeCard', { timecardId }, (error, result) => {
       if (!error) {
-        $.Toast.fire(i18next.t('notifications.time_entry_deleted'))
+        showToast(i18next.t('notifications.time_entry_deleted'))
       } else {
         console.error(error)
         if (typeof error.error === 'string') {
-          $.Toast.fire({ text: i18next.t(error.error.replace('[', '').replace(']', '')), icon: 'error' })
+          showToast(i18next.t(error.error.replace('[', '').replace(']', '')))
         }
       }
     })
@@ -290,7 +291,7 @@ Template.tracktime.events({
     event.preventDefault()
     templateInstance.$('.js-time-row').popover('hide')
     templateInstance.edittcid.set(event.currentTarget.href.split('/').pop())
-    templateInstance.$('#edit-tc-entry-modal').modal({ focus: false })
+    new bootstrap.Modal(templateInstance.$('#edit-tc-entry-modal')[0], { focus: false }).show()
     $('#edit-tc-entry-modal').on('hidden.bs.modal', () => {
       templateInstance.edittcid.set(undefined)
     })

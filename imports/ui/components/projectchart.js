@@ -1,5 +1,4 @@
 import namedavatar from 'namedavatar'
-import i18next from 'i18next'
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 import './projectchart.html'
 import Projects, { ProjectStats } from '../../api/projects/projects.js'
@@ -22,7 +21,8 @@ Template.projectchart.onCreated(function projectchartCreated() {
     })
     if (this.subscriptionsReady()) {
       const converter = new QuillDeltaToHtmlConverter(Projects
-        .findOne({ _id: Template.instance().data.projectId })?.desc?.ops, {})
+        .findOne({ _id: Template.instance().data.projectId })?.desc?.ops,
+      { multiLineParagraph: true })
       this.projectDescAsHtml.set(converter.convert())
     }
   })
@@ -52,7 +52,7 @@ Template.projectchart.helpers({
   },
   avatarImg(avatar, name, avatarColor) {
     if (avatar) {
-      return `<img src="${avatar}" alt="${name}" style="height:25px; cursor:pointer;" class="rounded js-avatar-tooltip" data-placement="top" title="${name}"/>`
+      return `<img src="${avatar}" alt="${name}" style="height:25px; cursor:pointer;" class="rounded js-avatar-tooltip" data-bs-placement="top" title="${name}"/>`
     }
     namedavatar.config({
       nameType: 'initials',
@@ -84,11 +84,23 @@ Template.projectchart.helpers({
   },
   projectDescAsHtml: () => encodeURI(Template.instance().projectDescAsHtml.get()),
   truncatedProjectDescAsHtml: () => (Template.instance().projectDescAsHtml.get()
-    ? Template.instance().projectDescAsHtml.get().replace('<p>', '<p style="max-height:1.9em;" class="text-truncate p-0 m-0">') : ''),
+    ? Template.instance().projectDescAsHtml.get().replace('<p>', '<p style="max-height:1.9em;pointer-events:none;" class="text-truncate p-0 m-0">') : ''),
 })
 Template.projectchart.onRendered(() => {
   const templateInstance = Template.instance()
   const precision = getUserSetting('precision')
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady() && templateInstance.projectDescAsHtml.get()) {
+      import('bootstrap').then((bs) => {
+        new bs.Tooltip(templateInstance.$('.js-tooltip').get(0), {
+          title: templateInstance.projectDescAsHtml.get(),
+          html: true,
+          placement: 'right',
+          trigger: 'hover focus',
+        })
+      })
+    }
+  })
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
       const stats = ProjectStats.findOne({ _id: templateInstance.data.projectId })
@@ -191,36 +203,10 @@ Template.projectchart.onDestroyed(() => {
     templateInstance.piechart.destroy()
   }
 })
-Template.projectchart.events({
-  'mouseenter .js-tooltip': (event, templateInstance) => {
-    event.preventDefault()
-    event.stopPropagation()
-    templateInstance.$(event.currentTarget).tooltip({
-      title: templateInstance.projectDescAsHtml.get(),
-      html: true,
-      placement: 'right',
-      container: templateInstance.firstNode,
-      trigger: 'manual',
-    })
-    templateInstance.$(event.currentTarget).tooltip('show')
-  },
-  'mouseleave .js-tooltip': (event, templateInstance) => {
-    event.preventDefault()
-    event.stopPropagation()
-    templateInstance.$(event.currentTarget).tooltip('hide')
-  },
-  'mouseenter .js-avatar-tooltip': (event, templateInstance) => {
-    event.preventDefault()
-    event.stopPropagation()
-    templateInstance.$(event.currentTarget).tooltip({
-      container: templateInstance.firstNode,
-      trigger: 'manual',
-    })
-    templateInstance.$(event.currentTarget).tooltip('show')
-  },
-  'mouseleave .js-avatar-tooltip': (event, templateInstance) => {
-    event.preventDefault()
-    event.stopPropagation()
-    templateInstance.$(event.currentTarget).tooltip('hide')
-  },
-})
+// Template.projectchart.events({
+//   'mouseenter .js-tooltip': (event, templateInstance) => {
+//     event.preventDefault()
+//     event.stopPropagation()
+//     console.log(new bootstrap.Tooltip(event.currentTarget))
+//   },
+// })
