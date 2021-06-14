@@ -9,7 +9,7 @@ import { checkAuthentication } from '../../../utils/server_method_helpers.js'
 Meteor.publish('myprojects', function myProjects({ projectLimit }) {
   checkAuthentication(this)
   check(projectLimit, Match.Maybe(Number))
-  const limit = projectLimit || 25
+  const limit = projectLimit || 250
   return Projects.find({
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
   }, { limit })

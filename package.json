@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.49.0",
+  "version": "0.50.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -23,7 +23,7 @@
     "file-saver": "^2.0.5",
     "frappe-charts": "1.6.1",
     "frappe-datatable": "^1.15.3",
-    "hotkeys-js": "^3.8.5",
+    "hotkeys-js": "^3.8.7",
     "i18next": "^20.3.1",
     "is-dark": "^1.0.4",
     "jquery": "3.6.0",

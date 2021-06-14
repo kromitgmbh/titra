@@ -58,10 +58,10 @@ Template.projectlist.onRendered(() => {
 Template.projectlist.helpers({
   projects() {
     return Template.instance().data.showArchived && Template.instance().data.showArchived.get()
-      ? Projects.find({}, { sort: { priority: 1, name: 1 } })
+      ? Projects.find({}, { sort: { priority: 1, name: 1 }, limit: 25 })
       : Projects.find(
         { $or: [{ archived: { $exists: false } }, { archived: false }] },
-        { sort: { priority: 1, name: 1 } },
+        { sort: { priority: 1, name: 1 }, limit: 25 },
       )
   },
   moreThanOneProject() {
