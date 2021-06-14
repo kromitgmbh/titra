@@ -2,7 +2,7 @@ on:
   push:
     branches:
     - master
-name: automatically tag pushes and create releases
+name: Docker build
 jobs:
   release:
     name: Autotag
