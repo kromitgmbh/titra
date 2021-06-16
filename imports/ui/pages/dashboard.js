@@ -155,7 +155,6 @@ Template.dashboard.onRendered(() => {
               },
               tooltipOptions: {
                 formatTooltipY: (value) => `${Number(value).toFixed(precision)} ${getUserTimeUnitVerbose()}`,
-                // formatTooltipX: (value) => dayjs(value, 'DDMMYYYY').format(getGlobalSetting('dateformat')),
               },
             })
             templateInstance.piechart = new Chart(templateInstance.$('.js-piechart-container')[0], {

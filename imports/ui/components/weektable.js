@@ -152,8 +152,10 @@ Template.weektablerow.events({
     event.preventDefault()
     const timeEntries = templateInstance.tempTimeEntries?.get() instanceof Array
       ? templateInstance.tempTimeEntries?.get() : []
-    timeEntries.push({ _id: '' })
-    templateInstance.tempTimeEntries.set(timeEntries)
+    if (!timeEntries.find((element) => element._id === '')) {
+      timeEntries.push({ _id: '' })
+      templateInstance.tempTimeEntries.set(timeEntries)
+    }
   },
   'click .js-collapse': (event, templateInstance) => {
     event.preventDefault()
@@ -163,6 +165,11 @@ Template.weektablerow.events({
   'save tr': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.tempTimeEntries.set([])
+  },
+  'focusout .js-tasksearch-input': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.tempTimeEntries.get()[templateInstance.tempTimeEntries.get().length - 1]
+      ._id = templateInstance.$(event.currentTarget).val()
   },
 })
 Template.weektablerow.helpers({

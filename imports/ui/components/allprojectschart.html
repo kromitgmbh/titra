@@ -11,9 +11,26 @@
             <input id="showNotBillableTime" type="checkbox" class="form-check-input"/>
             <label class="form-label" for="showNotBillableTime">{{t "settings.show_not_billable_time"}}</label>
           </div>
-          <div class="form-check form-switch pull-right">
+          <div class="form-check form-switch">
             <input id="showArchived" type="checkbox" class="form-check-input"/>
             <label class="form-check-label" for="showArchived">{{t "navigation.show_archived"}}</label>
+          </div>
+          <div class="row g-r align-items-center">
+            <div class="col-auto">
+              <label class="form-label" for="limit">{{t "limit.show"}}</label>
+            </div>
+            <div class="col-auto">
+              <select id="limit" class="form-select" aria="Limit selection">
+                <option value="25" selected>25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="250">250</option>
+                <option value="500">500</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <label class="form-label" for="limit">{{t "limit.entries"}}</label>
+            </div>
           </div>
         </div>
       </div>

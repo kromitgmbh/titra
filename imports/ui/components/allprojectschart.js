@@ -1,4 +1,5 @@
 import './allprojectschart.html'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { getUserSetting, getUserTimeUnitVerbose } from '../../utils/frontend_helpers'
 
 Template.allprojectschart.onCreated(function allprojectschartCreated() {
@@ -41,10 +42,17 @@ Template.allprojectschart.events({
     event.preventDefault()
     templateInstance.data.showArchived.set(templateInstance.$(event.currentTarget).is(':checked'))
   },
+  'change #limit': (event, templateInstance) => {
+    event.preventDefault()
+    FlowRouter.setQueryParams({ limit: templateInstance.$(event.currentTarget).val() })
+  },
 })
 Template.allprojectschart.onRendered(() => {
   const templateInstance = Template.instance()
   const precision = getUserSetting('precision')
+  templateInstance.autorun(() => {
+    templateInstance.$('#limit').val(FlowRouter.getQueryParam('limit') ? FlowRouter.getQueryParam('limit') : 25)
+  })
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
       if (templateInstance.projectStats.get()) {

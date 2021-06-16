@@ -57,11 +57,12 @@ Template.projectlist.onRendered(() => {
 })
 Template.projectlist.helpers({
   projects() {
+    const limit = FlowRouter.getQueryParam('limit') ? Number(FlowRouter.getQueryParam('limit')) : 25
     return Template.instance().data.showArchived && Template.instance().data.showArchived.get()
-      ? Projects.find({}, { sort: { priority: 1, name: 1 }, limit: 25 })
+      ? Projects.find({}, { sort: { priority: 1, name: 1 }, limit })
       : Projects.find(
         { $or: [{ archived: { $exists: false } }, { archived: false }] },
-        { sort: { priority: 1, name: 1 }, limit: 25 },
+        { sort: { priority: 1, name: 1 }, limit },
       )
   },
   moreThanOneProject() {

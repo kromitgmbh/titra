@@ -34,7 +34,7 @@
 <template name="weektablerow">
     <tr>
       <td scope="row">
-        <a href="#" style="color:inherit" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target="#{{projectId}}" aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
+        <a href="#" style="color:inherit" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
       </td>
       {{#if weekDays}}
         {{#each weekday in weekDays}}
@@ -43,7 +43,7 @@
       {{/if}}
       <td class="text-center">{{#if tasks}}Σ{{/if}}</td>
     </tr>
-  <tbody id="{{projectId}}" class="collapse">
+  <tbody data-project-id="{{projectId}}" class="collapse">
     {{#each task in tasks}}
       <tr>
         <td>
