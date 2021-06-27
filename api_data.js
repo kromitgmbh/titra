@@ -81,8 +81,8 @@ define({ "api": [
             "group": "Success 200",
             "type": "json",
             "optional": false,
-            "field": "The",
-            "description": "<p>id of the new project.</p>"
+            "field": "response",
+            "description": "<p>The id of the new project.</p>"
           }
         ]
       },
@@ -116,7 +116,7 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Error-Response:",
+          "title": "Authorization-Error-Response:",
           "content": "HTTP/1.1 401 Unauthorized\n{\n  \"message\": \"Missing authorization header or invalid authorization token supplied.\"\n}",
           "type": "json"
         }
@@ -178,7 +178,7 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Error-Response:",
+          "title": "Authorization-Error-Response:",
           "content": "HTTP/1.1 401 Unauthorized\n{\n  \"message\": \"Missing authorization header or invalid authorization token supplied.\"\n}",
           "type": "json"
         }
@@ -288,7 +288,7 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Error-Response:",
+          "title": "Authorization-Error-Response:",
           "content": "HTTP/1.1 401 Unauthorized\n{\n  \"message\": \"Missing authorization header or invalid authorization token supplied.\"\n}",
           "type": "json"
         }
@@ -363,11 +363,254 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Error-Response:",
+          "title": "Authorization-Error-Response:",
           "content": "HTTP/1.1 401 Unauthorized\n{\n  \"message\": \"Missing authorization header or invalid authorization token supplied.\"\n}",
           "type": "json"
         }
       ]
     }
+  },
+  {
+    "type": "get",
+    "url": "/timer/get/",
+    "title": "Get the duration of the current timer",
+    "description": "<p>Get the duration in milliseconds and the start timestamp of the currently running timer for the API user.</p>",
+    "name": "getTimer",
+    "group": "TimeEntry",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>The authorization header Bearer API token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "json",
+            "optional": false,
+            "field": "response",
+            "description": "<p>Returns the duration of the currently running timer.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "{\n message: \"Running timer received.\"\n payload: {\n   \"duration\": 60000,\n   \"startTime\": \"Sat Jun 26 2021 21:48:11 GMT+0200\"\n }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "json",
+            "optional": false,
+            "field": "response",
+            "description": "<p>There is no running timer.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "json",
+            "optional": false,
+            "field": "AuthError",
+            "description": "<p>The request is missing the authentication header or an invalid API token has been provided.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n  \"message\": \"No running timer found.\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Authorization-Error-Response:",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n  \"message\": \"Missing authorization header or invalid authorization token supplied.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "server/APIroutes.js",
+    "groupTitle": "TimeEntry",
+    "sampleRequest": [
+      {
+        "url": "https://app.titra.io/timer/get/"
+      }
+    ]
+  },
+  {
+    "type": "post",
+    "url": "/timer/start/",
+    "title": "Start a new timer",
+    "description": "<p>Starts a new timer for the API user if there is no current running timer.</p>",
+    "name": "startTimer",
+    "group": "TimeEntry",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>The authorization header Bearer API token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "json",
+            "optional": false,
+            "field": "response",
+            "description": "<p>If there is no current running timer a new one will be started.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "{\n message: \"New timer started.\"\n payload: {\n   \"startTime\": \"Sat Jun 26 2021 21:48:11 GMT+0200\"\n }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "json",
+            "optional": false,
+            "field": "response",
+            "description": "<p>There is already another running timer.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "json",
+            "optional": false,
+            "field": "AuthError",
+            "description": "<p>The request is missing the authentication header or an invalid API token has been provided.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n  \"message\": \"There is already another running timer.\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Authorization-Error-Response:",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n  \"message\": \"Missing authorization header or invalid authorization token supplied.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "server/APIroutes.js",
+    "groupTitle": "TimeEntry",
+    "sampleRequest": [
+      {
+        "url": "https://app.titra.io/timer/start/"
+      }
+    ]
+  },
+  {
+    "type": "post",
+    "url": "/timer/stop/",
+    "title": "Stop a running timer",
+    "description": "<p>Stop a running timer of the API user and return the start timestamp and duration in milliseconds.</p>",
+    "name": "stopTimer",
+    "group": "TimeEntry",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>The authorization header Bearer API token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "json",
+            "optional": false,
+            "field": "response",
+            "description": "<p>Returns the duration in milliseconds and the start timestamp of the stopped timer as result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "{\n message: \"Running timer stopped.\"\n payload: {\n   \"duration\": 60000,\n   \"startTime\": \"Sat Jun 26 2021 21:48:11 GMT+0200\"\n }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "json",
+            "optional": false,
+            "field": "response",
+            "description": "<p>No running timer to stop.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "json",
+            "optional": false,
+            "field": "AuthError",
+            "description": "<p>The request is missing the authentication header or an invalid API token has been provided.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n  \"message\": \"No running timer found.\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Authorization-Error-Response:",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n  \"message\": \"Missing authorization header or invalid authorization token supplied.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "server/APIroutes.js",
+    "groupTitle": "TimeEntry",
+    "sampleRequest": [
+      {
+        "url": "https://app.titra.io/timer/stop/"
+      }
+    ]
   }
 ] });
