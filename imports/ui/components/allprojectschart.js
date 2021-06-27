@@ -136,7 +136,6 @@ Template.allprojectschart.onRendered(() => {
               tooltipOptions: {
               },
             })
-            templateInstance.$('.frappe-chart').height(160)
           })
         })
       }

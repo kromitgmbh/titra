@@ -1,5 +1,5 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import { AccountsAnonymous } from 'meteor/brettle:accounts-anonymous'
+import { AccountsAnonymous } from 'meteor/faburem:accounts-anonymous'
 import '../../ui/layouts/appLayout.js'
 import '../../ui/pages/signIn.js'
 import '../../ui/pages/register.js'

@@ -6,11 +6,7 @@ $warning: #ffc107;
 $danger: #ff5722;
 $light: #BDBDBD;
 $dark: #455A64;
-
 $dropdown-link-hover-bg: $dark !default;
-
-// @import "{}/node_modules/sweetalert2/src/sweetalert2.scss";
-
 
 .list-group-item {
   color: #495057;
@@ -115,4 +111,8 @@ $dropdown-link-hover-bg: $dark !default;
 .dp:before {
   background: $primary !important;
 }
+g>text {
+  fill: #212529;
+}
+
 @import "{}/imports/ui/styles/general.scss";

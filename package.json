@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.51.0",
+  "version": "0.52.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -15,7 +15,7 @@
     "@popperjs/core": "^2.9.2",
     "@simonwep/pickr": "^1.8.1",
     "bcrypt": "^5.0.1",
-    "bootstrap": "^5.0.1",
+    "bootstrap": "^5.0.2",
     "content-type": "^1.0.4",
     "dayjs": "^1.10.5",
     "dayjs-precise-range": "^1.0.1",
@@ -24,7 +24,7 @@
     "frappe-charts": "1.6.2",
     "frappe-datatable": "^1.15.3",
     "hotkeys-js": "^3.8.7",
-    "i18next": "^20.3.1",
+    "i18next": "^20.3.2",
     "is-dark": "^1.0.4",
     "jquery": "3.6.0",
     "jquery-serializejson": "^3.2.1",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.28.0",
+    "eslint": "^7.29.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^5.1.1",
@@ -52,7 +52,7 @@
   },
   "apidoc": {
     "name": "titra API",
-    "version": "0.29.0",
+    "version": "0.52.0",
     "description": "<div class='h5'>This is the official titra API documentation. For more information about the open source timetracking application developed with lots of ❤️ and ☕️ by <a href='https://kromit.at'>kromit</a> checkout <a href='https://titra.io'>titra.io</a>.</div>",
     "sampleUrl": "https://app.titra.io"
   },

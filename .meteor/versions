@@ -2,7 +2,7 @@ accounts-base@1.9.0
 accounts-password@1.7.1
 allow-deny@1.1.0
 autoupdate@1.7.0
-babel-compiler@7.6.1
+babel-compiler@7.6.2
 babel-runtime@1.5.0
 base64@1.0.12
 binary-heap@1.0.11
@@ -10,12 +10,6 @@ blaze@2.5.0
 blaze-html-templates@1.2.1
 blaze-tools@1.1.2
 boilerplate-generator@1.7.1
-brettle:accounts-add-service@1.0.0
-brettle:accounts-anonymous@0.3.1
-brettle:accounts-multiple@0.3.1
-brettle:workaround-issue-4331@0.0.4
-brettle:workaround-issue-4862@0.0.3
-brettle:workaround-issue-4970@0.0.4
 caching-compiler@1.2.2
 caching-html-compiler@1.2.1
 callback-hook@1.3.0
@@ -34,6 +28,7 @@ ecmascript-runtime-server@0.10.1
 ejson@1.1.1
 email@2.0.0
 es5-shim@4.8.0
+faburem:accounts-anonymous@0.4.0
 faburem:client-server-logger@0.0.5
 fetch@0.1.1
 fourseven:scss@4.14.2

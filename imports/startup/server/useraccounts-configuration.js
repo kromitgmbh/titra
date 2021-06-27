@@ -1,5 +1,5 @@
 import { Accounts } from 'meteor/accounts-base'
-import { AccountsAnonymous } from 'meteor/brettle:accounts-anonymous'
+// import { AccountsAnonymous } from 'meteor/faburem:accounts-anonymous'
 import dockerNames from 'docker-names'
 import initNewUser from '../../api/projects/setup.js'
 

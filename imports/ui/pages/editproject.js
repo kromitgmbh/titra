@@ -82,8 +82,12 @@ Template.editproject.onRendered(() => {
       } else if (project.desc && templateInstance.quill) {
         templateInstance.quill.setText(project.desc)
       }
-      templateInstance.pickr?.setColor(project?.color
-        ? project.color : templateInstance.color)
+      if (project?.color || templateInstance.color) {
+        templateInstance.pickr?.setColor(project?.color
+          ? project.color : templateInstance.color)
+      } else {
+        templateInstance.pickr?.setColor('#009688')
+      }
       if (project.desc instanceof Object && templateInstance.quill) {
         templateInstance.quill.setContents(project.desc)
       } else if (project.desc && templateInstance.quill) {
