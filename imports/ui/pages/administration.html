@@ -6,6 +6,9 @@
         <li class="nav-item">
           <a class="nav-link" id="users-tab" data-bs-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">{{t "administration.users"}}</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="extensions-tab" data-bs-toggle="tab" href="#extensions" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.extensions"}}</a>
+        </li>
     </ul>
     <div class="tab-content" id="administration-content">
         <div class="tab-pane fade show active table-responsive p-3 tab-borders" id="globalsettings">
@@ -53,7 +56,7 @@
         <div class="tab-pane fade table-responsive p-3 tab-borders" id="users">
             <div class="card mb-3">
                 <div class="card-header">
-                    <a href="#" class="text-reset text-decoration-none week-row" data-bs-toggle="collapse" data-bs-target="#createUser" id="retrieveChangeLog"> {{t "administration.create_user"}} <i class="float-end fa fa-chevron-right"></i></a>
+                    <a href="#" class="text-reset text-decoration-none week-row" data-bs-toggle="collapse" data-bs-target="#createUser"> {{t "administration.create_user"}} <i class="float-end fa fa-chevron-right"></i></a>
                 </div>
                 <div class="card-block collapse" id="createUser">
                     <div class="container">
@@ -123,6 +126,50 @@
                         {{/each}}
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="extensions">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <a href="#" class="text-reset text-decoration-none"> {{t "administration.addExtension"}}</a>
+                </div>
+                <div class="card-block" id="addExtension">
+                    <label for="extensionFile" class="form-label">{{t "administration.uploadExtension"}}</label>
+                    <input class="form-control" accept="application/zip" type="file" id="extensionFile">
+                    <span class="form-text">{{t "administration.extensionStore"}} <a href='https://titra.io/enterprise' target='_blank'>Extension Store</a>!</span>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{t "globals.name"}}</th>
+                            <th>{{t "globals.description"}}</th>
+                            <th>{{t "details.state"}}</th>
+                            <th>{{t "tracktime.actions"}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each extension in extensions}}
+                            <tr>
+                                <td>{{extension.name}}</td>
+                                <td>{{extension.description}}</td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input js-extension-state" data-extension-id="{{extension._id}}" type="checkbox" checked="{{extension.isActive}}">
+                                    </div>
+                               </td>
+                                <td class="text-center">
+                                    <a href="#" class="js-remove-extension" data-extension-id="{{extension._id}}"><i class="fas fa-trash"></i></a>
+                                    <a href="#" class="js-launch-extension"><i class="fas fa-play-circle"></i></a>
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-info">
+                {{t "administration.extensionHint"}}
             </div>
         </div>
     </div>

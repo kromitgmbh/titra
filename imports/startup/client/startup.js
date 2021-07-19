@@ -4,6 +4,7 @@ import hotkeys from 'hotkeys-js'
 import { $ } from 'meteor/jquery'
 import i18next from 'i18next'
 import Projects from '../../api/projects/projects.js'
+import Extensions from '../../api/extensions/extensions.js'
 import {
   timeInUserUnit,
   emojify,
@@ -23,6 +24,7 @@ Template.registerHelper('t', (param) => (i18nextReady.get() ? globalT(param) : '
 Meteor.startup(() => {
   window.BootstrapLoaded = new ReactiveVar(false)
   Meteor.subscribe('globalsettings')
+  const extensionHandle = Meteor.subscribe('extensions')
   let language = navigator.language.substring(0, 2)
   import('@fortawesome/fontawesome-free/js/all.js')
   import('bootstrap').then((bs) => {
@@ -157,6 +159,15 @@ Meteor.startup(() => {
     navigator.serviceWorker
       .register('/sw.js')
   }
+  Tracker.autorun(() => {
+    if (extensionHandle.ready()) {
+      for (const extension of Extensions.find({})) {
+        if (extension.isActive) {
+          eval(extension.client)
+        }
+      }
+    }
+  })
 })
 Template.registerHelper('i18nextReady', () => i18nextReady.get())
 Template.registerHelper('unit', () => {

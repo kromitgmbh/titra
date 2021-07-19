@@ -316,7 +316,12 @@
     "user_deleted": "The users has been deleted",
     "user_deletion_confirmation": "Do you really want to delete this user (it cannot be undone)?",
     "value": "Value",
-    "globalsettings_help": "Need help setting the correct values? Checkout the titra"
+    "globalsettings_help": "Need help setting the correct values? Checkout the titra",
+    "extensions": "Extensions",
+    "addExtension": "Add Extension",
+    "uploadExtension": "Upload Extension",
+    "extensionStore": "Fancy extensions? Checkout the titra",
+    "extensionHint": "Attention: most extensions will need a restart of the titra service to work properly."
   },
   "wekan": {
     "list": "Wekan list",

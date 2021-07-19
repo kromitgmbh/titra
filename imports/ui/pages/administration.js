@@ -6,9 +6,11 @@ import './administration.html'
 import { Globalsettings } from '../../api/globalsettings/globalsettings'
 import { displayUserAvatar, validateEmail, showToast } from '../../utils/frontend_helpers'
 import '../components/limitpicker.js'
+import Extensions from '../../api/extensions/extensions'
 
 Template.administration.onCreated(function administrationCreated() {
   this.limit = new ReactiveVar(25)
+  this.subscribe('extensions')
   this.autorun(() => {
     if (FlowRouter.getQueryParam('limit')) {
       this.limit.set(Number(FlowRouter.getQueryParam('limit')))
@@ -25,6 +27,7 @@ Template.administration.helpers({
   globalsettings: () => Globalsettings.find(),
   stringify: (string) => string.toString(),
   isTextArea: (setting) => setting.type === 'textarea',
+  extensions: () => Extensions.find({}),
 })
 
 Template.administration.events({
@@ -134,6 +137,54 @@ Template.administration.events({
         console.error(error)
       } else {
         showToast(i18next.t('notifications.settings_saved_success'))
+      }
+    })
+  },
+  'change #extensionFile': (event, templateInstance) => {
+    event.preventDefault()
+    const file = event.currentTarget.files[0]
+    const reader = new FileReader()
+    if (file && reader) {
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        const zipFile = reader.result
+        Meteor.call('addExtension', { zipFile }, (error, result) => {
+          if (error) {
+            console.error(error)
+          } else {
+            showToast(i18next.t(result))
+          }
+        })
+      }
+    }
+  },
+  'click .js-remove-extension': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('removeExtension', { extensionId: templateInstance.$(event.currentTarget).data('extension-id') }, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        showToast(i18next.t('administration.extension_removed'))
+      }
+    })
+  },
+  'click .js-launch-extension': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('launchExtension', { extensionId: templateInstance.$(event.currentTarget).data('extension-id') }, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        showToast(i18next.t('administration.extension_launched'))
+      }
+    })
+  },
+  'change .js-extension-state': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('toggleExtensionState', { extensionId: templateInstance.$(event.currentTarget).data('extension-id'), state: templateInstance.$(event.currentTarget).is(':checked') }, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        showToast(i18next.t('notifications.success'))
       }
     })
   },

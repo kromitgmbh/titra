@@ -1,4 +1,4 @@
-FROM node:12.22
+FROM node:14.17
 ENV METEOR_ALLOW_SUPERUSER true
 RUN curl https://install.meteor.com/ | sh
 RUN meteor --version
@@ -12,7 +12,7 @@ COPY imports/ ./imports/
 COPY .meteor/ ./.meteor/
 RUN meteor build /build/ --server-only --architecture os.linux.x86_64
 
-FROM node:12.22-slim
+FROM node:14.17-slim
 RUN apt-get update && apt-get install -y curl python make g++ && rm -rf /var/lib/apt/lists/*
 COPY --from=0 /build/*.tar.gz /app/bundle.tar.gz
 WORKDIR /app/
@@ -26,7 +26,7 @@ RUN rm -r /app/bundle/programs/server/npm/node_modules/meteor/babel-compiler/nod
 RUN rm -r /app/bundle/programs/server/npm/node_modules/meteor/minifier-css/
 RUN rm -r /app/bundle/programs/server/npm/node_modules/@neovici/nullxlsx/cc-test-reporter
 
-FROM node:12.22-slim
+FROM node:14.17-slim
 ENV PORT 3000
 EXPOSE 3000
 WORKDIR /app/

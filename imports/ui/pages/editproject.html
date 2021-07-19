@@ -7,7 +7,7 @@
       <div class="card-block">
         <div class="mb-3 form-floating">
           <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="{{t 'project.my_project_placeholder'}}" />
-          <label class="form-label" for="name"><strong>{{t "globals.prj_name"}}</strong></label>
+          <label class="form-label" for="name">{{t "globals.prj_name"}}</label>
         </div>
         <div class="card mb-3">
           <div class="card-header">{{t "globals.description"}}</div>
@@ -20,12 +20,12 @@
           <div class="input-group form-floating" id="colpick">
             <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
             <button type="button" class="btn" id="pickr"></button>
-            <label class="form-label" for="color"><strong>{{t "globals.color"}}</strong></label>
+            <label class="form-label" for="color">{{t "globals.color"}}</label>
           </div>
         </div>
         <div class="mb-3 form-floating">
           <input name="customer" id="customer" type="text" value={{customer}} class="form-control" placeholder="{{t 'project.customer_placeholder'}}"/>
-          <label class="form-label" for="customer"><strong>{{t "globals.customer"}}</strong></label>
+          <label class="form-label" for="customer">{{t "globals.customer"}}</label>
         </div>
         <div class="card mb-3">
           <div class="card-header">{{t "project.billing_budget"}}</div>
@@ -43,11 +43,11 @@
             {{#unless notbillable}}
               <div class="mb-3 form-floating">
                 <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100" step="any" />
-                <label class="form-label" for="rate"><strong>{{t "project.rate"}} ({{unit}}/h)</strong></label>
+                <label class="form-label" for="rate">{{t "project.rate"}} ({{unit}}/h)</label>
               </div>
               <div class="form-floating">
                 <input name="target" id="target" type="number" value="{{timeInUserUnit (target)}}" class="form-control" placeholder="1000" step="any"/>
-                <label class="form-label" for="target"><strong>{{t "project.target"}} ({{timeunit}})</strong></label>
+                <label class="form-label" for="target">{{t "project.target"}} ({{timeunit}})</label>
               </div>
             {{/unless}}
           </div>

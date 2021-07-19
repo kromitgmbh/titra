@@ -70,7 +70,8 @@ Template.editproject.onRendered(() => {
   }
   templateInstance.autorun(() => {
     const project = templateInstance.project.get()
-    if (templateInstance.handle && templateInstance.handle.ready()) {
+    if (templateInstance.handle
+        && templateInstance.handle.ready() && !templateInstance.deletion.get()) {
       if (project) {
         if (project.desc instanceof Object && templateInstance.quill) {
           templateInstance.quill.setContents(project.desc)
@@ -175,19 +176,17 @@ Template.editproject.events({
   'click .js-delete-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
-    $.ConfirmBox.fire(i18next.t('notifications.project_delete_confirm')).then((result) => {
-      if (result.value) {
-        Template.instance().deletion.set(true)
-        Meteor.call('deleteProject', { projectId: FlowRouter.getParam('id') }, (error) => {
-          if (!error) {
-            FlowRouter.go('projectlist')
-            showToast(i18next.t('notifications.project_delete_success'))
-          } else {
-            console.error(error)
-          }
-        })
-      }
-    })
+    if (confirm(i18next.t('notifications.project_delete_confirm'))) {
+      Template.instance().deletion.set(true)
+      Meteor.call('deleteProject', { projectId: FlowRouter.getParam('id') }, (error) => {
+        if (!error) {
+          FlowRouter.go('projectlist')
+          showToast(i18next.t('notifications.project_delete_success'))
+        } else {
+          console.error(error)
+        }
+      })
+    }
   },
   'click .js-archive-project': (event) => {
     event.preventDefault()
@@ -242,7 +241,7 @@ Template.editproject.helpers({
     }
     return false
   },
-  projectId: () => FlowRouter.getParam('id'),
+  projectId: () => !Template.instance().deletion.get() && FlowRouter.getParam('id'),
   disablePublic: () => getGlobalSetting('disablePublicProjects'),
   archived: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).archived : false),
   target: () => (Template.instance().project.get()

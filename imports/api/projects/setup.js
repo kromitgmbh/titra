@@ -7,7 +7,7 @@ export default function initNewUser(userId, info) {
         _id: 'sandstorm',
         userId,
         name: `👋 ${info.profile.name}'s ${info.profile.currentLanguageProject}`,
-        desc: info.profile.currentLanguageProjectDesc,
+        desc: { ops: [{ insert: info.profile.currentLanguageProjectDesc }] },
         public: true,
       })
     }
@@ -15,7 +15,7 @@ export default function initNewUser(userId, info) {
     Projects.insert({
       userId,
       name: `👋 ${info.profile.name}'s ${info.profile.currentLanguageProject}`,
-      desc: info.profile.currentLanguageProjectDesc,
+      desc: { ops: [{ insert: info.profile.currentLanguageProjectDesc }] },
     })
   }
 }

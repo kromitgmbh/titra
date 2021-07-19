@@ -14,16 +14,29 @@ Template.signIn.events({
       templateInstance.$('#at-field-password').addClass('is-invalid')
       return
     }
-    Meteor.loginWithPassword(templateInstance.$('#at-field-email').val(), templateInstance.$('#at-field-password').val(), (error) => {
-      templateInstance.$('#at-field-email').removeClass('is-invalid')
-      templateInstance.$('#at-field-password').removeClass('is-invalid')
-      if (error) {
-        templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
-        document.querySelector('.notification').classList.remove('d-none')
-      } else {
-        FlowRouter.go('projectlist')
-      }
-    })
+    if (Meteor.loginWithLDAP) {
+      Meteor.loginWithLDAP(templateInstance.$('#at-field-email').val(), templateInstance.$('#at-field-password').val(), {}, (error) => {
+        templateInstance.$('#at-field-email').removeClass('is-invalid')
+        templateInstance.$('#at-field-password').removeClass('is-invalid')
+        if (error) {
+          templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
+          document.querySelector('.notification').classList.remove('d-none')
+        } else {
+          FlowRouter.go('projectlist')
+        }
+      })
+    } else {
+      Meteor.loginWithPassword(templateInstance.$('#at-field-email').val(), templateInstance.$('#at-field-password').val(), (error) => {
+        templateInstance.$('#at-field-email').removeClass('is-invalid')
+        templateInstance.$('#at-field-password').removeClass('is-invalid')
+        if (error) {
+          templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
+          document.querySelector('.notification').classList.remove('d-none')
+        } else {
+          FlowRouter.go('projectlist')
+        }
+      })
+    }
   },
   'click #at-forgotPwd': (event, templateInstance) => {
     event.preventDefault()

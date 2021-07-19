@@ -111,28 +111,28 @@ Template.projectchart.onRendered(() => {
             stats.beforePreviousMonthHours
                 /= getUserSetting('hoursToDays')
             stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-              .toFixed(precision)
             stats.previousMonthHours
                 /= getUserSetting('hoursToDays')
             stats.previousMonthHours = Number(stats.previousMonthHours)
-              .toFixed(precision)
             stats.currentMonthHours
                 /= getUserSetting('hoursToDays')
           }
           if (getUserSetting('timeunit') === 'm') {
             stats.beforePreviousMonthHours *= 60
             stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-              .toFixed(precision)
             stats.previousMonthHours *= 60
             stats.previousMonthHours = Number(stats.previousMonthHours)
-              .toFixed(precision)
             stats.currentMonthHours *= 60
-            stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+            stats.currentMonthHours = Number(stats.currentMonthHours)
           }
-          stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+          stats.currentMonthHours = Number(stats.currentMonthHours)
           if (templateInstance.chart) {
             templateInstance.chart.destroy()
           }
+          stats.beforePreviousMonthHours = stats.beforePreviousMonthHours.toFixed(precision)
+          stats.previousMonthHours = stats.previousMonthHours.toFixed(precision)
+          stats.currentMonthHours = stats.currentMonthHours.toFixed(precision)
+
           window.requestAnimationFrame(() => {
             if (templateInstance.$('.js-hours-chart-container')[0] && templateInstance.$('.js-hours-chart-container').is(':visible')) {
               templateInstance.chart = new Chart(templateInstance.$('.js-hours-chart-container')[0], {
