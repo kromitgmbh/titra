@@ -26,7 +26,10 @@
     "not_found": "Sorry, either our server is on fire or we couldn't find what you are looking for.",
     "color": "Color",
     "email": "E-mail",
-    "or": "or"
+    "or": "or",
+    "time_entry": "Time entry",
+    "class": "Class",
+    "type": "Type"
   },
   "navigation": {
     "track": "Track",
@@ -268,7 +271,10 @@
     "connectioncheck": "Could not connect to server. Trying again ",
     "siwapp_success": "Siwapp invoice created successfully.",
     "time_entry_rule_failed": "Time entry does not follow the specified rules.",
-    "access_rights_updated": "Project access rights have been updated."
+    "access_rights_updated": "Project access rights have been updated.",
+    "success": "The changes have been processed successfully.",
+    "wekan_error": "Could not retrieve Wekan cards, please check your project settings!",
+    "zammad_error": "Could not retrieve Zammad tickets, please check your project settings!"
   },
   "login": {
     "password": "Password",
@@ -321,7 +327,14 @@
     "addExtension": "Add Extension",
     "uploadExtension": "Upload Extension",
     "extensionStore": "Fancy extensions? Checkout the titra",
-    "extensionHint": "Attention: most extensions will need a restart of the titra service to work properly."
+    "extensionHint": "Attention: most extensions will need a restart of the titra service to work properly.",
+    "customfields": "Custom fields",
+    "addcustomfield": "New custom field",
+    "possible_values": "Possible values",
+    "possible_values_hint": "Separate values with a comma (e.g. a,b,c,d).",
+    "no_customfields": "No custom fields have been defined yet.",
+    "no_extensions": "No extensions have been installed yet.",
+    "extension_removed": "The extension has been removed successfully."
   },
   "wekan": {
     "list": "Wekan list",

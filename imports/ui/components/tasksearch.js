@@ -3,10 +3,11 @@ import { DDP } from 'meteor/ddp-client'
 import { Mongo } from 'meteor/mongo'
 import './tasksearch.html'
 import './taskSelectPopup.js'
+import i18next from 'i18next'
 import Tasks from '../../api/tasks/tasks.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
-import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
+import { getGlobalSetting, getUserSetting, showToast } from '../../utils/frontend_helpers'
 
 Template.tasksearch.events({
   'mousedown .js-tasksearch-result': (event, templateInstance) => {
@@ -105,14 +106,12 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
             const wekanAPITasks = []
             for (const swimlane of project.selectedWekanSwimlanes) {
-              try {
-                window.fetch(`${url}swimlanes/${swimlane}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((innerResult) => {
-                  Array.prototype.push.apply(wekanAPITasks, innerResult)
-                  this.wekanAPITasks.set(wekanAPITasks)
-                })
-              } catch (error) {
-                console.error(error)
-              }
+              window.fetch(`${url}swimlanes/${swimlane}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((innerResult) => {
+                Array.prototype.push.apply(wekanAPITasks, innerResult)
+                this.wekanAPITasks.set(wekanAPITasks)
+              }).catch((error) => {
+                showToast(i18next.t('notifications.wekan_error'))
+              })
             }
           } else if (project.selectedWekanList?.length > 0) {
             let wekanLists = []
@@ -125,14 +124,12 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
             const wekanAPITasks = []
             for (const wekanList of wekanLists) {
-              try {
-                window.fetch(`${url}lists/${wekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((innerResult) => {
-                  Array.prototype.push.apply(wekanAPITasks, innerResult)
-                  this.wekanAPITasks.set(wekanAPITasks)
-                })
-              } catch (error) {
-                console.error(error)
-              }
+              window.fetch(`${url}lists/${wekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((innerResult) => {
+                Array.prototype.push.apply(wekanAPITasks, innerResult)
+                this.wekanAPITasks.set(wekanAPITasks)
+              }).catch((error) => {
+                showToast(i18next.t('notifications.wekan_error'))
+              })
             }
           }
         }
@@ -142,6 +139,8 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
       if (!this.zammadAPITasks.get() && getGlobalSetting('enableZammad') && getUserSetting('zammadurl') && getUserSetting('zammadtoken')) {
         window.fetch(`${getUserSetting('zammadurl')}api/v1/tickets`, { headers: { Authorization: `Token token=${getUserSetting('zammadtoken')}` } }).then((response) => response.json()).then((result) => {
           this.zammadAPITasks.set(result)
+        }).catch((error) => {
+          showToast(i18next.t('notifications.zammad_error'))
         })
       }
     })

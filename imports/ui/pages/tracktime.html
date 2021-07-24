@@ -78,6 +78,25 @@
     <div class="mb-3 mb-3">
       {{>tasksearch tcid=tcid projectId=reactiveProjectId}}
     </div>
+    {{#if customfields }}
+      {{#each customfield in customfields}}
+        {{#if customfield.possibleValues}}
+          <div class="mb-3 form-floating">
+            <select name="{{customfield.name}}" id="{{customfield.name}}" class="form-control js-customfield">
+              {{#each pv in customfield.possibleValues}}
+                <option value="{{pv}}">{{pv}}</option>
+              {{/each}}
+            </select>
+            <label class="form-label" for="{{customfield.name}}">{{customfield.desc}}</label>
+          </div>
+        {{else}}
+          <div class="mb-3 form-floating">
+            <input class="form-control js-customfield" name="{{customfield.name}}" id="{{customfield.name}}" type="{{customfield.type}}" value="{{getCustomFieldValue customfield.name}}" placeholder="{{customfield.desc}}"/>
+            <label class="form-label" for="{{customfield.name}}">{{customfield.desc}}</label>
+          </div>
+        {{/if}}
+      {{/each}}
+    {{/if}}
     <div class="mb-3">
       <div class="row">
           {{#if showStartTime}}

@@ -8,6 +8,7 @@ import { getUserSetting, getUserTimeUnitVerbose } from '../../utils/frontend_hel
 Template.projectchart.onCreated(function projectchartCreated() {
   this.topTasks = new ReactiveVar()
   this.projectDescAsHtml = new ReactiveVar()
+  this.isVisible = new ReactiveVar(false)
   this.autorun(() => {
     this.subscribe('singleProject', this.data.projectId)
     this.subscribe('projectStats', this.data.projectId)
@@ -89,10 +90,20 @@ Template.projectchart.helpers({
 Template.projectchart.onRendered(() => {
   const templateInstance = Template.instance()
   const precision = getUserSetting('precision')
+  templateInstance.observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        templateInstance.isVisible.set(true)
+      } else {
+        templateInstance.isVisible.set(false)
+      }
+    })
+  })
+  templateInstance.observer.observe(templateInstance.firstNode)
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && templateInstance.projectDescAsHtml.get()) {
       import('bootstrap').then((bs) => {
-        new bs.Tooltip(templateInstance.$('.js-tooltip').get(0), {
+        const tooltip = new bs.Tooltip(templateInstance.$('.js-tooltip').get(0), {
           title: templateInstance.projectDescAsHtml.get(),
           html: true,
           placement: 'right',
@@ -102,7 +113,7 @@ Template.projectchart.onRendered(() => {
     }
   })
   templateInstance.autorun(() => {
-    if (templateInstance.subscriptionsReady()) {
+    if (templateInstance.subscriptionsReady() && templateInstance.isVisible.get()) {
       const stats = ProjectStats.findOne({ _id: templateInstance.data.projectId })
       if (stats) {
         import('frappe-charts').then((chartModule) => {
@@ -163,7 +174,7 @@ Template.projectchart.onRendered(() => {
     }
   })
   templateInstance.autorun(() => {
-    if (templateInstance.subscriptionsReady()) {
+    if (templateInstance.subscriptionsReady() && templateInstance.isVisible.get()) {
       if (templateInstance.topTasks.get()) {
         import('frappe-charts').then((chartModule) => {
           window.requestAnimationFrame(() => {
@@ -201,11 +212,5 @@ Template.projectchart.onDestroyed(() => {
   if (templateInstance.piechart) {
     templateInstance.piechart.destroy()
   }
+  templateInstance.observer.disconnect()
 })
-// Template.projectchart.events({
-//   'mouseenter .js-tooltip': (event, templateInstance) => {
-//     event.preventDefault()
-//     event.stopPropagation()
-//     console.log(new bootstrap.Tooltip(event.currentTarget))
-//   },
-// })

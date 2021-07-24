@@ -81,19 +81,16 @@
       </div>
       {{#unless moreThanOneProject}}
         <div class="row">
-          <div class="col-md-4 col-6">
+          <div class="col-md-10 col-6">
             <a href="/create/project" class="btn btn-primary" id="next">{{t "navigation.new_project"}}</a>
           </div>
-          <div class="col-md-6 col-4">
+          <div class="col-md-2 col-6">
             {{#if hasArchivedProjects}}
-              <div class="custom-control custom-switch form-check pull-right">
-                <input id="showArchived" type="checkbox" class="custom-control-input"/>
-                <label class="custom-control-label" for="showArchived"> <span class="d-none d-sm-inline">{{t "navigation.show_archived"}} </span><i class="fa fa-archive d-inline d-sm-none"></i></label>
+              <div class="form-check form-switch pull-right">
+                <input id="showArchived" type="checkbox" class="form-check-input"/>
+                <label class="form-label" for="showArchived"> <span class="d-none d-sm-inline">{{t "navigation.show_archived"}} </span><i class="fa fa-archive d-inline d-sm-none"></i></label>
               </div>
             {{/if}}
-          </div>
-          <div class="col-2 text-end">
-            <span class="badge badge-secondary" data-bs-toggle="tooltip" data-bs-placement="right" title="{{t 'overview.number_projects'}}" id="projectCount">{{projectCount}}</span>
           </div>
         </div>
       {{/unless}}

@@ -20,25 +20,39 @@ import '../components/timetracker.js'
 import '../components/weektable.js'
 import '../components/calendar.js'
 import '../components/backbutton.js'
+import CustomFields from '../../api/customfields/customfields.js'
 
 Template.tracktime.onRendered(() => {
-  if (!Template.instance().tinydatepicker) {
-    Template.instance().tinydatepicker = TinyDatePicker(Template.instance().$('.js-date')[0], {
+  const templateInstance = Template.instance()
+  if (!templateInstance.tinydatepicker) {
+    templateInstance.tinydatepicker = TinyDatePicker(templateInstance.$('.js-date')[0], {
       format(date) {
         return date ? dayjs(date).format(getGlobalSetting('dateformatVerbose')) : dayjs.format(getGlobalSetting('dateformatVerbose'))
       },
       parse(date) {
         return dayjs(date, getGlobalSetting('dateformatVerbose'))
       },
-      appendTo: Template.instance().firstNode,
+      appendTo: templateInstance.firstNode,
       mode: 'dp-modal',
       dayOffset: getGlobalSetting('startOfWeek'),
     }).on('select', (_, dp) => {
       if (!dp.state.selectedDate) {
-        Template.instance().$('.js-date').first().val(dayjs().format(getGlobalSetting('dateformatVerbose')))
+        templateInstance.$('.js-date').first().val(dayjs().format(getGlobalSetting('dateformatVerbose')))
       }
     })
   }
+  templateInstance.autorun(() => {
+    const timeEntry = templateInstance.time_entry.get()
+    if (timeEntry) {
+      Meteor.setTimeout(() => {
+        for (const customfield of CustomFields.find({ classname: 'time_entry', possibleValues: { $exists: true } })) {
+          if (templateInstance.firstNode) {
+            templateInstance.$(`#${customfield.name}`).val(timeEntry[customfield.name])
+          }
+        }
+      }, 500)
+    }
+  })
 })
 Template.tracktime.onCreated(function tracktimeCreated() {
   import('math-expression-evaluator').then((mathexp) => {
@@ -51,6 +65,8 @@ Template.tracktime.onCreated(function tracktimeCreated() {
   this.tcid = new ReactiveVar()
   this.totalTime = new ReactiveVar(0)
   this.edittcid = new ReactiveVar()
+  this.time_entry = new ReactiveVar()
+  this.subscribe('customfieldsForClass', { classname: 'time_entry' })
   let handle
   this.autorun(() => {
     if (this.data.tcid && this.data.tcid.get()) {
@@ -72,6 +88,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
     if (this.tcid.get()) {
       this.subscribe('singleTimecard', this.tcid.get())
       if (this.subscriptionsReady()) {
+        this.time_entry.set(Timecards.findOne(this.tcid.get()))
         this.date.set(Timecards.findOne({ _id: this.tcid.get() })
           ? dayjs(Timecards.findOne({ _id: this.tcid.get() }).date).toDate()
           : dayjs().toDate())
@@ -110,6 +127,8 @@ Template.tracktime.events({
     if (templateInstance.edittcid.get()) {
       return
     }
+    const customfields = {}
+    templateInstance.$('.js-customfield').each((i, el) => { customfields[$(el).attr('id')] = $(el).val() })
     const buttonLabel = $('.js-save').first().text()
     const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > .js-target-project')
     let hours = templateInstance.$('#hours').val()
@@ -158,7 +177,7 @@ Template.tracktime.events({
     templateInstance.$('.js-save').prop('disabled', true)
     if (templateInstance.tcid.get()) {
       Meteor.call('updateTimeCard', {
-        _id: templateInstance.tcid.get(), projectId, date, hours, task,
+        _id: templateInstance.tcid.get(), projectId, date, hours, task, customfields,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -183,7 +202,7 @@ Template.tracktime.events({
       })
     } else {
       Meteor.call('insertTimeCard', {
-        projectId, date, hours, task,
+        projectId, date, hours, task, customfields,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -247,17 +266,23 @@ Template.tracktime.events({
   },
   'click .js-time-row': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.$(event.currentTarget).popover({
-      trigger: 'manual',
-      container: templateInstance.$('form'),
-      html: true,
-      content: templateInstance.$(event.currentTarget).children('.js-popover-content').html(),
+    templateInstance.$('.js-time-row').each((index, element) => {
+      bootstrap.Popover.getInstance(element)?.hide()
     })
-    templateInstance.$(event.currentTarget).popover('toggle')
+    const timerowpopover = bootstrap.Popover
+      .getOrCreateInstance(templateInstance.$(event.currentTarget), {
+        trigger: 'manual',
+        container: templateInstance.$('form'),
+        html: true,
+        content: templateInstance.$(event.currentTarget).children('.js-popover-content').html(),
+      })
+    timerowpopover.show()
   },
   'click .js-delete-time-entry': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.$('.js-time-row').popover('dispose')
+    templateInstance.$('.js-time-row').each((index, element) => {
+      bootstrap.Popover.getInstance(element)?.hide()
+    })
     const timecardId = event.currentTarget.href.split('/').pop()
     Meteor.call('deleteTimeCard', { timecardId }, (error, result) => {
       if (!error) {
@@ -289,7 +314,9 @@ Template.tracktime.events({
   },
   'click .js-edit-time-entry': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.$('.js-time-row').popover('hide')
+    templateInstance.$('.js-time-row').each((index, element) => {
+      bootstrap.Popover.getInstance(element)?.hide()
+    })
     templateInstance.edittcid.set(event.currentTarget.href.split('/').pop())
     new bootstrap.Modal(templateInstance.$('#edit-tc-entry-modal')[0], { focus: false }).show()
     $('#edit-tc-entry-modal').on('hidden.bs.modal', () => {
@@ -320,6 +347,9 @@ Template.tracktime.helpers({
     || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()) ? '' : 'tab-borders'),
   edittcid: () => Template.instance().edittcid,
   startTime: () => dayjs(Template.instance().date.get()).format('HH:mm'),
+  customfields: () => CustomFields.find({ classname: 'time_entry' }),
+  getCustomFieldValue: (fieldId) => (Template.instance().time_entry.get()
+    ? Template.instance().time_entry.get()[fieldId] : false),
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

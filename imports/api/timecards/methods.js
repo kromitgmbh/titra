@@ -45,19 +45,24 @@ function checkTimeEntryRule({
     throw new Meteor.Error(error.message)
   }
 }
-function insertTimeCard(projectId, task, date, hours, userId) {
-  if (!Tasks.findOne({ userId, name: task.replace(/(:\S*:)/g, emojify) })) {
-    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:\S*:)/g, emojify) })
-  } else {
-    Tasks.update({ userId, name: task.replace(/(:\S*:)/g, emojify) }, { $set: { lastUsed: new Date() } })
-  }
-  return Timecards.insert({
+function insertTimeCard(projectId, task, date, hours, userId, customfields) {
+  const newTimeCard = {
     userId,
     projectId,
     date,
     hours,
     task: task.replace(/(:\S*:)/g, emojify),
-  })
+    ...customfields,
+  }
+
+  if (!Tasks.findOne({ userId, name: task.replace(/(:\S*:)/g, emojify) })) {
+    Tasks.insert({
+      userId, lastUsed: new Date(), name: task.replace(/(:\S*:)/g, emojify), ...customfields,
+    })
+  } else {
+    Tasks.update({ userId, name: task.replace(/(:\S*:)/g, emojify) }, { $set: { lastUsed: new Date(), ...customfields } })
+  }
+  return Timecards.insert(newTimeCard)
 }
 function upsertTimecard(projectId, task, date, hours, userId) {
   if (!Tasks.findOne({ userId, name: task.replace(/(:\S*:)/g, emojify) })) {
@@ -108,16 +113,18 @@ Meteor.methods({
     task,
     date,
     hours,
+    customfields,
   }) {
     check(projectId, String)
     check(task, String)
     check(date, Date)
     check(hours, Number)
+    check(customfields, Match.Maybe(Object))
     checkAuthentication(this)
     checkTimeEntryRule({
       userId: this.userId, projectId, task, state: 'new', date, hours,
     })
-    insertTimeCard(projectId, task, date, hours, this.userId)
+    insertTimeCard(projectId, task, date, hours, this.userId, customfields)
   },
   upsertWeek(weekArray) {
     checkAuthentication(this)
@@ -144,19 +151,21 @@ Meteor.methods({
     task,
     date,
     hours,
+    customfields,
   }) {
     check(projectId, String)
     check(_id, String)
     check(task, String)
     check(date, Date)
     check(hours, Number)
+    check(customfields, Match.Maybe(Object))
     checkAuthentication(this)
     const timecard = Timecards.findOne({ _id })
     checkTimeEntryRule({
       userId: this.userId, projectId, task, state: timecard.state, date, hours,
     })
     if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:\S*:)/g, emojify) })) {
-      Tasks.insert({ userId: this.userId, name: task.replace(/(:\S*:)/g, emojify) })
+      Tasks.insert({ userId: this.userId, name: task.replace(/(:\S*:)/g, emojify), ...customfields })
     }
     Timecards.update({ _id }, {
       $set: {
@@ -164,6 +173,7 @@ Meteor.methods({
         date,
         hours,
         task: task.replace(/(:\S*:)/g, emojify),
+        ...customfields,
       },
     })
   },

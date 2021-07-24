@@ -10,12 +10,14 @@ import '../components/backbutton.js'
 import '../components/wekanInterfaceSettings.js'
 import '../components/projectAccessRights.js'
 import { getUserSetting, getGlobalSetting, showToast } from '../../utils/frontend_helpers'
+import CustomFields from '../../api/customfields/customfields'
 
 Template.editproject.onCreated(function editprojectSetup() {
   this.deletion = new ReactiveVar(false)
   this.projectId = new ReactiveVar()
   this.project = new ReactiveVar()
   this.notbillable = new ReactiveVar(false)
+  this.subscribe('customfieldsForClass', { classname: 'project' })
   this.autorun(() => {
     this.projectId.set(FlowRouter.getParam('id'))
     this.project.set(Projects.findOne({ _id: this.projectId.get() }))
@@ -78,6 +80,11 @@ Template.editproject.onRendered(() => {
         } else if (project.desc && templateInstance.quill) {
           templateInstance.quill.setText(project.desc)
         }
+        Meteor.setTimeout(() => {
+          for (const customfield of CustomFields.find({ classname: 'project', possibleValues: { $exists: true } })) {
+            templateInstance.$(`#${customfield.name}`).val(project[customfield.name])
+          }
+        }, 500)
       } else if (project.desc instanceof Object && templateInstance.quill) {
         templateInstance.quill.setContents(project.desc)
       } else if (project.desc && templateInstance.quill) {
@@ -247,6 +254,9 @@ Template.editproject.helpers({
   target: () => (Template.instance().project.get()
     ? Template.instance().project.get().target : false),
   notbillable: () => Template.instance().notbillable.get(),
+  customfields: () => (CustomFields.find({ classname: 'project' }).fetch().length > 0 ? CustomFields.find({ classname: 'project' }) : false),
+  getCustomFieldValue: (fieldId) => (Template.instance().project.get()
+    ? Template.instance().project.get()[fieldId] : false),
 })
 
 Template.editproject.onDestroyed(function editprojectDestroyed() {

@@ -6,6 +6,7 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
 import bootstrap from 'bootstrap'
 import Timecards from '../../api/timecards/timecards'
+import CustomFields from '../../api/customfields/customfields'
 import {
   i18nextReady,
   addToolTipToTableCell,
@@ -33,11 +34,16 @@ function detailedDataTableMapper(entry) {
     entry.task,
     projectUsers.findOne() ? projectUsers.findOne().users.find((elem) => elem._id === entry.userId)?.profile?.name : '',
     Number(timeInUserUnit(entry.hours)),
-    entry.state,
-    entry._id]
+    entry.state]
   if (!getGlobalSetting('useState')) {
     mapping.splice(5, 1)
   }
+  if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
+    for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
+      mapping.push(entry[customfield.name])
+    }
+  }
+  mapping.push(entry._id)
   return mapping
 }
 Template.detailtimetable.onCreated(function workingtimetableCreated() {
@@ -45,6 +51,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
   this.search = new ReactiveVar()
   this.sort = new ReactiveVar()
   this.tcid = new ReactiveVar()
+  this.subscribe('customfieldsForClass', { classname: 'time_entry' })
   this.autorun(() => {
     if (this.data.project.get()
       && this.data.resource.get()
@@ -123,7 +130,17 @@ Template.detailtimetable.onRendered(() => {
             }
             return value ? addToolTipToTableCell(i18next.t(`details.${value}`)) : addToolTipToTableCell(i18next.t('details.new'))
           },
-        },
+        }]
+      if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
+        for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
+          columns.push({
+            name: customfield.desc,
+            editable: false,
+            format: addToolTipToTableCell,
+          })
+        }
+      }
+      columns.push(
         {
           name: i18next.t('navigation.edit'),
           editable: false,
@@ -135,7 +152,8 @@ Template.detailtimetable.onRendered(() => {
                 <a href="#" class="js-delete" data-id="${value}"><i class="fa fa-trash"></i></a>
               </div`
             : ''),
-        }]
+        },
+      )
       if (!getGlobalSetting('useState')) {
         columns.splice(5, 1)
       }
@@ -160,42 +178,43 @@ Template.detailtimetable.onRendered(() => {
               },
             }
             if (getGlobalSetting('useState')) {
-              datatableConfig.getEditor = (colIndex, rowIndex, value, parent, column, row, editorData) => {
-                if (colIndex === '5' && Timecards.findOne({ _id: editorData[6] }).userId === Meteor.userId() && rowIndex !== 'totalRow') {
-                  const $select = document.createElement('select')
-                  $select.classList = 'form-control'
-                  parent.style.padding = 0
-                  $select.options.add(new Option(i18next.t('details.new'), 'new'))
-                  $select.options.add(new Option(i18next.t('details.exported'), 'exported'))
-                  $select.options.add(new Option(i18next.t('details.billed'), 'billed'))
-                  $select.options.add(new Option(i18next.t('details.notBillable'), 'notBillable'))
+              datatableConfig
+                .getEditor = (colIndex, rowIndex, value, parent, column, row, editorData) => {
+                  if (colIndex === '5' && Timecards.findOne({ _id: editorData[6] }).userId === Meteor.userId() && rowIndex !== 'totalRow') {
+                    const $select = document.createElement('select')
+                    $select.classList = 'form-control'
+                    parent.style.padding = 0
+                    $select.options.add(new Option(i18next.t('details.new'), 'new'))
+                    $select.options.add(new Option(i18next.t('details.exported'), 'exported'))
+                    $select.options.add(new Option(i18next.t('details.billed'), 'billed'))
+                    $select.options.add(new Option(i18next.t('details.notBillable'), 'notBillable'))
 
-                  parent.appendChild($select)
-                  return {
-                    initValue(initValue) {
-                      $select.focus()
-                      if (initValue) {
-                        $($select).val(initValue)
-                      } else {
-                        $select.selectedIndex = 0
-                      }
-                    },
-                    setValue(setValue) {
-                      Meteor.call('setTimeEntriesState', { timeEntries: [editorData[6]], state: setValue }, (error) => {
-                        if (error) {
-                          console.error(error)
+                    parent.appendChild($select)
+                    return {
+                      initValue(initValue) {
+                        $select.focus()
+                        if (initValue) {
+                          $($select).val(initValue)
                         } else {
-                          showToast(i18next.t('notifications.time_entry_updated'))
+                          $select.selectedIndex = 0
                         }
-                      })
-                    },
-                    getValue() {
-                      return $($select).val()
-                    },
+                      },
+                      setValue(setValue) {
+                        Meteor.call('setTimeEntriesState', { timeEntries: [editorData[6]], state: setValue }, (error) => {
+                          if (error) {
+                            console.error(error)
+                          } else {
+                            showToast(i18next.t('notifications.time_entry_updated'))
+                          }
+                        })
+                      },
+                      getValue() {
+                        return $($select).val()
+                      },
+                    }
                   }
+                  return null
                 }
-                return null
-              }
             }
             try {
               window.requestAnimationFrame(() => {
@@ -248,18 +267,27 @@ Template.detailtimetable.events({
     event.preventDefault()
     let csvArray
     if (getGlobalSetting('useState')) {
-      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${getUserTimeUnitVerbose()},${i18next.t('details.state')}\r\n`]
+      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${getUserTimeUnitVerbose()},${i18next.t('details.state')}`]
     } else {
-      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${getUserTimeUnitVerbose()}\r\n`]
+      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${getUserTimeUnitVerbose()}`]
+    }
+    if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
+      csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'time_entry' }).fetch().map((field) => field.desc).join(',')}\r\n`
     }
     for (const timeEntry of Timecards
       .find(templateInstance.selector[0], templateInstance.selector[1])
       .fetch().map(detailedDataTableMapper)) {
-      if (getGlobalSetting('useState')) {
-        csvArray.push(`${timeEntry[0]},${timeEntry[1]},${timeEntry[2]},${timeEntry[3]},${timeEntry[4]},${i18next.t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)}\r\n`)
-      } else {
-        csvArray.push(`${timeEntry[0]},${timeEntry[1]},${timeEntry[2]},${timeEntry[3]},${timeEntry[4]}\r\n`)
+      const row = []
+      for (const attribute of timeEntry) {
+        row.push(attribute)
       }
+      row.splice(row.length - 1, 1)
+      if (getGlobalSetting('useState')) {
+        row[5] = i18next.t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)
+      } else {
+        row.splice(5, 1)
+      }
+      csvArray.push(`${row.join(',')}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }),
       `titra_export_${dayjs().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.csv`)
@@ -277,13 +305,24 @@ Template.detailtimetable.events({
     } else {
       data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), getUserTimeUnitVerbose()]]
     }
+    if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
+      for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
+        data[0].push(customfield.desc)
+      }
+    }
     for (const timeEntry of Timecards
       .find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
       .map(detailedDataTableMapper)) {
+      const row = []
+      for (const attribute of timeEntry) {
+        row.push(attribute)
+      }
+      row.splice(row.length - 1, 1)
+      data.push(row)
       if (getGlobalSetting('useState')) {
-        data.push([timeEntry[0], timeEntry[1], timeEntry[2], timeEntry[3], timeEntry[4], i18next.t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)])
+        timeEntry[5] = i18next.t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)
       } else {
-        data.push([timeEntry[0], timeEntry[1], timeEntry[2], timeEntry[3], timeEntry[4]])
+        data.splice(5, 1)
       }
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'titra export').createDownloadUrl(),

@@ -15,7 +15,8 @@ Template.periodpicker.events({
     templateInstance.period.set($(event.currentTarget).val())
     FlowRouter.setQueryParams({ period: $(event.currentTarget).val() })
     if ($(event.currentTarget).val() === 'custom') {
-      new bootstrap.Modal(templateInstance.$('.js-custom-period-modal')[0], { focus: false }).toggle()
+      templateInstance.modal = new bootstrap.Modal(templateInstance.$('.js-custom-period-modal')[0])
+      templateInstance.modal.toggle()
     }
   },
   'click .js-save': (event, templateInstance) => {
@@ -34,7 +35,7 @@ Template.periodpicker.events({
         } else {
           templateInstance.$('#customStartDate').removeClass('is-invalid')
           templateInstance.$('#customEndDate').removeClass('is-invalid')
-          new bootstrap.Modal(templateInstance.$('.js-custom-period-modal')[0], { focus: false }).toggle()
+          templateInstance.modal.toggle()
         }
       })
     } else {

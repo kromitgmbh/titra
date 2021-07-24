@@ -26,7 +26,10 @@
     "not_found": "Es tut uns leid aber entweder unser Server brennt oder wir können die gewünschte Seite nicht finden.",
     "color": "Farbe",
     "email": "E-mail",
-    "or": "oder"
+    "or": "oder",
+    "time_entry": "Eintrag",
+    "class": "Klasse",
+    "type": "Typ"
   },
   "navigation": {
     "track": "Erfassen",
@@ -274,7 +277,10 @@
     "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch ",
     "siwapp_success": "Die Rechnung wurde in Siwapp erfolgreich erstellt.",
     "time_entry_rule_failed": "Die Daten entsprechen nicht den definierten Regeln.",
-    "access_rights_updated": "Die Projekt Zugriffsrechte wurden aktualisiert."
+    "access_rights_updated": "Die Projekt Zugriffsrechte wurden aktualisiert.",
+    "success": "Die Verarbeitung wurde erfolgreich durchgeführt.",
+    "wekan_error": "Die Wekan Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!",
+    "zammad_error": "Die Zammad Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!"
   },
   "login": {
     "password": "Passwort",
@@ -328,8 +334,14 @@
     "addExtension": "Erweiterung hinzufügen",
     "uploadExtension": "Erweiterung hochladen",
     "extensionStore": "Auf der Suche nach mehr? Erweiterungen finden Sie in unserem titra",
-    "extensionHint": "Attention: most extensions will need a restart of the titra service to work properly."
-
+    "extensionHint": "Attention: most extensions will need a restart of the titra service to work properly.",
+    "customfields": "Benutzerdefinierte Attribute",
+    "addcustomfield": "Neues benutzerdefiniertes Attribut",
+    "possible_values": "Gültige Werte",
+    "possible_values_hint": "Komma separarierte Werte (z.B.: a,b,c,d)",
+    "no_customfields": "Es wurden noch keine benutzerdefinierten Attribute erstellt.",
+    "no_extensions": "Es wurden noch keine Erweiterungen installiert.",
+    "extension_removed": "Die Erweiterung wurde erfolgreich entfernt"
   },
   "wekan": {
     "list": "Wekan Liste",

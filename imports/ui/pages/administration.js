@@ -7,10 +7,12 @@ import { Globalsettings } from '../../api/globalsettings/globalsettings'
 import { displayUserAvatar, validateEmail, showToast } from '../../utils/frontend_helpers'
 import '../components/limitpicker.js'
 import Extensions from '../../api/extensions/extensions'
+import CustomFields from '../../api/customfields/customfields.js'
 
 Template.administration.onCreated(function administrationCreated() {
   this.limit = new ReactiveVar(25)
   this.subscribe('extensions')
+  this.subscribe('customfields')
   this.autorun(() => {
     if (FlowRouter.getQueryParam('limit')) {
       this.limit.set(Number(FlowRouter.getQueryParam('limit')))
@@ -27,7 +29,9 @@ Template.administration.helpers({
   globalsettings: () => Globalsettings.find(),
   stringify: (string) => string.toString(),
   isTextArea: (setting) => setting.type === 'textarea',
-  extensions: () => Extensions.find({}),
+  extensions: () => (Extensions.find({}).fetch().length > 0 ? Extensions.find({}) : false),
+  customfields: () => (CustomFields.find({}).fetch().length > 0 ? CustomFields.find({}) : false),
+  getClassName: (name) => i18next.t(`globals.${name}`),
 })
 
 Template.administration.events({
@@ -57,7 +61,7 @@ Template.administration.events({
     }
     if (name && email && password) {
       Meteor.call('adminCreateUser', {
-        name, email, password, isAdmin, currentLanguageProject, currentLanguageProjectDesc
+        name, email, password, isAdmin, currentLanguageProject, currentLanguageProjectDesc,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -181,6 +185,59 @@ Template.administration.events({
   'change .js-extension-state': (event, templateInstance) => {
     event.preventDefault()
     Meteor.call('toggleExtensionState', { extensionId: templateInstance.$(event.currentTarget).data('extension-id'), state: templateInstance.$(event.currentTarget).is(':checked') }, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        showToast(i18next.t('notifications.success'))
+      }
+    })
+  },
+  'click .js-create-customfield': (event, templateInstance) => {
+    event.preventDefault()
+    const name = templateInstance.$('#customfieldName').val()
+    const desc = templateInstance.$('#customfieldDesc').val()
+    const type = templateInstance.$('#customfieldType').val()
+    const classname = templateInstance.$('#customfieldClassname').val()
+    const possibleValues = templateInstance.$('#customfieldPossibleValues').val().split(',')
+    if (!name) {
+      templateInstance.$('#customfieldName').addClass('is-invalid')
+      return
+    }
+    if (!desc) {
+      templateInstance.$('#customfieldDesc').addClass('is-invalid')
+      return
+    }
+    if (!type) {
+      templateInstance.$('#customfieldType').addClass('is-invalid')
+      return
+    }
+    if (!classname) {
+      templateInstance.$('#customfieldClassname').addClass('is-invalid')
+      return
+    }
+    templateInstance.$('.form-control').removeClass('is-invalid')
+    Meteor.call('addCustomField', {
+      name,
+      desc,
+      type,
+      classname,
+      possibleValues,
+    }, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        templateInstance.$('#customfieldName').val('')
+        templateInstance.$('#customfieldDesc').val('')
+        templateInstance.$('#customfieldClassname').val('')
+        showToast(i18next.t('notifications.success'))
+      }
+    })
+  },
+  'click .js-remove-customfield': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('removeCustomField', {
+      _id: templateInstance.$(event.currentTarget).data('customfield-id'),
+    }, (error) => {
       if (error) {
         console.error(error)
       } else {

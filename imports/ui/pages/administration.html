@@ -7,6 +7,9 @@
           <a class="nav-link" id="users-tab" data-bs-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">{{t "administration.users"}}</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" id="customfields-tab" data-bs-toggle="tab" href="#customfields" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.customfields"}}</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" id="extensions-tab" data-bs-toggle="tab" href="#extensions" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.extensions"}}</a>
         </li>
     </ul>
@@ -128,6 +131,84 @@
                 </table>
             </div>
         </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="customfields">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <a href="#" class="text-reset text-decoration-none" data-bs-toggle="collapse" data-bs-target="#addCustomField"> {{t "administration.addcustomfield"}} <i class="float-end fa fa-chevron-right"></i></a>
+                </div>
+                <div class="card-block collapse" id="addCustomField">
+                    <div class="mb-3 form-floating">
+                        <select class="form-control" id="customfieldClassname" required placeholder="{{t 'globals.class'}}">
+                            <option value="project">{{t "globals.project"}}</option>
+                            <option value="time_entry">{{t "globals.time_entry"}}</option>
+                        </select>
+                        <label for="customfieldClassname" class="form-label">{{t "globals.class"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="customfieldName" required placeholder="{{t 'globals.name'}}">
+                        <label for="customfieldName" class="form-label">{{t "globals.name"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="customfieldDesc" placeholder="{{t 'globals.description'}}">
+                        <label for="customfieldDesc" class="form-label">{{t "globals.description"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <select class="form-control" id="customfieldType" required>
+                            <option value="date">Date</option>
+                            <option value="number">Number</option>
+                            <option value="text" selected>String</option>
+                            <option value="email">E-Mail</option>
+                            <option value="color">Color</option>
+                        </select>
+                        <label for="customfieldType" class="form-label">{{t "globals.type"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" id="customfieldPossibleValues" type="text" required placeholder="{{t 'administration.possible_values'}}"/>
+                        <label for="customfieldPossibleValues" class="form-label">{{t "administration.possible_values"}}</label>
+                        <span class="form-text">{{t "administration.possible_values_hint"}}</span>
+                    </div>
+                    <div class="col-lg-1">
+                        <button type="button" class="btn btn-primary js-create-customfield">{{t "administration.create"}}</button>
+                    </div>
+                </div>
+            </div>
+            {{#if customfields}}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>{{t "globals.class"}}</th>
+                                <th>{{t "globals.name"}}</th>
+                                <th>{{t "globals.description"}}</th>
+                                <th>{{t "globals.type"}}</th>
+                                <th>{{t "tracktime.actions"}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each customfield in customfields}}
+                                <tr>
+                                    <td>{{getClassName customfield.classname}}</td>
+                                    <td>{{customfield.name}}</td>
+                                    <td>{{customfield.desc}}</td>
+                                    <td>
+                                        {{#if customfield.possibleValues}}
+                                            {{customfield.possibleValues}}
+                                        {{else}}
+                                            {{customfield.type}}
+                                        {{/if}}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="#" class="js-remove-customfield" data-customfield-id="{{customfield._id}}"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            {{else}}
+                <p>{{t "administration.no_customfields"}}</p>
+            {{/if}}
+        </div>
         <div class="tab-pane fade table-responsive p-3 tab-borders" id="extensions">
             <div class="card mb-3">
                 <div class="card-header">
@@ -139,38 +220,42 @@
                     <span class="form-text">{{t "administration.extensionStore"}} <a href='https://titra.io/enterprise' target='_blank'>Extension Store</a>!</span>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>{{t "globals.name"}}</th>
-                            <th>{{t "globals.description"}}</th>
-                            <th>{{t "details.state"}}</th>
-                            <th>{{t "tracktime.actions"}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#each extension in extensions}}
+            {{#if extensions}}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>{{extension.name}}</td>
-                                <td>{{extension.description}}</td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input js-extension-state" data-extension-id="{{extension._id}}" type="checkbox" checked="{{extension.isActive}}">
-                                    </div>
-                               </td>
-                                <td class="text-center">
-                                    <a href="#" class="js-remove-extension" data-extension-id="{{extension._id}}"><i class="fas fa-trash"></i></a>
-                                    <a href="#" class="js-launch-extension"><i class="fas fa-play-circle"></i></a>
-                                </td>
+                                <th>{{t "globals.name"}}</th>
+                                <th>{{t "globals.description"}}</th>
+                                <th>{{t "details.state"}}</th>
+                                <th>{{t "tracktime.actions"}}</th>
                             </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
-            </div>
-            <div class="alert alert-info">
-                {{t "administration.extensionHint"}}
-            </div>
+                        </thead>
+                        <tbody>
+                            {{#each extension in extensions}}
+                                <tr>
+                                    <td>{{extension.name}}</td>
+                                    <td>{{extension.description}}</td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input js-extension-state" data-extension-id="{{extension._id}}" type="checkbox" checked="{{extension.isActive}}">
+                                        </div>
+                                </td>
+                                    <td class="text-center">
+                                        <a href="#" class="js-remove-extension" data-extension-id="{{extension._id}}"><i class="fas fa-trash"></i></a>
+                                        <a href="#" class="js-launch-extension"><i class="fas fa-play-circle"></i></a>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="alert alert-info">
+                    {{t "administration.extensionHint"}}
+                </div>
+            {{else}}
+                <p>{{t "administration.no_extensions"}}</p>
+            {{/if}}
         </div>
     </div>
 </template>
