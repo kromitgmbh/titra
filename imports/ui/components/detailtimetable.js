@@ -310,20 +310,26 @@ Template.detailtimetable.events({
         data[0].push(customfield.desc)
       }
     }
+    if (!getGlobalSetting('useState')) {
+      data[0].splice(5, 1)
+    }
     for (const timeEntry of Timecards
       .find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
       .map(detailedDataTableMapper)) {
       const row = []
+      let index = 0
       for (const attribute of timeEntry) {
-        row.push(attribute)
+        if (index !== 6) {
+          if (index === 5 && getGlobalSetting('useState')) {
+            row.push(i18next.t(`details.${attribute !== undefined ? attribute : 'new'}`))
+          } else if (index !== 5) {
+            row.push(attribute)
+          }
+        }
+        index += 1
       }
-      row.splice(row.length - 1, 1)
+      // row.splice(row.length - 1, 1)
       data.push(row)
-      if (getGlobalSetting('useState')) {
-        timeEntry[5] = i18next.t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)
-      } else {
-        data.splice(5, 1)
-      }
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'titra export').createDownloadUrl(),
       `titra_export_${dayjs().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.xlsx`)

@@ -1,6 +1,6 @@
 <template name="calendar">
   <div class="row">
-    <div class="col-3 d-none d-md-block js-project-container">
+    <div class="col-3 d-none d-lg-block js-project-container">
       {{#each project in projects}}
         <div class="card drag" data-project="{{project._id}}" style="border-left-color: {{project.color}}; border-left-width:thick;"><div class="card-block "><span class="text-truncate d-inline-block" style="max-width:200px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{project.name}}">{{project.name}}</span>
         <span class="float-end text-muted"><i class="fa fa-arrows-alt"></i></span></div></div>

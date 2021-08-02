@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.54.0",
+  "version": "0.55.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -8,9 +8,9 @@
   "dependencies": {
     "@babel/runtime": "^7.14.8",
     "@fortawesome/fontawesome-free": "^5.15.3",
-    "@fullcalendar/core": "^5.8.0",
-    "@fullcalendar/daygrid": "^5.8.0",
-    "@fullcalendar/interaction": "^5.8.0",
+    "@fullcalendar/core": "^5.9.0",
+    "@fullcalendar/daygrid": "^5.9.0",
+    "@fullcalendar/interaction": "^5.9.0",
     "@neovici/nullxlsx": "^3.0.4",
     "@popperjs/core": "^2.9.2",
     "@simonwep/pickr": "^1.8.1",
@@ -25,7 +25,7 @@
     "frappe-charts": "1.6.2",
     "frappe-datatable": "^1.15.3",
     "hotkeys-js": "^3.8.7",
-    "i18next": "^20.3.4",
+    "i18next": "^20.3.5",
     "is-dark": "^1.0.4",
     "jquery": "3.6.0",
     "jquery-serializejson": "^3.2.1",
@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.31.0",
+    "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^5.1.1",

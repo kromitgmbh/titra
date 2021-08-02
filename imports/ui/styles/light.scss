@@ -1,5 +1,5 @@
 $primary: #009688;
-$secondary: #ffffff;
+$secondary: #f7f7f7;
 $success: #009688;
 $info: #b2dfdb;
 $warning: #ffc107;
@@ -8,6 +8,24 @@ $light: #BDBDBD;
 $dark: #455A64;
 $dropdown-link-hover-bg: $dark !default;
 
+.btn-primary {
+    color: #fff !important;
+    background-color: #009688 !important;
+    border-color: #009688 !important; 
+}
+.btn-primary:hover {
+    color: #fff!important;
+    background-color: #006e63!important;
+    border-color: #006e63!important;
+}
+.btn-secondary {
+    color: #000 !important;
+    background-color: #ffffff !important;
+}
+.btn-secondary:hover {
+    color: #fff !important;
+    background-color: #009688 !important;
+}
 .list-group-item {
   color: #495057;
 }

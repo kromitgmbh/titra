@@ -1,6 +1,3 @@
-
-
-
 // ++++ [DarkThemeColors] ++++   ///////////////////////////////////////////////////////
 $primary:                               #005a52;       // Color/Background-Color for links, Save-, Selectbuttons 
 $secondary:                             #272727;       // Background-Color for all fields, control buttons, checkboxes
@@ -13,6 +10,7 @@ $dark:                                  #212529;
 $dark-border:                           #3a3a3a;
 $dark-form:                             #1d1d1d;
 $grey:                                  #2d2d2d;
+$lightgrey:                             #404040;
 $gray-900:                              #eeeeee;
 $titra-dark:                            #006d62;
 
@@ -28,7 +26,7 @@ $prim-btn-bg-color-hover:               #009688;       // HoverBackground-Color 
 
 //SecondaryButton
 $sec-btn-color:                         #bbbbbb;       // Font-Color of secondary buttons
-$sec-btn-background-color:              #404040;       // Background-Color of secondary buttons
+$sec-btn-background-color:              $lightgrey;       // Background-Color of secondary buttons
 $sec-btn-bg-color-hover:                #006d62;       // Hover-Background-Color of secondary buttons
 $sec-btn-color-hover:                   #f0f0f0;       // Hover-Font-Color of secondary buttons
 $sec-btn-border-color-hover:            $dark-border;    // Hover-border-Color of secondary buttons 
@@ -37,17 +35,17 @@ $sec-btn-border-color-hover:            $dark-border;    // Hover-border-Color o
 $input-button-background-color:         #2b2b2b;       // Background-Color for input-field-buttons
 $input-button-bg-color-hover:           #006d62;       // Background-Color for input-field-buttons
 $input-button-border-color:             $dark-border;    // Border-Color for input-field-buttons
-$input-button-font-color:               #005a52;       // Font-Color of input-field-buttons (timer)
+$input-button-font-color:               $primary;       // Font-Color of input-field-buttons (timer)
 
 //InputFields
-$input-background-color:                $secondary;      // Background-Color for input-fields
+$input-background-color:                $secondary;         // Background-Color for input-fields
 $input-border-color:                    $dark-border;    // Border-Color for input-fields
 
 //DatePickr
 $cal-pickr-main-color:                  #212529;       // Main-Color for CalDatePickr 
 $cal-pickr-font-color:                  #009688;       // Font-Color for CalDatePickr
-$cal-pickr-footer-color:                #2d2d2d;       // Footer-Color for CalDatePickr
-$cal-pickr-header-color:                #2d2d2d;       // Header-Color for CalDatePickr
+$cal-pickr-footer-color:                $grey;           // Footer-Color for CalDatePickr
+$cal-pickr-header-color:                $grey;           // Header-Color for CalDatePickr
 $cal-pickr-header-border:               0px;             // Header-Border for CalDatePickr
 $cal-pickr-lightbox-color:              #292929bf;     // Lightbox-Color for CalDatePickr
 $cal-pickr-today-mark:                  #949494;       // Marker-Color of todays date for CalDatePickr
@@ -84,10 +82,10 @@ $ap-card-bg-color-center:               #004842;       // 2. gradient color for 
 $ap-card-bg-color-bottom-right:         #212529;       // 3. gradient color for allProjectsCard
 
 //DataTable
-$data-border-color:                     #2d2d2d;       // Border-Color for Tables
+$data-border-color:                     $grey;       // Border-Color for Tables
 $data-text-color:                       #bdbdbd;       // Font-Color for Tables
-$data-cell-bg-color:                    #272727;       // Cell-BG-Color for Tables
-$data-header-bg-color:                  #404040;       // Header-Cell-BG-Color for Tables
+$data-cell-bg-color:                    $secondary;       // Cell-BG-Color for Tables
+$data-header-bg-color:                  $lightgrey;       // Header-Cell-BG-Color for Tables
 $data-header-text-color:                #adb5bd;       // Header-Font-Color for Tables
 $data-header-dropdown-bg-color:         #08433e;       // dropdown-BG-Color for Table-DropDowns
 $data-header-dropdown-bg-hover:         $primary;        // dropdown-hover-BG-Color for Table-DropDowns
@@ -97,6 +95,11 @@ $data-header-indicator-color:           $success;        // color of sorting arr
 $alert-danger-color:                    #cccccc;       // Danger-Alert Color
 $alert-danger-background-color:         #3b1516;       // Danger-Alert-BG Color
 $alert-danger-border-color:             #000000;       // Danger-Alert-Border Color
+
+//InfoAlert
+$alert-info-color:                      #dadada;
+$alert-info-background-color:           #846301; 
+$alert-info-border-color:               #1d1d1d; 
 
 //ProjectDragCard
 $drag-card-bg-color:                    #404044;       // Drag Card Background Color (Month-View)
@@ -114,7 +117,7 @@ $fc-border-color:                       $dark;           // calendar pagination 
 $fc-color-hover:                        #eee;          // calendar pagination color on hover
 $fc-bg-color-hover:                     #006d62;       // calendar pagination bg-color on hover
 $fc-border-color-hover:                 $dark;           // calendar pagination bg-color on hover
-$fc-cell-border-color-width:            1px solid #2d2d2d; // calendar cell border width and border-color
+$fc-cell-border-color-width:            1px solid $grey; // calendar cell border width and border-color
 $fc-cell-font-color:                    #a9a9a9;       // calendar cell font color 
 $fc-cell-bg-color:                      #1d1f21;       // calendar cell BG-color 
 
@@ -125,8 +128,8 @@ $body-color:                            #f0f0f0;
 
 //OverviewCards
 $card-bg:                               #303030;   // Card BG-color
-$card-cap-bg:                           #404040;   // Card Header-BG-color
-$card-border-color:                     #404040;   // Card Border-color
+$card-cap-bg:                           $lightgrey;   // Card Header-BG-color
+$card-border-color:                     $lightgrey;   // Card Border-color
 
 //Pagination
 $pagination-bg:                         $secondary;
@@ -145,13 +148,15 @@ $form-file-button-bg:                   $secondary;
 
 //Toast-Messages
 $toast-background-color:                rgba($secondary, .85);
-$toast-color:                           $dark-form;
+$toast-color:                           #dcdcdc;
 $toast-header-background-color:         rgba($primary, .85);
-$toast-header-color:                    $dark-form;
+$toast-header-color:                    $success;
 
-
-
-
+//Modal 
+$modal-header-bg-color:                 $lightgrey;
+$modal-header-border-b-color:           0px;
+$modal-content-bg-color:                $grey;
+$modal-content-color:                   #dadada;
 
 
 
@@ -161,42 +166,74 @@ $toast-header-color:                    $dark-form;
 
 
 //++++ [AdvancedCustomization] ++++ ///////////////////////////////////////////////////////
-
+.internal-autofill-selected {
+    appearance:             menulist-button;
+    background-color:       $success !important;
+    background-image:       none !important;
+}
+.d-flex {
+    display:                flex !important;
+    color:                  $success !important;
+}
+.table-responsive {
+    background-color:       $secondary !important;
+}
+.input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu), .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n + 3) {
+    color:                  $gray-900 !important;
+}
 .form-select, .form-control {
-    background-color:                $input-background-color !important;
+    background-color:       $input-background-color !important;
+}
+.form-check-input {
+    background-color:       $secondary !important;
 }
 .modal-header {
-    border-bottom:          $cal-pickr-header-border !important;
+    border-bottom:          $modal-header-border-b-color !important;
+    background-color:       $modal-header-bg-color !important;
+}
+.modal-content {
+    background-color:       $modal-content-bg-color !important;
+    color:                  $modal-content-color !important;
+}
+.popover {
+    background-color:       $secondary !important;
+}
+.popover-header {
+    background-color:       $lightgrey !important;
+    border-bottom:          0px solid rgba(0, 0, 0, 0.2)!important;
+}
+.popover-arrow::after, .popover-header::before {
+    border-bottom-color:    $lightgrey !important;
 }
 .input-group .btn {
     background-color:       $input-button-background-color !important;
     border-color:           $input-button-border-color !important;
 }
 .dp-modal {
-    background-color:              $cal-pickr-lightbox-color !important;
+    background-color:       $cal-pickr-lightbox-color !important;
 }
 .dp-months, .dp-years, .dp-cal, .dp-cal-month:hover, .dp-cal-year:hover, .dp-cal-year:focus  {
     background-color:       $cal-pickr-main-color !important;
 }
 .dp-cal-footer {
-    background-color:              $cal-pickr-footer-color !important;
+    background-color:       $cal-pickr-footer-color !important;
 }
 .dp-cal-header {
-    background-color:              $cal-pickr-header-color !important;
+    background-color:       $cal-pickr-header-color !important;
 }
 .dp-cal-month, .dp-cal-year, .dp-day, .dp-month, .dp-year {
     color:                  $cal-pickr-font-color !important;
 }
 .dp-day-today:after {
-    content: '';
-    height: 0;
-    width: 0;
-    border: 7px solid $cal-pickr-today-mark;
-    border-bottom-color: transparent;
-    border-left-color: transparent;
-    position: absolute;
-    top: 0;
-    right: 0;
+    content:                '';
+    height:                 0;
+    width:                  0;
+    border:                 7px solid $cal-pickr-today-mark;
+    border-bottom-color:    transparent;
+    border-left-color:      transparent;
+    position:               absolute;
+    top:                    0;
+    right:                  0;
 }
 .dp-day:hover, .dp-month:hover, .dp-year:hover {
     outline:                none;
@@ -248,9 +285,9 @@ $toast-header-color:                    $dark-form;
     background-color:       $sec-btn-background-color !important;
 }
 .page-link:focus {
-    z-index: 0;
-    outline: 0;
-    box-shadow: none !important;
+    z-index:                0;
+    outline:                0;
+    box-shadow:             none !important;
 }   
 .tab-borders {
   background-color:         $tab-background-color !important;
@@ -271,12 +308,12 @@ $toast-header-color:                    $dark-form;
     color:                  $wv-table-header-font-color !important;
 }
 .all-projects-bg {
-  background-image: linear-gradient(to bottom right, $ap-card-bg-color-left-top, $ap-card-bg-color-center, $ap-card-bg-color-bottom-right) !important;
+  background-image:         linear-gradient(to bottom right, $ap-card-bg-color-left-top, $ap-card-bg-color-center, $ap-card-bg-color-bottom-right) !important;
 }
 .p-2 {
-    padding: 0.5rem !important;
-    background-color: $sec-btn-background-color !important;
-    border: 1px solid $grey !important;
+    padding:                0.5rem !important;
+    background-color:       $sec-btn-background-color !important;
+    border:                 1px solid $grey !important;
 }
 
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
@@ -325,9 +362,6 @@ $toast-header-color:                    $dark-form;
 .dropdown-item{
    font-weight:             $font-weight-base !important; 
 }
-.pcr-app {
-    background-color:              #ff0000 !important;
-}
 .nav-link {
     color:                  $nav-link-color !important;
 }
@@ -341,57 +375,72 @@ $toast-header-color:                    $dark-form;
 }
 
 .dt-cell__content {
-    color: $data-text-color !important;
-    background-color: $data-cell-bg-color !important;
-    border: 1px solid $data-border-color !important;
+    color:                  $data-text-color !important;
+    background-color:       $data-cell-bg-color !important;
+    border: 1px solid       $data-border-color !important;
+    text-align:             left !important;
 }
 .dt-cell--header .dt-cell__content:hover {
-    font-weight: 400 !important;
-    color: $data-text-color !important;
-    background-color: $primary !important;
-    border: 1px solid $data-border-color !important;
+    font-weight:            400 !important;
+    color:                  $data-text-color !important;
+    background-color:       $primary !important;
+    border:                 1px solid $data-border-color !important;
 }
 .dt-dropdown__list {
-    background-color: $data-header-dropdown-bg-color !important;    
+    background-color:       $data-header-dropdown-bg-color !important;    
 }
 .dt-dropdown__list-item:hover {
-    background-color: $data-header-dropdown-bg-hover !important; 
+    background-color:       $data-header-dropdown-bg-hover !important; 
+}
+.list-group-item {
+    color:                  $gray-900 !important;
+    background-color:       $secondary !important;
+    border:                 1px solid $lightgrey !important;
+
 }
 .dt-cell--header .dt-cell__content {    
-    font-weight: 400 !important;
-    color: $data-header-text-color !important;
-    background-color: $data-header-bg-color !important;
-    border: 1px solid $data-border-color !important;
-    cursor: pointer !important;
-    text-align: left !important;
+    font-weight:            400 !important;
+    color:                  $data-header-text-color !important;
+    background-color:       $data-header-bg-color !important;
+    border:                 1px solid $data-border-color !important;
+    cursor:                 pointer !important;
+    text-align:             left !important;
 }
 .dt-cell--header .sort-indicator {
-    color: $data-header-indicator-color !important;
+    color:                  $data-header-indicator-color !important;
 }
 .alert-danger {
     color:                  $alert-danger-color !important;
     background-color:       $alert-danger-background-color !important;
     border-color:           $alert-danger-border-color !important;
 }
+.alert-info {
+    color:                  $alert-info-color !important;
+    background-color:       $alert-info-background-color !important;
+    border-color:           $alert-info-border-color !important;
+}
 .text-center {
-    text-align: center !important;
-    font-weight: 200 !important;
+    text-align:             center !important;
+    font-weight:            200 !important;
 }
 thead, tbody, tfoot, tr, td, th {
-    border-color: transparent !important;
+    border-color:           $lightgrey !important;
 }
-.card-block .list-group-item {
-    background-color: $secondary !important;
+.card-block  {
+    background-color:       $card-bg  !important;
 }
-.list-group-item {
-    color: #009688 !important;
+.drag .card-block:hover  {
+    background-color:       $primary  !important;
 }
 .btn-outline-primary {
-    color: #009688 !important;
-    border-color: #005a52 !important;
+    color:                  $success !important;
+    border-color:           $primary!important;
 }
 a {
-    color: #009688 !important;
-    text-decoration: underline;
+    color:                  $success !important;
+    text-decoration:        underline;
+}
+g > text {
+    fill: #FFFFFF;
 }
 @import "{}/imports/ui/styles/general.scss";
