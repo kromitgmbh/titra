@@ -1,7 +1,8 @@
 <template name="appLayout">
   {{>toast}}
   {{>navbar}}
-  <div class="container mb-3 mt-5 pt-3">
+  <div class="pt-3 mt-5 d-print-none"></div>
+  <div class="container mb-3">
     {{>connectioncheck}}
     {{> yield}}
   </div>

@@ -4,6 +4,7 @@ import isBetween from 'dayjs/plugin/isBetween'
 import { check, Match } from 'meteor/check'
 import Timecards from '../timecards/timecards'
 import Projects from './projects.js'
+import Tasks from '../tasks/tasks.js'
 import { checkAuthentication } from '../../utils/server_method_helpers.js'
 import { addNotification } from '../notifications/notifications.js'
 import { emojify, getGlobalSetting } from '../../utils/frontend_helpers'
@@ -213,5 +214,20 @@ Meteor.methods({
     checkAuthentication(this)
     Projects.update({ _id: projectId }, { $set: { priority } })
     return 'notifications.project_priority_success'
+  },
+  setDefaultTaskForProject({ projectId, taskId }) {
+    check(projectId, String)
+    check(taskId, String)
+    checkAuthentication(this)
+    const task = Tasks.findOne({ _id: taskId })
+    if (task.isDefaultTask) {
+      Projects.update({ _id: projectId }, { $unset: { defaultTask: 1 } })
+      Tasks.update({ _id: taskId }, { $set: { isDefaultTask: false } })
+      return 'notifications.default_task_success'
+    }
+    Projects.update({ _id: projectId }, { $set: { defaultTask: task.name } })
+    Tasks.update({ projectId }, { $set: { isDefaultTask: false } }, { multi: true })
+    Tasks.update({ _id: taskId }, { $set: { isDefaultTask: true } })
+    return 'notifications.default_task_success'
   },
 })

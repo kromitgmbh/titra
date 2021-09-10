@@ -198,7 +198,7 @@ Template.administration.events({
     const desc = templateInstance.$('#customfieldDesc').val()
     const type = templateInstance.$('#customfieldType').val()
     const classname = templateInstance.$('#customfieldClassname').val()
-    const possibleValues = templateInstance.$('#customfieldPossibleValues').val().split(',')
+    const possibleValues = templateInstance.$('#customfieldPossibleValues').val() !== '' ? templateInstance.$('#customfieldPossibleValues').val().split(',') : undefined
     if (!name) {
       templateInstance.$('#customfieldName').addClass('is-invalid')
       return

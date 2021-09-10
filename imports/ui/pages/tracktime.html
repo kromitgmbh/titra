@@ -76,7 +76,7 @@
       {{>projectselect tcid=tcid projectId=reactiveProjectId displayProjectInfo=true}}
     </div>
     <div class="mb-3 mb-3">
-      {{>tasksearch tcid=tcid projectId=reactiveProjectId}}
+      {{>tasksearch tcid=tcid projectId=reactiveProjectId task=task}}
     </div>
     {{#if customfields }}
       {{#each customfield in customfields}}

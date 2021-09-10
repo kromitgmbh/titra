@@ -29,7 +29,12 @@
     "or": "or",
     "time_entry": "Time entry",
     "class": "Class",
-    "type": "Type"
+    "type": "Type",
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel",
+    "ok": "Ok",
+    "definition": "Definition"
   },
   "navigation": {
     "track": "Track",
@@ -103,13 +108,16 @@
     "project_placeholder": "Select a project",
     "my_project_placeholder": "My project",
     "not_billable": "Not billable",
-    "billing_budget": "Billing & Budget"
+    "billing_budget": "Billing & Budget",
+    "default_task": "Default task",
+    "default_task_help": "This value will be used as the default task when tracking time on this project."
   },
   "settings": {
     "user_profile": "User profile",
     "language": "Language",
     "de": "German",
     "en": "English",
+    "fr": "French",
     "user_interface": "User interface",
     "theme": "Theme",
     "auto_detect": "Auto detect",
@@ -186,7 +194,13 @@
     "searching": "Searching for tasks ...",
     "storedTasks": "Stored tasks",
     "search": "Search tasks",
-    "lastUsed": "Last used"
+    "lastUsed": "Last used",
+    "startDate": "Planned start",
+    "endDate": "Planned finish",
+    "duration": "Duration",
+    "dependencies": "Dependencies",
+    "newTask": "New task"
+
   },
   "details": {
     "filter": "Filter",

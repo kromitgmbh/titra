@@ -443,4 +443,26 @@ a {
 g > text {
     fill: #FFFFFF;
 }
+.gantt .grid-header {
+    fill: $grey !important;
+    stroke: $grey !important;
+}
+.gantt .grid-row {
+    fill: $grey !important;
+}
+.gantt .grid-row:nth-child(even) {
+    fill: $dark-form !important;
+}
+.gantt .row-line {
+    stroke: $dark !important;
+}
+.gantt .lower-text {
+    fill: $body-color !important;
+}
+.gantt .upper-text {
+    fill: $body-color !important;
+}
+.gantt .bar {
+    fill: $lightgrey !important;
+}
 @import "{}/imports/ui/styles/general.scss";

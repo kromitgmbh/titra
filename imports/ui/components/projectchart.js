@@ -9,24 +9,6 @@ Template.projectchart.onCreated(function projectchartCreated() {
   this.topTasks = new ReactiveVar()
   this.projectDescAsHtml = new ReactiveVar()
   this.isVisible = new ReactiveVar(false)
-  this.autorun(() => {
-    this.subscribe('singleProject', this.data.projectId)
-    this.subscribe('projectStats', this.data.projectId)
-    this.subscribe('projectUsers', { projectId: this.data.projectId })
-    Meteor.call('getTopTasks', { projectId: this.data.projectId }, (error, result) => {
-      if (error) {
-        console.error(error)
-      } else {
-        this.topTasks.set(result)
-      }
-    })
-    if (this.subscriptionsReady()) {
-      const converter = new QuillDeltaToHtmlConverter(Projects
-        .findOne({ _id: Template.instance().data.projectId })?.desc?.ops,
-      { multiLineParagraph: true })
-      this.projectDescAsHtml.set(converter.convert())
-    }
-  })
 })
 Template.projectchart.helpers({
   totalHours() {
@@ -86,6 +68,9 @@ Template.projectchart.helpers({
   projectDescAsHtml: () => encodeURI(Template.instance().projectDescAsHtml.get()),
   truncatedProjectDescAsHtml: () => (Template.instance().projectDescAsHtml.get()
     ? Template.instance().projectDescAsHtml.get().replace('<p>', '<p style="max-height:1.9em;pointer-events:none;" class="text-truncate p-0 m-0">') : ''),
+  componentIsReady() {
+    return Template.instance().isVisible.get() && Template.instance().subscriptionsReady()
+  },
 })
 Template.projectchart.onRendered(() => {
   const templateInstance = Template.instance()
@@ -94,8 +79,7 @@ Template.projectchart.onRendered(() => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         templateInstance.isVisible.set(true)
-      } else {
-        templateInstance.isVisible.set(false)
+        templateInstance.observer.unobserve(templateInstance.firstNode)
       }
     })
   })
@@ -110,6 +94,34 @@ Template.projectchart.onRendered(() => {
           trigger: 'hover focus',
         })
       })
+    }
+  })
+  templateInstance.autorun(() => {
+    if (templateInstance.isVisible.get()) {
+      if (!this.singleProjectSub) {
+        templateInstance.singleProjectSub = templateInstance.subscribe('singleProject', templateInstance.data.projectId)
+      }
+      if (!templateInstance.projectStatsSub) {
+        templateInstance.projectStatsSub = templateInstance.subscribe('projectStats', templateInstance.data.projectId)
+      }
+      if (!templateInstance.projectUsersSub) {
+        templateInstance.projectUsersSub = templateInstance.subscribe('projectUsers', { projectId: templateInstance.data.projectId })
+      }
+      Meteor.call('getTopTasks', { projectId: templateInstance.data.projectId }, (error, result) => {
+        if (error) {
+          console.error(error)
+        } else {
+          templateInstance.topTasks.set(result)
+        }
+      })
+    }
+  })
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady()) {
+      const converter = new QuillDeltaToHtmlConverter(Projects
+        .findOne({ _id: Template.instance().data.projectId })?.desc?.ops,
+      { multiLineParagraph: true })
+      templateInstance.projectDescAsHtml.set(converter.convert())
     }
   })
   templateInstance.autorun(() => {

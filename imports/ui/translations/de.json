@@ -29,7 +29,12 @@
     "or": "oder",
     "time_entry": "Eintrag",
     "class": "Klasse",
-    "type": "Typ"
+    "type": "Typ",
+    "yes": "Ja",
+    "no": "Nein",
+    "cancel": "Abbrechen",
+    "ok": "Ok",
+    "definition": "Definition"
   },
   "navigation": {
     "track": "Erfassen",
@@ -103,13 +108,16 @@
     "project_placeholder": "Projekt auswählen",
     "my_project_placeholder": "Mein Projekt",
     "not_billable": "Nicht verrechenbar",
-    "billing_budget": "Verrechnung & Budget"
+    "billing_budget": "Verrechnung & Budget",
+    "default_task": "Standard Tätigkeit",
+    "default_task_help": "Der Wert in diesem Feld wird bei der Erfassung eines neuen Zeiteintrags in das Tätigkeitsfeld bei der Auswahl dieses Projektes automatisch eingetragen."
   },
   "settings": {
     "user_profile": "Benutzer Profil",
     "language": "Sprache",
     "de": "Deutsch",
     "en": "Englisch",
+    "fr": "Französisch",
     "user_interface": "Benutzeroberfläche",
     "theme": "Darstellung",
     "auto_detect": "Automatisch",
@@ -185,7 +193,12 @@
     "searching": "Nach Tätigkeit suchen ...",
     "storedTasks": "Gespeicherte Tätigkeiten",
     "search": "Tätigkeit suchen",
-    "lastUsed": "Zuletzt verwendet"
+    "lastUsed": "Zuletzt verwendet",
+    "startDate": "Geplanter Start",
+    "endDate": "Geplantes Ende",
+    "duration": "Dauer",
+    "dependencies": "Abhängigkeiten",
+    "newTask": "Neue Tätigkeit"
   },
   "details": {
     "filter": "Filter",

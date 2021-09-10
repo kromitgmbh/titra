@@ -9,14 +9,17 @@ import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
 import '../components/wekanInterfaceSettings.js'
 import '../components/projectAccessRights.js'
-import { getUserSetting, getGlobalSetting, showToast } from '../../utils/frontend_helpers'
-import CustomFields from '../../api/customfields/customfields'
+import { getUserSetting, getGlobalSetting, showToast } from '../../utils/frontend_helpers.js'
+import CustomFields from '../../api/customfields/customfields.js'
+import BsDialogs from '../components/bootstrapDialogs.js'
+import '../components/projectTasks.js'
 
 Template.editproject.onCreated(function editprojectSetup() {
   this.deletion = new ReactiveVar(false)
   this.projectId = new ReactiveVar()
   this.project = new ReactiveVar()
   this.notbillable = new ReactiveVar(false)
+  this.activeTab = new ReactiveVar('definition-tab')
   this.subscribe('customfieldsForClass', { classname: 'project' })
   this.autorun(() => {
     this.projectId.set(FlowRouter.getParam('id'))
@@ -183,17 +186,20 @@ Template.editproject.events({
   'click .js-delete-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
-    if (confirm(i18next.t('notifications.project_delete_confirm'))) {
-      Template.instance().deletion.set(true)
-      Meteor.call('deleteProject', { projectId: FlowRouter.getParam('id') }, (error) => {
-        if (!error) {
-          FlowRouter.go('projectlist')
-          showToast(i18next.t('notifications.project_delete_success'))
-        } else {
-          console.error(error)
-        }
-      })
-    }
+    const templateInstance = Template.instance()
+    new BsDialogs().confirm('', i18next.t('notifications.project_delete_confirm')).then((result) => {
+      if (result) {
+        templateInstance.deletion.set(true)
+        Meteor.call('deleteProject', { projectId: FlowRouter.getParam('id') }, (error) => {
+          if (!error) {
+            FlowRouter.go('projectlist')
+            showToast(i18next.t('notifications.project_delete_success'))
+          } else {
+            console.error(error)
+          }
+        })
+      }
+    })
   },
   'click .js-archive-project': (event) => {
     event.preventDefault()
@@ -231,6 +237,9 @@ Template.editproject.events({
     event.preventDefault()
     templateInstance.notbillable.set(templateInstance.$(event.currentTarget).is(':checked'))
   },
+  'click .nav-link[data-bs-toggle]': (event, templateInstance) => {
+    templateInstance.activeTab.set(templateInstance.$(event.currentTarget)[0].id)
+  },
 })
 Template.editproject.helpers({
   newProject: () => (!FlowRouter.getParam('id')),
@@ -257,6 +266,8 @@ Template.editproject.helpers({
   customfields: () => (CustomFields.find({ classname: 'project' }).fetch().length > 0 ? CustomFields.find({ classname: 'project' }) : false),
   getCustomFieldValue: (fieldId) => (Template.instance().project.get()
     ? Template.instance().project.get()[fieldId] : false),
+  defaultTask: () => (Template.instance().project?.get()?.defaultTask),
+  isActiveTab: (tab) => Template.instance().activeTab.get() === tab,
 })
 
 Template.editproject.onDestroyed(function editprojectDestroyed() {

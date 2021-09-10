@@ -149,6 +149,28 @@ function loadLanguage(language, i18nextDebugMode) {
       })
       $('html').attr('lang', 'de')
       break
+    case 'fr':
+      import('../ui/translations/fr.json').then((fr) => {
+        if (!i18next.isInitialized) {
+          i18next.init({
+            lng: 'fr',
+            debug: i18nextDebugMode,
+            resources: {
+              fr: {
+                translation: fr.default,
+              },
+            },
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        } else {
+          i18next.addResourceBundle('fr', 'translation', fr.default, true, true)
+          i18next.changeLanguage('fr').then((t) => { globalT = t })
+        }
+      })
+      $('html').attr('lang', 'fr')
+      break
   }
 }
 function getUserTimeUnitVerbose() {

@@ -64,8 +64,11 @@ Template.projectselect.events({
       && !(templateInstance.data.projectId && templateInstance.data.projectId.get())) {
       FlowRouter.setParams({ projectId: $(event.currentTarget).val() })
     }
-    if ($('.js-tasksearch-input')) {
+    const project = Projects.findOne({ _id: templateInstance.selectedId.get() })
+    if (!project?.defaulttask) {
       $('.js-tasksearch-input').focus()
+    } else {
+      $('#hours').first().focus()
     }
   },
 })

@@ -135,22 +135,24 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
         }
       }
     }
-    this.autorun(() => {
-      if (!this.zammadAPITasks.get() && getGlobalSetting('enableZammad') && getUserSetting('zammadurl') && getUserSetting('zammadtoken')) {
-        window.fetch(`${getUserSetting('zammadurl')}api/v1/tickets`, { headers: { Authorization: `Token token=${getUserSetting('zammadtoken')}` } }).then((response) => response.json()).then((result) => {
-          this.zammadAPITasks.set(result)
-        }).catch((error) => {
-          showToast(i18next.t('notifications.zammad_error'))
-        })
-      }
-    })
-    this.subscribe('mytasks', this.filter.get() ? this.filter.get() : '')
+  })
+  this.autorun(() => {
+    if (!this.zammadAPITasks.get() && getGlobalSetting('enableZammad') && getUserSetting('zammadurl') && getUserSetting('zammadtoken')) {
+      window.fetch(`${getUserSetting('zammadurl')}api/v1/tickets`, { headers: { Authorization: `Token token=${getUserSetting('zammadtoken')}` } }).then((response) => response.json()).then((result) => {
+        this.zammadAPITasks.set(result)
+      }).catch((error) => {
+        showToast(i18next.t('notifications.zammad_error'))
+      })
+    }
+  })
+  this.autorun(() => {
+    this.subscribe('mytasks', { filter: this.filter.get(), projectId: this.data.projectId.get() ? this.data.projectId.get() : FlowRouter.getParam('projectId') })
   })
 })
 Template.tasksearch.helpers({
   tasks: () => {
     if (!Template.instance().filter.get() || Template.instance().filter.get() === '') {
-      return Tasks.find({}, { sort: { lastUsed: -1 }, limit: 3 })
+      return Tasks.find({}, { sort: { projectId: -1, lastUsed: -1 }, limit: 3 })
       // return Template.instance().lastTimecards.get()
     }
     const finalArray = []
@@ -170,7 +172,7 @@ Template.tasksearch.helpers({
     if (zammadAPITasks && zammadAPITasks.length > 0) {
       finalArray.push(...zammadAPITasks.map((elem) => ({ name: elem.title, zammad: true })).filter((element) => new RegExp(regex, 'i').exec(element.name)))
     }
-    finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { lastUsed: -1 }, limit: 5 }).fetch())
+    finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { projectId: -1, lastUsed: -1 }, limit: 5 }).fetch())
     return finalArray.length > 0 ? finalArray.slice(0, 4) : false
   },
   task: () => Template.instance().data.task,

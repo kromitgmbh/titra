@@ -111,7 +111,12 @@ Template.tracktime.onCreated(function tracktimeCreated() {
       if (FlowRouter.getParam('projectId') && !FlowRouter.getQueryParam('date')) {
         if (FlowRouter.getParam('projectId') !== 'all') {
           if ($('.js-tasksearch-input').length) {
-            $('.js-tasksearch-input').focus()
+            const project = Projects.findOne({ _id: this.projectId.get() })
+            if (!project?.defaulttask) {
+              $('.js-tasksearch-input').focus()
+            } else {
+              $('#hours').focus()
+            }
           }
         }
       }
@@ -239,7 +244,10 @@ Template.tracktime.events({
   'change .js-target-project': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
-    templateInstance.$('.js-tasksearch').first().focus()
+    const project = Projects.findOne({ _id: templateInstance.projectId.get() })
+    if (!project?.defaulttask) {
+      templateInstance.$('.js-tasksearch').first().focus()
+    }
   },
   'change .js-date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
@@ -333,8 +341,14 @@ Template.tracktime.helpers({
   isEdit: () => (Template.instance().tcid && Template.instance().tcid.get())
     || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
     || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()),
-  task: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
-    ? Timecards.findOne({ _id: Template.instance().tcid.get() }).task : false),
+  task: () => {
+    const project = Projects.findOne({ _id: Template.instance().projectId.get() })
+    const timecard = Timecards.findOne({ _id: Template.instance().tcid.get() })
+    if (!timecard && project?.defaulttask) {
+      return project.defaulttask
+    }
+    return timecard ? timecard?.task : false
+  },
   hours: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
     ? Timecards.findOne({ _id: Template.instance().tcid.get() }).hours : false),
   showTracker: () => (getUserSetting('timeunit') !== 'd'),
