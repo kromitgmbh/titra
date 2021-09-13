@@ -133,6 +133,7 @@ Template.weektable.events({
 
 Template.weektablerow.onCreated(function weektablerowCreated() {
   this.tempTimeEntries = new ReactiveVar([])
+  this.reactiveProjectId = new ReactiveVar()
   this.autorun(() => {
     this.subscribe('userTimeCardsForPeriodByProjectByTask',
       {
@@ -145,6 +146,7 @@ Template.weektablerow.onCreated(function weektablerowCreated() {
     if (this.data.timeEntries) {
       this.tempTimeEntries = this.timeEntries
     }
+    this.reactiveProjectId.set(this.data.projectId)
   })
 })
 Template.weektablerow.events({
@@ -230,5 +232,8 @@ Template.weektablerow.helpers({
       return total !== 0 ? timeInUserUnit(total) : false
     }
     return false
+  },
+  reactiveProjectId() {
+    return Template.instance().reactiveProjectId
   },
 })

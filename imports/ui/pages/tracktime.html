@@ -33,44 +33,50 @@
     </div>
     {{#unless isEdit}}
       <div class="card mb-3 mb-3">
-        <div class="card-header js-toggle-timecards">
-          {{#if totalTime}}
-            {{t "tracktime.time_tracked"}} {{timeInUserUnit(totalTime)}} {{timeunit}}
-            <a href="#" class="text-body"><i class="fa fa-chevron-down float-end"></i></a>
-            {{else}}
-            {{t "tracktime.no_time"}}
+        {{#if Template.subscriptionsReady}}
+          <div class="card-header js-toggle-timecards">
+            {{#if totalTime}}
+              {{t "tracktime.time_tracked"}} {{timeInUserUnit(totalTime)}} {{timeunit}}
+              <a href="#" class="text-body"><i class="fa fa-chevron-down float-end"></i></a>
+              {{else}}
+              {{t "tracktime.no_time"}}
+            {{/if}}
+          </div>
+          <ul class="list-group list-group-flush js-show-timecards" style="display:none;">
+            {{#if totalTime}}
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-4 col-md-4"><strong>{{t "globals.project"}}</strong></div>
+                  <div class="col-5 col-md-6"><strong>{{t "globals.task"}}</strong></div>
+                  <div class="col-3 col-md-2"><strong>{{t "globals.time"}}</strong></div>
+                </div>
+              </li>
+                {{#each timecard in timecards}}
+                <a href="#" class="list-group-item list-group-item-action js-time-row" data-bs-toggle="popover" data-bs-placement="bottom" title="Actions">
+                <div class="d-none js-popover-content">
+                  <a class="btn btn-secondary border js-edit-time-entry" data-tcid="{{timecard._id}}" href="{{timecard._id}}">
+                    <i class="fa fa-edit"></i> <span class="d-none d-md-inline-block">{{t "navigation.edit"}}</span>
+                  </a>
+                  <span>&nbsp;</span>
+                  <a class="btn btn-secondary border js-delete-time-entry" data-timecard-id="{{timecard._id}}" href="{{timecard._id}}">
+                    <i class="fa fa-trash"></i> <span class="d-none d-md-inline-block">{{t "navigation.delete"}}</span>
+                  </a>
+                </div>
+                  <div class="row">
+                    <div class="col-4 col-md-4"><span class="d-inline-block text-truncate" style="max-width:100%" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName(timecard.projectId)}}">{{projectName(timecard.projectId)}}</span></div>
+                    <div class="col-5 col-md-6"><span class="d-inline-block text-truncate" style="max-width:100%" data-bs-toggle="tooltip" data-bs-placement="top" title="{{timecard.task}}">{{timecard.task}}</span></div>
+                    <div class="col-3 col-md-2 text-centered">{{timeInUserUnit(timecard.hours)}}</div>
+                  </div>
+                </a>
+                {{/each}}
+            {{/if}}
+            </ul>
+          {{else}}
+            <div class="card-header">
+              {{t "globals.loading"}}
+            </div>
           {{/if}}
         </div>
-        <ul class="list-group list-group-flush js-show-timecards" style="display:none;">
-          {{#if totalTime}}
-            <li class="list-group-item">
-              <div class="row">
-                <div class="col-4 col-md-4"><strong>{{t "globals.project"}}</strong></div>
-                <div class="col-5 col-md-6"><strong>{{t "globals.task"}}</strong></div>
-                <div class="col-3 col-md-2"><strong>{{t "globals.time"}}</strong></div>
-              </div>
-            </li>
-              {{#each timecard in timecards}}
-              <a href="#" class="list-group-item list-group-item-action js-time-row" data-bs-toggle="popover" data-bs-placement="bottom" title="Actions">
-              <div class="d-none js-popover-content">
-                <a class="btn btn-secondary border js-edit-time-entry" data-tcid="{{timecard._id}}" href="{{timecard._id}}">
-                  <i class="fa fa-edit"></i> <span class="d-none d-md-inline-block">{{t "navigation.edit"}}</span>
-                </a>
-                <span>&nbsp;</span>
-                <a class="btn btn-secondary border js-delete-time-entry" data-timecard-id="{{timecard._id}}" href="{{timecard._id}}">
-                  <i class="fa fa-trash"></i> <span class="d-none d-md-inline-block">{{t "navigation.delete"}}</span>
-                </a>
-              </div>
-                <div class="row">
-                  <div class="col-4 col-md-4"><span class="d-inline-block text-truncate" style="max-width:100%" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName(timecard.projectId)}}">{{projectName(timecard.projectId)}}</span></div>
-                  <div class="col-5 col-md-6"><span class="d-inline-block text-truncate" style="max-width:100%" data-bs-toggle="tooltip" data-bs-placement="top" title="{{timecard.task}}">{{timecard.task}}</span></div>
-                  <div class="col-3 col-md-2 text-centered">{{timeInUserUnit(timecard.hours)}}</div>
-                </div>
-              </a>
-              {{/each}}
-            {{/if}}
-          </ul>
-      </div>
     {{/unless}}
     <div class="mb-3 js-tracktime-projectselect mb-3">
       {{>projectselect tcid=tcid projectId=reactiveProjectId displayProjectInfo=true}}
