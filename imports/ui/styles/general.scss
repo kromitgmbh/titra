@@ -289,3 +289,7 @@ g.chart-legend {
 button.dp-clear {
   visibility: hidden !important;
 }
+
+.dropdown-item:hover {
+  background-color: $primary;
+}

@@ -112,7 +112,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
         if (FlowRouter.getParam('projectId') !== 'all') {
           if ($('.js-tasksearch-input').length) {
             const project = Projects.findOne({ _id: this.projectId.get() })
-            if (!project?.defaulttask) {
+            if (!project?.defaultTask) {
               $('.js-tasksearch-input').focus()
             } else {
               $('#hours').focus()
@@ -245,7 +245,7 @@ Template.tracktime.events({
     event.preventDefault()
     templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
     const project = Projects.findOne({ _id: templateInstance.projectId.get() })
-    if (!project?.defaulttask) {
+    if (!project?.defaultTask) {
       templateInstance.$('.js-tasksearch').first().focus()
     }
   },
@@ -344,8 +344,8 @@ Template.tracktime.helpers({
   task: () => {
     const project = Projects.findOne({ _id: Template.instance().projectId.get() })
     const timecard = Timecards.findOne({ _id: Template.instance().tcid.get() })
-    if (!timecard && project?.defaulttask) {
-      return project.defaulttask
+    if (!timecard && project?.defaultTask) {
+      return project.defaultTask
     }
     return timecard ? timecard?.task : false
   },

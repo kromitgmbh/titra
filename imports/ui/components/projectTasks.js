@@ -133,3 +133,12 @@ Template.projectTasks.events({
     })
   },
 })
+
+Template.projectTasks.onDestroyed(() => {
+  try {
+    Template.instance().datatable?.destroy()
+  } catch (error) {
+    console.error(error)
+  }
+  Template.instance().datatable = undefined
+})

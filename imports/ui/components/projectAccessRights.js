@@ -142,3 +142,12 @@ Template.projectAccessRights.events({
     })
   },
 })
+
+Template.projectAccessRights.onDestroyed(() => {
+  try {
+    Template.instance().projectAccessRightsDataTable?.destroy()
+  } catch (error) {
+    console.error(error)
+  }
+  Template.instance().projectAccessRightsDataTable = undefined
+})
