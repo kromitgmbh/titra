@@ -20,6 +20,7 @@ Template.editproject.onCreated(function editprojectSetup() {
   this.project = new ReactiveVar()
   this.notbillable = new ReactiveVar(false)
   this.activeTab = new ReactiveVar('definition-tab')
+  this.quillReady = new ReactiveVar(false)
   this.subscribe('customfieldsForClass', { classname: 'project' })
   this.autorun(() => {
     this.projectId.set(FlowRouter.getParam('id'))
@@ -50,37 +51,44 @@ Template.editproject.onRendered(() => {
       },
     },
   }
-  if (!FlowRouter.getParam('id')) {
-    templateInstance.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
-    $('#color').val(templateInstance.color)
-    pickrOptions.default = templateInstance.color
-  }
-  if (!templateInstance.pickr) {
-    window.requestAnimationFrame(() => {
-      templateInstance.pickr = Pickr.create(pickrOptions)
-      templateInstance.pickr.on('change', (color) => {
-        $('#color').val(color.toHEXA().toString())
-      })
-    })
-  }
-  if (!templateInstance.quill) {
-    import('quill').then((quillImport) => {
-      import('quill/dist/quill.snow.css')
-      window.requestAnimationFrame(() => {
-        templateInstance.quill = new quillImport.default('#richDesc', {
-          theme: 'snow',
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady()) {
+      if (!FlowRouter.getParam('id')) {
+        templateInstance.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
+        $('#color').val(templateInstance.color)
+        pickrOptions.default = templateInstance.color
+      }
+      if (!templateInstance.pickr) {
+        window.requestAnimationFrame(() => {
+          templateInstance.pickr = Pickr.create(pickrOptions)
+          templateInstance.pickr.on('change', (color) => {
+            $('#color').val(color.toHEXA().toString())
+          })
         })
-      })
-    })
-  }
+      }
+      if (!templateInstance.quill) {
+        import('quill').then((quillImport) => {
+          import('quill/dist/quill.snow.css')
+          window.requestAnimationFrame(() => {
+            if (!templateInstance.quillReady.get()) {
+              templateInstance.quill = new quillImport.default('#richDesc', {
+                theme: 'snow',
+              })
+              templateInstance.quillReady.set(true)
+            }
+          })
+        })
+      }
+    }
+  })
   templateInstance.autorun(() => {
     const project = templateInstance.project.get()
     if (templateInstance.handle
         && templateInstance.handle.ready() && !templateInstance.deletion.get()) {
       if (project) {
-        if (project.desc instanceof Object && templateInstance.quill) {
+        if (project.desc instanceof Object && templateInstance.quillReady.get()) {
           templateInstance.quill.setContents(project.desc)
-        } else if (project.desc && templateInstance.quill) {
+        } else if (project.desc && templateInstance.quillReady.get()) {
           templateInstance.quill.setText(project.desc)
         }
         Meteor.setTimeout(() => {
