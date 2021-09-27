@@ -42,7 +42,7 @@ inter-process-messaging@0.1.1
 jquery@3.0.0
 launch-screen@1.3.0
 localstorage@1.2.0
-logging@1.3.0
+logging@1.3.1
 mdg:validated-method@1.2.0
 meteor@1.10.0
 meteor-base@1.5.1

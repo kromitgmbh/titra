@@ -126,11 +126,17 @@ Template.projectTasks.events({
   'change .form-check-input': (event, templateInstance) => {
     Meteor.call('setDefaultTaskForProject', { projectId: FlowRouter.getParam('id'), taskId: templateInstance.$(event.target).data('id') }, (error, result) => {
       if (error) {
-        console.log(error)
+        console.error(error)
       } else {
         showToast(i18next.t('notifications.settings_saved_success'))
       }
     })
+  },
+  'click .js-open-task-modal': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.editTaskID.set(false)
+    Bootstrap.Modal.getOrCreateInstance(templateInstance.$('#task-modal')).dispose()
+    Bootstrap.Modal.getOrCreateInstance(templateInstance.$('#task-modal')).show()
   },
 })
 

@@ -4,12 +4,15 @@ import Bootstrap from 'bootstrap'
 import './taskModal.html'
 import Tasks from '../../api/tasks/tasks'
 import { showToast } from '../../utils/frontend_helpers.js'
+import BsDialogs from './bootstrapDialogs'
 
 Template.taskModal.onCreated(function taskModalCreated() {
   this.editTask = new ReactiveVar(false)
   this.autorun(() => {
     if (this.data.editTaskID.get()) {
       this.editTask.set(Tasks.findOne({ _id: this.data.editTaskID.get() }))
+    } else {
+      this.editTask.set(false)
     }
   })
 })
@@ -47,13 +50,32 @@ Template.taskModal.events({
     } else {
       Meteor.call('insertProjectTask', newTask, (error, result) => {
         if (error) {
-          console.log(error)
+          console.error(error)
         } else {
+          templateInstance.$('input').each(function (index) {
+            $(this).val('')
+          })
+          templateInstance.$('#start').val(new Date().toJSON().slice(0, 10))
           Bootstrap.Modal.getInstance(templateInstance.$('#task-modal')).hide()
           showToast(i18next.t('notifications.settings_saved_success'))
         }
       })
     }
+  },
+  'click .js-remove-task': (event, templateInstance) => {
+    event.preventDefault()
+    new BsDialogs().confirm('', i18next.t('notifications.delete_confirm')).then((result) => {
+      if (result) {
+        Meteor.call('removeProjectTask', { taskId: templateInstance.editTask.get()._id }, (error, result) => {
+          if (error) {
+            console.error(error)
+          } else {
+            Bootstrap.Modal.getInstance(templateInstance.$('#task-modal')).hide()
+            showToast(i18next.t('notifications.settings_saved_success'))
+          }
+        })
+      }
+    })
   },
 })
 
@@ -64,5 +86,5 @@ Template.taskModal.helpers({
     : new Date().toJSON().slice(0, 10)),
   end: () => (Template.instance().editTask.get() ? Template.instance().editTask.get().end?.toJSON().slice(0, 10) : ''),
   possibleDependencies: () => Tasks.find({ projectId: FlowRouter.getParam('id'), _id: { $ne: Template.instance().editTask.get()?._id } }),
-  isSelectedDep: (dependency) => (Template.instance().editTask.get().dependencies?.includes(dependency) ? 'selected' : ''),
+  isSelectedDep: (dependency) => (Template.instance().editTask.get()?.dependencies?.includes(dependency) ? 'selected' : ''),
 })

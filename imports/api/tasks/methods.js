@@ -60,4 +60,16 @@ const updateTask = new ValidatedMethod({
     }
   },
 })
-export { insertProjectTask, updateTask }
+const removeProjectTask = new ValidatedMethod({
+  name: 'removeProjectTask',
+  validate(args) {
+    check(args, {
+      taskId: String,
+    })
+  },
+  run({ taskId }) {
+    checkAuthentication(this)
+    Tasks.remove({ _id: taskId })
+  },
+})
+export { insertProjectTask, updateTask, removeProjectTask }

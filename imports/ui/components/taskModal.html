@@ -3,7 +3,13 @@
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{t "task.newTask"}}</h5>
+                <h5 class="modal-title">
+                    {{#if name}}
+                        {{t "task.editTask"}}
+                    {{else}}
+                        {{t "task.newTask"}}
+                    {{/if}}
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -34,6 +40,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{t "navigation.cancel"}}</button>
+                {{#if name}}<button type="button" class="btn btn-danger js-remove-task">{{t "navigation.delete"}}</button> {{/if}}
                 <button type="button" class="btn btn-primary js-save-task">{{t "navigation.save"}}</button>
             </div>
             </div>

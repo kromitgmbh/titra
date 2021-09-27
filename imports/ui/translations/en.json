@@ -199,8 +199,8 @@
     "endDate": "Planned finish",
     "duration": "Duration",
     "dependencies": "Dependencies",
-    "newTask": "New task"
-
+    "newTask": "New task",
+    "editTask": "Edit task"
   },
   "details": {
     "filter": "Filter",

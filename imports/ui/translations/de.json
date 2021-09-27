@@ -198,7 +198,8 @@
     "endDate": "Geplantes Ende",
     "duration": "Dauer",
     "dependencies": "Abhängigkeiten",
-    "newTask": "Neue Tätigkeit"
+    "newTask": "Neue Tätigkeit",
+    "editTask": "Tätigkeit bearbeiten"
   },
   "details": {
     "filter": "Filter",
