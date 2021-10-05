@@ -1,112 +1,125 @@
 <template name="settings">
   <form>
-    <div class="card form-group">
+    <div class="card mb-3">
       <div class="card-header">
         {{t "settings.global_settings"}}
       </div>
       <div class="card-block">
-        <div class="form-group">
-          <label for="unit"><strong>{{t "settings.cost_unit"}}</strong></label>
+        <div class="mb-3 form-floating">
           <input type="text" class="form-control" id="unit" value="{{unit}}" />
+          <label class="form-label" for="unit"><strong>{{t "settings.cost_unit"}}</strong></label>
         </div>
-        <div class="form-group">
-          <label for="precision"><strong>{{t "settings.decimal_precision"}}</strong></label>
+        <div class="form-floating">
           <input type="number" class="form-control" id="precision" value="{{precision}}" />
+          <label class="form-label" for="precision"><strong>{{t "settings.decimal_precision"}}</strong></label>
         </div>
       </div>
     </div>
-    <div class="card form-group">
+    <div class="card mb-3">
       <div class="card-header">
           {{t "settings.time_tracking"}}
       </div>
       <div class="card-block">
-          <div class="form-group">
-          <label for="tracktimeview"><strong>{{t "settings.track_time_view"}}</strong></label>
-          <select class="form-control" id="timetrackview">
-              <option value="d">{{t "globals.day"}}</option>
-              <option value="w">{{t "globals.week"}}</option>
-              <option value="M">{{t "globals.month"}}</option>
-          </select>
+          <div class="mb-3 form-floating">
+            <select class="form-select form-control" id="timetrackview">
+                <option value="d">{{t "globals.day"}}</option>
+                <option value="w">{{t "globals.week"}}</option>
+                <option value="M">{{t "globals.month"}}</option>
+            </select>
+            <label class="form-label" for="tracktimeview"><strong>{{t "settings.track_time_view"}}</strong></label>
           </div>
-          <div class="form-group">
-          <label for="timeunit"><strong>{{t "settings.time_unit"}}</strong></label>
-          <select class="form-control" id="timeunit">
-              <option value="h">{{t "globals.hour"}}</option>
-              <option value="d">{{t "globals.day"}}</option>
-          </select>
+          <div class="mb-3 form-floating">
+            <select class="form-select form-control" id="timeunit">
+                <option value="m">{{t "globals.minute"}}</option>
+                <option value="h">{{t "globals.hour"}}</option>
+                <option value="d">{{t "globals.day"}}</option>
+            </select>
+            <label class="form-label" for="timeunit"><strong>{{t "settings.time_unit"}}</strong></label>
           </div>
           {{#if displayHoursToDays}}
-          <div class="form-group">
-          <label for="hoursToDays"><strong>{{t "settings.hours_per_day"}}</strong></label>
-          <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" step="any" />
+          <div class="mb-3 form-floating">
+            <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" step="any" />
+            <label class="form-label" for="hoursToDays"><strong>{{t "settings.hours_per_day"}}</strong></label>
           </div>
           {{/if}}
-          <div class="form-group">
-          <label for="dailyStartTime"><strong>{{t "settings.daily_start_time"}}</strong></label>
-          <input type="time" class="form-control" id="dailyStartTime" value="{{dailyStartTime}}" />
+          <div class="mb-3 form-floating">
+            <input type="time" class="form-control" id="dailyStartTime" value="{{dailyStartTime}}" />
+            <label class="form-label" for="dailyStartTime"><strong>{{t "settings.daily_start_time"}}</strong></label>
           </div>
-          <div class="form-group">
-          <label for="breakStartTime"><strong>{{t "settings.break_start_time"}}</strong></label>
-          <input type="time" class="form-control" id="breakStartTime" value="{{breakStartTime}}" />
+          <div class="mb-3 form-floating">
+            <input type="time" class="form-control" id="breakStartTime" value="{{breakStartTime}}" />
+            <label class="form-label" for="breakStartTime"><strong>{{t "settings.break_start_time"}}</strong></label>
           </div>
-          <div class="form-group">
-          <label for="breakDuration"><strong>{{t "settings.break_duration"}}</strong></label>
-          <input type="number" class="form-control" id="breakDuration" value="{{breakDuration}}" step="any" />
+          <div class="mb-3 form-floating">
+            <input type="number" class="form-control" id="breakDuration" value="{{breakDuration}}" step="any" />
+            <label class="form-label" for="breakDuration"><strong>{{t "settings.break_duration"}}</strong></label>
           </div>
-          <div class="form-group">
-          <label for="regularWorkingTime"><strong>{{t "details.regularWorkingTime"}}</strong></label>
-          <input type="number" class="form-control" id="regularWorkingTime" value="{{regularWorkingTime}}" step="any" />
+          <div class="form-floating">
+            <input type="number" class="form-control" id="regularWorkingTime" value="{{regularWorkingTime}}" step="any" />
+            <label class="form-label" for="regularWorkingTime"><strong>{{t "details.regularWorkingTime"}}</strong></label>
           </div>
       </div>
-      </div>
-    <div class="card form-group">
+    </div>
+    <div class="card mb-3">
       <div class="card-header">
         {{t "settings.integrations"}}
       </div>
       <div class="card-block">
-        <div class="card form-group">
+        <div class="card mb-3">
+          <div class="card-header">titra</div>
             <div class="card-block">
-              <label for="titraAPItoken"><strong>titra API token</strong></label>
-              <div class="form-group">
-                <div class="input-group">
+                <div class="input-group form-floating">
                   <input type="text" class="form-control" id="titraAPItoken" value="{{titraAPItoken}}" />
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-primary" type="button" id="generateToken">Generate</button>
-                  </div>
-                </div>
+                  <button type="button" class="btn btn-outline-primary" id="generateToken">Generate</button>
+                  <label class="form-label" for="titraAPItoken"><strong>titra API token</strong></label>
               </div>
           </div>
         </div>
-        <div class="card form-group">
+        <!-- <div class="card mb-3">
             <div class="card-block">
-              <label for="titraAPItoken"><strong>Wekan</strong></label>
-              <div class="form-group form-check">
+              <label class="form-label" for="titraAPItoken"><strong>Wekan</strong></label>
+              <div class="mb-3 form-check">
                 <input id="enableWekan" type="checkbox" class="form-check-input" checked={{enableWekan}} />
                 <label class="form-check-label">{{t "settings.enable_wekan_integration"}}</label>
               </div>
           </div>
-        </div>
-        <div class="card form-group">
+        </div> -->
+        <div class="card mb-3">
+          <div class="card-header">Siwapp</div>
             <div class="card-block">
-              <div class="form-group">
-                <label for="siwappurl"><strong>{{t "settings.siwapp_url"}}</strong></label>
+              <div class="mb-3 form-floating">
                 <input type="text" class="form-control" id="siwappurl" value="{{siwappurl}}" />
+                <label class="form-label" for="siwappurl"><strong>{{t "settings.siwapp_url"}}</strong></label>
               </div>
-              <div class="form-group">
-                <label for="siwapptoken"><strong>{{t "settings.siwapp_api_token"}}</strong></label>
+              <div class="form-floating">
                 <input type="text" class="form-control" id="siwapptoken" value="{{siwapptoken}}" />
+                <label class="form-label" for="siwapptoken"><strong>{{t "settings.siwapp_api_token"}}</strong></label>
               </div>
             </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Zammad</div>
+          <div class="card-block">
+            <div class="mb-3 form-floating">
+              <input type="text" class="form-control" id="zammadurl" value="{{zammadurl}}" placeholder="https://zammad.url/" />
+              <label class="form-label" for="zammadurl"><strong>{{t "settings.zammad_url"}}</strong></label>
+            </div>
+            <div class="form-floating">
+              <input type="text" class="form-control" id="zammadtoken" value="{{zammadtoken}}" placeholder="abcdefghijklmnopq-rstuvwxyz123456789" />
+              <label class="form-label" for="zammadtoken"><strong>{{t "settings.zammad_api_token"}}</strong></label>
+            </div>
+            <small class="form-text text-muted">{{t "project.wekan_help"}} <a href="https://titra.io/wiki/zammad-interface/" target="_blank">wiki</a>.</small>
+          </div>
         </div>
       </div>
     </div>
   </form>
   <div class="row">
-    <div class="col-6 col-md-3 mr-auto">
-      {{>backbutton}}
+    <div class="col-6 col-md-3 me-auto d-grid">
+      <button type="button" class="btn btn-danger js-reset">{{t "settings.reset"}}</button>
     </div>
-    <div class="col-6 col-md-3">
-      <button class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
+    <div class="col-6 col-md-3 d-grid">
+      <button type="button" class="btn btn-primary js-save">{{t "navigation.save"}}</button>
     </div>
   </div>
 </template>

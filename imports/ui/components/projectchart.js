@@ -1,35 +1,18 @@
 import namedavatar from 'namedavatar'
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 import './projectchart.html'
 import Projects, { ProjectStats } from '../../api/projects/projects.js'
-
 import projectUsers from '../../api/users/users.js'
-import hex2rgba from '../../utils/hex2rgba.js'
-
+import { getUserSetting, getUserTimeUnitVerbose } from '../../utils/frontend_helpers'
 
 Template.projectchart.onCreated(function projectchartCreated() {
-  // this.resources = new ReactiveVar()
   this.topTasks = new ReactiveVar()
-  this.autorun(() => {
-    this.subscribe('singleProject', this.data.projectId)
-    this.subscribe('projectStats', this.data.projectId)
-    this.subscribe('projectUsers', { projectId: this.data.projectId })
-    // this.subscribe('topTasks', { projectId: this.data.projectId })
-    // console.log(TopTasks.find({}, { $sort: { count: 1 } }).fetch())
-    Meteor.call('getTopTasks', { projectId: this.data.projectId }, (error, result) => {
-      if (error) {
-        console.error(error)
-      } else {
-        this.topTasks.set(result)
-      }
-    })
-  })
+  this.projectDescAsHtml = new ReactiveVar()
+  this.isVisible = new ReactiveVar(false)
 })
 Template.projectchart.helpers({
   totalHours() {
-    let precision = 2
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-    }
+    const precision = getUserSetting('precision')
     return ProjectStats.findOne({ _id: Template.instance().data.projectId })
       ? Number(ProjectStats.findOne({
         _id: Template.instance().data.projectId,
@@ -39,22 +22,20 @@ Template.projectchart.helpers({
   hourIndicator() {
     const stats = ProjectStats.findOne({ _id: Template.instance().data.projectId })
     if (stats.previousMonthHours > stats.currentMonthHours) {
-      return '<i class="d-md-none fa fa-arrow-circle-o-up"></i>'
+      return '<i class="d-md-none fa fa-arrow-circle-up"></i>'
     }
     if (stats.previousMonthHours < stats.currentMonthHours) {
-      return '<i class="d-md-none fa fa-arrow-circle-o-down"></i>'
+      return '<i class="d-md-none fa fa-arrow-circle-down"></i>'
     }
-    return '<i class="d-md-none fa fa-minus-square-o"></i>'
+    return '<i class="d-md-none fa fa-minus-square"></i>'
   },
   allTeamMembers() {
-    // return Template.instance().resources.get()
-    //   ? Template.instance().resources.get().map(res => res.profile.name).join(', ') : false
     return projectUsers.findOne({ _id: Template.instance().data.projectId })
       ? projectUsers.findOne({ _id: Template.instance().data.projectId }).users : false
   },
   avatarImg(avatar, name, avatarColor) {
     if (avatar) {
-      return `<img src="${avatar}" alt="${name}" style="height:25px" class="rounded" data-toggle="tooltip" data-placement="top" title="${name}"/>`
+      return `<img src="${avatar}" alt="${name}" style="height:25px; cursor:pointer;" class="rounded js-avatar-tooltip" data-bs-placement="top" title="${name}"/>`
     }
     namedavatar.config({
       nameType: 'initials',
@@ -62,139 +43,186 @@ Template.projectchart.helpers({
       minFontSize: 2,
     })
     const rawSVG = namedavatar.getSVG(name)
-    rawSVG.classList = 'rounded'
+    rawSVG.classList = 'rounded js-avatar-tooltip'
     rawSVG.style.width = '25px'
     rawSVG.style.height = '25px'
+    rawSVG.style.cursor = 'pointer'
     rawSVG.setAttribute('title', name)
-    rawSVG.setAttribute('data-toggle', 'tooltip')
-    rawSVG.setAttribute('data-placement', 'top')
     return rawSVG.outerHTML
   },
   topTasks() {
     return Template.instance().topTasks.get()
   },
   turnOver() {
+    const precision = getUserSetting('precision')
     return Projects.findOne({ _id: Template.instance().data.projectId }).rate
       && ProjectStats.findOne({ _id: Template.instance().data.projectId })
       ? Number(Projects.findOne({ _id: Template.instance().data.projectId }).rate
           * ProjectStats.findOne({ _id: Template.instance().data.projectId }).totalHours)
-        .toLocaleString() : false
+        .toFixed(precision) : false
   },
   target() {
     return Number(Projects.findOne({ _id: Template.instance().data.projectId }).target) > 0
       ? Projects.findOne({ _id: Template.instance().data.projectId }).target : false
   },
+  projectDescAsHtml: () => encodeURI(Template.instance().projectDescAsHtml.get()),
+  truncatedProjectDescAsHtml: () => (Template.instance().projectDescAsHtml.get()
+    ? Template.instance().projectDescAsHtml.get().replace('<p>', '<p style="max-height:1.9em;pointer-events:none;" class="text-truncate p-0 m-0">') : ''),
+  componentIsReady() {
+    return Template.instance().isVisible.get() && Template.instance().subscriptionsReady()
+  },
 })
-Template.projectchart.onRendered(function projectchartRendered() {
+Template.projectchart.onRendered(() => {
   const templateInstance = Template.instance()
-  let precision = 2
-  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-  }
-  import('chart.js').then((chartModule) => {
-    const Chart = chartModule.default
-    this.autorun(() => {
-      if (this.subscriptionsReady()) {
-        this.$('.js-hour-chart').remove()
-        this.$('.js-chart-container').html('<canvas class="js-hour-chart"></canvas>')
-        const stats = ProjectStats.findOne({ _id: this.data.projectId })
-        if (stats) {
-          if (Meteor.user().profile.timeunit === 'd') {
-            stats.beforePreviousMonthHours
-              /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
-            stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-              .toFixed(precision)
-            stats.previousMonthHours
-              /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
-            stats.previousMonthHours = Number(stats.previousMonthHours)
-              .toFixed(precision)
-            stats.currentMonthHours
-              /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
-            stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-          }
-          if (this.$('.js-hour-chart')[0]) {
-            const ctx = this.$('.js-hour-chart')[0].getContext('2d')
-            this.chart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels:
-                [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
-                datasets: [{
-                  fill: true,
-                  lineTension: 0.1,
-                  backgroundColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 40), // 'rgba(75,192,192,0.4)',
-                  borderColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                  borderWidth: 0,
-                  borderCapStyle: 'butt',
-                  borderDash: [],
-                  borderDashOffset: 0.0,
-                  borderJoinStyle: 'miter',
-                  pointBorderColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                  pointBackgroundColor: '#fff',
-                  pointBorderWidth: 1,
-                  pointHoverRadius: 5,
-                  pointHoverBackgroundColor: hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                  pointHoverBorderColor: 'rgba(220,220,220,1)',
-                  pointHoverBorderWidth: 2,
-                  pointRadius: 1,
-                  pointHitRadius: 10,
-                  spanGaps: false,
-                  data:
-                  [stats.beforePreviousMonthHours,
-                    stats.previousMonthHours,
-                    stats.currentMonthHours],
-                }],
-              },
-              options: {
-                legend: {
-                  display: false,
-                },
-                aspectRatio: 3.2,
-                scales: {
-                  yAxes: [{ display: false }],
-                },
-              },
-            })
-          }
-          // const totalHours = ProjectStats.findOne({ _id: Template.instance().data.projectId })
-          //   ? Number(ProjectStats.findOne({
-          //     _id: Template.instance().data.projectId,
-          //   }).totalHours).toFixed(precision)
-          //   : false
-          this.$('.js-pie-chart-top-tasks').remove()
-          this.$('.js-pie-chart-container').html('<canvas class="js-pie-chart-top-tasks"></canvas>')
-          if (this.$('.js-pie-chart-top-tasks')[0] && templateInstance.topTasks.get()) {
-            const ctx = this.$('.js-pie-chart-top-tasks')[0].getContext('2d')
-            this.piechart = new Chart(ctx, {
-              type: 'pie',
-              data: {
-                labels: templateInstance.topTasks.get().map((task) => task._id),
-                datasets: [{
-                  backgroundColor: [hex2rgba(Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', 40), 'rgba(0, 150, 136, 0.6)', '#e4e4e4'],
-                  borderWidth: 0,
-                  data: templateInstance.topTasks.get().map((task) => task.count),
-                }],
-              },
-              options: {
-                legend: {
-                  display: false,
-                },
-              },
-            })
-          }
-        }
-        if (window.BootstrapLoaded.get()) {
-          $('[data-toggle="tooltip"]').tooltip()
-        }
+  const precision = getUserSetting('precision')
+  templateInstance.observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        templateInstance.isVisible.set(true)
+        templateInstance.observer.unobserve(templateInstance.firstNode)
       }
     })
   })
+  templateInstance.observer.observe(templateInstance.firstNode)
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady() && templateInstance.projectDescAsHtml.get()) {
+      import('bootstrap').then((bs) => {
+        const tooltip = new bs.Tooltip(templateInstance.$('.js-tooltip').get(0), {
+          title: templateInstance.projectDescAsHtml.get(),
+          html: true,
+          placement: 'right',
+          trigger: 'hover focus',
+        })
+      })
+    }
+  })
+  templateInstance.autorun(() => {
+    if (templateInstance.isVisible.get()) {
+      if (!this.singleProjectSub) {
+        templateInstance.singleProjectSub = templateInstance.subscribe('singleProject', templateInstance.data.projectId)
+      }
+      if (!templateInstance.projectStatsSub) {
+        templateInstance.projectStatsSub = templateInstance.subscribe('projectStats', templateInstance.data.projectId)
+      }
+      if (!templateInstance.projectUsersSub) {
+        templateInstance.projectUsersSub = templateInstance.subscribe('projectUsers', { projectId: templateInstance.data.projectId })
+      }
+      Meteor.call('getTopTasks', { projectId: templateInstance.data.projectId }, (error, result) => {
+        if (error) {
+          console.error(error)
+        } else {
+          templateInstance.topTasks.set(result)
+        }
+      })
+    }
+  })
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady()) {
+      const converter = new QuillDeltaToHtmlConverter(Projects
+        .findOne({ _id: Template.instance().data.projectId })?.desc?.ops,
+      { multiLineParagraph: true })
+      templateInstance.projectDescAsHtml.set(converter.convert())
+    }
+  })
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady() && templateInstance.isVisible.get()) {
+      const stats = ProjectStats.findOne({ _id: templateInstance.data.projectId })
+      if (stats) {
+        import('frappe-charts').then((chartModule) => {
+          const { Chart } = chartModule
+          if (getUserSetting('timeunit') === 'd') {
+            stats.beforePreviousMonthHours
+                /= getUserSetting('hoursToDays')
+            stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+            stats.previousMonthHours
+                /= getUserSetting('hoursToDays')
+            stats.previousMonthHours = Number(stats.previousMonthHours)
+            stats.currentMonthHours
+                /= getUserSetting('hoursToDays')
+          }
+          if (getUserSetting('timeunit') === 'm') {
+            stats.beforePreviousMonthHours *= 60
+            stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+            stats.previousMonthHours *= 60
+            stats.previousMonthHours = Number(stats.previousMonthHours)
+            stats.currentMonthHours *= 60
+            stats.currentMonthHours = Number(stats.currentMonthHours)
+          }
+          stats.currentMonthHours = Number(stats.currentMonthHours)
+          if (templateInstance.chart) {
+            templateInstance.chart.destroy()
+          }
+          stats.beforePreviousMonthHours = stats.beforePreviousMonthHours.toFixed(precision)
+          stats.previousMonthHours = stats.previousMonthHours.toFixed(precision)
+          stats.currentMonthHours = stats.currentMonthHours.toFixed(precision)
+
+          window.requestAnimationFrame(() => {
+            if (templateInstance.$('.js-hours-chart-container')[0] && templateInstance.$('.js-hours-chart-container').is(':visible')) {
+              templateInstance.chart = new Chart(templateInstance.$('.js-hours-chart-container')[0], {
+                type: 'line',
+                height: 160,
+                colors: [Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688'],
+                lineOptions: {
+                  regionFill: 1,
+                },
+                data: {
+                  labels:
+                [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
+                  datasets: [{
+                    values:
+                  [stats.beforePreviousMonthHours,
+                    stats.previousMonthHours,
+                    stats.currentMonthHours],
+                  }],
+                },
+                tooltipOptions: {
+                  formatTooltipY: (value) => `${value} ${getUserTimeUnitVerbose()}`,
+                },
+              })
+            }
+          })
+        })
+      }
+    }
+  })
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady() && templateInstance.isVisible.get()) {
+      if (templateInstance.topTasks.get()) {
+        import('frappe-charts').then((chartModule) => {
+          window.requestAnimationFrame(() => {
+            const { Chart } = chartModule
+            if (templateInstance.piechart) {
+              templateInstance.piechart.destroy()
+            }
+            if (templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
+              templateInstance.piechart = new Chart(templateInstance.$('.js-pie-chart-container')[0], {
+                type: 'pie',
+                colors: [Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', '#66c0b8', '#e4e4e4'],
+                height: 230,
+                data: {
+                  labels: templateInstance.topTasks.get().map((task) => task._id),
+                  datasets: [{
+                    values: templateInstance.topTasks.get().map((task) => task.count),
+                  }],
+                },
+                tooltipOptions: {
+                },
+              })
+            }
+          })
+        })
+      }
+    }
+  })
 })
 Template.projectchart.onDestroyed(() => {
-  if (Template.instance().chart) {
-    Template.instance().chart.destroy()
+  Template.instance().$('.js-tooltip').tooltip('dispose')
+  const templateInstance = Template.instance()
+  if (templateInstance.chart) {
+    templateInstance.chart.destroy()
   }
+  if (templateInstance.piechart) {
+    templateInstance.piechart.destroy()
+  }
+  templateInstance.observer.disconnect()
 })

@@ -1,0 +1,49 @@
+<template name="taskModal">
+    <div class="modal" id="task-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {{#if name}}
+                        {{t "task.editTask"}}
+                    {{else}}
+                        {{t "task.newTask"}}
+                    {{/if}}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3 form-floating">
+                        <input type="text" id="name" name="name" class="form-control" value="{{name}}" required/>
+                        <label class="form-label" for="name">{{t "globals.task"}}</label>   
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input type="date" id="start" name="start" class="form-control" value="{{start}}"/>
+                        <label class="form-label" for="start">{{t "task.startDate"}}</label>   
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input type="date" id="end" name="end" class="form-control" value="{{end}}"/>
+                        <label class="form-label" for="end">{{t "task.endDate"}}</label>   
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <select id="dependencies" name="dependencies" class="form-select">
+                            <option value=""> </option>
+                            {{#each dependency in possibleDependencies}}
+                                <option value="{{dependency._id}}" {{isSelectedDep(dependency._id)}}>{{dependency.name}}</option>
+                            {{/each}}
+                        </select>
+                        <!-- <input type="text" id="dependencies" name="dependencies" class="form-control" value="{{dependencies}}"/> -->
+                        <label class="form-label" for="dependencies">{{t "task.dependencies"}}</label>   
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{t "navigation.cancel"}}</button>
+                {{#if name}}<button type="button" class="btn btn-danger js-remove-task">{{t "navigation.delete"}}</button> {{/if}}
+                <button type="button" class="btn btn-primary js-save-task">{{t "navigation.save"}}</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</template>

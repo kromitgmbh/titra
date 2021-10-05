@@ -2,29 +2,34 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
+        {{#if getGlobalSetting "disableUserRegistration"}}
+          <div class="alert alert-danger">
+            {{t "login.registration_disabled_warning"}}
+          </div>
+        {{else}}
         <div class="at-form">
           <div class="at-title">
             <h3>{{t "login.register"}}</h3>
           </div>
-          <div class="alert alert-danger fade notification d-none" role="alert"></div>
+          <div class="alert alert-danger notification d-none" role="alert"></div>
           <div class="at-pwd-form">
             <form role="form" id="at-pwd-form" novalidate="">
               <fieldset>
-                <div class="at-input form-group has-feedback">
+                <div class="at-input mb-3 has-feedback">
                   <label class="control-label" for="at-field-email">
                     {{t "globals.email"}}
                   </label>
                   <input type="email" class="form-control" id="at-field-email" name="at-field-email" placeholder="Email" autocapitalize="none" autocorrect="off" value="{{email}}">
                   <span class="help-block hide"></span>
                 </div>
-                <div class="at-input form-group has-feedback">
+                <div class="at-input mb-3 has-feedback">
                   <label class="control-label" for="at-field-password">
                     {{t "login.password"}}
                   </label>
                   <input type="password" class="form-control" id="at-field-password" name="at-field-password" placeholder="{{t 'login.password'}}" autocapitalize="none" autocorrect="off">
                   <span class="help-block hide"></span>
                 </div>
-                <div class="at-input form-group has-feedback">
+                <div class="at-input mb-3 has-feedback">
                   <label class="control-label" for="at-field-password_again">
                     {{t "login.password_again"}}
                   </label>
@@ -32,7 +37,7 @@
                   <span class="help-block hide"></span>
                 </div>
                 {{#unless currentUser}}
-                  <div class="at-input form-group has-feedback">
+                  <div class="at-input mb-3 has-feedback">
                     <label class="control-label" for="at-field-name">
                       {{t "globals.name"}}
                     </label>
@@ -40,7 +45,7 @@
                     <span class="help-block hide"></span>
                   </div>
                 {{/unless}}
-                <button class="btn btn-primary form-control" id="register">
+                <button type="button" class="btn btn-primary form-control" id="register">
                   {{t "login.register"}}
                 </button>
               </fieldset>
@@ -53,6 +58,7 @@
             </p>
           </div>
         </div>
+        {{/if}}
       </div>
     </div>
   </div>

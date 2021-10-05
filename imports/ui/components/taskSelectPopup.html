@@ -1,0 +1,71 @@
+<template name="taskSelectPopup">
+    <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="taskSelectPopup">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{t "globals.task_plural"}}</h5>
+                <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#taskSelectPopup" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-sm col-md-6">
+                  <div class="form-floating mb-3">
+                    <select class="form-select" id="limitSelection">
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                    <label class="form-label" for="limitSelection">{{t "limit.show"}} {{t "limit.entries"}}</label>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="input-group mb-3 form-floating">
+                    <input class="form-control" placeholder='{{t "task.search"}}' type="text" id="taskSelectSearch"/>
+                    <button type="button" class="btn btn-outline-primary" id="button-addon2"><i class="fas fa-search"></i></button>
+                    <label class="form-label">{{t "task.search"}}</label>
+                  </div>
+                </div>
+              </div>
+              <ul class="nav nav-tabs" id="taskSourceTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="local-tab" data-bs-toggle="tab" href="#local" role="tab" aria-controls="local" aria-selected="true">{{t "task.storedTasks"}}</a>
+                  </li>
+                  {{#if wekanTasksDataContent}}
+                    <li class="nav-item">
+                      <a class="nav-link" id="wekan-tab" data-bs-toggle="tab" href="#wekan" role="tab" aria-controls="wekan" aria-selected="false">Wekan</a>
+                    </li>
+                  {{/if}}
+                  {{#if zammadEnabled}}
+                    <li class="nav-item">
+                      <a class="nav-link" id="zammad-tab" data-bs-toggle="tab" href="#zammad" role="tab" aria-controls="zammad" aria-selected="false">Zammad</a>
+                    </li>
+                  {{/if}}
+              </ul>
+              <div class="tab-content" id="taskSourceContent">
+                <div class="tab-pane fade show active" id="local" role="tabpanel" aria-labelledby="local-tab">
+                  {{#if modalDisplayed}}
+                    {{#if isActive "local-tab"}}
+                      {{#if localTasks}}
+                        {{> datatable columns=localTasksColumns data=localTasksData}}
+                      {{/if}}
+                    {{/if}}
+                  {{/if}}
+                </div>
+                <div class="tab-pane fade" id="wekan" role="tabpanel" aria-labelledby="wekan-tab">
+                  {{#if isActive "wekan-tab"}}
+                    {{> datatable columns=wekanTasksColumns data=wekanTasksData}}
+                  {{/if}}
+                </div>
+                <div class="tab-pane fade" id="zammad" role="tabpanel" aria-labelledby="zammad-tab">
+                  {{#if isActive "zammad-tab"}}
+                    {{> datatable columns=zammadTicketsColumns data=zammadTicketsData}}
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</template>

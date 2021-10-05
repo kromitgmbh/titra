@@ -1,30 +1,30 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import { Template } from 'meteor/templating'
-import emoji from 'node-emoji'
+import bootstrap from 'bootstrap'
 import hex2rgba from '../../utils/hex2rgba.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
 import './calendar.html'
 import './editTimeEntryModal.js'
+import { emojify } from '../../utils/frontend_helpers.js'
 
 Template.calendar.onCreated(function calendarCreated() {
-  this.subscribe('myprojects')
-  this.startDate = new ReactiveVar(moment.utc().startOf('month').toDate())
-  this.endDate = new ReactiveVar(moment.utc().endOf('month').toDate())
+  dayjs.extend(utc)
+  this.subscribe('myprojects', {})
+  this.startDate = new ReactiveVar(dayjs.utc().startOf('month').toDate())
+  this.endDate = new ReactiveVar(dayjs.utc().endOf('month').toDate())
   this.tcid = new ReactiveVar()
   this.selectedProjectId = new ReactiveVar()
   this.selectedDate = new ReactiveVar()
 })
 
 Template.calendar.onRendered(() => {
-  const replacer = (match) => emoji.emojify(match)
-  const safeReplacer = (transform) => transform.replace(/(:.*:)/g, replacer).replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;')
+  const safeReplacer = (transform) => transform.replace(/(:\S*:)/g, emojify).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
   const templateInstance = Template.instance()
   templateInstance.calendarInitialized = new ReactiveVar(false)
   templateInstance.autorun(() => {
     if (window.BootstrapLoaded.get()) {
-      import('@fullcalendar/core/main.css')
-      import('@fullcalendar/daygrid/main.css')
       import('@fullcalendar/core').then((calendar) => {
         const { Calendar } = calendar
         import('@fullcalendar/daygrid').then((dayGridPlugin) => {
@@ -38,7 +38,7 @@ Template.calendar.onRendered(() => {
             calendarEl.innerHTML = ''
             templateInstance.calendar = new Calendar(calendarEl, {
               plugins: [dayGridPlugin.default, interactionPlugin],
-              defaultView: 'dayGridMonth',
+              initialView: 'dayGridMonth',
               droppable: true,
               aspectRatio: 2,
               height: 'auto',
@@ -69,37 +69,40 @@ Template.calendar.onRendered(() => {
                   }))
                 successCallback(events)
               },
-              eventRender: (info) => {
+              eventDidMount: (info) => {
                 if (window.innerWidth >= 768) {
-                  $(info.el).tooltip({
-                    html: true,
-                    placement: 'right',
-                    trigger: 'hover',
-                    title: `<span>${safeReplacer(info.event.title)}: ${info.event.extendedProps.hours} hours</span>`,
-                  })
+                  return {
+                    domNodes: $(info.el).tooltip({
+                      html: true,
+                      placement: 'right',
+                      trigger: 'hover',
+                      title: `<span>${safeReplacer(info.event.title)}: ${info.event.extendedProps.hours} hours</span>`,
+                    }),
+                  }
                 }
+                return ''
               },
               drop: function dropEvent(dropInfo) {
                 templateInstance.tcid.set(undefined)
                 templateInstance.selectedDate.set(dropInfo.date)
                 templateInstance.selectedProjectId.set($(dropInfo.draggedEl).data('project'))
-                $('#edit-tc-entry-modal').modal({ focus: false })
-                // FlowRouter.go(`/tracktime/${$(dropInfo.draggedEl).data('project')}?date=${moment(dropInfo.date).format()}`)
+                new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
+                // FlowRouter.go(`/tracktime/${$(dropInfo.draggedEl).data('project')}?date=${dayjs(dropInfo.date).format()}`)
               },
               eventClick: (eventClickInfo) => {
                 // $('.tooltip').tooltip('dispose')
                 templateInstance.selectedDate.set(undefined)
                 templateInstance.selectedProjectId.set(undefined)
                 templateInstance.tcid.set(eventClickInfo.event.id)
-                $('#edit-tc-entry-modal').modal({ focus: false })
+                new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
                 // FlowRouter.go(`/edit/timecard/${eventClickInfo.event.id}`)
               },
               dateClick: (dateClickInfo) => {
                 templateInstance.tcid.set(undefined)
                 templateInstance.selectedProjectId.set('all')
                 templateInstance.selectedDate.set(dateClickInfo.date)
-                $('#edit-tc-entry-modal').modal({ focus: false })
-                // FlowRouter.go(`/tracktime/?date=${moment(dateClickInfo.date).format()}&view=d`)
+                new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
+                // FlowRouter.go(`/tracktime/?date=${dayjs(dateClickInfo.date).format()}&view=d`)
               },
             })
             templateInstance.calendar.render()

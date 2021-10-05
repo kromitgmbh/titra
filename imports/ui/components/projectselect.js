@@ -1,15 +1,16 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import Projects from '../../api/projects/projects.js'
 import Timecards from '../../api/timecards/timecards.js'
+import './projectInfoPopup.js'
 import './projectselect.html'
 
 Template.projectselect.onCreated(function createTrackTime() {
-  this.subscribe('myprojects')
+  this.subscribe('myprojects', {})
   this.selectedId = new ReactiveVar()
   this.tcid = new ReactiveVar()
   this.autorun(() => {
-    if (this.data.tcid && this.data.tcid.get()) {
-      this.tcid.set(this.data.tcid.get())
+    if (this.data.tcid && this.data.tcid?.get()) {
+      this.tcid.set(this.data.tcid?.get())
     } else if (FlowRouter.getParam('tcid')) {
       this.tcid.set(FlowRouter.getParam('tcid'))
     }
@@ -31,8 +32,7 @@ Template.projectselect.onCreated(function createTrackTime() {
           this.$('.js-target-project').val(FlowRouter.getParam('projectId'))
           this.selectedId.set('all')
         }
-      }
-      if (this.tcid.get()) {
+      } else if (this.tcid.get()) {
         this.$('.js-target-project').val(Timecards.findOne({ _id: this.tcid.get() }).projectId)
         this.selectedId.set(Timecards.findOne({ _id: this.tcid.get() }).projectId)
       }
@@ -40,12 +40,20 @@ Template.projectselect.onCreated(function createTrackTime() {
   })
 })
 Template.projectselect.helpers({
-  projects() {
-    return Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] })
+  projects: () => {
+    if (FlowRouter.getQueryParam('customer') && FlowRouter.getQueryParam('customer') !== 'all') {
+      return Projects.find({
+        customer: FlowRouter.getQueryParam('customer'),
+        $or: [{ archived: { $exists: false } }, { archived: false }],
+      },
+      { sort: { priority: 1, name: 1 } })
+    }
+    return Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] },
+      { sort: { priority: 1, name: 1 } })
   },
-  selectedId() {
-    return Template.instance().selectedId.get()
-  },
+  selectedId: () => Template.instance().selectedId.get(),
+  displayProjectInfo: () => Template.instance().data.displayProjectInfo
+    && Template.instance().selectedId.get(),
 })
 
 Template.projectselect.events({
@@ -56,8 +64,11 @@ Template.projectselect.events({
       && !(templateInstance.data.projectId && templateInstance.data.projectId.get())) {
       FlowRouter.setParams({ projectId: $(event.currentTarget).val() })
     }
-    if ($('.js-tasksearch-input')) {
+    const project = Projects.findOne({ _id: templateInstance.selectedId.get() })
+    if (!project?.defaultTask) {
       $('.js-tasksearch-input').focus()
+    } else {
+      $('#hours').first().focus()
     }
   },
 })

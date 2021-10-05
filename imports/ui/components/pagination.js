@@ -42,7 +42,7 @@ Template.pagination.helpers({
       return 'disabled'
     }
     if ((Template.instance().data.limit && Template.instance().data.totalEntries)) {
-      return Template.instance().data.limit.get() > Template.instance().data.totalEntries.get() ? 'disabled' : ''
+      return Template.instance().data.limit.get() < 0 || Template.instance().data.limit.get() > Template.instance().data.totalEntries.get() ? 'disabled' : ''
     }
     return 'disabled'
   },

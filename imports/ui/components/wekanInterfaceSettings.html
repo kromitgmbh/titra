@@ -1,0 +1,20 @@
+<template name="wekanInterfaceSettings">
+    <div class="input-group form-floating">
+      <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://wekan.url/api/boards/abcdefg.../export?authToken=abcdefg..." />
+      <button type="button" class="btn btn-secondary border" id="wekan-status">{{t "project.check"}}</button>
+      <label class="form-label" for="wekanurl">{{t "wekan.instance_url"}}</label>
+    </div>
+    {{#unless displayHelp}}
+        <small class="form-text text-muted">{{t "project.wekan_help"}} <a href="https://github.com/faburem/titra/wiki/Wekan-integration" target="_blank">wiki</a>.</small>
+    {{/unless}}
+    <div>
+      {{#if wekanLists}}
+        <br/>
+      {{/if}}
+      <div id="wekan-list-container"></div>
+      {{#if wekanSwimlanes}}
+        <p>{{t "globals.or"}}</p>
+      {{/if}}
+      <div id="wekan-swimlane-container"></div>
+    </div>
+</template>

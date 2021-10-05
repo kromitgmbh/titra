@@ -1,7 +1,16 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import randomColor from 'randomcolor'
-import emoji from 'node-emoji'
+import i18next from 'i18next'
+import {
+  emojify,
+  getUserSetting,
+  getGlobalSetting,
+  timeInUserUnit,
+  getUserTimeUnitVerbose,
+} from '../../utils/frontend_helpers'
 import './dashboard.html'
 import Timecards from '../../api/timecards/timecards'
 import Projects from '../../api/projects/projects'
@@ -11,14 +20,47 @@ function timeInUnitHelper(hours) {
   if (Dashboards.findOne()) {
     if (Dashboards.findOne().timeunit === 'd') {
       return Dashboards.findOne().hoursToDays
-        ? Number(hours / Dashboards.findOne().hoursToDays) : Number(hours / 8)
+        ? Number(hours / Dashboards.findOne().hoursToDays).toFixed(getGlobalSetting('precision')) : Number(hours / getGlobalSetting('hoursToDays')).toFixed(getGlobalSetting('precision'))
+    }
+    if (Dashboards.findOne().timeunit === 'm') {
+      return Number(hours * 60).toFixed(getGlobalSetting('precision'))
+    }
+  } else if (Meteor.user()) {
+    return timeInUserUnit(hours)
+  }
+  return Number(hours).toFixed(getGlobalSetting('precision'))
+}
+function timeUnitHelper() {
+  if (Dashboards.findOne()) {
+    switch (Dashboards.findOne().timeunit) {
+      case 'd':
+        return i18next.t('globals.day_plural')
+      case 'h':
+        return i18next.t('globals.hour_plural')
+      case 'm':
+        return i18next.t('globals.minute_plural')
+      default:
+        return i18next.t('globals.hour_plural')
     }
   }
-  return hours
+  if (Meteor.user() && getUserSetting('timeunit')) {
+    return getUserTimeUnitVerbose()
+  }
+  if (getGlobalSetting('timeunit') === 'd') {
+    return i18next.t('globals.day_plural')
+  }
+  if (getGlobalSetting('timeunit') === 'h') {
+    return i18next.t('globals.hour_plural')
+  }
+  if (getGlobalSetting('timeunit') === 'm') {
+    return i18next.t('globals.minute_plural')
+  }
+  return i18next.t('globals.hour_plural')
 }
-
 Template.dashboard.onCreated(function dashboardCreated() {
   let handle
+  dayjs.extend(utc)
+  dayjs.extend(customParseFormat)
   this.totalHours = new ReactiveVar(0)
   this.autorun(() => {
     if (FlowRouter.getParam('_id')) {
@@ -34,157 +76,156 @@ Template.dashboard.onCreated(function dashboardCreated() {
           }
         }
       }
+    } else if (this.data.project.get()
+      && this.data.resource.get()
+      && this.data.customer.get()
+      && this.data.period.get() && this.data.period.get() !== 'all') {
+      if (this.data.period.get() === 'custom') {
+        this.detailedTimeEntriesHandle = this.subscribe('getDetailedTimeEntriesForPeriod',
+          {
+            projectId: this.data.project.get(),
+            userId: this.data.resource.get(),
+            customer: this.data.customer.get(),
+            period: this.data.period.get(),
+            dates: {
+              startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
+              endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
+            },
+            limit: -1,
+          })
+      } else {
+        this.detailedTimeEntriesHandle = this.subscribe('getDetailedTimeEntriesForPeriod',
+          {
+            projectId: this.data.project.get(),
+            userId: this.data.resource.get(),
+            customer: this.data.customer.get(),
+            period: this.data.period.get(),
+            limit: -1,
+          })
+      }
     }
   })
 })
-Template.dashboard.onRendered(function dashboardRendered() {
-  import('chart.js').then((chartModule) => {
-    const Chart = chartModule.default
-    const replacer = (match) => emoji.emojify(match)
-    this.autorun(() => {
-      if (this.subscriptionsReady()) {
-        let temphours = 0
-        this.totalHours.set(0)
-        const taskmap = new Map()
-        const datemap = new Map()
-        for (const timecard of Timecards.find({}, { sort: { date: 1 } }).fetch()) {
-          taskmap.set(
-            timecard.task.replace(/(:.*:)/g, replacer),
-            taskmap.get(timecard.task.replace(/(:.*:)/g, replacer))
-              ? Number(taskmap.get(timecard.task.replace(/(:.*:)/g, replacer))) + timeInUnitHelper(Number(timecard.hours))
-              : timeInUnitHelper(timecard.hours),
-          )
-          datemap.set(
-            moment(timecard.date).format('DDMMYYYY'),
-            datemap.get(moment(timecard.date).format('DDMMYYYY'))
-              ? Number(datemap.get(moment(timecard.date).format('DDMMYYYY'))) + timeInUnitHelper(Number(timecard.hours))
-              : timeInUnitHelper(timecard.hours),
-          )
-          temphours += timecard.hours
-        }
-        this.totalHours.set(temphours)
-        if (this.linechart) {
-          this.linechart.clear()
-          this.linechart.destroy()
-        }
-        this.$('.js-line-chart').remove()
-        this.$('.js-linechart-container').html('<canvas class="js-line-chart" style="width:100%;height:300px;"></canvas>')
-        if (!this.$('.js-line-chart')[0]) {
-          return
-        }
-        const timearray = []
-        datemap.forEach((value, key) => {
-          timearray.push({ t: key, y: value })
-        })
-        const linechartctx = this.$('.js-line-chart')[0].getContext('2d')
-        this.linechart = new Chart(linechartctx, {
-          type: 'bar',
-          data: {
-            labels:
-              [...datemap.keys()],
-            datasets: [{
-              fill: true,
-              backgroundColor: 'rgba(75,192,192,0.4)',
-              borderColor: 'rgba(0, 150, 136, 0.8)',
-              hoverBackgroundColor: 'rgba(0, 150, 136, 0.8)',
-              hoverBorderColor: 'rgba(220,220,220,1)',
-              data: timearray,
-            }],
-          },
-          options: {
-            bounds: 'ticks',
-            legend: {
-              display: false,
-            },
-            tooltips: {
-              mode: 'label',
-              callbacks: {
-                label: (tooltipItem, data) => `${data.datasets[0].data[tooltipItem.index].y} ${(Dashboards.findOne().timeunit === 'd' ? 'Days' : 'Hours')}`,
+Template.dashboard.onRendered(() => {
+  const templateInstance = Template.instance()
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady() && Timecards.find().fetch().length > 0) {
+      window.requestAnimationFrame(() => {
+        import('frappe-charts').then((chartModule) => {
+          const { Chart } = chartModule
+          if (templateInstance.linechart) {
+            templateInstance.linechart.destroy()
+          }
+          if (templateInstance.piechart) {
+            templateInstance.piechart.destroy()
+          }
+          let temphours = 0
+          templateInstance.totalHours.set(0)
+          const taskmap = new Map()
+          const datemap = new Map()
+          const precision = getUserSetting('precision')
+          for (const timecard of Timecards.find({}, { sort: { date: 1 } }).fetch()) {
+            taskmap.set(
+              timecard.task.replace(/(:\S*:)/g, emojify),
+              taskmap.get(timecard.task.replace(/(:\S*:)/g, emojify))
+                ? Number(Number(taskmap.get(timecard.task.replace(/(:\S*:)/g, emojify))) + Number(timeInUnitHelper(timecard.hours)))
+                : Number(timeInUnitHelper(timecard.hours)),
+            )
+            datemap.set(
+              dayjs.utc(timecard.date).format('DDMMYYYY'),
+              datemap.get(dayjs.utc(timecard.date).format('DDMMYYYY'))
+                ? Number(Number(datemap.get(dayjs(timecard.date).format('DDMMYYYY'))) + Number(timeInUnitHelper(timecard.hours)))
+                : Number(timeInUnitHelper(timecard.hours)),
+            )
+            temphours += timecard.hours
+          }
+          templateInstance.totalHours.set(temphours)
+          if (templateInstance.$('.js-linechart-container')[0] && templateInstance.$('.js-piechart-container')[0]) {
+            templateInstance.linechart = new Chart(templateInstance.$('.js-linechart-container')[0], {
+              type: 'bar',
+              colors: ['#009688'],
+              data: {
+                labels: [...datemap.keys()].map((value) => dayjs.utc(value, 'DDMMYYYY').format(getGlobalSetting('dateformat'))),
+                datasets: [{
+                  values: [...datemap.values()],
+                }],
               },
-            },
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: true,
-                },
-              }],
-              xAxes: [{
-                type: 'time',
-                time: {
-                  unit: 'day',
-                  tooltipFormat: 'DD.MM.YYYY',
-                  parser: 'DDMMYYYY',
-                },
-                ticks: {
-                  source: 'labels',
-                },
-              }],
-            },
-          },
-        })
-        this.$('.js-pie-chart').remove()
-        this.$('.js-piechart-container').html('<canvas class="js-pie-chart" style="width:100%;height:300px;"></canvas>')
-        const piechartctx = this.$('.js-pie-chart')[0].getContext('2d')
-        this.piechart = new Chart(piechartctx, {
-          type: 'pie',
-          data: {
-            labels:
-              [...taskmap.keys()],
-            datasets: [{
-              backgroundColor: randomColor({ hue: 'blue', luminosity: 'dark', count: taskmap.size }),
-              // borderColor: 'rgba(0, 150, 136, 0.8)',
-              // hoverBackgroundColor: 'rgba(0, 150, 136, 0.8)',
-              // hoverBorderColor: 'rgba(220,220,220,1)',
-              data: [...taskmap.values()],
-            }],
-          },
-          options: {
-            tooltips: {
-              mode: 'label',
-              callbacks: {
-                label: (tooltipItem, data) => `${data.datasets[0].data[tooltipItem.index]} ${(Dashboards.findOne().timeunit === 'd' ? 'Days' : 'Hours')}`,
+              barOptions: {
+                spaceRatio: 0.2, // default: 1
               },
-            },
-            legend: {
-              position: 'bottom',
-            },
-          },
+              tooltipOptions: {
+                formatTooltipY: (value) => `${Number(value).toFixed(precision)} ${getUserTimeUnitVerbose()}`,
+              },
+            })
+            templateInstance.piechart = new Chart(templateInstance.$('.js-piechart-container')[0], {
+              type: 'pie',
+              colors: randomColor({ hue: '#455A64', luminosity: 'dark', count: taskmap.size }),
+              maxSlices: 6,
+              data: {
+                labels: [...taskmap.keys()],
+                datasets: [{
+                  values: [...taskmap.values()],
+                }],
+              },
+              tooltipOptions: {
+                formatTooltipY: (value) => `${value} ${getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}`,
+              },
+            })
+          }
         })
+      })
+    } else {
+      if (templateInstance.linechart) {
+        templateInstance.linechart.destroy()
+        templateInstance.$('.js-linechart-container')[0].innerHTML = ''
       }
-    })
+      if (templateInstance.piechart) {
+        templateInstance.piechart.destroy()
+        templateInstance.$('.js-piechart-container')[0].innerHTML = ''
+      }
+    }
   })
 })
 Template.dashboard.helpers({
-  timecards: () => Timecards.find(),
+  timecards: () => (Timecards.find().fetch().length > 0 ? Timecards.find() : false),
   projectName: () => (Projects.findOne() ? Projects.findOne().name : false),
-  formatDate: (date) => moment(date).format('ddd DD.MM.YYYY'),
-  timeunit: () => {
-    if (Dashboards.findOne()) {
-      return Dashboards.findOne().timeunit === 'd' ? 'Days' : 'Hours'
-    }
-    return false
-  },
-  startDate: () => (Dashboards.findOne() ? moment(Dashboards.findOne().startDate).format('DD.MM.YYYY') : false),
-  endDate: () => (Dashboards.findOne() ? moment(Dashboards.findOne().endDate).format('DD.MM.YYYY') : false),
+  formatDate: (date) => dayjs(date).format(getGlobalSetting('dateformatVerbose')),
+  timeunit: () => timeUnitHelper(),
+  startDate: () => (Dashboards.findOne() ? dayjs(Dashboards.findOne().startDate).format(getGlobalSetting('dateformat')) : false),
+  endDate: () => (Dashboards.findOne() ? dayjs(Dashboards.findOne().endDate).format(getGlobalSetting('dateformat')) : false),
   dashBoardResource: () => (Dashboards.findOne()
-    ? (Meteor.users.findOne(Dashboards.findOne().resourceId)
-      ? Meteor.users.findOne(Dashboards.findOne().resourceId).profile.name : false) : false),
+    ? Meteor.users.findOne(Dashboards.findOne().resourceId)?.profile?.name : false),
   customer: () => (Dashboards.findOne() ? Dashboards.findOne().customer : false),
   isCustomerDashboard: () => (Dashboards.findOne() ? (Dashboards.findOne().customer && Dashboards.findOne().customer !== 'all') : false),
   timeInUnit: (hours) => timeInUnitHelper(hours),
   totalHours: () => {
     if (Dashboards.findOne()) {
       if (Dashboards.findOne().timeunit === 'd') {
-        let precision = 2
-        if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-          precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-        }
+        const precision = getUserSetting('precision')
         return Dashboards.findOne().hoursToDays
           ? Number(Template.instance().totalHours.get() / Dashboards.findOne().hoursToDays)
             .toFixed(precision)
-          : Number(Template.instance().totalHours.get() / 8).toFixed(precision)
+          : Number(Template.instance().totalHours.get() / getGlobalSetting('hoursToDays')).toFixed(precision)
+      }
+      if (Dashboards.findOne().timeunit === 'm') {
+        const precision = getUserSetting('precision')
+        return Dashboards.findOne().hoursToDays
+          ? Number(Template.instance().totalHours.get() * 60)
+            .toFixed(precision)
+          : Number(Template.instance().totalHours.get() * 60).toFixed(precision)
       }
     }
-    return Template.instance().totalHours.get()
+    return Template.instance().totalHours.get().toFixed(getGlobalSetting('precision'))
   },
+  dashboardId: () => FlowRouter.getParam('_id'),
+})
+
+Template.dashboard.onDestroyed(() => {
+  const templateInstance = Template.instance()
+  if (templateInstance.linechart) {
+    templateInstance.linechart.destroy()
+  }
+  if (templateInstance.piechart) {
+    templateInstance.piechart.destroy()
+  }
 })

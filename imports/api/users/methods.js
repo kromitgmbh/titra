@@ -17,6 +17,8 @@ Meteor.methods({
     breakDuration,
     regularWorkingTime,
     APItoken,
+    zammadtoken,
+    zammadurl,
   }) {
     check(unit, String)
     check(timeunit, String)
@@ -31,6 +33,8 @@ Meteor.methods({
     check(breakDuration, String)
     check(regularWorkingTime, String)
     check(APItoken, String)
+    check(zammadtoken, String)
+    check(zammadurl, String)
     checkAuthentication(this)
     Meteor.users.update({ _id: this.userId }, {
       $set: {
@@ -47,6 +51,25 @@ Meteor.methods({
         'profile.breakStartTime': breakStartTime,
         'profile.breakDuration': breakDuration,
         'profile.regularWorkingTime': regularWorkingTime,
+        'profile.zammadtoken': zammadtoken,
+        'profile.zammadurl': zammadurl,
+      },
+    })
+  },
+  resetUserSettings() {
+    checkAuthentication(this)
+    Meteor.users.update({ _id: this.userId }, {
+      $unset: {
+        'profile.unit': '',
+        'profile.timeunit': '',
+        'profile.timetrackview': '',
+        'profile.enableWekan': '',
+        'profile.hoursToDays': '',
+        'profile.precision': '',
+        'profile.dailyStartTime': '',
+        'profile.breakStartTime': '',
+        'profile.breakDuration': '',
+        'profile.regularWorkingTime': '',
       },
     })
   },
@@ -98,7 +121,7 @@ Meteor.methods({
     const userId = Accounts.createUser({
       email, password, profile,
     })
-    Meteor.users.update({ _id: userId }, { $set: { isAdmin: true } })
+    Meteor.users.update({ _id: userId }, { $set: { isAdmin } })
     return userId
   },
   adminDeleteUser({ userId }) {
@@ -111,5 +134,25 @@ Meteor.methods({
     check(userId, String)
     check(isAdmin, Boolean)
     Meteor.users.update({ _id: userId }, { $set: { isAdmin } })
+  },
+  setCustomPeriodDates({ customStartDate, customEndDate }) {
+    checkAuthentication(this)
+    check(customStartDate, Date)
+    check(customEndDate, Date)
+    Meteor.users.update({ _id: this.userId }, {
+      $set: {
+        'profile.customStartDate': customStartDate,
+        'profile.customEndDate': customEndDate,
+      },
+    })
+  },
+  setTimer({ timestamp }) {
+    checkAuthentication(this)
+    check(timestamp, Match.Maybe(Date))
+    if (!timestamp) {
+      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer': '' } })
+    } else {
+      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer': timestamp } })
+    }
   },
 })

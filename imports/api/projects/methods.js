@@ -1,41 +1,54 @@
-import moment from 'moment'
-import emoji from 'node-emoji'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import isBetween from 'dayjs/plugin/isBetween'
+import { check, Match } from 'meteor/check'
 import Timecards from '../timecards/timecards'
 import Projects from './projects.js'
+import Tasks from '../tasks/tasks.js'
 import { checkAuthentication } from '../../utils/server_method_helpers.js'
 import { addNotification } from '../notifications/notifications.js'
-
-const replacer = (match) => emoji.emojify(match)
+import { emojify, getGlobalSetting } from '../../utils/frontend_helpers'
 
 Meteor.methods({
-  getAllProjectStats() {
+  getAllProjectStats({ includeNotBillableTime, showArchived }) {
+    check(includeNotBillableTime, Match.Maybe(Boolean))
+    check(showArchived, Match.Maybe(Boolean))
+    const notbillable = includeNotBillableTime
     checkAuthentication(this)
-    const projectList = Projects.find(
-      { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
-      { _id: 1 },
-    ).fetch().map((value) => value._id)
+    dayjs.extend(utc)
+    dayjs.extend(isBetween)
+    const andCondition = [{
+      $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+    }]
+    if (!showArchived) {
+      andCondition.push({ $or: [{ archived: false }, { archived: { $exists: false } }] })
+    }
+    if (!notbillable) {
+      andCondition.push({ $or: [{ notbillable }, { notbillable: { $exists: false } }] })
+    }
+    const projectList = Projects.find({ $and: andCondition }, { _id: 1 }).fetch().map((value) => value._id)
     let totalHours = 0
     let currentMonthHours = 0
     let previousMonthHours = 0
     let beforePreviousMonthHours = 0
-    const currentMonthName = moment.utc().format('MMM')
-    const currentMonthStart = moment.utc().startOf('month')
-    const currentMonthEnd = moment.utc().endOf('month')
-    const previousMonthName = moment.utc().subtract('1', 'months').format('MMM')
-    const beforePreviousMonthName = moment.utc().subtract('2', 'months').format('MMM')
-    const previousMonthStart = moment.utc().subtract('1', 'months').startOf('month')
-    const previousMonthEnd = moment.utc().subtract('1', 'months').endOf('month')
-    const beforePreviousMonthStart = moment.utc().subtract('2', 'months').startOf('month')
-    const beforePreviousMonthEnd = moment.utc().subtract('2', 'months').endOf('month')
+    const currentMonthName = dayjs.utc().format('MMM')
+    const currentMonthStart = dayjs.utc().startOf('month')
+    const currentMonthEnd = dayjs.utc().endOf('month')
+    const previousMonthName = dayjs.utc().subtract('1', 'month').format('MMM')
+    const beforePreviousMonthName = dayjs.utc().subtract('2', 'month').format('MMM')
+    const previousMonthStart = dayjs.utc().subtract('1', 'month').startOf('month')
+    const previousMonthEnd = dayjs.utc().subtract('1', 'month').endOf('month')
+    const beforePreviousMonthStart = dayjs.utc().subtract('2', 'month').startOf('month')
+    const beforePreviousMonthEnd = dayjs.utc().subtract('2', 'month').endOf('month')
 
     for (const timecard of
       Timecards.find({ projectId: { $in: projectList } }).fetch()) {
-      if (moment.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+      if (dayjs.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
         currentMonthHours += Number.parseFloat(timecard.hours)
-      } else if (moment.utc(new Date(timecard.date))
+      } else if (dayjs.utc(new Date(timecard.date))
         .isBetween(previousMonthStart, previousMonthEnd)) {
         previousMonthHours += Number.parseFloat(timecard.hours)
-      } else if (moment.utc(new Date(timecard.date))
+      } else if (dayjs.utc(new Date(timecard.date))
         .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
         beforePreviousMonthHours += Number.parseFloat(timecard.hours)
       }
@@ -59,13 +72,21 @@ Meteor.methods({
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
     }
-    updateJSON.name = updateJSON.name.replace(/(:.*:)/g, replacer)
+    updateJSON.name = updateJSON.name.replace(/(:\S*:)/g, emojify)
     if (!updateJSON.public) {
       updateJSON.public = false
     } else {
       updateJSON.public = true
     }
-    Projects.update({ userId: this.userId, _id: projectId }, { $set: updateJSON })
+    if (!updateJSON.notbillable) {
+      updateJSON.notbillable = false
+    } else {
+      updateJSON.notbillable = true
+    }
+    Projects.update({
+      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+      _id: projectId,
+    }, { $set: updateJSON })
   },
   createProject({ projectArray }) {
     check(projectArray, Array)
@@ -79,7 +100,7 @@ Meteor.methods({
     } else {
       updateJSON.public = true
     }
-    updateJSON.name = updateJSON.name.replace(/(:.*:)/g, replacer)
+    updateJSON.name = updateJSON.name.replace(/(:\S*:)/g, emojify)
     updateJSON._id = Random.id()
     updateJSON.userId = this.userId
     Projects.insert(updateJSON)
@@ -89,7 +110,7 @@ Meteor.methods({
     check(projectId, String)
     checkAuthentication(this)
     Projects.remove({
-      $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+      $or: [{ userId: this.userId }, { public: true }],
       _id: projectId,
     })
     return true
@@ -97,25 +118,42 @@ Meteor.methods({
   archiveProject({ projectId }) {
     check(projectId, String)
     checkAuthentication(this)
-    Projects.update({ _id: projectId }, { $set: { archived: true } })
+    Projects.update({
+      _id: projectId,
+      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+    },
+    { $set: { archived: true } })
     return true
   },
   restoreProject({ projectId }) {
     check(projectId, String)
     checkAuthentication(this)
-    Projects.update({ _id: projectId }, { $set: { archived: false } })
+    Projects.update({
+      _id: projectId,
+      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+    },
+    { $set: { archived: false } })
     return true
   },
-  getTopTasks({ projectId }) {
+  getTopTasks({ projectId, includeNotBillableTime, showArchived }) {
     check(projectId, String)
     checkAuthentication(this)
-    const projectList = Projects.find(
-      { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
-      { _id: 1 },
-    ).fetch().map((value) => value._id)
     const rawCollection = Timecards.rawCollection()
     // const aggregate = Meteor.wrapAsync(rawCollection.aggregate, rawCollection)
     if (projectId === 'all') {
+      check(showArchived, Match.Maybe(Boolean))
+      check(includeNotBillableTime, Match.Maybe(Boolean))
+      const notbillable = includeNotBillableTime
+      const andCondition = [{
+        $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+      }]
+      if (!showArchived) {
+        andCondition.push({ $or: [{ archived: false }, { archived: { $exists: false } }] })
+      }
+      if (!notbillable) {
+        andCondition.push({ $or: [{ notbillable }, { notbillable: { $exists: false } }] })
+      }
+      const projectList = Projects.find({ $and: andCondition }, { _id: 1 }).fetch().map((value) => value._id)
       return rawCollection.aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: '$task', count: { $sum: '$hours' } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()
     }
     return rawCollection.aggregate([{ $match: { projectId } }, { $group: { _id: '$task', count: { $sum: '$hours' } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()
@@ -124,11 +162,10 @@ Meteor.methods({
     check(projectId, String)
     check(eMail, String)
     checkAuthentication(this)
-    if (!this.userId) {
-      throw new Meteor.Error('notifications.auth_error_method')
-    }
     const targetProject = Projects.findOne({ _id: projectId })
-    if (!targetProject || targetProject.userId !== this.userId) {
+    if (!targetProject
+      || !(targetProject.userId === this.userId
+        || targetProject.admins.indexOf(this.userId) >= 0)) {
       throw new Meteor.Error('notifications.only_owner_can_add_team_members')
     }
     const targetUser = Meteor.users.findOne({ 'emails.0.address': eMail })
@@ -144,11 +181,32 @@ Meteor.methods({
     check(userId, String)
     checkAuthentication(this)
     const targetProject = Projects.findOne({ _id: projectId })
-    if (!targetProject || targetProject.userId !== this.userId) {
+    if (!targetProject
+      || !(targetProject.userId === this.userId
+        || targetProject.admins.indexOf(this.userId) >= 0)) {
       throw new Meteor.Error('notifications.only_owner_can_remove_team_members')
     }
     Projects.update({ _id: targetProject._id }, { $pull: { team: userId } })
+    Projects.update({ _id: targetProject._id }, { $pull: { admins: userId } })
     return 'notifications.team_member_removed_success'
+  },
+  changeProjectRole({ projectId, userId, administrator }) {
+    check(projectId, String)
+    check(userId, String)
+    check(administrator, Boolean)
+    checkAuthentication(this)
+    const targetProject = Projects.findOne({ _id: projectId })
+    if (!targetProject
+      || !(targetProject.userId === this.userId
+        || targetProject.admins.indexOf(this.userId) >= 0)) {
+      throw new Meteor.Error('notifications.only_owner_can_remove_team_members')
+    }
+    if (administrator) {
+      Projects.update({ _id: targetProject._id }, { $push: { admins: userId } })
+    } else {
+      Projects.update({ _id: targetProject._id }, { $pull: { admins: userId } })
+    }
+    return 'notifications.access_rights_updated'
   },
   updatePriority({ projectId, priority }) {
     check(projectId, String)
@@ -156,5 +214,20 @@ Meteor.methods({
     checkAuthentication(this)
     Projects.update({ _id: projectId }, { $set: { priority } })
     return 'notifications.project_priority_success'
+  },
+  setDefaultTaskForProject({ projectId, taskId }) {
+    check(projectId, String)
+    check(taskId, String)
+    checkAuthentication(this)
+    const task = Tasks.findOne({ _id: taskId })
+    if (task.isDefaultTask) {
+      Projects.update({ _id: projectId }, { $unset: { defaultTask: 1 } })
+      Tasks.update({ _id: taskId }, { $set: { isDefaultTask: false } })
+      return 'notifications.default_task_success'
+    }
+    Projects.update({ _id: projectId }, { $set: { defaultTask: task.name } })
+    Tasks.update({ projectId }, { $set: { isDefaultTask: false } }, { multi: true })
+    Tasks.update({ _id: taskId }, { $set: { isDefaultTask: true } })
+    return 'notifications.default_task_success'
   },
 })

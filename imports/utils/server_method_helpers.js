@@ -1,7 +1,10 @@
 import i18next from 'i18next'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import Projects from '../api/projects/projects.js'
+import projectUsers from '../api/users/users.js'
 import { periodToDates } from './periodHelpers.js'
+import { getGlobalSetting, getUserSetting } from './frontend_helpers.js'
 
 function getProjectListById(projectId) {
   let projectList = []
@@ -55,15 +58,16 @@ function getProjectListByCustomer(customer) {
 function totalHoursForPeriodMapper(entry) {
   let { totalHours } = entry
   if (Meteor.user()) {
-    // const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-    if (Meteor.user().profile.timeunit === 'd') {
-      totalHours = Number(entry.totalHours / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : 8))
+    if (getUserSetting('timeunit') === 'd') {
+      totalHours = Number(entry.totalHours / getUserSetting('hoursToDays'))
+    }
+    if (getUserSetting('timeunit') === 'm') {
+      totalHours = Number(entry.totalHours * 60)
     }
   }
   return {
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-    userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+    userId: projectUsers.findOne().users.find((elem) => elem._id === entry._id.userId)?.profile?.name,
     totalHours,
   }
 }
@@ -71,27 +75,34 @@ function totalHoursForPeriodMapper(entry) {
 function dailyTimecardMapper(entry) {
   let { totalHours } = entry
   if (Meteor.user()) {
-    // const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-    if (Meteor.user().profile.timeunit === 'd') {
-      totalHours = Number(entry.totalHours / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : 8))
+    if (getUserSetting('timeunit') === 'd') {
+      totalHours = Number(entry.totalHours / getUserSetting('hoursToDays'))
+    }
+    if (getUserSetting('timeunit') === 'm') {
+      totalHours = Number(entry.totalHours * 60)
     }
   }
   return {
     date: entry._id.date,
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-    userId: Meteor.users.findOne({ _id: entry._id.userId }).profile.name,
+    userId: projectUsers.findOne().users
+      .find((elem) => elem._id === entry._id.userId)?.profile?.name,
     totalHours,
   }
 }
-function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, limit, page) {
+function buildTotalHoursForPeriodSelector(projectId, period, dates, userId, customer, limit, page) {
   let projectList = []
   const periodArray = []
   let matchSelector = {}
+  const addFields = {
+    $addFields: {
+      convertedHours: { $toDecimal: '$hours' },
+    },
+  }
   const groupSelector = {
     $group: {
       _id: { userId: '$userId', projectId: '$projectId' },
-      totalHours: { $sum: '$hours' },
+      totalHours: { $sum: '$convertedHours' },
     },
   }
   const sortSelector = {
@@ -113,7 +124,23 @@ function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, l
   } else {
     projectList = getProjectListById(projectId)
   }
-  if (period && period !== 'all') {
+  if (period && period === 'custom') {
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+        date: { $gte: dates.startDate, $lte: dates.endDate },
+      },
+    }
+    if (userId !== 'all') {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+          userId,
+        },
+      }
+    }
+  } else if (period && period !== 'all') {
     const { startDate, endDate } = periodToDates(period)
     matchSelector = {
       $match: {
@@ -137,6 +164,7 @@ function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, l
       },
     }
   }
+  periodArray.push(addFields)
   periodArray.push(matchSelector)
   periodArray.push(groupSelector)
   periodArray.push(sortSelector)
@@ -146,7 +174,7 @@ function buildTotalHoursForPeriodSelector(projectId, period, userId, customer, l
   }
   return periodArray
 }
-function buildDailyHoursSelector(projectId, period, userId, customer, limit, page) {
+function buildDailyHoursSelector(projectId, period, dates, userId, customer, limit, page) {
   let projectList = []
   if (customer !== 'all') {
     projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
@@ -175,7 +203,24 @@ function buildDailyHoursSelector(projectId, period, userId, customer, limit, pag
   const limitSelector = {
     $limit: limit,
   }
-  if (period && period !== 'all') {
+  if (period && period === 'custom') {
+    if (userId === 'all') {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+        },
+      }
+    } else {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+          userId,
+        },
+      }
+    }
+  } else if (period && period !== 'all') {
     const { startDate, endDate } = periodToDates(period)
     if (userId === 'all') {
       matchSelector = {
@@ -216,7 +261,7 @@ function buildDailyHoursSelector(projectId, period, userId, customer, limit, pag
   }
   return dailyArray
 }
-function buildworkingTimeSelector(projectId, period, userId, limit, page) {
+function buildworkingTimeSelector(projectId, period, dates, userId, limit, page) {
   let projectList = []
   projectList = getProjectListById(projectId)
   const workingTimeArray = []
@@ -241,7 +286,24 @@ function buildworkingTimeSelector(projectId, period, userId, limit, page) {
   const limitSelector = {
     $limit: limit,
   }
-  if (period && period !== 'all') {
+  if (period && period === 'custom') {
+    if (userId === 'all') {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+        },
+      }
+    } else {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+          userId,
+        },
+      }
+    }
+  } else if (period && period !== 'all') {
     const { startDate, endDate } = periodToDates(period)
     if (userId === 'all') {
       matchSelector = {
@@ -283,16 +345,20 @@ function buildworkingTimeSelector(projectId, period, userId, limit, page) {
   return workingTimeArray
 }
 function workingTimeEntriesMapper(entry) {
+  dayjs.extend(customParseFormat)
   const meteorUser = Meteor.users.findOne({ _id: entry._id.userId })
-  const userBreakStartTime = moment(meteorUser.profile.breakStartTime ? meteorUser.profile.breakStartTime : '12:00', 'HH:mm')
-  const userBreakDuration = meteorUser.profile.breakDuration ? meteorUser.profile.breakDuration : '0.5'
-  const userBreakEndTime = moment(userBreakStartTime, 'HH:mm').add(userBreakDuration, 'Hours')
-  const userRegularWorkingTime = meteorUser.profile.regularWorkingTime ? meteorUser.profile.regularWorkingTime : '8'
-  const userStartTime = meteorUser.profile.dailyStartTime ? meteorUser.profile.dailyStartTime : '09:00'
-  const userEndTime = moment(userStartTime, 'HH:mm').add(entry.totalTime, 'Hours')
+  const userBreakStartTime = dayjs(meteorUser?.profile?.breakStartTime ? meteorUser.profile.breakStartTime : getGlobalSetting('breakStartTime'), 'HH:mm')
+  const userBreakDuration = meteorUser?.profile?.breakDuration ? meteorUser.profile.breakDuration : getGlobalSetting('breakDuration')
+  const userBreakEndTime = dayjs(userBreakStartTime, 'HH:mm').add(userBreakDuration, 'hour')
+  const userRegularWorkingTime = meteorUser?.profile?.regularWorkingTime ? meteorUser.profile.regularWorkingTime : getGlobalSetting('regularWorkingTime')
+  const userStartTime = meteorUser?.profile?.dailyStartTime ? meteorUser.profile.dailyStartTime : getGlobalSetting('dailyStartTime')
+  let userEndTime = dayjs(userStartTime, 'HH:mm').add(entry.totalTime, 'hour')
+  if (getGlobalSetting('addBreakToWorkingTime')) {
+    userEndTime = userEndTime.add(userBreakDuration, 'hour')
+  }
   return {
     date: entry._id.date,
-    resource: meteorUser.profile.name,
+    resource: meteorUser?.profile?.name,
     startTime: userStartTime,
     breakStartTime: userEndTime.isAfter(userBreakStartTime) ? userBreakStartTime.format('HH:mm') : '',
     breakEndTime: userEndTime.isAfter(userBreakStartTime) ? userBreakEndTime.format('HH:mm') : '',
@@ -304,11 +370,11 @@ function workingTimeEntriesMapper(entry) {
 }
 
 function buildDetailedTimeEntriesForPeriodSelector({
-  projectId, search, customer, period, userId, limit, page, sort,
+  projectId, search, customer, period, dates, userId, limit, page, sort,
 }) {
   const detailedTimeArray = []
   let projectList = getProjectListById(projectId)
-  if (customer !== 'all') {
+  if (customer !== 'all' && projectId === 'all') {
     projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
   }
   const query = { projectId: { $in: projectList } }
@@ -316,7 +382,7 @@ function buildDetailedTimeEntriesForPeriodSelector({
     query.task = { $regex: `.*${search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' }
   }
   const options = { sort: {} }
-  if (limit) {
+  if (limit && limit > 0) {
     options.limit = limit
   }
   if (sort) {
@@ -360,12 +426,14 @@ function buildDetailedTimeEntriesForPeriodSelector({
   if (page) {
     options.skip = (page - 1) * limit
   }
-  if (period !== 'all') {
+  if (period === 'custom') {
+    query.date = { $gte: dates.startDate, $lte: dates.endDate }
+  } else if (period !== 'all') {
     const { startDate, endDate } = periodToDates(period)
     query.date = { $gte: startDate, $lte: endDate }
-    if (userId !== 'all') {
-      query.userId = userId
-    }
+  }
+  if (userId !== 'all') {
+    query.userId = userId
   }
   detailedTimeArray.push(query)
   detailedTimeArray.push(options)

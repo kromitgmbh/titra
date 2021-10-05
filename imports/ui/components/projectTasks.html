@@ -1,0 +1,6 @@
+<template name="projectTasks">
+    <button type="button" class="btn btn-primary js-open-task-modal"><i class="fa fa-plus"></i> {{t "task.newTask"}}</button>
+    <div class="my-3" id="projectTasks"></div>
+    <div id="projectGantt"></div>
+    {{>taskModal editTaskID=editTaskID}}
+</template>

@@ -1,10 +1,11 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import { AccountsAnonymous } from 'meteor/brettle:accounts-anonymous'
+import { AccountsAnonymous } from 'meteor/faburem:accounts-anonymous'
 import '../../ui/layouts/appLayout.js'
 import '../../ui/pages/signIn.js'
 import '../../ui/pages/register.js'
 import '../../ui/pages/changePassword.js'
 import '../../ui/pages/404.html'
+import { getGlobalSetting } from '../../utils/frontend_helpers.js'
 
 if (!Meteor.settings.public.sandstorm) {
   FlowRouter.triggers.enter([(context, redirect) => {
@@ -157,10 +158,13 @@ FlowRouter.route('/changePwd/:token?', {
   name: 'changePassword',
 })
 FlowRouter.route('/try', {
+  waitOn() {
+    return Meteor.subscribe('globalsettings')
+  },
   action() {
     if (Meteor.userId()) {
       FlowRouter.go('/')
-    } else {
+    } else if (getGlobalSetting('enableAnonymousLogins')) {
       AccountsAnonymous.login((error) => {
         if (!error) {
           FlowRouter.go('/')
@@ -168,6 +172,8 @@ FlowRouter.route('/try', {
           console.error(error)
         }
       })
+    } else {
+      this.render('appLayout', '404')
     }
   },
   name: 'try',

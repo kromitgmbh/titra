@@ -1,5 +1,20 @@
 <template name="tasksearch">
-  <input type="text" value="{{task}}" class="js-tasksearch-input form-control" placeholder="{{t "tracktime.task_placeholder"}}"/>
+  {{#if isComponent}}
+    <input type="text" value="{{task}}" class="js-tasksearch-input form-control" placeholder='{{t "tracktime.task_placeholder"}}'/>
+  {{else}}
+  <div class="input-group form-floating">
+    <input type="text" value="{{task}}" class="js-tasksearch-input form-control" placeholder='{{t "tracktime.task_placeholder"}}'/>
+    {{#if displayTaskSelectionIcon}}
+      <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#taskSelectPopup">
+          <i class="fas fa-list-alt"></i>
+      </button>
+    {{/if}}
+    <label class="form-label" for="task">{{t "globals.task"}}</label>
+  </div>
+  {{/if}}
+  {{#if displayTaskSelectionIcon}}
+    {{> taskSelectPopup projectId=projectId}}
+  {{/if}}
   {{#if tasks}}
     <div class="list-group js-tasksearch-results position-absolute d-none" style="z-index:999;">
       {{#unless Template.subscriptionsReady}}
@@ -10,6 +25,7 @@
       {{#each tasks}}
         <button type="button" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result" tabindex="{{@index}}">
           {{#if wekan}}<img src="/img/wekan.png"/>{{/if}}
+          {{#if zammad}}<img style="width:15px;" src="/img/zammad.svg"/>{{/if}}
           &nbsp;<span class="js-tasksearch-task-name">{{emojify (name)}}</span>
         </button>
       {{/each}}

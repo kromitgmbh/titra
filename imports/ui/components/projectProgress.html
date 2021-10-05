@@ -1,9 +1,9 @@
 <template name="projectProgress">
-  {{#if Template.subscriptionsReady}}
+  <!-- {{#if Template.subscriptionsReady}} -->
     {{#if target}}
       <div class="progress w-100" style="border-radius:0;">
         <div class="progress-bar text-center" role="progressbar" style="background-color:{{colorOpacity color 50}};width:{{percentage}}%;max-width:100%;" aria-valuenow="{{totalHours}}" aria-valuemin="0" aria-valuemax="{{target}}"><small class="text-nowrap">{{percentage}} %</small></div>
       </div>
     {{/if}}
-  {{/if}}
+  <!-- {{/if}} -->
 </template>

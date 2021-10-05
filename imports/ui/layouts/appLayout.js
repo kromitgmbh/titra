@@ -1,9 +1,11 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { Template } from 'meteor/templating'
 import Notifications from '../../api/notifications/notifications.js'
+import { showToast } from '../../utils/frontend_helpers.js'
 import './appLayout.html'
 import '../components/navbar.js'
 import '../components/connectioncheck.js'
+import '../components/toast.html'
 
 Template.appLayout.events({
   'click #logout': (event) => {
@@ -18,7 +20,7 @@ Template.appLayout.onRendered(function appLayoutRendered() {
   this.autorun(() => {
     if (this.subscriptionsReady()
     && Meteor.userId() && Notifications.findOne({ userId: Meteor.userId() })) {
-      $.notify(Notifications.findOne().message)
+      showToast(Notifications.findOne().message)
     }
   })
 })

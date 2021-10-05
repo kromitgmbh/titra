@@ -1,32 +1,54 @@
 import namedavatar from 'namedavatar'
+import i18next from 'i18next'
+import { Globalsettings } from '../api/globalsettings/globalsettings.js'
 
 const clientTimecards = new Mongo.Collection('clientTimecards')
+const i18nextReady = new ReactiveVar(false)
+let globalT
+
+function getGlobalSetting(name) {
+  return Globalsettings.findOne({ name }) ? Globalsettings.findOne({ name }).value : false
+}
+
+function getUserSetting(field) {
+  check(field, String)
+  if ((Meteor.isClient && !Meteor.loggingIn()) && Meteor.user() && Meteor.user().profile) {
+    return Meteor.user().profile[field] ? Meteor.user().profile[field] : getGlobalSetting(field)
+  }
+  return false
+}
 
 function addToolTipToTableCell(value) {
   if (value) {
-    return `<span data-toggle="tooltip" data-placement="left" title="${value}">${value}</span>`
+    return `<span class="js-tooltip" data-bs-toggle="tooltip" data-bs-placement="left" title="${value}">${value}</span>`
   }
   return ''
 }
 
 function getWeekDays(date) {
   const calendar = date.clone().startOf('week')
-  return new Array(7).fill(0).map(() => (calendar.add(1, 'day').format('ddd, DD.MM')))
+  return new Array(7).fill(0).map((value, index) => (calendar.add(index + getGlobalSetting('startOfWeek'), 'day').format(getGlobalSetting('weekviewDateFormat'))))
 }
+
+function numberWithUserPrecision(number) {
+  return getUserSetting('precision') ? Number(number).toFixed(getUserSetting('precision')) : Number(number).toFixed(getGlobalSetting('precision'))
+}
+
 function timeInUserUnit(time) {
   if (!time || time === 0) {
     return false
   }
-  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    const precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-    if (Meteor.user().profile.timeunit === 'd') {
-      const convertedTime = Number(time / (Meteor.user().profile.hoursToDays
-        ? Meteor.user().profile.hoursToDays : 8)).toFixed(precision)
-      return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
-    }
-    if (time) {
-      return Number(time).toFixed(precision)
-    }
+  const precision = getUserSetting('precision')
+  if (getUserSetting('timeunit') === 'd') {
+    const convertedTime = Number(time / getUserSetting('hoursToDays')).toFixed(precision)
+    return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
+  }
+  if (getUserSetting('timeunit') === 'm') {
+    const convertedTime = Number(time * 60).toFixed(precision)
+    return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
+  }
+  if (time) {
+    return Number(time).toFixed(precision)
   }
   return false
 }
@@ -47,10 +69,162 @@ function displayUserAvatar(meteorUser) {
   rawSVG.style.height = '25px'
   return rawSVG.outerHTML
 }
+function validateEmail(email) {
+  if (Meteor.loginWithLDAP) {
+    return true
+  }
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(String(email).toLowerCase())
+}
+
+async function emojify(match) {
+  const emojiImport = await import('node-emoji')
+  return emojiImport.default.emojify(match, (name) => name)
+}
+function loadLanguage(language, i18nextDebugMode) {
+  switch (language) {
+    default:
+      import('../ui/translations/en.json').then((en) => {
+        if (!i18next.isInitialized) {
+          i18next.init({
+            lng: 'en',
+            debug: i18nextDebugMode,
+            resources: {
+              en: {
+                translation: en.default,
+              },
+            },
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        } else {
+          i18next.addResourceBundle('en', 'translation', en.default, true, true)
+          i18next.changeLanguage('en').then((t) => { globalT = t })
+        }
+      })
+      $('html').attr('lang', 'en')
+      break
+    case 'en':
+      import('../ui/translations/en.json').then((en) => {
+        if (!i18next.isInitialized) {
+          i18next.init({
+            lng: 'en',
+            debug: i18nextDebugMode,
+            resources: {
+              en: {
+                translation: en.default,
+              },
+            },
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        } else {
+          i18next.addResourceBundle('en', 'translation', en.default, true, true)
+          i18next.changeLanguage('en').then((t) => { globalT = t })
+        }
+      })
+      $('html').attr('lang', 'en')
+      break
+    case 'de':
+      import('../ui/translations/de.json').then((de) => {
+        if (!i18next.isInitialized) {
+          i18next.init({
+            lng: 'de',
+            debug: i18nextDebugMode,
+            resources: {
+              de: {
+                translation: de.default,
+              },
+            },
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        } else {
+          i18next.addResourceBundle('de', 'translation', de.default, true, true)
+          i18next.changeLanguage('de').then((t) => { globalT = t })
+        }
+      })
+      $('html').attr('lang', 'de')
+      break
+    case 'fr':
+      import('../ui/translations/fr.json').then((fr) => {
+        if (!i18next.isInitialized) {
+          i18next.init({
+            lng: 'fr',
+            debug: i18nextDebugMode,
+            resources: {
+              fr: {
+                translation: fr.default,
+              },
+            },
+          }).then((t) => {
+            globalT = t
+            i18nextReady.set(true)
+          })
+        } else {
+          i18next.addResourceBundle('fr', 'translation', fr.default, true, true)
+          i18next.changeLanguage('fr').then((t) => { globalT = t })
+        }
+      })
+      $('html').attr('lang', 'fr')
+      break
+  }
+}
+function getUserTimeUnitVerbose() {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && i18nextReady.get()) {
+    switch (getUserSetting('timeunit')) {
+      case 'm':
+        return i18next.t('globals.minute_plural')
+      case 'h':
+        return i18next.t('globals.hour_plural')
+      case 'd':
+        return i18next.t('globals.day_plural')
+      default:
+        return i18next.t('globals.hour_plural')
+    }
+  }
+  return false
+}
+function getUserTimeUnitAbbreviated() {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && i18nextReady.get()) {
+    switch (getUserSetting('timeunit')) {
+      case 'm':
+        return i18next.t('globals.unit_minute_short')
+      case 'h':
+        return i18next.t('globals.unit_hour_short')
+      case 'd':
+        return i18next.t('globals.unit_day_short')
+      default:
+        return i18next.t('globals.unit_hour_short')
+    }
+  }
+  return false
+}
+function showToast(message) {
+  import('bootstrap').then((bs) => {
+    $('.toast').removeClass('d-none')
+    $('.toast-body').text(message)
+    new bs.Toast($('.toast').get(0)).show()
+  })
+}
 export {
   addToolTipToTableCell,
   getWeekDays,
   clientTimecards,
   timeInUserUnit,
   displayUserAvatar,
+  validateEmail,
+  emojify,
+  getGlobalSetting,
+  numberWithUserPrecision,
+  getUserSetting,
+  loadLanguage,
+  i18nextReady,
+  getUserTimeUnitVerbose,
+  getUserTimeUnitAbbreviated,
+  globalT,
+  showToast,
 }

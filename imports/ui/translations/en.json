@@ -2,6 +2,7 @@
   "globals": {
     "unit_day_short": "d",
     "unit_hour_short": "h",
+    "unit_minute_short": "m",
     "name": "Name",
     "prj_name": "Project name",
     "description": "Description",
@@ -10,10 +11,13 @@
     "day_plural": "Days",
     "month": "Month",
     "hour": "Hour",
+    "minute": "Minute",
     "hour_plural": "Hours",
+    "minute_plural": "Minutes",
     "loading": "Loading data ...",
     "project": "Project",
     "task": "Task",
+    "task_plural": "Tasks",
     "time": "Time",
     "date": "Date",
     "resource": "Resource",
@@ -21,7 +25,16 @@
     "sum": "Sum",
     "not_found": "Sorry, either our server is on fire or we couldn't find what you are looking for.",
     "color": "Color",
-    "email": "E-mail"
+    "email": "E-mail",
+    "or": "or",
+    "time_entry": "Time entry",
+    "class": "Class",
+    "type": "Type",
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel",
+    "ok": "Ok",
+    "definition": "Definition"
   },
   "navigation": {
     "track": "Track",
@@ -48,7 +61,8 @@
     "lastWeek": "Last week",
     "nextWeek": "Next week",
     "newLine": "New line",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "saving": "Saving ..."
   },
   "tracktime": {
     "no_time": "No time tracked yet.",
@@ -58,7 +72,9 @@
     "month_drag_help_text": "You can drag projects on a date to track time",
     "today": "Today",
     "actions": "Actions",
-    "start_timer": "Start"
+    "start_timer": "Start timer",
+    "start_time": "Start time",
+    "timer": "Timer"
   },
   "overview": {
     "all_projects": "All projects",
@@ -67,7 +83,7 @@
     "three_month_history": "3-month history",
     "details_button": "Details",
     "project_information": "Project information",
-    "team": "Team: ",
+    "team": "Team ",
     "total_time": "Total time: ",
     "target": "Target: ",
     "turnover": "Turnover: ",
@@ -81,21 +97,27 @@
     "target": "Target / Budget",
     "wekan_integration": "Wekan integration",
     "wekan_help": "Need help with the setup? Checkout the titra ",
-    "wekan_list": "Please select the wekan list you want to use for time tracking:",
+    "wekan_list": "Wekan list(s) used for time tracking",
+    "wekan_swimlane": "Wekan swimlane(s) used for time tracking",
     "access_rights": "Access rights",
     "check": "Check",
     "add": "Add",
     "access_rights_placeholder": "E-mail address of team member to add",
     "public_project": "Public project (visible to all users)",
-    "owner": "owner",
+    "owner": "Owner",
     "project_placeholder": "Select a project",
-    "my_project_placeholder": "My project"
+    "my_project_placeholder": "My project",
+    "not_billable": "Not billable",
+    "billing_budget": "Billing & Budget",
+    "default_task": "Default task",
+    "default_task_help": "This value will be used as the default task when tracking time on this project."
   },
   "settings": {
     "user_profile": "User profile",
     "language": "Language",
     "de": "German",
     "en": "English",
+    "fr": "French",
     "user_interface": "User interface",
     "theme": "Theme",
     "auto_detect": "Auto detect",
@@ -122,7 +144,25 @@
     "preview": "Preview",
     "reset": "Reset",
     "custom_avatar": "Upload custom avatar",
-    "current": "Current"
+    "current": "Current",
+    "date_format": "Date format",
+    "verbose_date_format": "Detailed date format",
+    "weekview_date_format": "Weekview date format",
+    "startof_week": "Start of week",
+    "global_defaults": "Default settings:",
+    "use_state": "Use time entry state?",
+    "disable_user_registration": "Disable new user registration?",
+    "enable_anonymous_logins": "Allow anonymous user creation (activates the /try route)?",
+    "show_not_billable_time": "Include not billable projects?",
+    "disable_public_projects": "Disable public projects?",
+    "time_entry_rule": "Timetracking rules (creation & modification)",
+    "use_start_time": "Track start time?",
+    "enable_zammad_integration": "Enable Zammad integration?",
+    "zammad_url": "URL of the Zammad instance",
+    "zammad_api_token": "Zammad Personal Access Token",
+    "custom_css": "Custom CSS",
+    "custom_html": "Custom HTML",
+    "custom_placeholder_content": "Custom Placeholder Content"
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -142,14 +182,25 @@
     "last3months": "Last 3 months",
     "lastWeek": "Last week",
     "lastYear": "Last year",
-    "all": "All time"
+    "all": "All time",
+    "custom": "Custom",
+    "custom_period": "Custom time period"
   },
   "resource": {
     "select": "Select resource",
     "all": "All resources"
   },
   "task": {
-    "searching": "Searching for tasks ..."
+    "searching": "Searching for tasks ...",
+    "storedTasks": "Stored tasks",
+    "search": "Search tasks",
+    "lastUsed": "Last used",
+    "startDate": "Planned start",
+    "endDate": "Planned finish",
+    "duration": "Duration",
+    "dependencies": "Dependencies",
+    "newTask": "New task",
+    "editTask": "Edit task"
   },
   "details": {
     "filter": "Filter",
@@ -163,7 +214,14 @@
     "endTime": "End",
     "totalTime": "Total",
     "regularWorkingTime": "Regular work time",
-    "regularWorkingTimeDifference": "Difference"
+    "regularWorkingTimeDifference": "Difference",
+    "addBreakToWorkingTime": "Add break to working time?",
+    "state": "State",
+    "new": "New",
+    "exported": "Exported",
+    "billed": "Billed",
+    "notBillable": "Not Billable",
+    "charts": "Charts"
   },
   "dashboard": {
     "share": "Share project dashboard",
@@ -224,7 +282,13 @@
     "user_not_found": "No user with this e-mail address could be found, please create the corresponding user account first.",
     "project_priority_success": "Project priority updated successfully",
     "password_changed": "Your password has been changed.",
-    "connectioncheck": "Could not connect to server. Trying again in "
+    "connectioncheck": "Could not connect to server. Trying again ",
+    "siwapp_success": "Siwapp invoice created successfully.",
+    "time_entry_rule_failed": "Time entry does not follow the specified rules.",
+    "access_rights_updated": "Project access rights have been updated.",
+    "success": "The changes have been processed successfully.",
+    "wekan_error": "Could not retrieve Wekan cards, please check your project settings!",
+    "zammad_error": "Could not retrieve Zammad tickets, please check your project settings!"
   },
   "login": {
     "password": "Password",
@@ -245,7 +309,9 @@
     "current_password": "Current password",
     "password_mismatch": "The provided passwords do not match, please try again.",
     "permanent_account": "Create permanent account",
-    "anonymous_account_warning": "You are currently logged in using a temporary account which can only be used on this device. If you want to use titra on other devices, please create a regular user with an e-mail address and password below."
+    "email_unknown": "Sorry, but we could not find an account with the provided e-mail adress.",
+    "anonymous_account_warning": "You are currently logged in using a temporary account which can only be used on this device. If you want to use titra on other devices, please create a regular user with an e-mail address and password below.",
+    "registration_disabled_warning": "New user registration has been disabled on this titra instance."
   },
   "about": {
     "documentation": "Documentation",
@@ -268,6 +334,25 @@
     "user_created": "The user has been created.",
     "user_updated": "The user information has been updated.",
     "user_deleted": "The users has been deleted",
-    "user_deletion_confirmation": "Do you really want to delete this users (this cannot be undone)?"
+    "user_deletion_confirmation": "Do you really want to delete this user (it cannot be undone)?",
+    "value": "Value",
+    "globalsettings_help": "Need help setting the correct values? Checkout the titra",
+    "extensions": "Extensions",
+    "addExtension": "Add Extension",
+    "uploadExtension": "Upload Extension",
+    "extensionStore": "Fancy extensions? Checkout the titra",
+    "extensionHint": "Attention: most extensions will need a restart of the titra service to work properly.",
+    "customfields": "Custom fields",
+    "addcustomfield": "New custom field",
+    "possible_values": "Possible values",
+    "possible_values_hint": "Separate values with a comma (e.g. a,b,c,d).",
+    "no_customfields": "No custom fields have been defined yet.",
+    "no_extensions": "No extensions have been installed yet.",
+    "extension_removed": "The extension has been removed successfully."
+  },
+  "wekan": {
+    "list": "Wekan list",
+    "swimlane": "Wekan swimlane",
+    "instance_url": "API URL of the Wekan instance"
   }
 }

@@ -6,19 +6,19 @@
           <div class="at-title">
             <h3>{{t "login.sign_in"}}</h3>
           </div>
-          <div class="alert alert-danger fade notification d-none" role="alert">
+          <div class="alert alert-danger notification d-none" role="alert">
           </div>
           <div class="at-pwd-form">
             <form role="form" id="at-pwd-form" novalidate="">
               <fieldset>
-                <div class="at-input form-group has-feedback">
+                <div class="at-input mb-3 has-feedback">
                   <label class="control-label" for="at-field-email">
                     E-mail
                   </label>
-                  <input type="email" class="form-control" id="at-field-email" name="at-field-email" placeholder="Email" autocapitalize="none" autocorrect="off">
+                  <input type="text" class="form-control" id="at-field-email" name="at-field-email" placeholder="Email" autocapitalize="none" autocorrect="off">
                   <span class="help-block hide"></span>
                 </div>
-                <div class="at-input form-group has-feedback">
+                <div class="at-input mb-3 has-feedback">
                   <label class="control-label" for="at-field-password">
                     {{t "login.password"}}
                   </label>
@@ -30,18 +30,20 @@
                     <a href="#" id="at-forgotPwd" class="at-link at-pwd">{{t "login.forgot_password"}}</a>
                   </p>
                 </div>
-                <button class="btn btn-primary form-control" id="signIn">
+                <button type="button" class="btn btn-dark form-control" id="signIn">
                   {{t "login.sign_in"}}
                 </button>
               </fieldset>
             </form>
           </div>
-          <div class="at-signup-link mt-2">
-            <p>
-              {{t "login.no_account"}}
-              <a href="/join" id="at-signUp" class="at-link at-signup">{{t "login.register"}}</a>
-            </p>
-          </div>
+          {{#unless getGlobalSetting "disableUserRegistration"}}
+            <div class="at-signup-link mt-2">
+              <p>
+                {{t "login.no_account"}}
+                <a href="/join" id="at-signUp" class="at-link at-signup">{{t "login.register"}}</a>
+              </p>
+            </div>
+          {{/unless}}
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
   "globals": {
     "unit_day_short": "T",
     "unit_hour_short": "S",
+    "unit_minute_short": "M",
     "name": "Name",
     "prj_name": "Projektname",
     "description": "Beschreibung",
@@ -10,10 +11,13 @@
     "day_plural": "Tage",
     "month": "Monat",
     "hour": "Stunde",
+    "minute": "Minute",
     "hour_plural": "Stunden",
+    "minute_plural": "Minuten",
     "loading": "Lade Daten ...",
     "project": "Projekt",
     "task": "Tätigkeit",
+    "task_plural": "Tätigkeiten",
     "time": "Zeit",
     "date": "Datum",
     "resource": "Ressource",
@@ -21,7 +25,16 @@
     "sum": "Summe",
     "not_found": "Es tut uns leid aber entweder unser Server brennt oder wir können die gewünschte Seite nicht finden.",
     "color": "Farbe",
-    "email": "E-mail"
+    "email": "E-mail",
+    "or": "oder",
+    "time_entry": "Eintrag",
+    "class": "Klasse",
+    "type": "Typ",
+    "yes": "Ja",
+    "no": "Nein",
+    "cancel": "Abbrechen",
+    "ok": "Ok",
+    "definition": "Definition"
   },
   "navigation": {
     "track": "Erfassen",
@@ -48,7 +61,8 @@
     "lastWeek": "Letzte Woche",
     "nextWeek": "Nächste Woche",
     "newLine": "Neue Zeile",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "saving": "Speichern ..."
   },
   "tracktime": {
     "no_time": "Keine Zeiten erfasst.",
@@ -58,7 +72,9 @@
     "month_drag_help_text": "Sie können ein Projekt auf ein Datum ziehen um Zeiten zu erfassen",
     "today": "Heute",
     "actions": "Aktionen",
-    "start_timer": "Starten"
+    "start_timer": "Timer starten",
+    "start_time": "Beginn",
+    "timer": "Stoppuhr"
   },
   "overview": {
     "all_projects": "Alle Projekte",
@@ -67,7 +83,7 @@
     "three_month_history": "3-Monats-Ansicht",
     "details_button": "Details",
     "project_information": "Projekt Informationen",
-    "team": "Team: ",
+    "team": "Team",
     "total_time": "Gesamte Zeit: ",
     "target": "Ziel: ",
     "turnover": "Umsatz: ",
@@ -81,7 +97,8 @@
     "target": "Ziel / Budget",
     "wekan_integration": "Wekan Integration",
     "wekan_help": "Benötigen Sie Hilfe bei der Konfiguration? Werfen Sie einen Blick in unser titra ",
-    "wekan_list": "Bitte wählen Sie die Wekan Liste für die Zeiterfassung aus:",
+    "wekan_list": "Wekan Liste(n) für die Zeiterfassung",
+    "wekan_swimlane": "Wekan Swimlane(s) für die Zeiterfassung",
     "access_rights": "Berechtigungen",
     "check": "Prüfen",
     "add": "Hinzufügen",
@@ -89,13 +106,18 @@
     "public_project": "Öffentliches Projekt (für alle sichtbar)",
     "owner": "Ersteller",
     "project_placeholder": "Projekt auswählen",
-    "my_project_placeholder": "Mein Projekt"
+    "my_project_placeholder": "Mein Projekt",
+    "not_billable": "Nicht verrechenbar",
+    "billing_budget": "Verrechnung & Budget",
+    "default_task": "Standard Tätigkeit",
+    "default_task_help": "Der Wert in diesem Feld wird bei der Erfassung eines neuen Zeiteintrags in das Tätigkeitsfeld bei der Auswahl dieses Projektes automatisch eingetragen."
   },
   "settings": {
     "user_profile": "Benutzer Profil",
     "language": "Sprache",
     "de": "Deutsch",
     "en": "Englisch",
+    "fr": "Französisch",
     "user_interface": "Benutzeroberfläche",
     "theme": "Darstellung",
     "auto_detect": "Automatisch",
@@ -122,7 +144,24 @@
     "preview": "Vorschau",
     "reset": "Zurücksetzen",
     "custom_avatar": "Eigenes Bild hochladen",
-    "current": "Aktueller Avatar"
+    "current": "Aktueller Avatar",
+    "date_format": "Datumsformat",
+    "verbose_date_format": "Detailliertes Datumsformat",
+    "weekview_date_format": "Datumsformat Wochenansicht",
+    "startof_week": "Wochenbeginn",
+    "use_state": "Status für Zeiteinträge verwenden?",
+    "disable_user_registration": "Registrierung neuer Benutzer deaktivieren?",
+    "enable_anonymous_logins": "Anonyme Benutzer erlauben (aktiviert die /try Route)?",
+    "show_not_billable_time": "Nicht verrechenbare Projekte berücksichtigen?",
+    "disable_public_projects": "Öffentliche Projekte deaktivieren?",
+    "time_entry_rule": "Regeln für die Zeiterfassung (Erstellung & Bearbeitung)",
+    "use_start_time": "Startzeit erfassen?",
+    "enable_zammad_integration": "Zammad Schnittstelle aktivieren?",
+    "zammad_url": "URL der Zammad Instanz",
+    "zammad_api_token": "Zammad Personal Access Token",
+    "custom_css": "Benutzerdefiniertes CSS",
+    "custom_html": "Benuzterdefiniertes HTML",
+    "custom_placeholder_content": "Benutzerdefinierter Inhalt für den Platzhalter"
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -142,14 +181,25 @@
     "last3months": "Die letzten 3 Monate",
     "lastWeek": "Letzte Woche",
     "lastYear": "Letztes Jahr",
-    "all": "Alles anzeigen"
+    "all": "Alles anzeigen",
+    "custom": "Benutzerdefiniert",
+    "custom_period": "Benutzerdefinierte Zeitperiode"
   },
   "resource": {
     "select": "Ressource auswählen",
     "all": "Alle Ressourcen"
   },
   "task": {
-    "searching": "Nach Tätigkeit suchen ..."
+    "searching": "Nach Tätigkeit suchen ...",
+    "storedTasks": "Gespeicherte Tätigkeiten",
+    "search": "Tätigkeit suchen",
+    "lastUsed": "Zuletzt verwendet",
+    "startDate": "Geplanter Start",
+    "endDate": "Geplantes Ende",
+    "duration": "Dauer",
+    "dependencies": "Abhängigkeiten",
+    "newTask": "Neue Tätigkeit",
+    "editTask": "Tätigkeit bearbeiten"
   },
   "details": {
     "filter": "Filter",
@@ -163,7 +213,14 @@
     "endTime": "Ende",
     "totalTime": "Gesamt",
     "regularWorkingTime": "Normalarbeitszeit",
-    "regularWorkingTimeDifference": "Differenz"
+    "regularWorkingTimeDifference": "Differenz",
+    "addBreakToWorkingTime": "Pause zu Arbeitszeit addieren?",
+    "state": "Status",
+    "new": "Neu",
+    "exported": "Exportiert",
+    "billed": "Verrechnet",
+    "notBillable": "Nicht Verrechenbar",
+    "charts": "Diagramme"
   },
   "dashboard": {
     "share": "Projekt Dashboard teilen",
@@ -231,7 +288,13 @@
     "user_not_found": "Wir konnten keinen Benutzer mit dieser E-mail Adresse finden, bitte stellen Sie sicher dass der Benutzer existiert.",
     "project_priority_success": "Projekt Priorität aktualisiert",
     "password_changed": "Ihr Passwort wurde erfolgreich geändert.",
-    "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch in "
+    "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch ",
+    "siwapp_success": "Die Rechnung wurde in Siwapp erfolgreich erstellt.",
+    "time_entry_rule_failed": "Die Daten entsprechen nicht den definierten Regeln.",
+    "access_rights_updated": "Die Projekt Zugriffsrechte wurden aktualisiert.",
+    "success": "Die Verarbeitung wurde erfolgreich durchgeführt.",
+    "wekan_error": "Die Wekan Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!",
+    "zammad_error": "Die Zammad Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!"
   },
   "login": {
     "password": "Passwort",
@@ -245,6 +308,7 @@
     "create_account": "Benutzerkonto erstellen",
     "password_again": "Passwort (wiederholen)",
     "already_have_account": "Sie haben bereits ein Benutzerkonto? ",
+    "email_unknown": "Wir konnten leider keinen Benutzer mit dieser E-mail Adresse finden.",
     "403": "Anmeldung fehlgeschlagen, bitte überprüfen Sie die Zugangsdaten.",
     "400": "Anmeldung fehlgeschlagen, bitte versuchen Sie es erneut.",
     "reset_password_mail": "Die weiteren Schritte zum Zurücksetzen des Passworts haben Sie per E-mail erhalten.",
@@ -252,7 +316,8 @@
     "current_password": "Aktuelles Passwort",
     "password_mismatch": "Die eingegebenen Passwörter stimmen nicht überein. Bitte überprüfen Sie Ihre Eingabe.",
     "permanent_account": "Permanenten Zugang erstellen",
-    "anonymous_account_warning": "Sie verwenden aktuell einen temporären Account. Wenn Sie titra auf einem anderen Gerät verwenden möchten, erstellen Sie bitte einen Benutzer mit E-mail Addresse und Passwort."
+    "anonymous_account_warning": "Sie verwenden aktuell einen temporären Account. Wenn Sie titra auf einem anderen Gerät verwenden möchten, erstellen Sie bitte einen Benutzer mit E-mail Addresse und Passwort.",
+    "registration_disabled_warning": "Die Registrierung neuer Benutzer ist auf dieser titra Instanz deaktiviert."
   },
   "about": {
     "documentation": "Dokumentation",
@@ -275,6 +340,26 @@
     "user_created": "Der Benutzer wurde erstellt.",
     "user_updated": "Die Benutzerinformationen wurden aktualisiert.",
     "user_deleted": "Der Benutzer wurde gelöscht.",
-    "user_deletion_confirmation": "Möchten Sie diesen Benutzer wirklich löschen (dies kann nicht rückgängig gemacht werden)?"
+    "user_deletion_confirmation": "Möchten Sie diesen Benutzer wirklich löschen (dies kann nicht rückgängig gemacht werden)?",
+    "value": "Wert",
+    "global_defaults": "Voreinstellungen:",
+    "globalsettings_help": "Benötigen Sie Hilfe bei der Konfiguration? Werfen Sie einen Blick in das titra",
+    "extensions": "Erweiterungen",
+    "addExtension": "Erweiterung hinzufügen",
+    "uploadExtension": "Erweiterung hochladen",
+    "extensionStore": "Auf der Suche nach mehr? Erweiterungen finden Sie in unserem titra",
+    "extensionHint": "Attention: most extensions will need a restart of the titra service to work properly.",
+    "customfields": "Benutzerdefinierte Attribute",
+    "addcustomfield": "Neues benutzerdefiniertes Attribut",
+    "possible_values": "Gültige Werte",
+    "possible_values_hint": "Komma separarierte Werte (z.B.: a,b,c,d)",
+    "no_customfields": "Es wurden noch keine benutzerdefinierten Attribute erstellt.",
+    "no_extensions": "Es wurden noch keine Erweiterungen installiert.",
+    "extension_removed": "Die Erweiterung wurde erfolgreich entfernt"
+  },
+  "wekan": {
+    "list": "Wekan Liste",
+    "swimlane": "Wekan Swimlane",
+    "instance_url": "API URL der Wekan Instanz"
   }
 }

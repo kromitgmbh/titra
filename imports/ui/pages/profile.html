@@ -1,15 +1,15 @@
 <template name="profile">
     <form>
-        <div class="card form-group">
+        <div class="card mb-3">
             <div class="card-header">
                 {{t "settings.user_profile"}}
             </div>
             <div class="card-block">
-                <div class="form-group">
-                <label for="name"><strong>{{t "globals.name"}}</strong></label>
-                <input type="text" class="form-control" id="name" value="{{name}}" />
+                <div class="mb-3 form-floating">
+                    <input type="text" class="form-control" id="name" value="{{name}}" />
+                    <label class="form-label" for="name"><strong>{{t "globals.name"}}</strong></label>
                 </div>  
-                <div class="card form-group">
+                <div class="card mb-3">
                 <!-- <div class="card-header">
                     {{t "settings.avatar"}}
                 </div> -->
@@ -19,25 +19,23 @@
                     <label class="d-block">{{t "settings.current"}}</label>
                     {{#if currentUser.profile.avatar}}
                         <img id="avatar" src="{{currentUser.profile.avatar}}" alt='{{t "settings.avatar"}}' class="img-responsive"/>
-                        <button class="btn btn-secondary d-block" id="removeAvatar">{{t "settings.reset"}}</button>
+                        <button type="button" class="btn btn-secondary d-block" id="removeAvatar">{{t "settings.reset"}}</button>
                     {{else}}
                         {{{svgAvatar}}}
                     {{/if}}
                     </div>
                     <div class="col-lg-3">
                         {{#unless currentUser.profile.avatar}}
-                        <div class="form-group">
-                        <label for="color">{{t "globals.color"}}</label>
-                        <div class="input-group" id="colpick">
-                            <input name="avatarColor" id="avatarColor" type="text" value="{{avatarColor}}" data-color="{{avatarColor}}" class="form-control" />
-                            <div class="input-group-append">
-                            <button class="btn" id="avatarColorPickr" type="button"></button>
+                        <div class="mb-3">
+                            <div class="input-group form-floating" id="colpick">
+                                <input name="avatarColor" id="avatarColor" type="text" value="{{avatarColor}}" data-color="{{avatarColor}}" class="form-control" />
+                                <button type="button" class="btn" id="avatarColorPickr"></button>
+                                <label class="form-label" for="color">{{t "globals.color"}}</label>
                             </div>
                         </div>
-                        </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label class="d-block">{{t "settings.custom_avatar"}}</label>
-                            <input type="file" name="avatarImage" id="avatarImage" accept="image/gif,image/jpeg,image/png"/>
+                            <input class="form-control bg-secondary" type="file" name="avatarImage" id="avatarImage" accept="image/gif,image/jpeg,image/png"/>
                         </div>
                         {{/unless}}
                         <input type="hidden" name="avatarData" id="avatarData" value="{{currentUser.profile.avatarData}}"/>
@@ -56,11 +54,11 @@
                 {{#if currentUser.emails}}
                 {{#unless isSandstorm}}
                 <div class="row">
-                    <div class="col-6 col-md-3 mr-auto">
+                    <div class="col-6 col-md-3 me-auto d-grid">
                     <a class="btn btn-secondary border" href="/changePwd">{{t "login.change_password"}}</a>
                     </div>
-                    <div class="col-6 col-md-3">
-                    <a class="btn btn-secondary border js-logout form-control" href="#">{{t "navigation.logout"}}</a>
+                    <div class="col-6 col-md-3 d-grid">
+                    <a class="btn btn-secondary border js-logout" href="#">{{t "navigation.logout"}}</a>
                     </div>
                 </div>
                 {{/unless}}
@@ -72,36 +70,39 @@
                 {{/if}}
             </div>
         </div>
-        <div class="card form-group">
+        <div class="card mb-3">
             <div class="card-header">
                 {{t "settings.user_interface"}}
             </div>
             <div class="card-block">
-                <div class="form-group">
-                <label for="theme"><strong>{{t "settings.theme"}}</strong></label>
-                <select class="form-control" id="theme">
-                    <option value="auto">{{t "settings.auto_detect"}}</option>
-                    <option value="light">{{t "settings.light_theme"}}</option>
-                    <option value="dark">{{t "settings.dark_theme"}}</option>
-                </select>
-                <small class="form-text text-muted">{{t "settings.auto_detect_help"}} <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">caniuse.com</a>.</small>
+                <div class="mb-3">
+                    <div class="form-floating">
+                        <select class="form-select form-control" id="theme">
+                            <option value="auto">{{t "settings.auto_detect"}}</option>
+                            <option value="light">{{t "settings.light_theme"}}</option>
+                            <option value="dark">{{t "settings.dark_theme"}}</option>
+                        </select>
+                        <label class="form-label" for="theme"><strong>{{t "settings.theme"}}</strong></label>
+                    </div>
+                    <small class="form-text text-muted">{{t "settings.auto_detect_help"}} <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">caniuse.com</a>.</small>
                 </div>
-                <div class="form-group">
-                <label for="theme"><strong>{{t "settings.language"}}</strong></label>
-                <select class="form-control" id="language">
-                    <option value="auto">{{t "settings.auto_detect"}}</option>
-                    <option value="en">{{t "settings.en"}}</option>
-                    <option value="de">{{t "settings.de"}}</option>
-                </select>
+                <div class="form-floating">
+                    <select class="form-select form-control" id="language">
+                        <option value="auto">{{t "settings.auto_detect"}}</option>
+                        <option value="en">{{t "settings.en"}}</option>
+                        <option value="de">{{t "settings.de"}}</option>
+                        <option value="fr">{{t "settings.fr"}}</option>
+                    </select>
+                    <label class="form-label" for="theme"><strong>{{t "settings.language"}}</strong></label>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-6 col-md-3 mr-auto">
+            <div class="col-6 col-md-3 me-auto d-grid">
               {{>backbutton}}
             </div>
-            <div class="col-6 col-md-3">
-              <button class="btn btn-primary form-control js-save">{{t "navigation.save"}}</button>
+            <div class="col-6 col-md-3 d-grid">
+              <button type="button" class="btn btn-primary js-save">{{t "navigation.save"}}</button>
             </div>
           </div>
     </form>

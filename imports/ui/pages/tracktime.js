@@ -1,13 +1,17 @@
 import { Meteor } from 'meteor/meteor'
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import i18next from 'i18next'
+import bootstrap from 'bootstrap'
 import TinyDatePicker from 'tiny-date-picker'
 import 'tiny-date-picker/tiny-date-picker.css'
 
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
+import { getGlobalSetting, getUserSetting, showToast } from '../../utils/frontend_helpers.js'
 
 import './tracktime.html'
 import '../components/projectselect.js'
@@ -16,33 +20,53 @@ import '../components/timetracker.js'
 import '../components/weektable.js'
 import '../components/calendar.js'
 import '../components/backbutton.js'
+import CustomFields from '../../api/customfields/customfields.js'
 
 Template.tracktime.onRendered(() => {
-  if (!Template.instance().tinydatepicker) {
-    Template.instance().tinydatepicker = TinyDatePicker('#date', {
+  const templateInstance = Template.instance()
+  if (!templateInstance.tinydatepicker) {
+    templateInstance.tinydatepicker = TinyDatePicker(templateInstance.$('.js-date')[0], {
       format(date) {
-        return date ? moment(date).format('ddd, DD.MM.YYYY') : moment().format('ddd, DD.MM.YYYY')
+        return date ? dayjs(date).format(getGlobalSetting('dateformatVerbose')) : dayjs.format(getGlobalSetting('dateformatVerbose'))
       },
       parse(date) {
-        return moment(date, 'ddd, DD.MM.YYYY')
+        return dayjs(date, getGlobalSetting('dateformatVerbose'))
       },
+      appendTo: templateInstance.firstNode,
       mode: 'dp-modal',
-      dayOffset: 1,
+      dayOffset: getGlobalSetting('startOfWeek'),
     }).on('select', (_, dp) => {
       if (!dp.state.selectedDate) {
-        $('#date').val(moment().format('ddd, DD.MM.YYYY'))
+        templateInstance.$('.js-date').first().val(dayjs().format(getGlobalSetting('dateformatVerbose')))
       }
     })
   }
+  templateInstance.autorun(() => {
+    const timeEntry = templateInstance.time_entry.get()
+    if (timeEntry) {
+      Meteor.setTimeout(() => {
+        for (const customfield of CustomFields.find({ classname: 'time_entry', possibleValues: { $exists: true } })) {
+          if (templateInstance.firstNode) {
+            templateInstance.$(`#${customfield.name}`).val(timeEntry[customfield.name])
+          }
+        }
+      }, 500)
+    }
+  })
 })
 Template.tracktime.onCreated(function tracktimeCreated() {
   import('math-expression-evaluator').then((mathexp) => {
     this.math = mathexp
   })
-  this.date = new ReactiveVar(moment.utc().toDate())
+  dayjs.extend(utc)
+  dayjs.extend(customParseFormat)
+  this.date = new ReactiveVar(dayjs().toDate())
   this.projectId = new ReactiveVar()
   this.tcid = new ReactiveVar()
   this.totalTime = new ReactiveVar(0)
+  this.edittcid = new ReactiveVar()
+  this.time_entry = new ReactiveVar()
+  this.subscribe('customfieldsForClass', { classname: 'time_entry' })
   let handle
   this.autorun(() => {
     if (this.data.tcid && this.data.tcid.get()) {
@@ -54,25 +78,27 @@ Template.tracktime.onCreated(function tracktimeCreated() {
       this.date.set(this.data.dateArg.get())
     } else if (!(this.data.dateArg && this.data.dateArg.get())
       && !(this.data.tcid && this.data.tcid.get()) && FlowRouter.getQueryParam('date')) {
-      this.date.set(moment.utc(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate())
+      this.date.set(dayjs(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate())
     }
     if (this.data.projectIdArg && this.data.projectIdArg.get()) {
       this.projectId.set(this.data.projectIdArg.get())
-    } else if (!(this.data.projectIdArg && this.data.projectIdArg.get()) && FlowRouter.getParam('projectId')) {
+    } else if (!((this.data.projectIdArg && this.data.projectIdArg.get()) || (this.data.tcid && this.data.tcid.get())) && FlowRouter.getParam('projectId')) {
       this.projectId.set(FlowRouter.getParam('projectId'))
     }
     if (this.tcid.get()) {
       this.subscribe('singleTimecard', this.tcid.get())
       if (this.subscriptionsReady()) {
+        this.time_entry.set(Timecards.findOne(this.tcid.get()))
         this.date.set(Timecards.findOne({ _id: this.tcid.get() })
-          ? moment.utc(Timecards.findOne({ _id: this.tcid.get() }).date).toDate()
-          : moment.utc().toDate())
+          ? dayjs(Timecards.findOne({ _id: this.tcid.get() }).date).toDate()
+          : dayjs().toDate())
+        this.projectId.set(Timecards.findOne({ _id: this.tcid.get() }) ? Timecards.findOne({ _id: this.tcid.get() }).projectId : '')
       }
     }
   })
   this.autorun(() => {
     if (!this.tcid.get()) {
-      handle = this.subscribe('myTimecardsForDate', { date: moment.utc(this.date.get()).format('YYYY-MM-DD') })
+      handle = this.subscribe('myTimecardsForDate', { date: dayjs(this.date.get()).format('YYYY-MM-DD') })
       if (handle.ready()) {
         Timecards.find().forEach((timecard) => {
           this.subscribe('publicProjectName', timecard.projectId)
@@ -84,110 +110,151 @@ Template.tracktime.onCreated(function tracktimeCreated() {
         .fetch().reduce((a, b) => (a === 0 ? b.hours : a + b.hours), 0))
       if (FlowRouter.getParam('projectId') && !FlowRouter.getQueryParam('date')) {
         if (FlowRouter.getParam('projectId') !== 'all') {
-          if ($('.js-tasksearch-input')) {
-            $('.js-tasksearch-input').focus()
+          if ($('.js-tasksearch-input').length) {
+            const project = Projects.findOne({ _id: this.projectId.get() })
+            if (!project?.defaultTask) {
+              $('.js-tasksearch-input').focus()
+            } else {
+              $('#hours').focus()
+            }
           }
         }
       }
     }
   })
 })
+Template.tracktime.onDestroyed(() => {
+  Template.instance().tinydatepicker.destroy()
+})
 Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
+    if (templateInstance.edittcid.get()) {
+      return
+    }
+    const customfields = {}
+    templateInstance.$('.js-customfield').each((i, el) => { customfields[$(el).attr('id')] = $(el).val() })
+    const buttonLabel = $('.js-save').first().text()
     const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > .js-target-project')
-    if (!selectedProjectElement.val()) {
+    let hours = templateInstance.$('#hours').val()
+    if (!templateInstance.projectId.get()) {
       selectedProjectElement.addClass('is-invalid')
-      $.notify({ message: i18next.t('notifications.select_project') }, { type: 'danger' })
+      showToast(i18next.t('notifications.select_project'))
       return
     }
-    if (!$('.js-tasksearch-input').val()) {
-      $('.js-tasksearch-input').addClass('is-invalid')
-      $.notify({ message: i18next.t('notifications.enter_task') }, { type: 'danger' })
+    if (!templateInstance.$('.js-tasksearch-input').val()) {
+      templateInstance.$('.js-tasksearch-input').addClass('is-invalid')
+      showToast(i18next.t('notifications.enter_task'))
       return
     }
-    if (!$('#hours').val()) {
-      $('#hours').addClass('is-invalid')
-      $.notify({ message: i18next.t('notifications.enter_time') }, { type: 'danger' })
+    if (!hours) {
+      templateInstance.$('#hours').addClass('is-invalid')
+      showToast(i18next.t('notifications.enter_time'))
       return
     }
     try {
-      templateInstance.math.eval($('#hours').val())
+      hours = hours.replace(',', '.')
+      templateInstance.math.eval(hours)
     } catch (exception) {
-      $.notify({ message: i18next.t('notifications.check_time_input') }, { type: 'danger' })
+      showToast(i18next.t('notifications.check_time_input'))
       return
     }
-    const projectId = selectedProjectElement.val()
+    const projectId = templateInstance.projectId.get()
     const task = templateInstance.$('.js-tasksearch-input').val()
-    const date = moment.utc($('#date').val(), 'ddd, DD.MM.YYYY').toDate()
-    let hours = templateInstance.math.eval($('#hours').val())
-
-    if (Meteor.user().profile.timeunit === 'd') {
-      hours = templateInstance.math.eval(templateInstance.$('#hours').val()) * (Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8)
+    const date = dayjs.utc(templateInstance.$('.js-date').val(), getGlobalSetting('dateformatVerbose')).toDate()
+    if (getGlobalSetting('useStartTime') && !templateInstance.tcid?.get()) {
+      if ($('#startTime').val()) {
+        date.setHours($('#startTime').val().split(':')[0], $('#startTime').val().split(':')[1])
+      } else {
+        showToast(i18next.t('notifications.check_time_input'))
+        return
+      }
     }
-    const buttonLabel = $(event.currentTarget).text()
-    templateInstance.$(event.currentTarget).text('saving ...')
-    templateInstance.$(event.currentTarget).prop('disabled', true)
+    hours = templateInstance.math.eval(hours)
+
+    if (getUserSetting('timeunit') === 'd') {
+      hours *= getUserSetting('hoursToDays')
+    }
+    if (getUserSetting('timeunit') === 'm') {
+      hours /= 60
+    }
+    templateInstance.$('.js-save').text(i18next.t('navigation.saving'))
+    templateInstance.$('.js-save').prop('disabled', true)
     if (templateInstance.tcid.get()) {
       Meteor.call('updateTimeCard', {
-        _id: templateInstance.tcid.get(), projectId, date, hours, task,
+        _id: templateInstance.tcid.get(), projectId, date, hours, task, customfields,
       }, (error) => {
         if (error) {
           console.error(error)
+          if (typeof error.error === 'string') {
+            showToast(i18next.t(error.error.replace('[', '').replace(']', '')))
+          }
         } else {
-          $('.js-tasksearch-results').addClass('d-none')
-          $.notify(i18next.t('notifications.time_entry_updated'))
-          templateInstance.$(event.currentTarget).text(buttonLabel)
-          templateInstance.$(event.currentTarget).prop('disabled', false)
-          $('[data-toggle="tooltip"]').tooltip()
+          templateInstance.$('.js-tasksearch-results').addClass('d-none')
+          showToast(i18next.t('notifications.time_entry_updated'))
+          window.requestAnimationFrame(() => {
+            templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
+              container: templateInstance.firstNode,
+              trigger: 'hover focus',
+            })
+          })
           if (templateInstance.data.tcid) {
             $('#edit-tc-entry-modal').modal('hide')
           }
         }
+        templateInstance.$(event.currentTarget).text(buttonLabel)
+        templateInstance.$(event.currentTarget).prop('disabled', false)
       })
     } else {
       Meteor.call('insertTimeCard', {
-        projectId, date, hours, task,
+        projectId, date, hours, task, customfields,
       }, (error) => {
         if (error) {
           console.error(error)
+          if (typeof error.error === 'string' && error.error.indexOf('notifications') >= 0) {
+            showToast(i18next.t(error.error))
+          }
         } else {
           templateInstance.$('.js-tasksearch-input').val('')
           templateInstance.$('.js-tasksearch-input').keyup()
           templateInstance.$('#hours').val('')
           templateInstance.$('.js-tasksearch-results').addClass('d-none')
-          $.notify(i18next.t('notifications.time_entry_saved'))
-          templateInstance.$(event.currentTarget).text(buttonLabel)
-          templateInstance.$(event.currentTarget).prop('disabled', false)
+          showToast(i18next.t('notifications.time_entry_saved'))
           templateInstance.$('.js-show-timecards').slideDown('fast')
-          templateInstance.$('[data-toggle="tooltip"]').tooltip()
+          templateInstance.$('[data-bs-toggle="tooltip"]').tooltip()
           $('#edit-tc-entry-modal').modal('hide')
         }
+        templateInstance.$('.js-save').text(buttonLabel)
+        templateInstance.$('.js-save').prop('disabled', false)
       })
     }
   },
   'click .js-previous': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: moment.utc(templateInstance.date.get()).subtract(1, 'days').format('YYYY-MM-DD') })
+    FlowRouter.setQueryParams({ date: dayjs(templateInstance.date.get()).subtract(1, 'days').format('YYYY-MM-DD') })
     templateInstance.$('#hours').val('')
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
   'click .js-next': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: moment.utc(templateInstance.date.get()).add(1, 'days').format('YYYY-MM-DD') })
+    FlowRouter.setQueryParams({ date: dayjs(templateInstance.date.get()).add(1, 'days').format('YYYY-MM-DD') })
     templateInstance.$('#hours').val('')
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
   'change .js-target-project': (event, templateInstance) => {
+    event.preventDefault()
     templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
-    templateInstance.$('.js-tasksearch').focus()
+    const project = Projects.findOne({ _id: templateInstance.projectId.get() })
+    if (!project?.defaultTask) {
+      templateInstance.$('.js-tasksearch').first().focus()
+    }
   },
-  'change #date': (event, templateInstance) => {
+  'change .js-date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
-      let date = moment.utc(templateInstance.$(event.currentTarget).val(), 'ddd, DD.MM.YYYY')
+      let date = dayjs(templateInstance.$(event.currentTarget).val(), getGlobalSetting('dateformatVerbose'))
       if (!date.isValid()) {
-        date = moment.utc()
-        event.currentTarget.value = date.format('ddd, DD.MM.YYYY')
+        date = dayjs()
+        event.currentTarget.value = date.format(getGlobalSetting('dateformatVerbose'))
       }
       date = date.format('YYYY-MM-DD')
       // we need this to correctly capture calender change events from the input
@@ -198,40 +265,75 @@ Template.tracktime.events({
   'click .js-toggle-timecards': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-show-timecards').slideToggle('fast')
-    templateInstance.$('[data-toggle="tooltip"]').tooltip()
+    window.requestAnimationFrame(() => {
+      templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
+        container: templateInstance.firstNode,
+        trigger: 'hover focus',
+      })
+    })
   },
   'click .js-time-row': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.$(event.currentTarget).popover({
-      trigger: 'manual',
-      container: templateInstance.$('form'),
-      html: true,
-      content: templateInstance.$(event.currentTarget).children('.js-popover-content').html(),
+    templateInstance.$('.js-time-row').each((index, element) => {
+      bootstrap.Popover.getInstance(element)?.hide()
     })
-    templateInstance.$(event.currentTarget).popover('toggle')
+    const timerowpopover = bootstrap.Popover
+      .getOrCreateInstance(templateInstance.$(event.currentTarget), {
+        trigger: 'manual',
+        container: templateInstance.$('form'),
+        html: true,
+        content: templateInstance.$(event.currentTarget).children('.js-popover-content').html(),
+      })
+    timerowpopover.show()
   },
   'click .js-delete-time-entry': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.$('.js-time-row').popover('dispose')
+    templateInstance.$('.js-time-row').each((index, element) => {
+      bootstrap.Popover.getInstance(element)?.hide()
+    })
     const timecardId = event.currentTarget.href.split('/').pop()
     Meteor.call('deleteTimeCard', { timecardId }, (error, result) => {
       if (!error) {
-        $.notify(i18next.t('notifications.time_entry_deleted'))
+        showToast(i18next.t('notifications.time_entry_deleted'))
       } else {
         console.error(error)
+        if (typeof error.error === 'string') {
+          showToast(i18next.t(error.error.replace('[', '').replace(']', '')))
+        }
       }
     })
   },
   'click .js-open-calendar': (event, templateInstance) => {
     event.preventDefault()
+    if (templateInstance.$('.js-open-calendar').length > 1) {
+      return
+    }
     templateInstance.tinydatepicker.open()
   },
   'focus #hours': (event, templateInstance) => {
     templateInstance.$('#hours').removeClass('is-invalid')
   },
+  'keydown #hours': (event, templateInstance) => {
+    if (event.keyCode === 13) {
+      event.preventDefault()
+      event.stopPropagation()
+      templateInstance.$('.js-save').click()
+    }
+  },
+  'click .js-edit-time-entry': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.$('.js-time-row').each((index, element) => {
+      bootstrap.Popover.getInstance(element)?.hide()
+    })
+    templateInstance.edittcid.set(event.currentTarget.href.split('/').pop())
+    new bootstrap.Modal(templateInstance.$('#edit-tc-entry-modal')[0], { focus: false }).show()
+    $('#edit-tc-entry-modal').on('hidden.bs.modal', () => {
+      templateInstance.edittcid.set(undefined)
+    })
+  },
 })
 Template.tracktime.helpers({
-  date: () => moment.utc(Template.instance().date.get()).format('ddd, DD.MM.YYYY'),
+  date: () => dayjs(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose')),
   projectId: () => Template.instance().projectId.get(),
   reactiveProjectId: () => Template.instance().projectId,
   projectName: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false),
@@ -239,21 +341,36 @@ Template.tracktime.helpers({
   isEdit: () => (Template.instance().tcid && Template.instance().tcid.get())
     || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
     || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()),
-  task: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
-    ? Timecards.findOne({ _id: Template.instance().tcid.get() }).task : false),
+  task: () => {
+    const project = Projects.findOne({ _id: Template.instance().projectId.get() })
+    const timecard = Timecards.findOne({ _id: Template.instance().tcid.get() })
+    if (!timecard && project?.defaultTask) {
+      return project.defaultTask
+    }
+    return timecard ? timecard?.task : false
+  },
   hours: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
     ? Timecards.findOne({ _id: Template.instance().tcid.get() }).hours : false),
-  showTracker: () => (Meteor.user() ? (Meteor.user().profile.timeunit !== 'd') : false),
+  showTracker: () => (getUserSetting('timeunit') !== 'd'),
+  showStartTime: () => (getGlobalSetting('useStartTime')),
   totalTime: () => Template.instance().totalTime.get(),
-  previousDay: () => moment.utc(Template.instance().date.get()).subtract(1, 'day').format('ddd, DD.MM.YYYY'),
-  nextDay: () => moment.utc(Template.instance().date.get()).add(1, 'day').format('ddd, DD.MM.YYYY'),
-  borderClass: () => (Template.instance().tcid.get() ? '' : 'tab-borders'),
+  previousDay: () => dayjs(Template.instance().date.get()).subtract(1, 'day').format(getGlobalSetting('dateformatVerbose')),
+  nextDay: () => dayjs(Template.instance().date.get()).add(1, 'day').format(getGlobalSetting('dateformatVerbose')),
+  borderClass: () => (Template.instance().tcid.get()
+    || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
+    || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()) ? '' : 'tab-borders'),
+  edittcid: () => Template.instance().edittcid,
+  startTime: () => dayjs(Template.instance().date.get()).format('HH:mm'),
+  customfields: () => CustomFields.find({ classname: 'time_entry' }),
+  getCustomFieldValue: (fieldId) => (Template.instance().time_entry.get()
+    ? Template.instance().time_entry.get()[fieldId] : false),
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {
-  this.timetrackview = new ReactiveVar(Meteor.user() ? Meteor.user().profile.timetrackview || 'd' : 'd')
+  this.timetrackview = new ReactiveVar(getGlobalSetting('timetrackview'))
   this.autorun(() => {
-    if (FlowRouter.getParam('projectId')) {
+    this.timetrackview.set(getUserSetting('timetrackview'))
+    if (FlowRouter.getParam('projectId') && this.subscriptionsReady()) {
       this.timetrackview.set('d')
     } else if (FlowRouter.getQueryParam('view')) {
       this.timetrackview.set(FlowRouter.getQueryParam('view'))

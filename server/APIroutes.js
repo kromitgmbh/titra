@@ -23,9 +23,11 @@ function sendResponse(res, statusCode, message, payload) {
 }
 function checkAuthorization(req, res) {
   const authHeader = req.headers.authorization
-  const meteorUser = Meteor.users.findOne({ 'profile.APItoken': authHeader.split(' ')[1] })
-  if (authHeader && authHeader.split(' ')[1] && meteorUser) {
-    return meteorUser
+  if (authHeader) {
+    const meteorUser = Meteor.users.findOne({ 'profile.APItoken': authHeader.split(' ')[1] })
+    if (authHeader && authHeader.split(' ')[1] && meteorUser) {
+      return meteorUser
+    }
   }
   sendResponse(res, 401, 'Missing authorization header or invalid authorization token supplied.')
   return false
@@ -33,7 +35,7 @@ function checkAuthorization(req, res) {
 /**
  * @apiDefine AuthError
  * @apiError {json} AuthError The request is missing the authentication header or an invalid API token has been provided.
- * @apiErrorExample {json} Error-Response:
+ * @apiErrorExample {json} Authorization-Error-Response:
  *     HTTP/1.1 401 Unauthorized
  *     {
  *       "message": "Missing authorization header or invalid authorization token supplied."
@@ -47,13 +49,13 @@ function checkAuthorization(req, res) {
  * @apiGroup TimeEntry
  *
  * @apiHeader {String} Token The authorization header Bearer API token.
- * @apiParam {String} projectID The project ID.
+ * @apiParam {String} projectId The project ID.
  * @apiParam {String} task The task description of the new time entry.
  * @apiParam {Date} date The date for the new time entry in format YYYY-MM-DD.
  * @apiParam {Number} hours The number of hours to track.
  * @apiParamExample {json} Request-Example:
  *                  {
- *                    "projectID": "123456",
+ *                    "projectId": "123456",
  *                    "task": "Work done.",
  *                    "date": "2019-11-10",
  *                    "hours": 8
@@ -89,7 +91,7 @@ WebApp.connectHandlers.use('/timeentry/create/', async (req, res, next) => {
     const timecardId = insertTimeCard(json.projectId, json.task, new Date(json.date), json.hours, meteorUser._id)
     const payload = {}
     payload.timecardId = timecardId
-    sendResponse(res, 200, 'time entry created.', payload)
+    sendResponse(res, 200, 'Time entry created.', payload)
     return
   }
   sendResponse(res, 500, 'Missing mandatory parameters.')
@@ -129,13 +131,12 @@ WebApp.connectHandlers.use('/timeentry/list/', async (req, res, next) => {
 })
 
 /**
-   * @api {get} /projects/list/ Get all projects
+   * @api {get} /project/list/ Get all projects
    * @apiDescription Lists all projects visible to the user assigned to the provided API token
    * @apiName getProjects
    * @apiGroup Project
    *
    * @apiHeader {String} Token The authorization header Bearer API token.
-
    * @apiSuccess {json} response An array of all projects visible for the user with the provided API token.
    * @apiUse AuthError
    */
@@ -151,7 +152,7 @@ WebApp.connectHandlers.use('/project/list/', async (req, res, next) => {
 })
 
 /**
-   * @api {post} /projects/create/ Create a new project
+   * @api {post} /project/create/ Create a new project
    * @apiDescription Creates a new titra project based on the parameters provided
    * @apiName CreateProject
    * @apiGroup Project
@@ -173,7 +174,7 @@ WebApp.connectHandlers.use('/project/list/', async (req, res, next) => {
    *                    "rate": 100,
    *                    "budget": 50
    *                  }
-   * @apiSuccess {json} The id of the new project.
+   * @apiSuccess {json} response The id of the new project.
    *  * @apiSuccessExample {json} Success response:
     * {
     *  message: "time entry created."
@@ -208,5 +209,124 @@ WebApp.connectHandlers.use('/project/create/', async (req, res, next) => {
     const payload = {}
     payload.projectId = projectId
     sendResponse(res, 200, 'Project created.', payload)
+  }
+})
+/**
+   * @api {post} /timer/start/ Start a new timer
+   * @apiDescription Starts a new timer for the API user if there is no current running timer.
+   * @apiName startTimer
+   * @apiGroup TimeEntry
+   *
+   * @apiHeader {String} Token The authorization header Bearer API token.
+   * @apiSuccess {json} response If there is no current running timer a new one will be started.
+   *  * @apiSuccessExample {json} Success response:
+    * {
+    *  message: "New timer started."
+    *  payload: {
+    *    "startTime": "Sat Jun 26 2021 21:48:11 GMT+0200"
+    *  }
+    * }
+   * @apiError {json} response There is already another running timer.
+    *      @apiErrorExample {json} Error-Response:
+    *     HTTP/1.1 500 Internal Server Error
+    *     {
+    *       "message": "There is already another running timer."
+    *     }
+   * @apiUse AuthError
+   */
+WebApp.connectHandlers.use('/timer/start/', async (req, res, next) => {
+  const meteorUser = checkAuthorization(req, res)
+  if (!meteorUser) {
+    return
+  }
+  const payload = {}
+  if (!meteorUser.profile.timer) {
+    payload.startTime = meteorUser.profile.timer
+    Meteor.users.update({ _id: meteorUser._id }, { $set: { 'profile.timer': new Date() } })
+    sendResponse(res, 200, 'New timer started.', payload)
+  } else {
+    sendResponse(res, 500, 'There is already another running timer.')
+  }
+})
+
+/**
+   * @api {get} /timer/get/ Get the duration of the current timer
+   * @apiDescription Get the duration in milliseconds and the start timestamp of the currently running timer for the API user.
+   * @apiName getTimer
+   * @apiGroup TimeEntry
+   *
+   * @apiHeader {String} Token The authorization header Bearer API token.
+   * @apiSuccess {json} response Returns the duration of the currently running timer.
+   *  * @apiSuccessExample {json} Success response:
+    * {
+    *  message: "Running timer received."
+    *  payload: {
+    *    "duration": 60000,
+    *    "startTime": "Sat Jun 26 2021 21:48:11 GMT+0200"
+    *  }
+    * }
+   * @apiError {json} response There is no running timer.
+    *      @apiErrorExample {json} Error-Response:
+    *     HTTP/1.1 500 Internal Server Error
+    *     {
+    *       "message": "No running timer found."
+    *     }
+   * @apiUse AuthError
+   */
+WebApp.connectHandlers.use('/timer/get/', async (req, res, next) => {
+  const meteorUser = checkAuthorization(req, res)
+  if (!meteorUser) {
+    return
+  }
+  const payload = {}
+  if (meteorUser.profile.timer) {
+    payload.startTime = meteorUser.profile.timer
+    const currentTime = new Date()
+    const timerTime = new Date(meteorUser.profile.timer)
+    payload.duration = currentTime.getTime() - timerTime.getTime()
+    sendResponse(res, 200, 'Running timer received.', payload)
+  } else {
+    sendResponse(res, 500, 'No running timer found.')
+  }
+})
+/**
+   * @api {post} /timer/stop/ Stop a running timer
+   * @apiDescription Stop a running timer of the API user and return the start timestamp and duration in milliseconds.
+   * @apiName stopTimer
+   * @apiGroup TimeEntry
+   *
+   * @apiHeader {String} Token The authorization header Bearer API token.
+   * @apiSuccess {json} response Returns the duration in milliseconds and the start timestamp of the stopped timer as result.
+   *  * @apiSuccessExample {json} Success response:
+    * {
+    *  message: "Running timer stopped."
+    *  payload: {
+    *    "duration": 60000,
+    *    "startTime": "Sat Jun 26 2021 21:48:11 GMT+0200"
+    *  }
+    * }
+  * @apiError {json} response No running timer to stop.
+    *      @apiErrorExample {json} Error-Response:
+    *     HTTP/1.1 500 Internal Server Error
+    *     {
+    *       "message": "No running timer found."
+    *     }
+   * @apiUse AuthError
+   */
+WebApp.connectHandlers.use('/timer/stop/', async (req, res, next) => {
+  const meteorUser = checkAuthorization(req, res)
+  if (!meteorUser) {
+    return
+  }
+  const payload = {}
+  if (meteorUser.profile.timer) {
+    payload.startTime = meteorUser.profile.timer
+    const currentTime = new Date()
+    const timerTime = new Date(meteorUser.profile.timer)
+    payload.duration = currentTime.getTime() - timerTime.getTime()
+    Meteor.users.update({ _id: meteorUser._id }, { $unset: { 'profile.timer': '' } })
+    sendResponse(res, 200, 'Running timer stopped.', payload)
+  } else {
+    sendResponse(res, 500, 'No running timer found.')
   }
 })

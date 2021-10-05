@@ -1,21 +1,20 @@
 import './allprojectschart.html'
-import hex2rgba from '../../utils/hex2rgba.js'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import { getUserSetting, getUserTimeUnitVerbose } from '../../utils/frontend_helpers'
 
 Template.allprojectschart.onCreated(function allprojectschartCreated() {
-  // this.resources = new ReactiveVar()
   this.topTasks = new ReactiveVar()
   this.projectStats = new ReactiveVar()
+  this.includeNotBillableTime = new ReactiveVar(false)
   this.autorun(() => {
-    // this.subscribe('topTasks', { projectId: this.data.projectId })
-    // console.log(TopTasks.find({}, { $sort: { count: 1 } }).fetch())
-    Meteor.call('getAllProjectStats', (error, result) => {
+    Meteor.call('getAllProjectStats', { includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived.get() }, (error, result) => {
       if (error) {
         console.error(error)
       } else {
         this.projectStats.set(result)
       }
     })
-    Meteor.call('getTopTasks', { projectId: 'all' }, (error, result) => {
+    Meteor.call('getTopTasks', { projectId: 'all', includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived.get() }, (error, result) => {
       if (error) {
         console.error(error)
       } else {
@@ -32,111 +31,123 @@ Template.allprojectschart.helpers({
     return Template.instance().projectStats.get()
       ? Template.instance().projectStats.get().totalHours : false
   },
+  showNotBillableTime: () => Template.instance().includeNotBillableTime.get(),
 })
-Template.allprojectschart.onRendered(function allprojectschartRendered() {
+Template.allprojectschart.events({
+  'change #showNotBillableTime': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.includeNotBillableTime.set(templateInstance.$(event.currentTarget).is(':checked'))
+  },
+  'change #showArchived': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.data.showArchived.set(templateInstance.$(event.currentTarget).is(':checked'))
+  },
+  'change #limit': (event, templateInstance) => {
+    event.preventDefault()
+    FlowRouter.setQueryParams({ limit: templateInstance.$(event.currentTarget).val() })
+  },
+})
+Template.allprojectschart.onRendered(() => {
   const templateInstance = Template.instance()
-  let precision = 2
-  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-    precision = Meteor.user().profile.precision ? Meteor.user().profile.precision : 2
-  }
-  import('chart.js').then((chartModule) => {
-    const Chart = chartModule.default
-    this.autorun(() => {
-      if (this.subscriptionsReady()) {
-        if (templateInstance.projectStats.get()) {
-          this.$('.js-hour-chart').remove()
-          this.$('.js-chart-container').html('<canvas class="js-hour-chart"></canvas>')
+  const precision = getUserSetting('precision')
+  templateInstance.autorun(() => {
+    templateInstance.$('#limit').val(FlowRouter.getQueryParam('limit') ? FlowRouter.getQueryParam('limit') : 25)
+  })
+  templateInstance.autorun(() => {
+    if (templateInstance.subscriptionsReady()) {
+      if (templateInstance.projectStats.get()) {
+        import('frappe-charts').then((chartModule) => {
+          const { Chart } = chartModule
           const stats = templateInstance.projectStats.get()
-          if (Meteor.user().profile.timeunit === 'd') {
-            stats.beforePreviousMonthHours
-              /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
-            stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-              .toFixed(precision)
-            stats.previousMonthHours
-              /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
-            stats.previousMonthHours = Number(stats.previousMonthHours)
-              .toFixed(precision)
-            stats.currentMonthHours
-              /= Meteor.user().profile.hoursToDays
-                ? Meteor.user().profile.hoursToDays : 8
-            stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-          }
-          if (this.$('.js-hour-chart')[0]) {
-            const ctx = this.$('.js-hour-chart')[0].getContext('2d')
-            templateInstance.chart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels:
-                [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
-                datasets: [{
-                  fill: true,
-                  lineTension: 0.1,
-                  backgroundColor: hex2rgba('#009688', 40), // 'rgba(75,192,192,0.4)',
-                  borderColor: hex2rgba('#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                  borderWidth: 0,
-                  borderCapStyle: 'butt',
-                  borderDash: [],
-                  borderDashOffset: 0.0,
-                  borderJoinStyle: 'miter',
-                  pointBorderColor: hex2rgba('#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                  pointBackgroundColor: '#fff',
-                  pointBorderWidth: 1,
-                  pointHoverRadius: 5,
-                  pointHoverBackgroundColor: hex2rgba('#009688', 80), // 'rgba(0, 150, 136, 0.8)',
-                  pointHoverBorderColor: 'rgba(220,220,220,1)',
-                  pointHoverBorderWidth: 2,
-                  pointRadius: 1,
-                  pointHitRadius: 10,
-                  spanGaps: false,
-                  data:
-                  [stats.beforePreviousMonthHours,
-                    stats.previousMonthHours,
-                    stats.currentMonthHours],
-                }],
-              },
-              options: {
-                legend: {
-                  display: false,
-                },
-                aspectRatio: 3.2,
-                scales: {
-                  yAxes: [{ display: false }],
-                },
-              },
+          if (stats) {
+            if (getUserSetting('timeunit') === 'd') {
+              stats.beforePreviousMonthHours
+                  /= getUserSetting('hoursToDays')
+              stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+                .toFixed(precision)
+              stats.previousMonthHours
+                  /= getUserSetting('hoursToDays')
+              stats.previousMonthHours = Number(stats.previousMonthHours)
+                .toFixed(precision)
+              stats.currentMonthHours
+                  /= getUserSetting('hoursToDays')
+              stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+            }
+            if (getUserSetting('timeunit') === 'm') {
+              stats.beforePreviousMonthHours *= 60
+              stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+                .toFixed(precision)
+              stats.previousMonthHours *= 60
+              stats.previousMonthHours = Number(stats.previousMonthHours)
+                .toFixed(precision)
+              stats.currentMonthHours *= 60
+              stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+            }
+            if (templateInstance.chart) {
+              templateInstance.chart.destroy()
+            }
+            window.requestAnimationFrame(() => {
+              if (templateInstance.$('.js-chart-container')[0] && templateInstance.$('.js-chart-container').is(':visible')) {
+                templateInstance.chart = new Chart(templateInstance.$('.js-chart-container')[0], {
+                  type: 'line',
+                  height: 160,
+                  colors: ['#009688'],
+                  lineOptions: {
+                    regionFill: 1,
+                  },
+                  data: {
+                    labels:
+                  [stats.beforePreviousMonthName,
+                    stats.previousMonthName,
+                    stats.currentMonthName],
+                    datasets: [{
+                      values:
+                    [stats.beforePreviousMonthHours,
+                      stats.previousMonthHours,
+                      stats.currentMonthHours],
+                    }],
+                  },
+                  tooltipOptions: {
+                    formatTooltipY: (value) => `${value} ${getUserTimeUnitVerbose()}`,
+                  },
+                })
+              }
             })
           }
-          if (templateInstance.topTasks.get()) {
-            this.$('.js-pie-chart-top-tasks').remove()
-            this.$('.js-pie-chart-container').html('<canvas class="js-pie-chart-top-tasks"></canvas>')
-            if (this.$('.js-pie-chart-top-tasks')[0]) {
-              const ctx = this.$('.js-pie-chart-top-tasks')[0].getContext('2d')
-              this.piechart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                  labels: templateInstance.topTasks.get().map((task) => task._id),
-                  datasets: [{
-                    backgroundColor: [hex2rgba('#009688', 40), 'rgba(0, 150, 136, 0.6)', '#e4e4e4'],
-                    borderWidth: 0,
-                    data: templateInstance.topTasks.get().map((task) => task.count),
-                  }],
-                },
-                options: {
-                  legend: {
-                    display: false,
-                  },
-                },
-              })
-            }
-          }
-        }
+        })
       }
-    })
+      if (templateInstance.topTasks.get() && templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
+        import('frappe-charts').then((chartModule) => {
+          window.requestAnimationFrame(() => {
+            const { Chart } = chartModule
+            if (templateInstance.piechart) {
+              templateInstance.piechart.destroy()
+            }
+            templateInstance.piechart = new Chart(templateInstance.$('.js-pie-chart-container')[0], {
+              type: 'pie',
+              colors: ['#009688', '#455A64', '#e4e4e4'],
+              height: 230,
+              data: {
+                labels: templateInstance.topTasks.get().map((task) => task._id),
+                datasets: [{
+                  values: templateInstance.topTasks.get().map((task) => task.count),
+                }],
+              },
+              tooltipOptions: {
+              },
+            })
+          })
+        })
+      }
+    }
   })
 })
 Template.allprojectschart.onDestroyed(() => {
-  if (Template.instance().chart) {
-    Template.instance().chart.destroy()
+  const templateInstance = Template.instance()
+  if (templateInstance.chart) {
+    templateInstance.chart.destroy()
+  }
+  if (templateInstance.piechart) {
+    templateInstance.piechart.destroy()
   }
 })

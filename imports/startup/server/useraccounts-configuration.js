@@ -1,5 +1,5 @@
 import { Accounts } from 'meteor/accounts-base'
-import { AccountsAnonymous } from 'meteor/brettle:accounts-anonymous'
+// import { AccountsAnonymous } from 'meteor/faburem:accounts-anonymous'
 import dockerNames from 'docker-names'
 import initNewUser from '../../api/projects/setup.js'
 
@@ -25,3 +25,6 @@ Accounts.onCreateUser((options, user) => {
   }
   return localUser
 })
+Accounts.emailTemplates.from = 'titra <no-reply@titra.io>'
+Accounts.emailTemplates.enrollAccount.subject = (user) => `Welcome to Awesome Town, ${user.profile.name}`
+Accounts.emailTemplates.resetPassword.from = () => 'titra Password Reset <no-reply@titra.io>'

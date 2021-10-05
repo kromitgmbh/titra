@@ -1,74 +1,261 @@
 <template name="administration">
     <ul class="nav nav-tabs" id="administration-tab-pane" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true">{{t "administration.users"}}</a>
-        </li>
-        <!-- <li class="nav-item">
-          <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">{{t "details.daily"}}</a>
+            <a class="nav-link active" id="daily-tab" data-bs-toggle="tab" href="#globalsettings" role="tab" aria-controls="globalsettings" aria-selected="true">{{t "settings.global_settings"}}</a>
+          </li> 
+        <li class="nav-item">
+          <a class="nav-link" id="users-tab" data-bs-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">{{t "administration.users"}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="time-period-tab" data-toggle="tab" href="#time-period" role="tab" aria-controls="time-period" aria-selected="false">{{t "details.total"}}</a>
+            <a class="nav-link" id="customfields-tab" data-bs-toggle="tab" href="#customfields" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.customfields"}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="working-time-tab" data-toggle="tab" href="#working-time" role="tab" aria-controls="working-time" aria-selected="false">{{t "tracktime.working_time"}}</a>
-        </li> -->
+            <a class="nav-link" id="extensions-tab" data-bs-toggle="tab" href="#extensions" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.extensions"}}</a>
+        </li>
     </ul>
     <div class="tab-content" id="administration-content">
-        <div class="tab-pane fade show active table-responsive p-3 tab-borders" id="users">
-            <div class="card form-group">
-                <div class="card-header">
-                    <a href="#" class="text-reset text-decoration-none week-row" data-toggle="collapse" data-target="#createUser" id="retrieveChangeLog"> {{t "administration.create_user"}} <i class="float-right fa fa-chevron-right"></i></a>
-                </div>
-                <div class="card-block collapse" id="createUser">
-                    <form class="form-inline">
-                        <label class="sr-only">{{t "globals.name"}}</label>
-                        <input class="form-control mr-sm-2" placeholder='{{t "globals.name"}}' type="text" name="name" id="name"/>
-                        <label class="sr-only">{{t "globals.email"}}</label>
-                        <input class="form-control mr-sm-2" placeholder='{{t "globals.email"}}' type="email" name="email" id="email"/>
-                        <div class="input-group mr-sm-2">
-                            <input class="form-control" placeholder='{{t "login.password"}}' type="text" name="password" id="password"/>
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-dark js-generate-password" type="button"><i class="fa fa-random"></i></button>
-                            </div>
-                        </div>
-                        <div class="form-check mr-sm-2">
-                            <input class="form-check-input" type="checkbox" id="isAdmin">
-                            <label class="form-check-label" for="isAdmin">
-                            {{t "administration.admin"}}
-                            </label>
-                        </div>
-                        <button class="btn btn-primary" id="js-create-user">{{t "administration.create"}}</button>
-                    </form>
-                </div>
-            </div>
+        <div class="tab-pane fade show active table-responsive p-3 tab-borders" id="globalsettings">
             <div class="table-responsive">
                 <table class="table">
-                    <tr>
-                        <th>{{t "settings.avatar"}}</th>
-                        <th>{{t "globals.name"}}</th>
-                        <th>{{t "globals.email"}}</th>
-                        <th>{{t "administration.admin"}}</th>
-                        <th>{{t "administration.creation_date"}}</th>
-                        <th>{{t "tracktime.actions"}}</th>
-                    </tr>
-                    {{#each user in users}}
+                    <thead>
                         <tr>
-                            <td>{{{avatar(user)}}}</td>
-                            <td>{{user.profile.name}}</td>
-                            <td>{{user.emails.[0].address}}</td>
-                            <td class="text-center">
-                                {{#if user.isAdmin}}
-                                    <a href="#" class="js-remove-admin" data-id="{{user._id}}" data-title="Remove admin"><i class="fa fa-check-square-o"></i></a>
-                                {{else}}
-                                    <a href="#" class="js-make-admin" data-id="{{user._id}}" data-title="Add admin"><i class="fa fa-square-o"></i></a>
-                                {{/if}}
-                            </td>
-                            <td>{{moment(user.createdAt)}}</td>
-                            <td class="text-center"><a href="#" class="js-delete" data-id="{{user._id}}"><i class="fa fa-trash"></i></a></td>
+                            <th scope="col">{{t "globals.name"}}</th>
+                            <th scope="col">{{t "administration.value"}}</th>
+                            <th scope="col">{{t "tracktime.actions"}}</th>
                         </tr>
-                    {{/each}}
+                    </thead>
+                    <tbody>
+                        {{#each setting in globalsettings}}
+                            <tr>
+                                <td>{{t setting.description}}</td>
+                                <td>
+                                    {{#if isTextArea setting}}
+                                        <textarea id="{{setting.name}}" name="{{setting.name}}" value="{{setting.value}}" class="form-control js-setting-input"></textarea>
+                                    {{else}}
+                                        <input id="{{setting.name}}" name="{{setting.name}}" type="{{setting.type}}" value="{{stringify setting.value}}" class="form-control js-setting-input"/>
+                                    {{/if}}
+                                </td>
+                                <td><button type="button" class="btn js-reset" data-setting-name="{{setting.name}}"><i class="fa fa-undo" title='{{t "settings.reset"}}'></i></button></td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
                 </table>
             </div>
+            <div class="card">
+                <div class="card-body">
+                   <small>{{t "administration.globalsettings_help"}} <a href="https://titra.io/en/wiki/global-settings/" target="_blank">wiki</a>.</small>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-3 d-grid">
+                    <button type="button" class="btn btn-danger" id="reset">{{t "settings.reset"}}</button>
+                </div>
+                <div class="col-3 ms-auto d-grid">
+                    <button type="button" class="btn btn-primary js-save float-end">{{t "navigation.save"}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="users">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <a href="#" class="text-reset text-decoration-none week-row" data-bs-toggle="collapse" data-bs-target="#createUser"> {{t "administration.create_user"}} <i class="float-end fa fa-chevron-right"></i></a>
+                </div>
+                <div class="card-block collapse" id="createUser">
+                    <div class="container">
+                        <form class="row">
+                            <div class="col-lg-3 mb-3 mb-lg-0">
+                                <div class="form-floating">
+                                    <input class="form-control" placeholder='{{t "globals.name"}}' type="text" name="name" id="name"/>
+                                    <label class="form-label">{{t "globals.name"}}</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3 mb-lg-0">
+                                <div class="form-floating">
+                                    <input class="form-control" placeholder='{{t "globals.email"}}' type="email" name="email" id="email"/>
+                                    <label class="form-label">{{t "globals.email"}}</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 mb-3 mb-lg-0">
+                                <div class="input-group form-floating">
+                                    <input class="form-control" placeholder='{{t "login.password"}}' type="text" name="password" id="password"/>
+                                    <button type="button" class="btn btn-outline-dark js-generate-password"><i class="fa fa-random"></i></button>
+                                    <label class="form-label">{{t "login.password"}}</label>
+                                </div>
+                            </div>
+                            <div class="col-auto mb-3 mb-lg-0">
+                                <div class="form-check mt-lg-3">
+                                    <input class="form-check-input" type="checkbox" id="isAdmin">
+                                    <label class="form-check-label" for="isAdmin">{{t "administration.admin"}}</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-1">
+                                <button type="button" class="btn btn-primary btn-lg mt-lg-2" id="js-create-user">{{t "administration.create"}}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {{>limitpicker}}
+            <br/>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{t "settings.avatar"}}</th>
+                            <th>{{t "globals.name"}}</th>
+                            <th>{{t "globals.email"}}</th>
+                            <th>{{t "administration.admin"}}</th>
+                            <th>{{t "administration.creation_date"}}</th>
+                            <th>{{t "tracktime.actions"}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each user in users}}
+                            <tr>
+                                <td>{{{avatar(user)}}}</td>
+                                <td>{{user.profile.name}}</td>
+                                <td>{{user.emails.[0].address}}</td>
+                                <td class="text-center">
+                                    {{#if user.isAdmin}}
+                                        <a href="#" class="js-remove-admin" data-id="{{user._id}}" title="Remove admin"><i class="fa fa-check-square"></i></a>
+                                    {{else}}
+                                        <a href="#" class="js-make-admin" data-id="{{user._id}}" title="Add admin"><i class="far fa-square"></i></a>
+                                    {{/if}}
+                                </td>
+                                <td>{{dayjs(user.createdAt)}}</td>
+                                <td class="text-center"><a href="#" class="js-delete" data-id="{{user._id}}"><i class="fa fa-trash"></i></a></td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="customfields">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <a href="#" class="text-reset text-decoration-none" data-bs-toggle="collapse" data-bs-target="#addCustomField"> {{t "administration.addcustomfield"}} <i class="float-end fa fa-chevron-right"></i></a>
+                </div>
+                <div class="card-block collapse" id="addCustomField">
+                    <div class="mb-3 form-floating">
+                        <select class="form-control" id="customfieldClassname" required placeholder="{{t 'globals.class'}}">
+                            <option value="project">{{t "globals.project"}}</option>
+                            <option value="time_entry">{{t "globals.time_entry"}}</option>
+                        </select>
+                        <label for="customfieldClassname" class="form-label">{{t "globals.class"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="customfieldName" required placeholder="{{t 'globals.name'}}">
+                        <label for="customfieldName" class="form-label">{{t "globals.name"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="customfieldDesc" placeholder="{{t 'globals.description'}}">
+                        <label for="customfieldDesc" class="form-label">{{t "globals.description"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <select class="form-control" id="customfieldType" required>
+                            <option value="date">Date</option>
+                            <option value="number">Number</option>
+                            <option value="text" selected>String</option>
+                            <option value="email">E-Mail</option>
+                            <option value="color">Color</option>
+                        </select>
+                        <label for="customfieldType" class="form-label">{{t "globals.type"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" id="customfieldPossibleValues" type="text" required placeholder="{{t 'administration.possible_values'}}"/>
+                        <label for="customfieldPossibleValues" class="form-label">{{t "administration.possible_values"}}</label>
+                        <span class="form-text">{{t "administration.possible_values_hint"}}</span>
+                    </div>
+                    <div class="col-lg-1">
+                        <button type="button" class="btn btn-primary js-create-customfield">{{t "administration.create"}}</button>
+                    </div>
+                </div>
+            </div>
+            {{#if customfields}}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>{{t "globals.class"}}</th>
+                                <th>{{t "globals.name"}}</th>
+                                <th>{{t "globals.description"}}</th>
+                                <th>{{t "globals.type"}}</th>
+                                <th>{{t "tracktime.actions"}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each customfield in customfields}}
+                                <tr>
+                                    <td>{{getClassName customfield.classname}}</td>
+                                    <td>{{customfield.name}}</td>
+                                    <td>{{customfield.desc}}</td>
+                                    <td>
+                                        {{#if customfield.possibleValues}}
+                                            {{customfield.possibleValues}}
+                                        {{else}}
+                                            {{customfield.type}}
+                                        {{/if}}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="#" class="js-remove-customfield" data-customfield-id="{{customfield._id}}"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            {{else}}
+                <p>{{t "administration.no_customfields"}}</p>
+            {{/if}}
+        </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="extensions">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <a href="#" class="text-reset text-decoration-none"> {{t "administration.addExtension"}}</a>
+                </div>
+                <div class="card-block" id="addExtension">
+                    <label for="extensionFile" class="form-label">{{t "administration.uploadExtension"}}</label>
+                    <input class="form-control" accept="application/zip" type="file" id="extensionFile">
+                    <span class="form-text">{{t "administration.extensionStore"}} <a href='https://titra.io/enterprise' target='_blank'>Extension Store</a>!</span>
+                </div>
+            </div>
+            {{#if extensions}}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>{{t "globals.name"}}</th>
+                                <th>{{t "globals.description"}}</th>
+                                <th>{{t "details.state"}}</th>
+                                <th>{{t "tracktime.actions"}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each extension in extensions}}
+                                <tr>
+                                    <td>{{extension.name}}</td>
+                                    <td>{{extension.description}}</td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input js-extension-state" data-extension-id="{{extension._id}}" type="checkbox" checked="{{extension.isActive}}">
+                                        </div>
+                                </td>
+                                    <td class="text-center">
+                                        <a href="#" class="js-remove-extension" data-extension-id="{{extension._id}}"><i class="fas fa-trash"></i></a>
+                                        <a href="#" class="js-launch-extension"><i class="fas fa-play-circle"></i></a>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="alert alert-info">
+                    {{t "administration.extensionHint"}}
+                </div>
+            {{else}}
+                <p>{{t "administration.no_extensions"}}</p>
+            {{/if}}
         </div>
     </div>
 </template>

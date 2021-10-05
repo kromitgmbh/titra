@@ -13,7 +13,7 @@ Template.customerselect.onRendered(() => {
 
 Template.customerselect.helpers({
   customers() {
-    return Customers.find()
+    return Customers.find({}, { sort: { name: 1 } })
   },
   selected(name) {
     return name === FlowRouter.getQueryParam('customer') ? 'selected' : false

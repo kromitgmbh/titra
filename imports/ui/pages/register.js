@@ -24,7 +24,7 @@ Template.register.events({
       }, (error) => {
         console.error(error)
         if (error && error.error !== 145546287) {
-          templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
+          templateInstance.$('.notification').text(`${i18next.t(`login.${error.error}`)} (${error.reason})`)
           document.querySelector('.notification').classList.toggle('d-none')
         } else {
           FlowRouter.go('projectlist')

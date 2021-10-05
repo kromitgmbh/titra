@@ -74,87 +74,16 @@ Meteor.publish('userTimeCardsForPeriodByProjectByTask', function periodTimecards
     },
   ], { clientCollection: 'clientTimecards' })
 })
-// Meteor.publish('dailyTimeCardsForUserByPeriod', function getDailyTimecards({
-//   projectId,
-//   userId,
-//   period,
-//   customer,
-//   limit,
-//   page,
-// }) {
-//   check(projectId, String)
-//   check(period, String)
-//   check(userId, String)
-//   check(customer, String)
-//   check(limit, Number)
-//   check(page, Match.Maybe(Number))
-//   checkAuthentication(this)
-//   const aggregationSelector = buildDailyHoursSelector(projectId, period, userId, customer, limit, page)
-//   // const dailyHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector))
-//   const totalEntries = Promise.await(Timecards.rawCollection()
-//     .aggregate(buildDailyHoursSelector(projectId, period, userId, customer, 0))
-//     .toArray()).length
-//   aggregationSelector.push({ $addFields: { totalEntries } })
-//   aggregationSelector.splice(1, 1)
-//   return ReactiveAggregate(this, Timecards, aggregationSelector, { clientCollection: 'clientTimecards' })
-// })
-// getTotalHoursForPeriod({
-//   projectId,
-//   userId,
-//   period,
-//   customer,
-//   limit,
-//   page,
-// }) {
-//   check(projectId, String)
-//   check(period, String)
-//   check(userId, String)
-//   check(customer, String)
-//   check(limit, Number)
-//   check(page, Match.Maybe(Number))
-//   checkAuthentication(this)
-//   const aggregationSelector = buildTotalHoursForPeriodSelector(projectId, period, userId, customer, limit, page)
-//   const totalHoursObject = {}
-//   const totalEntries = Promise.await(Timecards.rawCollection()
-//     .aggregate(buildTotalHoursForPeriodSelector(projectId, period, userId, customer, 0))
-//     .toArray()).length
-//   const totalHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
-//     .toArray()).map(totalHoursForPeriodMapper)
-//   totalHoursObject.totalHours = totalHours
-//   totalHoursObject.totalEntries = totalEntries
-//   return totalHoursObject
-// },
-// getWorkingHoursForPeriod({
-//   projectId,
-//   userId,
-//   period,
-//   limit,
-//   page,
-// }) {
-//   check(projectId, String)
-//   check(period, String)
-//   check(userId, String)
-//   check(limit, Number)
-//   check(page, Match.Maybe(Number))
-//   const aggregationSelector = buildworkingTimeSelector(projectId, period, userId, limit, page)
-//   const totalEntries = Promise.await(
-//     Timecards.rawCollection()
-//       .aggregate(buildworkingTimeSelector(projectId, period, userId, 0)).toArray(),
-//   ).length
-//   const workingHoursObject = {}
-//   workingHoursObject.totalEntries = totalEntries
-//   const workingHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
-//     .toArray()).map(workingTimeEntriesMapper)
-//   workingHoursObject.workingHours = workingHours
-//   return workingHoursObject
-// },
-// })
 Meteor.publish('myTimecardsForDate', function myTimecardsForDate({ date }) {
   check(date, String)
   checkAuthentication(this)
+  const startDate = new Date(date)
+  const endDate = new Date(date)
+  startDate.setHours(0)
+  endDate.setHours(23, 59)
   return Timecards.find({
     userId: this.userId,
-    date: new Date(date),
+    date: { $gte: startDate, $lte: endDate },
   })
 })
 Meteor.publish('getDetailedTimeEntriesForPeriodCount', function getDetailedTimeEntriesForPeriodCount({
@@ -162,17 +91,23 @@ Meteor.publish('getDetailedTimeEntriesForPeriodCount', function getDetailedTimeE
   userId,
   customer,
   period,
+  dates,
   search,
 }) {
   check(projectId, String)
   check(userId, String)
   check(customer, String)
   check(period, String)
+  if (period === 'custom') {
+    check(dates, Object)
+    check(dates.startDate, Date)
+    check(dates.endDate, Date)
+  }
   check(search, Match.Maybe(String))
   let count = 0
   let initializing = true
   const selector = buildDetailedTimeEntriesForPeriodSelector({
-    projectId, search, customer, period, userId,
+    projectId, search, customer, period, dates, userId,
   })
   const handle = Timecards.find(selector[0], selector[1]).observeChanges({
     added: () => {
@@ -200,6 +135,7 @@ Meteor.publish('getDetailedTimeEntriesForPeriod', function getDetailedTimeEntrie
   userId,
   customer,
   period,
+  dates,
   search,
   sort,
   limit,
@@ -211,6 +147,11 @@ Meteor.publish('getDetailedTimeEntriesForPeriod', function getDetailedTimeEntrie
   check(period, String)
   check(search, Match.Maybe(String))
   check(sort, Match.Maybe(Object))
+  if (period === 'custom') {
+    check(dates, Object)
+    check(dates.startDate, Date)
+    check(dates.endDate, Date)
+  }
   if (sort) {
     check(sort.column, Number)
     check(sort.order, String)
@@ -219,7 +160,7 @@ Meteor.publish('getDetailedTimeEntriesForPeriod', function getDetailedTimeEntrie
   check(page, Match.Maybe(Number))
   checkAuthentication(this)
   const selector = buildDetailedTimeEntriesForPeriodSelector({
-    projectId, search, customer, period, userId, limit, page, sort,
+    projectId, search, customer, period, dates, userId, limit, page, sort,
   })
   return Timecards.find(selector[0], selector[1])
 })

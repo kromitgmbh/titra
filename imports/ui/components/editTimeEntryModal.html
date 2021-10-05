@@ -11,17 +11,10 @@
                     {{t "navigation.track"}}
                 {{/if}}
                 </h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
               </button>
             </div>
-            <div class="modal-body">
-              {{#if isEdit}}
-                {{>tracktime tcid=tcid}}
-              {{/if}}
-              {{#if isNewEntry}}
-                {{>tracktime dateArg=selectedDate projectIdArg=selectedProjectId}}
-              {{/if}}
+            <div class="modal-body" id="editTimeEntryModalBody">
             </div>
           </div>
         </div>

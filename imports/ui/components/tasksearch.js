@@ -1,11 +1,13 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { DDP } from 'meteor/ddp-client'
 import { Mongo } from 'meteor/mongo'
-import { HTTP } from 'meteor/http'
 import './tasksearch.html'
+import './taskSelectPopup.js'
+import i18next from 'i18next'
 import Tasks from '../../api/tasks/tasks.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
+import { getGlobalSetting, getUserSetting, showToast } from '../../utils/frontend_helpers'
 
 Template.tasksearch.events({
   'mousedown .js-tasksearch-result': (event, templateInstance) => {
@@ -24,6 +26,16 @@ Template.tasksearch.events({
   'blur .js-tasksearch-input': (event, templateInstance) => {
     if (!event.relatedTarget) {
       templateInstance.$('.js-tasksearch-results').addClass('d-none')
+    }
+  },
+  'keydown .js-tasksearch-input': (event, templateInstance) => {
+    if (event.keyCode === 13) {
+      event.preventDefault()
+      event.stopPropagation()
+      if ($('#hours') && templateInstance.$('.js-tasksearch-input').val()) {
+        templateInstance.$('.js-tasksearch-results').addClass('d-none')
+        $('#hours').focus()
+      }
     }
   },
   'keyup .js-tasksearch-input': (event, templateInstance) => {
@@ -64,6 +76,7 @@ Template.tasksearch.events({
 Template.tasksearch.onCreated(function tasksearchcreated() {
   this.filter = new ReactiveVar()
   this.wekanAPITasks = new ReactiveVar()
+  this.zammadAPITasks = new ReactiveVar()
   // this.lastTimecards = new ReactiveVar()
   this.autorun(() => {
     let tcid
@@ -88,48 +101,82 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
             const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
             this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
             ddpcon.subscribe('board', 'sandstorm')
-          } else if (project.selectedWekanList) {
-            const authToken = project.wekanurl.match(/authToken=(.*)/)[1]
+          } else if (project.selectedWekanSwimlanes?.length > 0) {
+            const authToken = project?.wekanurl?.match(/authToken=(.*)/)[1]
             const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
-
-            try {
-              HTTP.get(`${url}lists/${project.selectedWekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }, (innerError, innerResult) => {
-                if (innerError) {
-                  console.error(innerError)
-                } else {
-                  this.wekanAPITasks.set(innerResult.data)
-                }
+            const wekanAPITasks = []
+            for (const swimlane of project.selectedWekanSwimlanes) {
+              window.fetch(`${url}swimlanes/${swimlane}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((innerResult) => {
+                Array.prototype.push.apply(wekanAPITasks, innerResult)
+                this.wekanAPITasks.set(wekanAPITasks)
+              }).catch((error) => {
+                showToast(i18next.t('notifications.wekan_error'))
               })
-            } catch (error) {
-              console.error(error)
+            }
+          } else if (project.selectedWekanList?.length > 0) {
+            let wekanLists = []
+            if (typeof project.selectedWekanList === 'string') {
+              wekanLists.push(project.selectedWekanList)
+            } else if (project.selectedWekanList instanceof Array) {
+              wekanLists = project.selectedWekanList
+            }
+            const authToken = project?.wekanurl?.match(/authToken=(.*)/)[1]
+            const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
+            const wekanAPITasks = []
+            for (const wekanList of wekanLists) {
+              window.fetch(`${url}lists/${wekanList}/cards`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((innerResult) => {
+                Array.prototype.push.apply(wekanAPITasks, innerResult)
+                this.wekanAPITasks.set(wekanAPITasks)
+              }).catch((error) => {
+                showToast(i18next.t('notifications.wekan_error'))
+              })
             }
           }
         }
       }
     }
-    this.subscribe('mytasks', this.filter.get() ? this.filter.get() : '')
+  })
+  this.autorun(() => {
+    if (!this.zammadAPITasks.get() && getGlobalSetting('enableZammad') && getUserSetting('zammadurl') && getUserSetting('zammadtoken')) {
+      window.fetch(`${getUserSetting('zammadurl')}api/v1/tickets`, { headers: { Authorization: `Token token=${getUserSetting('zammadtoken')}` } }).then((response) => response.json()).then((result) => {
+        this.zammadAPITasks.set(result)
+      }).catch((error) => {
+        showToast(i18next.t('notifications.zammad_error'))
+      })
+    }
+  })
+  this.autorun(() => {
+    this.subscribe('mytasks', { filter: this.filter.get(), projectId: this.data.projectId.get() ? this.data.projectId.get() : FlowRouter.getParam('projectId') })
   })
 })
 Template.tasksearch.helpers({
   tasks: () => {
     if (!Template.instance().filter.get() || Template.instance().filter.get() === '') {
-      return Tasks.find({}, { sort: { lastUsed: -1 }, limit: 3 })
+      return Tasks.find({}, { sort: { projectId: -1, lastUsed: -1 }, limit: 3 })
       // return Template.instance().lastTimecards.get()
     }
     const finalArray = []
+    const wekanAPITasks = Template.instance().wekanAPITasks.get()
+    const zammadAPITasks = Template.instance().zammadAPITasks.get()
     const regex = `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`
     if (Template.instance().wekanTasks) {
       const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: regex, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: 5 })
       if (wekanResult.count() > 0) {
         finalArray.push(...wekanResult.map((elem) => ({ name: elem.title, wekan: true })))
       }
-    } else if (Template.instance().wekanAPITasks.get()) {
-      if (Template.instance().wekanAPITasks.get().length > 0) {
+    } else if (wekanAPITasks) {
+      if (wekanAPITasks.length > 0) {
         finalArray.push(...Template.instance().wekanAPITasks.get().map((elem) => ({ name: elem.title, wekan: true })).filter((element) => new RegExp(regex, 'i').exec(element.name)))
       }
     }
-    finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { lastUsed: -1 }, limit: 5 }).fetch())
+    if (zammadAPITasks && zammadAPITasks.length > 0) {
+      finalArray.push(...zammadAPITasks.map((elem) => ({ name: elem.title, zammad: true })).filter((element) => new RegExp(regex, 'i').exec(element.name)))
+    }
+    finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { projectId: -1, lastUsed: -1 }, limit: 5 }).fetch())
     return finalArray.length > 0 ? finalArray.slice(0, 4) : false
   },
   task: () => Template.instance().data.task,
+  projectId: () => Template.instance()?.data?.projectId,
+  displayTaskSelectionIcon: () => (Template.instance()?.data?.projectId
+    ? Template.instance()?.data?.projectId?.get() : false),
 })

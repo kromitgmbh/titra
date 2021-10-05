@@ -1,24 +1,20 @@
 <template name="timecardlist">
-  <div class="card mb-2">
+  <div class="card mb-2 d-print-none">
     <div class="card-header">{{t "details.filter"}}</div>
     <div class="card-body">
       <div class="row">
         <div class="col-sm-3 js-project-filter">
-          <label>{{t "globals.project"}}</label>
           {{>projectselect allProjects = true}}
         </div>
         <div class="col-sm-3">
-          <label>{{t "period.time_period"}}</label>
           {{>periodpicker}}
         </div>
         <div class="col-sm-3">
-          <label>{{t "globals.resource"}}</label>
           {{#with project}}
             {{>resourceselect}}
           {{/with}}
         </div>
         <div class="col-sm-3">
-          <label>{{t "globals.customer"}}</label>
           {{#with project}}
             {{>customerselect}}
           {{/with}}
@@ -26,20 +22,26 @@
       </div>
     </div>
   </div>
-  <ul class="nav nav-tabs" id="tracked-time-display" role="tablist">
+  <ul class="nav nav-tabs d-print-none" id="tracked-time-display" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id="detailed-tab" data-toggle="tab" href="#detailed" role="tab" aria-controls="detailed" aria-selected="true">{{t "details.detailed"}}</a>
+      <a class="nav-link active" id="detailed-tab" data-bs-toggle="tab" href="#detailed" role="tab" aria-controls="detailed" aria-selected="true">{{t "details.detailed"}}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="daily-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">{{t "details.daily"}}</a>
+      <a class="nav-link" id="daily-tab" data-bs-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false">{{t "details.daily"}}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="time-period-tab" data-toggle="tab" href="#time-period" role="tab" aria-controls="time-period" aria-selected="false">{{t "details.total"}}</a>
+      <a class="nav-link" id="time-period-tab" data-bs-toggle="tab" href="#time-period" role="tab" aria-controls="time-period" aria-selected="false">{{t "details.total"}}</a>
     </li>
+    {{#unless getGlobalSetting "useStartTime"}}
+      <li class="nav-item">
+        <a class="nav-link" id="working-time-tab" data-bs-toggle="tab" href="#working-time" role="tab" aria-controls="working-time" aria-selected="false">{{t "tracktime.working_time"}}</a>
+      </li>
+    {{/unless}}
     <li class="nav-item">
-      <a class="nav-link" id="working-time-tab" data-toggle="tab" href="#working-time" role="tab" aria-controls="working-time" aria-selected="false">{{t "tracktime.working_time"}}</a>
+      <a class="nav-link" id="charts-tab" data-bs-toggle="tab" href="#charts" role="tab" aria-controls="charts" aria-selected="false">{{t "details.charts"}}</a>
     </li>
   </ul>
+  <ul class="nav nav-tabs d-print-block d-none"></ul>
   <div class="tab-content" id="tacked-time-content">
     <div class="tab-pane fade show active table-responsive p-3 tab-borders" id="detailed">
       {{#if isActive "detailed-tab"}}
@@ -58,9 +60,16 @@
         {{> periodtimetable project=project resource=resource period=period customer=customer limit=limit}}
       {{/if}}
     </div>
-    <div class="tab-pane fade table-responsive tab-borders p-3" id="working-time">
-      {{#if isActive "working-time-tab"}}
-        {{> workingtimetable project=project resource=resource period=period limit=limit}}
+    {{#unless getGlobalSetting "useStartTime"}}
+      <div class="tab-pane fade table-responsive tab-borders p-3" id="working-time">
+        {{#if isActive "working-time-tab"}}
+          {{> workingtimetable project=project resource=resource period=period limit=limit}}
+        {{/if}}
+      </div>
+    {{/unless}}
+    <div class="tab-pane fade table-responsive tab-borders p-3" id="charts">
+      {{#if isActive "charts-tab"}}
+        {{> dashboard project=project resource=resource period=period customer=customer}}
       {{/if}}
     </div>
   </div>
@@ -69,19 +78,18 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{t "dashboard.share"}}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
           </button>
         </div>
         <div class="modal-body">
-          <div class="form-group">
+          <div class="mb-3">
             <input class="form-control" type="text" id="dashboardURL"/>
           </div>
           <p>{{t "dashboard.copy_instructions"}}<br/>
             <small class="text-muted">{{t "dashboard.security_notice"}}</small></p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary border" data-dismiss="modal">{{t "navigation.close"}}</button>
+          <button type="button" class="btn btn-secondary border" data-bs-dismiss="modal">{{t "navigation.close"}}</button>
           <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
         </div>
       </div>

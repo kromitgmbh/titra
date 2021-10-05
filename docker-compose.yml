@@ -13,6 +13,6 @@ services:
       - "3000:3000"
     restart: always
   mongodb:
-    image: mongo:4.0
+    image: mongo:4.4
     container_name: mongodb
     restart: always

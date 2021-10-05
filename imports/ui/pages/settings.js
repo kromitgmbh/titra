@@ -3,15 +3,12 @@ import { Random } from 'meteor/random'
 import i18next from 'i18next'
 import './settings.html'
 import '../components/backbutton.js'
+import { getUserSetting, showToast } from '../../utils/frontend_helpers'
 
 Template.settings.onCreated(function settingsCreated() {
   this.displayHoursToDays = new ReactiveVar()
   this.autorun(() => {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      if (Meteor.user().profile) {
-        this.displayHoursToDays.set(Meteor.user().profile.timeunit === 'd')
-      }
-    }
+    this.displayHoursToDays.set(getUserSetting('timeunit') === 'd')
   })
 })
 Template.settings.onRendered(function settingsRendered() {
@@ -19,58 +16,33 @@ Template.settings.onRendered(function settingsRendered() {
   templateInstance.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
         && Meteor.user().profile && this.subscriptionsReady()) {
-      templateInstance.$('#timeunit').val(Meteor.user().profile.timeunit ? Meteor.user().profile.timeunit : 'h')
-      templateInstance.$('#timetrackview').val(Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd')
-      templateInstance.$('#dailyStartTime').val(Meteor.user().profile.dailyStartTime ? Meteor.user().profile.dailyStartTime : '09:00')
-      templateInstance.$('#breakStartTime').val(Meteor.user().profile.breakStartTime ? Meteor.user().profile.breakStartTime : '12:00')
-      templateInstance.$('#breakDuration').val(Meteor.user().profile.breakDuration ? Meteor.user().profile.breakDuration : 0.5)
-      templateInstance.$('#regularWorkingTime').val(Meteor.user().profile.regularWorkingTime ? Meteor.user().profile.regularWorkingTime : 8)
+      templateInstance.$('#timeunit').val(getUserSetting('timeunit'))
+      templateInstance.$('#timetrackview').val(getUserSetting('timetrackview'))
+      templateInstance.$('#dailyStartTime').val(getUserSetting('dailyStartTime'))
+      templateInstance.$('#breakStartTime').val(getUserSetting('breakStartTime'))
+      templateInstance.$('#breakDuration').val(getUserSetting('breakDuration'))
+      templateInstance.$('#regularWorkingTime').val(getUserSetting('regularWorkingTime'))
     }
   })
 })
 
 Template.settings.helpers({
-  unit() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.unit ? Meteor.user().profile.unit : '$'
-    }
-    return false
-  },
-  dailyStartTime: () => (Meteor.user() ? Meteor.user().profile.dailyStartTime : '09:00'),
-  breakStartTime: () => (Meteor.user() ? Meteor.user().profile.breakStartTime : '12:00'),
-  breakDuration: () => (Meteor.user() ? Meteor.user().profile.breakDuration : 1),
-  regularWorkingTime: () => (Meteor.user() ? Meteor.user().profile.regularWorkingTime : 8),
-
-  precision() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.precision ? Meteor.user().profile.precision : '2'
-    }
-    return false
-  },
-  timetrackview() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.timetrackview ? Meteor.user().profile.timetrackview : 'd'
-    }
-    return false
-  },
-  hoursToDays() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.hoursToDays ? Meteor.user().profile.hoursToDays : 8
-    }
-    return false
-  },
+  unit: () => getUserSetting('unit'),
+  dailyStartTime: () => getUserSetting('dailyStartTime'),
+  breakStartTime: () => getUserSetting('breakStartTime'),
+  breakDuration: () => getUserSetting('breakDuration'),
+  regularWorkingTime: () => getUserSetting('regularWorkingTime'),
+  precision: () => getUserSetting('precision'),
+  timetrackview: () => getUserSetting('timetrackview'),
+  hoursToDays: () => getUserSetting('hoursToDays'),
   displayHoursToDays: () => Template.instance().displayHoursToDays.get(),
-  enableWekan() {
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile ? Meteor.user().profile.enableWekan : false
-    }
-    return false
-  },
-  siwappurl: () => (Meteor.user() ? Meteor.user().profile.siwappurl : false),
-  siwapptoken: () => (Meteor.user() ? Meteor.user().profile.siwapptoken : false),
-  titraAPItoken: () => (Meteor.user() ? Meteor.user().profile.APItoken : false),
+  enableWekan: () => getUserSetting('enableWekan'),
+  siwappurl: () => getUserSetting('siwappurl'),
+  siwapptoken: () => getUserSetting('siwapptoken'),
+  titraAPItoken: () => getUserSetting('APItoken'),
+  zammadurl: () => getUserSetting('zammadurl'),
+  zammadtoken: () => getUserSetting('zammadtoken'),
 })
-
 
 Template.settings.events({
   'click .js-save': (event, templateInstance) => {
@@ -89,12 +61,14 @@ Template.settings.events({
       siwapptoken: templateInstance.$('#siwapptoken').val(),
       siwappurl: templateInstance.$('#siwappurl').val(),
       APItoken: templateInstance.$('#titraAPItoken').val(),
+      zammadtoken: templateInstance.$('#zammadtoken').val(),
+      zammadurl: templateInstance.$('#zammadurl').val(),
     },
     (error) => {
       if (error) {
-        $.notify({ message: i18next.t(error.error) }, { type: 'danger' })
+        showToast(i18next.t(error.error))
       } else {
-        $.notify(i18next.t('notifications.settings_saved_success'))
+        showToast(i18next.t('notifications.settings_saved_success'))
         templateInstance.$('#imagePreview').hide()
       }
     })
@@ -107,5 +81,15 @@ Template.settings.events({
     Template.instance().displayHoursToDays.set(
       templateInstance.$('#timeunit').val() === 'd',
     )
+  },
+  'click .js-reset': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('resetUserSettings', (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        showToast(i18next.t('notifications.settings_saved_success'))
+      }
+    })
   },
 })

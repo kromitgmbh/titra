@@ -9,6 +9,7 @@ import '../components/periodtimetable.js'
 import '../components/workingtimetable.js'
 import '../components/detailtimetable'
 import '../components/weektable.js'
+import './dashboard.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {
   this.project = new ReactiveVar()
@@ -27,7 +28,14 @@ Template.timecardlist.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && window.BootstrapLoaded.get()) {
-      $('[data-toggle="tooltip"]').tooltip()
+      window.requestAnimationFrame(() => {
+        if (templateInstance.$('[data-bs-toggle="tooltip"]').get(0)) {
+          templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
+            container: templateInstance.firstNode,
+            trigger: 'hover focus',
+          })
+        }
+      })
     }
     if (FlowRouter.getParam('projectId')) {
       templateInstance.project.set(FlowRouter.getParam('projectId'))
@@ -92,7 +100,7 @@ Template.timecardlist.events({
   'change #customerselect': (event, templateInstance) => {
     FlowRouter.setQueryParams({ customer: templateInstance.$(event.currentTarget).val() })
   },
-  'click .nav-link[data-toggle]': (event, templateInstance) => {
+  'click .nav-link[data-bs-toggle]': (event, templateInstance) => {
     FlowRouter.setQueryParams({ activeTab: templateInstance.$(event.currentTarget)[0].id })
   },
 })
