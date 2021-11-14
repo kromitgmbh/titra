@@ -25,7 +25,7 @@ function validateWekanUrl() {
   templateInstance.$('#wekan-status').html('<i class="fa fa-spinner fa-spin"></i>')
   templateInstance.$('#wekanurl').prop('disabled', true)
   window.fetch(`${url}lists`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((result) => {
-    templateInstance.$('#wekan-status').removeClass()
+    templateInstance.$('#wekan-status').removeClass('is-invalid')
     templateInstance.$('#wekanurl').prop('disabled', false)
     if (!result || result.error) {
       templateInstance.$('#wekanurl').addClass('is-invalid')
@@ -92,7 +92,7 @@ function validateWekanUrl() {
     templateInstance.$('#wekan-status').html('check')
   })
   window.fetch(`${url}swimlanes`, { headers: { Authorization: `Bearer ${authToken}` } }).then((response) => response.json()).then((result) => {
-    templateInstance.$('#wekan-status').removeClass()
+    templateInstance.$('#wekan-status').removeClass('is-invalid')
     templateInstance.$('#wekanurl').prop('disabled', false)
     if (!result || result.error) {
       templateInstance.$('#wekanurl').addClass('is-invalid')
