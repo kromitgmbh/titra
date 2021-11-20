@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import i18next from 'i18next'
 import { NodeVM } from 'vm2'
-import fetch from 'node-fetch'
+import fetch from 'meteor/fetch'
 import { check, Match } from 'meteor/check'
 import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'

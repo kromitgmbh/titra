@@ -40,9 +40,9 @@ Meteor.methods({
     const previousMonthEnd = dayjs.utc().subtract('1', 'month').endOf('month')
     const beforePreviousMonthStart = dayjs.utc().subtract('2', 'month').startOf('month')
     const beforePreviousMonthEnd = dayjs.utc().subtract('2', 'month').endOf('month')
-
+    totalHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{$match: { projectId: { $in: projectList } }}, {$group:{_id: null, totalHours:{$sum: "$hours"}}}]).toArray())[0]?.totalHours)
     for (const timecard of
-      Timecards.find({ projectId: { $in: projectList } }).fetch()) {
+      Timecards.find({ projectId: { $in: projectList }, date: { $gte: beforePreviousMonthStart.toDate()} }).fetch()) {
       if (dayjs.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
         currentMonthHours += Number.parseFloat(timecard.hours)
       } else if (dayjs.utc(new Date(timecard.date))
@@ -52,7 +52,6 @@ Meteor.methods({
         .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
         beforePreviousMonthHours += Number.parseFloat(timecard.hours)
       }
-      totalHours += Number.parseFloat(timecard.hours)
     }
     return {
       totalHours,
