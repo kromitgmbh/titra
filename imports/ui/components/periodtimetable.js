@@ -1,4 +1,3 @@
-import i18next from 'i18next'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { saveAs } from 'file-saver'
@@ -7,8 +6,8 @@ import { NullXlsx } from '@neovici/nullxlsx'
 import './periodtimetable.html'
 import './pagination.js'
 import './limitpicker.js'
+import { i18nReady, t } from '../../utils/i18n.js'
 import {
-  i18nextReady,
   numberWithUserPrecision,
   getUserSetting,
   getUserTimeUnitVerbose,
@@ -54,7 +53,7 @@ Template.periodtimetable.onCreated(function periodtimetableCreated() {
 Template.periodtimetable.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
-    if (i18nextReady.get()) {
+    if (i18nReady.get()) {
       let data = []
       if (templateInstance.periodTimecards.get() && templateInstance.projectUsersHandle.ready()) {
         data = templateInstance.periodTimecards.get().map(totalHoursForPeriodMapper)
@@ -62,8 +61,8 @@ Template.periodtimetable.onRendered(() => {
             .map((key) => key[1]))
       }
       const columns = [
-        { name: i18next.t('globals.project'), editable: false },
-        { name: i18next.t('globals.resource'), editable: false },
+        { name: t('globals.project'), editable: false },
+        { name: t('globals.resource'), editable: false },
         {
           name: getUserTimeUnitVerbose(),
           editable: false,
@@ -82,7 +81,7 @@ Template.periodtimetable.onRendered(() => {
                 layout: 'ratio',
                 showTotalRow: true,
                 data,
-                noDataMessage: i18next.t('tabular.sZeroRecords'),
+                noDataMessage: t('tabular.sZeroRecords'),
               })
             } catch (error) {
               console.error(`Caught error: ${error}`)
@@ -112,7 +111,7 @@ Template.periodtimetable.helpers({
 Template.periodtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
-    const csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.resource')},${getUserTimeUnitVerbose()}\r\n`]
+    const csvArray = [`\uFEFF${t('globals.project')},${t('globals.resource')},${getUserTimeUnitVerbose()}\r\n`]
     for (const timeEntry of templateInstance.periodTimecards.get().map(totalHoursForPeriodMapper)) {
       csvArray.push(`${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
@@ -120,7 +119,7 @@ Template.periodtimetable.events({
   },
   'click .js-export-xlsx': (event, templateInstance) => {
     event.preventDefault()
-    const data = [[i18next.t('globals.project'), i18next.t('globals.resource'), getUserTimeUnitVerbose()]]
+    const data = [[t('globals.project'), t('globals.resource'), getUserTimeUnitVerbose()]]
     for (const timeEntry of templateInstance.periodTimecards.get().map(totalHoursForPeriodMapper)) {
       data.push([timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
     }

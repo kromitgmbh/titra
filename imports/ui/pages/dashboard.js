@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import randomColor from 'randomcolor'
-import i18next from 'i18next'
+import { t } from '../../utils/i18n.js'
 import {
   emojify,
   getUserSetting,
@@ -34,28 +34,28 @@ function timeUnitHelper() {
   if (Dashboards.findOne()) {
     switch (Dashboards.findOne().timeunit) {
       case 'd':
-        return i18next.t('globals.day_plural')
+        return t('globals.day_plural')
       case 'h':
-        return i18next.t('globals.hour_plural')
+        return t('globals.hour_plural')
       case 'm':
-        return i18next.t('globals.minute_plural')
+        return t('globals.minute_plural')
       default:
-        return i18next.t('globals.hour_plural')
+        return t('globals.hour_plural')
     }
   }
   if (Meteor.user() && getUserSetting('timeunit')) {
     return getUserTimeUnitVerbose()
   }
   if (getGlobalSetting('timeunit') === 'd') {
-    return i18next.t('globals.day_plural')
+    return t('globals.day_plural')
   }
   if (getGlobalSetting('timeunit') === 'h') {
-    return i18next.t('globals.hour_plural')
+    return t('globals.hour_plural')
   }
   if (getGlobalSetting('timeunit') === 'm') {
-    return i18next.t('globals.minute_plural')
+    return t('globals.minute_plural')
   }
-  return i18next.t('globals.hour_plural')
+  return t('globals.hour_plural')
 }
 Template.dashboard.onCreated(function dashboardCreated() {
   let handle
@@ -168,7 +168,7 @@ Template.dashboard.onRendered(() => {
                 }],
               },
               tooltipOptions: {
-                formatTooltipY: (value) => `${value} ${getUserSetting('timeunit') === 'd' ? i18next.t('globals.day_plural') : i18next.t('globals.hour_plural')}`,
+                formatTooltipY: (value) => `${value} ${getUserSetting('timeunit') === 'd' ? t('globals.day_plural') : t('globals.hour_plural')}`,
               },
             })
           }

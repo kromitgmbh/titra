@@ -1,10 +1,8 @@
 import namedavatar from 'namedavatar'
-import i18next from 'i18next'
+import { i18nReady, t } from './i18n.js'
 import { Globalsettings } from '../api/globalsettings/globalsettings.js'
 
 const clientTimecards = new Mongo.Collection('clientTimecards')
-const i18nextReady = new ReactiveVar(false)
-let globalT
 
 function getGlobalSetting(name) {
   return Globalsettings.findOne({ name }) ? Globalsettings.findOne({ name }).value : false
@@ -81,124 +79,32 @@ async function emojify(match) {
   const emojiImport = await import('node-emoji')
   return emojiImport.default.emojify(match, (name) => name)
 }
-function loadLanguage(language, i18nextDebugMode) {
-  switch (language) {
-    default:
-      import('../ui/translations/en.json').then((en) => {
-        if (!i18next.isInitialized) {
-          i18next.init({
-            lng: 'en',
-            debug: i18nextDebugMode,
-            resources: {
-              en: {
-                translation: en.default,
-              },
-            },
-          }).then((t) => {
-            globalT = t
-            i18nextReady.set(true)
-          })
-        } else {
-          i18next.addResourceBundle('en', 'translation', en.default, true, true)
-          i18next.changeLanguage('en').then((t) => { globalT = t })
-        }
-      })
-      $('html').attr('lang', 'en')
-      break
-    case 'en':
-      import('../ui/translations/en.json').then((en) => {
-        if (!i18next.isInitialized) {
-          i18next.init({
-            lng: 'en',
-            debug: i18nextDebugMode,
-            resources: {
-              en: {
-                translation: en.default,
-              },
-            },
-          }).then((t) => {
-            globalT = t
-            i18nextReady.set(true)
-          })
-        } else {
-          i18next.addResourceBundle('en', 'translation', en.default, true, true)
-          i18next.changeLanguage('en').then((t) => { globalT = t })
-        }
-      })
-      $('html').attr('lang', 'en')
-      break
-    case 'de':
-      import('../ui/translations/de.json').then((de) => {
-        if (!i18next.isInitialized) {
-          i18next.init({
-            lng: 'de',
-            debug: i18nextDebugMode,
-            resources: {
-              de: {
-                translation: de.default,
-              },
-            },
-          }).then((t) => {
-            globalT = t
-            i18nextReady.set(true)
-          })
-        } else {
-          i18next.addResourceBundle('de', 'translation', de.default, true, true)
-          i18next.changeLanguage('de').then((t) => { globalT = t })
-        }
-      })
-      $('html').attr('lang', 'de')
-      break
-    case 'fr':
-      import('../ui/translations/fr.json').then((fr) => {
-        if (!i18next.isInitialized) {
-          i18next.init({
-            lng: 'fr',
-            debug: i18nextDebugMode,
-            resources: {
-              fr: {
-                translation: fr.default,
-              },
-            },
-          }).then((t) => {
-            globalT = t
-            i18nextReady.set(true)
-          })
-        } else {
-          i18next.addResourceBundle('fr', 'translation', fr.default, true, true)
-          i18next.changeLanguage('fr').then((t) => { globalT = t })
-        }
-      })
-      $('html').attr('lang', 'fr')
-      break
-  }
-}
 function getUserTimeUnitVerbose() {
-  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && i18nextReady.get()) {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && i18nReady.get()) {
     switch (getUserSetting('timeunit')) {
       case 'm':
-        return i18next.t('globals.minute_plural')
+        return t('globals.minute_plural')
       case 'h':
-        return i18next.t('globals.hour_plural')
+        return t('globals.hour_plural')
       case 'd':
-        return i18next.t('globals.day_plural')
+        return t('globals.day_plural')
       default:
-        return i18next.t('globals.hour_plural')
+        return t('globals.hour_plural')
     }
   }
   return false
 }
 function getUserTimeUnitAbbreviated() {
-  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && i18nextReady.get()) {
+  if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && i18nReady.get()) {
     switch (getUserSetting('timeunit')) {
       case 'm':
-        return i18next.t('globals.unit_minute_short')
+        return t('globals.unit_minute_short')
       case 'h':
-        return i18next.t('globals.unit_hour_short')
+        return t('globals.unit_hour_short')
       case 'd':
-        return i18next.t('globals.unit_day_short')
+        return t('globals.unit_day_short')
       default:
-        return i18next.t('globals.unit_hour_short')
+        return t('globals.unit_hour_short')
     }
   }
   return false
@@ -221,10 +127,7 @@ export {
   getGlobalSetting,
   numberWithUserPrecision,
   getUserSetting,
-  loadLanguage,
-  i18nextReady,
   getUserTimeUnitVerbose,
   getUserTimeUnitAbbreviated,
-  globalT,
   showToast,
 }

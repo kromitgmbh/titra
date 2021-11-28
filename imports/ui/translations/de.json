@@ -168,8 +168,8 @@
     "all": "Alle Kunden"
   },
   "limit": {
-    "entries": "Einträge anzeigen",
-    "show": "",
+    "entries": "Einträge",
+    "show": "Zeige",
     "all": "Alle"
   },
   "period": {

@@ -1,6 +1,6 @@
-import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import Bootstrap from 'bootstrap'
+import { t } from '../../utils/i18n.js'
 import './taskModal.html'
 import Tasks from '../../api/tasks/tasks'
 import { showToast } from '../../utils/frontend_helpers.js'
@@ -44,7 +44,7 @@ Template.taskModal.events({
           console.error(error)
         } else {
           Bootstrap.Modal.getInstance(templateInstance.$('#task-modal')).hide()
-          showToast(i18next.t('notifications.settings_saved_success'))
+          showToast(t('notifications.settings_saved_success'))
         }
       })
     } else {
@@ -57,21 +57,21 @@ Template.taskModal.events({
           })
           templateInstance.$('#start').val(new Date().toJSON().slice(0, 10))
           Bootstrap.Modal.getInstance(templateInstance.$('#task-modal')).hide()
-          showToast(i18next.t('notifications.settings_saved_success'))
+          showToast(t('notifications.settings_saved_success'))
         }
       })
     }
   },
   'click .js-remove-task': (event, templateInstance) => {
     event.preventDefault()
-    new BsDialogs().confirm('', i18next.t('notifications.delete_confirm')).then((result) => {
+    new BsDialogs().confirm('', t('notifications.delete_confirm')).then((result) => {
       if (result) {
         Meteor.call('removeProjectTask', { taskId: templateInstance.editTask.get()._id }, (error, result) => {
           if (error) {
             console.error(error)
           } else {
             Bootstrap.Modal.getInstance(templateInstance.$('#task-modal')).hide()
-            showToast(i18next.t('notifications.settings_saved_success'))
+            showToast(t('notifications.settings_saved_success'))
           }
         })
       }

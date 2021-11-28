@@ -1,5 +1,5 @@
 import bootstrap from 'bootstrap'
-import i18next from 'i18next'
+import { t } from '../../utils/i18n.js'
 
 class BsDialogs {
   get optionsDefault() {
@@ -146,15 +146,15 @@ class BsDialogs {
   }
 
   async confirm(header, body) {
-    return this.custom(header, body, [[i18next.t('globals.cancel'), 'btn-secondary', 'false'], [i18next.t('globals.ok'), 'btn-primary', 'true']])
+    return this.custom(header, body, [[t('globals.cancel'), 'btn-secondary', 'false'], [t('globals.ok'), 'btn-primary', 'true']])
   }
 
   async yesNo(header, body) {
-    return this.custom(header, body, [[i18next.t('globals.no'), 'btn-secondary', 'false'], [i18next.t('globals.yes'), 'btn-primary', 'true']])
+    return this.custom(header, body, [[t('globals.no'), 'btn-secondary', 'false'], [t('globals.yes'), 'btn-primary', 'true']])
   }
 
   async alert(header, body) {
-    return this.custom(header, body, [[i18next.t('globals.ok'), 'btn-primary', 'true']])
+    return this.custom(header, body, [[t('globals.ok'), 'btn-primary', 'true']])
   }
 
   form(header, okBtnText, form) {

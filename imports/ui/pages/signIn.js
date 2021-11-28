@@ -1,6 +1,6 @@
-import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { validateEmail } from '../../utils/frontend_helpers'
+import { t } from '../../utils/i18n.js'
 import './signIn.html'
 
 function signIn(event, templateInstance) {
@@ -18,7 +18,7 @@ function signIn(event, templateInstance) {
       templateInstance.$('#at-field-email').removeClass('is-invalid')
       templateInstance.$('#at-field-password').removeClass('is-invalid')
       if (error) {
-        templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
+        templateInstance.$('.notification').text(t(`login.${error.error}`))
         document.querySelector('.notification').classList.remove('d-none')
       } else {
         FlowRouter.go('projectlist')
@@ -29,7 +29,7 @@ function signIn(event, templateInstance) {
       templateInstance.$('#at-field-email').removeClass('is-invalid')
       templateInstance.$('#at-field-password').removeClass('is-invalid')
       if (error) {
-        templateInstance.$('.notification').text(i18next.t(`login.${error.error}`))
+        templateInstance.$('.notification').text(t(`login.${error.error}`))
         document.querySelector('.notification').classList.remove('d-none')
       } else {
         FlowRouter.go('projectlist')
@@ -50,10 +50,10 @@ Template.signIn.events({
     if (templateInstance.$('#at-field-email').val() && validateEmail(templateInstance.$('#at-field-email').val())) {
       Accounts.forgotPassword({ email: templateInstance.$('#at-field-email').val() }, (error) => {
         if (error) {
-          templateInstance.$('.notification').text(i18next.t('login.email_unknown'))
+          templateInstance.$('.notification').text(t('login.email_unknown'))
           document.querySelector('.notification').classList.remove('d-none')
         } else {
-          templateInstance.$('.notification').text(i18next.t('login.reset_password_mail'))
+          templateInstance.$('.notification').text(t('login.reset_password_mail'))
           document.querySelector('.notification').classList.remove('d-none')
           templateInstance.$('#at-field-email').removeClass('is-invalid')
           templateInstance.$('#at-field-password').removeClass('is-invalid')

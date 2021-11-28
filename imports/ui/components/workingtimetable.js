@@ -1,11 +1,10 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import i18next from 'i18next'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
+import { i18nReady, t } from '../../utils/i18n.js'
 import {
-  i18nextReady,
   addToolTipToTableCell,
   getGlobalSetting,
   numberWithUserPrecision,
@@ -53,7 +52,7 @@ Template.workingtimetable.onCreated(function workingtimetableCreated() {
 Template.workingtimetable.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
-    if (i18nextReady.get()) {
+    if (i18nReady.get()) {
       let data
       if (templateInstance.workingTimeEntries.get()) {
         data = templateInstance.workingTimeEntries.get()
@@ -62,19 +61,19 @@ Template.workingtimetable.onRendered(() => {
       }
       const columns = [
         {
-          name: i18next.t('globals.date'),
+          name: t('globals.date'),
           editable: false,
           compareValue: (cell, keyword) => [dayjs(cell, getGlobalSetting('dateformat')).toDate(), dayjs(keyword, getGlobalSetting('dateformat')).toDate()],
           format: addToolTipToTableCell,
         },
-        { name: i18next.t('globals.resource'), editable: false, format: addToolTipToTableCell },
-        { name: i18next.t('details.startTime'), editable: false },
-        { name: i18next.t('details.breakStartTime'), editable: false },
-        { name: i18next.t('details.breakEndTime'), editable: false },
-        { name: i18next.t('details.endTime'), editable: false },
-        { name: i18next.t('details.totalTime'), editable: false, format: numberWithUserPrecision },
-        { name: i18next.t('details.regularWorkingTime'), editable: false, format: numberWithUserPrecision },
-        { name: i18next.t('details.regularWorkingTimeDifference'), editable: false, format: numberWithUserPrecision }]
+        { name: t('globals.resource'), editable: false, format: addToolTipToTableCell },
+        { name: t('details.startTime'), editable: false },
+        { name: t('details.breakStartTime'), editable: false },
+        { name: t('details.breakEndTime'), editable: false },
+        { name: t('details.endTime'), editable: false },
+        { name: t('details.totalTime'), editable: false, format: numberWithUserPrecision },
+        { name: t('details.regularWorkingTime'), editable: false, format: numberWithUserPrecision },
+        { name: t('details.regularWorkingTimeDifference'), editable: false, format: numberWithUserPrecision }]
       if (!templateInstance.datatable) {
         import('frappe-datatable/dist/frappe-datatable.css').then(() => {
           import('frappe-datatable').then((datatable) => {
@@ -87,7 +86,7 @@ Template.workingtimetable.onRendered(() => {
                 layout: 'fluid',
                 showTotalRow: true,
                 data,
-                noDataMessage: i18next.t('tabular.sZeroRecords'),
+                noDataMessage: t('tabular.sZeroRecords'),
               })
             } catch (error) {
               console.error(`Caught error: ${error}`)
@@ -139,7 +138,7 @@ Template.workingtimetable.helpers({
 Template.workingtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
-    const csvArray = [`\uFEFF${i18next.t('globals.date')},${i18next.t('globals.resource')},${i18next.t('details.startTime')},${i18next.t('details.breakStartTime')},${i18next.t('details.breakEndTime')},${i18next.t('details.endTime')},${i18next.t('details.totalTime')},${i18next.t('details.regularWorkingTime')},${i18next.t('details.regularWorkingTimeDifference')}\r\n`]
+    const csvArray = [`\uFEFF${t('globals.date')},${t('globals.resource')},${t('details.startTime')},${t('details.breakStartTime')},${t('details.breakEndTime')},${t('details.endTime')},${t('details.totalTime')},${t('details.regularWorkingTime')},${t('details.regularWorkingTimeDifference')}\r\n`]
     for (const timeEntry of templateInstance.workingTimeEntries.get()) {
       csvArray.push(`${dayjs(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.resource},${timeEntry.startTime},${timeEntry.breakStartTime},${timeEntry.breakEndTime},${timeEntry.endTime},${timeEntry.totalTime},${timeEntry.regularWorkingTime},${timeEntry.regularWorkingTimeDifference}\r\n`)
     }
@@ -147,7 +146,7 @@ Template.workingtimetable.events({
   },
   'click .js-export-xlsx': (event, templateInstance) => {
     event.preventDefault()
-    const data = [[i18next.t('globals.date'), i18next.t('globals.resource'), i18next.t('details.startTime'), i18next.t('details.breakStartTime'), i18next.t('details.breakEndTime'), i18next.t('details.endTime'), i18next.t('details.totalTime'), i18next.t('details.regularWorkingTime'), i18next.t('details.regularWorkingTimeDifference')]]
+    const data = [[t('globals.date'), t('globals.resource'), t('details.startTime'), t('details.breakStartTime'), t('details.breakEndTime'), t('details.endTime'), t('details.totalTime'), t('details.regularWorkingTime'), t('details.regularWorkingTimeDifference')]]
     for (const timeEntry of templateInstance.workingTimeEntries.get()) {
       data.push([dayjs(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.resource, timeEntry.startTime, timeEntry.breakStartTime, timeEntry.breakEndTime, timeEntry.endTime, timeEntry.totalTime, timeEntry.regularWorkingTime, timeEntry.regularWorkingTimeDifference])
     }

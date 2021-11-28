@@ -45,7 +45,7 @@
   <div class="tab-content" id="tacked-time-content">
     <div class="tab-pane fade show active table-responsive p-3 tab-borders" id="detailed">
       {{#if isActive "detailed-tab"}}
-        {{#if i18nextReady}}
+        {{#if i18nReady}}
           {{> detailtimetable project=project resource=resource period=period customer=customer limit=limit}}
         {{/if}}
       {{/if}}

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import i18next from 'i18next'
+import { t } from '../../utils/i18n.js'
 import { emojify, getGlobalSetting } from '../../utils/frontend_helpers'
 import './about.html'
 
@@ -23,7 +23,7 @@ Template.about.events({
           templateInstance.$('#titra-changelog').html(`Version <a href='https://github.com/kromitgmbh/titra/tags' target='_blank'>${tag.name}</a> (${dayjs(commitData.commit.committer.date).format(getGlobalSetting('dateformat'))}) :<br/>${commitData.commit.message.replace(/(:\S*:)/g, emojify)}`)
         })
       }).fail(() => {
-        templateInstance.$('#titra-changelog').html(i18next.t('settings.titra_changelog_error'))
+        templateInstance.$('#titra-changelog').html(t('settings.titra_changelog_error'))
       })
     }
   },
@@ -47,13 +47,13 @@ Template.about.helpers({
     // const seconds = Math.floor(((time % 86400) % 3600) % 60)
     let out = ''
     if (days > 0) {
-      out += `${days} ${i18next.t('globals.day_plural')}, `
+      out += `${days} ${t('globals.day_plural')}, `
     }
     if (hours > 0) {
-      out += `${hours} ${i18next.t('globals.hour_plural')}, `
+      out += `${hours} ${t('globals.hour_plural')}, `
     }
     if (minutes > 0) {
-      out += `${minutes} ${i18next.t('globals.minute_plural')} `
+      out += `${minutes} ${t('globals.minute_plural')} `
     }
     return out
   },

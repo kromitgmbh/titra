@@ -1,4 +1,4 @@
-import i18next from 'i18next'
+import { t } from '../../utils/i18n.js'
 import './wekanInterfaceSettings.html'
 import Projects from '../../api/projects/projects.js'
 
@@ -34,7 +34,7 @@ function validateWekanUrl() {
       templateInstance.wekanLists.set(result)
       templateInstance.$('#wekanurl').removeClass('is-invalid')
       templateInstance.$('#wekan-status').html('<i class="fa fa-check"></i>')
-      const columns = [i18next.t('project.wekan_list')]
+      const columns = [t('project.wekan_list')]
       const data = templateInstance.wekanLists.get().map((entry) => ([{
         content: entry.title,
         editable: false,
@@ -61,7 +61,7 @@ function validateWekanUrl() {
               serialNoColumn: false,
               clusterize: false,
               layout: 'fluid',
-              noDataMessage: i18next.t('tabular.sZeroRecords'),
+              noDataMessage: t('tabular.sZeroRecords'),
               events: {
                 onRemoveColumn() {
                   templateInstance.wekanListDatatable.refresh(data, columns)
@@ -101,7 +101,7 @@ function validateWekanUrl() {
       templateInstance.wekanSwimlanes.set(result)
       templateInstance.$('#wekanurl').removeClass('is-invalid')
       templateInstance.$('#wekan-status').html('<i class="fa fa-check"></i>')
-      const columns = [i18next.t('project.wekan_swimlane')]
+      const columns = [t('project.wekan_swimlane')]
       const data = templateInstance.wekanSwimlanes.get().map((entry) => ([{
         content: entry.title,
         editable: false,
@@ -128,7 +128,7 @@ function validateWekanUrl() {
               serialNoColumn: false,
               clusterize: false,
               layout: 'fluid',
-              noDataMessage: i18next.t('tabular.sZeroRecords'),
+              noDataMessage: t('tabular.sZeroRecords'),
               events: {
                 onRemoveColumn() {
                   templateInstance.swimlaneDatatable.refresh(data, columns)

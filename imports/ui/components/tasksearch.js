@@ -3,7 +3,7 @@ import { DDP } from 'meteor/ddp-client'
 import { Mongo } from 'meteor/mongo'
 import './tasksearch.html'
 import './taskSelectPopup.js'
-import i18next from 'i18next'
+import { t } from '../../utils/i18n.js'
 import Tasks from '../../api/tasks/tasks.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
@@ -110,7 +110,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
                 Array.prototype.push.apply(wekanAPITasks, innerResult)
                 this.wekanAPITasks.set(wekanAPITasks)
               }).catch((error) => {
-                showToast(i18next.t('notifications.wekan_error'))
+                showToast(t('notifications.wekan_error'))
               })
             }
           } else if (project.selectedWekanList?.length > 0) {
@@ -128,7 +128,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
                 Array.prototype.push.apply(wekanAPITasks, innerResult)
                 this.wekanAPITasks.set(wekanAPITasks)
               }).catch((error) => {
-                showToast(i18next.t('notifications.wekan_error'))
+                showToast(t('notifications.wekan_error'))
               })
             }
           }
@@ -141,7 +141,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
       window.fetch(`${getUserSetting('zammadurl')}api/v1/tickets`, { headers: { Authorization: `Token token=${getUserSetting('zammadtoken')}` } }).then((response) => response.json()).then((result) => {
         this.zammadAPITasks.set(result)
       }).catch((error) => {
-        showToast(i18next.t('notifications.zammad_error'))
+        showToast(t('notifications.zammad_error'))
       })
     }
   })

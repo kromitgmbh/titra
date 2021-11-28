@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import { t } from '../../utils/i18n.js'
 import './weektable.html'
 import './tasksearch'
 import Projects from '../../api/projects/projects'
@@ -87,7 +87,7 @@ Template.weektable.events({
         const newTaskInput = templateInstance.$(element.parentElement.parentElement).find('.js-tasksearch-input').val()
         const task = templateInstance.$(element).data('task') ? templateInstance.$(element).data('task') : newTaskInput
         if (!task || task.length === 0) {
-          showToast(i18next.t('notifications.enter_task'))
+          showToast(t('notifications.enter_task'))
           inputError = true
           return
         }
@@ -123,7 +123,7 @@ Template.weektable.events({
           templateInstance.$('.js-tasksearch-input').val('')
           templateInstance.$('.js-tasksearch-input').parent().parent().find('.js-hours')
             .val('')
-          showToast(i18next.t('notifications.time_entry_updated'))
+          showToast(t('notifications.time_entry_updated'))
           $('tr').trigger('save')
         }
       })

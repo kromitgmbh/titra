@@ -1,8 +1,8 @@
-import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './projectAccessRights.html'
+import { t } from '../../utils/i18n.js'
 import {
-  validateEmail, getGlobalSetting, i18nextReady, showToast,
+  validateEmail, getGlobalSetting, i18nReady, showToast,
 } from '../../utils/frontend_helpers'
 import Projects from '../../api/projects/projects.js'
 
@@ -22,14 +22,14 @@ Template.projectAccessRights.onCreated(function projectAccessRightsCreated() {
 Template.projectAccessRights.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
-    if (templateInstance.handle.ready() && templateInstance.project?.get() && i18nextReady.get()) {
+    if (templateInstance.handle.ready() && templateInstance.project?.get() && i18nReady.get()) {
       const columns = [
         {
-          name: i18next.t('globals.name'),
+          name: t('globals.name'),
           editable: false,
           focusable: false,
         }, {
-          name: i18next.t('project.access_rights'),
+          name: t('project.access_rights'),
           editable: false,
           focusable: false,
           format: (value) => {
@@ -38,10 +38,10 @@ Template.projectAccessRights.onRendered(() => {
                 ? `<select class="form-select js-rw-rights" data-id="${value}"><option value="team">Team member</option><option value="admin" selected>Administrator</option></select>`
                 : `<select class="form-select js-rw-rights" data-id="${value}"><option value="team" selected>Team member</option><option value="admin">Administrator</option></select>`
             }
-            return i18next.t('project.owner')
+            return t('project.owner')
           },
         }, {
-          name: i18next.t('tracktime.actions'),
+          name: t('tracktime.actions'),
           editable: false,
           focusable: false,
           format: (value) => (value !== templateInstance.project?.get()?.userId
@@ -70,7 +70,7 @@ Template.projectAccessRights.onRendered(() => {
               serialNoColumn: false,
               clusterize: false,
               layout: 'fluid',
-              noDataMessage: i18next.t('tabular.sZeroRecords'),
+              noDataMessage: t('tabular.sZeroRecords'),
               events: {
                 onRemoveColumn() {
                   templateInstance.projectAccessRightsDataTable.refresh(data, columns)
@@ -108,10 +108,10 @@ Template.projectAccessRights.events({
     if (newmembermail && validateEmail(newmembermail)) {
       Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: templateInstance.$('#newmembermail').val() }, (error, result) => {
         if (error) {
-          showToast(i18next.t(error.error))
+          showToast(t(error.error))
         } else {
           templateInstance.$('#newmembermail').val('')
-          showToast(i18next.t(result))
+          showToast(t(result))
         }
       })
       templateInstance.$('#newmembermail').removeClass('is-invalid')
@@ -124,9 +124,9 @@ Template.projectAccessRights.events({
     const userId = $(event.currentTarget).data('id')
     Meteor.call('removeTeamMember', { projectId: templateInstance.data.projectId, userId }, (error, result) => {
       if (error) {
-        showToast(i18next.t(error.error))
+        showToast(t(error.error))
       } else {
-        showToast(i18next.t(result))
+        showToast(t(result))
       }
     })
   },
@@ -135,9 +135,9 @@ Template.projectAccessRights.events({
     const userId = $(event.currentTarget).data('id')
     Meteor.call('changeProjectRole', { projectId: templateInstance.data.projectId, userId, administrator: $(event.currentTarget).val() === 'admin' }, (error, result) => {
       if (error) {
-        showToast(i18next.t(error.error))
+        showToast(t(error.error))
       } else {
-        showToast(i18next.t(result))
+        showToast(t(result))
       }
     })
   },

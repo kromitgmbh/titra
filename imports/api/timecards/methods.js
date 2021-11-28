@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import i18next from 'i18next'
 import { NodeVM } from 'vm2'
 import fetch from 'meteor/fetch'
 import { check, Match } from 'meteor/check'
@@ -7,6 +6,7 @@ import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'
 import Tasks from '../tasks/tasks.js'
 import Projects from '../projects/projects.js'
+import { t } from '../../utils/i18n.js'
 import { emojify, getGlobalSetting } from '../../utils/frontend_helpers'
 import { periodToDates, timeInUserUnit } from '../../utils/periodHelpers.js'
 import {
@@ -200,7 +200,7 @@ Meteor.methods({
     checkAuthentication(this)
     const meteorUser = Meteor.users.findOne({ _id: this.userId })
     if (!meteorUser.profile.siwappurl || !meteorUser.profile.siwapptoken) {
-      throw new Meteor.Error(i18next.t('notifications.siwapp_configuration'))
+      throw new Meteor.Error(t('notifications.siwapp_configuration'))
     }
     const { startDate, endDate } = periodToDates(timePeriod)
     const projectMap = new Map()

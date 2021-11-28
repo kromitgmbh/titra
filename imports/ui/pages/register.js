@@ -1,5 +1,5 @@
-import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import { t } from '../../utils/i18n.js'
 import './register.html'
 
 Template.register.events({
@@ -8,7 +8,7 @@ Template.register.events({
     if (templateInstance.$('#at-field-password').val() !== templateInstance.$('#at-field-password-again').val()) {
       templateInstance.$('#at-field-password').addClass('is-invalid')
       templateInstance.$('#at-field-password-again').addClass('is-invalid')
-      templateInstance.$('.notification').text(i18next.t('login.password_mismatch'))
+      templateInstance.$('.notification').text(t('login.password_mismatch'))
       document.querySelector('.notification').classList.toggle('d-none')
       return
     }
@@ -18,13 +18,13 @@ Template.register.events({
         password: templateInstance.$('#at-field-password').val(),
         profile: {
           name: templateInstance.$('#at-field-name').val(),
-          currentLanguageProject: i18next.t('globals.project'),
-          currentLanguageProjectDesc: i18next.t('project.first_project_desc'),
+          currentLanguageProject: t('globals.project'),
+          currentLanguageProjectDesc: t('project.first_project_desc'),
         },
       }, (error) => {
         console.error(error)
         if (error && error.error !== 145546287) {
-          templateInstance.$('.notification').text(`${i18next.t(`login.${error.error}`)} (${error.reason})`)
+          templateInstance.$('.notification').text(`${t(`login.${error.error}`)} (${error.reason})`)
           document.querySelector('.notification').classList.toggle('d-none')
         } else {
           FlowRouter.go('projectlist')

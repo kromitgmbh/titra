@@ -2,7 +2,6 @@ import { Template } from 'meteor/templating'
 import isDarkMode from 'is-dark'
 import hotkeys from 'hotkeys-js'
 import { $ } from 'meteor/jquery'
-import i18next from 'i18next'
 import Projects from '../../api/projects/projects.js'
 import Extensions from '../../api/extensions/extensions.js'
 import {
@@ -10,16 +9,17 @@ import {
   emojify,
   getGlobalSetting,
   getUserSetting,
-  loadLanguage,
-  i18nextReady,
   getUserTimeUnitVerbose,
-  globalT,
   getUserTimeUnitAbbreviated,
 } from '../../utils/frontend_helpers.js'
 
+import {
+  i18nReady, t, getLanguage, loadLanguage,
+} from '../../utils/i18n.js'
+
 const i18nextDebugMode = window.location.href.indexOf('localhost') > 0
 
-Template.registerHelper('t', (param) => (i18nextReady.get() ? globalT(param) : 'Loading ...'))
+Template.registerHelper('t', (param) => (i18nReady.get() ? t(param) : 'Loading ...'))
 
 Meteor.startup(() => {
   window.BootstrapLoaded = new ReactiveVar(false)
@@ -61,64 +61,15 @@ Meteor.startup(() => {
       if (getUserSetting('language')) {
         language = getUserSetting('language') === 'auto' ? navigator.language.substring(0, 2) : getUserSetting('language')
       }
-      if (!i18nextReady.get() || i18next.language !== language) {
+      if (getLanguage() !== language) {
         loadLanguage(language, i18nextDebugMode)
       }
     } else if (!Meteor.user() && !Meteor.loggingIn()) {
-      if (!i18nextReady.get()) {
+      if (getLanguage() !== language) {
         loadLanguage(language, i18nextDebugMode)
       }
     }
   })
-  // Tracker.autorun(() => {
-  //   if (i18nextReady.get()) {
-  //     // import('sweetalert2/dist/sweetalert2.js').then((Swal) => {
-  //     //   $.ConfirmBox = Swal.default.mixin({
-  //     //     showCancelButton: true,
-  //     //     cancelButtonText: i18next.t('navigation.cancel'),
-  //     //     reverseButtons: true,
-  //     //     buttonsStyling: false,
-  //     //     backdrop: 'rgba(0, 0, 0, 0.5)',
-  //     //     customClass: {
-  //     //       confirmButton: 'btn btn-primary',
-  //     //       cancelButton: 'btn btn-secondary border me-3',
-  //     //     },
-  //     //     showClass: {
-  //     //       popup: '',
-  //     //       backdrop: '',
-  //     //       icon: '',
-  //     //     },
-  //     //     hideClass: {
-  //     //       popup: '',
-  //     //       backdrop: '',
-  //     //       icon: '',
-  //     //     },
-  //     //   })
-  //     //   $.Toast = Swal.default.mixin({
-  //     //     toast: true,
-  //     //     icon: 'success',
-  //     //     position: 'top-end',
-  //     //     showConfirmButton: false,
-  //     //     timer: 2000,
-  //     //     timerProgressBar: true,
-  //     //     didOpen: (toast) => {
-  //     //       toast.addEventListener('mouseenter', Swal.stopTimer)
-  //     //       toast.addEventListener('mouseleave', Swal.resumeTimer)
-  //     //     },
-  //     //     showClass: {
-  //     //       popup: '',
-  //     //       backdrop: '',
-  //     //       icon: '',
-  //     //     },
-  //     //     hideClass: {
-  //     //       popup: '',
-  //     //       backdrop: '',
-  //     //       icon: '',
-  //     //     },
-  //     //   })
-  //     // })
-  //   }
-  // })
   Tracker.autorun(() => {
     if (getGlobalSetting('customCSS')) {
       $('head').append(`<style>${getGlobalSetting('customCSS')}</style>`)
@@ -169,7 +120,7 @@ Meteor.startup(() => {
     }
   })
 })
-Template.registerHelper('i18nextReady', () => i18nextReady.get())
+Template.registerHelper('i18nReady', () => i18nReady.get())
 Template.registerHelper('unit', () => {
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
     return getUserSetting('unit')

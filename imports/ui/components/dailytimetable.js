@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { saveAs } from 'file-saver'
 import { NullXlsx } from '@neovici/nullxlsx'
@@ -8,12 +7,12 @@ import './dailytimetable.html'
 import './pagination.js'
 import './limitpicker.js'
 import {
-  i18nextReady,
   getGlobalSetting,
   numberWithUserPrecision,
   getUserSetting,
   getUserTimeUnitVerbose,
 } from '../../utils/frontend_helpers'
+import { i18nReady, t } from '../../utils/i18n.js'
 import { dailyTimecardMapper } from '../../utils/server_method_helpers'
 
 Template.dailytimetable.onCreated(function dailytimetablecreated() {
@@ -55,7 +54,7 @@ Template.dailytimetable.onCreated(function dailytimetablecreated() {
 Template.dailytimetable.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
-    if (i18nextReady.get()) {
+    if (i18nReady.get()) {
       let data = []
       if (templateInstance.dailyTimecards.get() && templateInstance.projectUsersHandle.ready()) {
         data = templateInstance.dailyTimecards.get().map(dailyTimecardMapper)
@@ -64,13 +63,13 @@ Template.dailytimetable.onRendered(() => {
       }
       const columns = [
         {
-          name: i18next.t('globals.date'),
+          name: t('globals.date'),
           editable: false,
           width: 1,
           compareValue: (cell, keyword) => [dayjs(cell, getGlobalSetting('dateformat')).toDate(), dayjs(keyword, getGlobalSetting('dateformat')).toDate()],
         },
-        { name: i18next.t('globals.project'), editable: false, width: 2 },
-        { name: i18next.t('globals.resource'), editable: false, width: 2 },
+        { name: t('globals.project'), editable: false, width: 2 },
+        { name: t('globals.resource'), editable: false, width: 2 },
         {
           name: getUserTimeUnitVerbose(),
           editable: false,
@@ -90,7 +89,7 @@ Template.dailytimetable.onRendered(() => {
                 layout: 'ratio',
                 showTotalRow: true,
                 data,
-                noDataMessage: i18next.t('tabular.sZeroRecords'),
+                noDataMessage: t('tabular.sZeroRecords'),
               })
             } catch (error) {
               console.error(`Caught error: ${error}`)
@@ -123,11 +122,11 @@ Template.dailytimetable.helpers({
 Template.dailytimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
-    let unit = i18next.t('globals.hour_plural')
+    let unit = t('globals.hour_plural')
     if (Meteor.user()) {
       unit = getUserTimeUnitVerbose()
     }
-    const csvArray = [`\uFEFF${i18next.t('globals.date')},${i18next.t('globals.project')},${i18next.t('globals.resource')},${unit}\r\n`]
+    const csvArray = [`\uFEFF${t('globals.date')},${t('globals.project')},${t('globals.resource')},${unit}\r\n`]
     for (const timeEntry of templateInstance.dailyTimecards.get().map(dailyTimecardMapper)) {
       csvArray.push(`${dayjs(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
@@ -135,11 +134,11 @@ Template.dailytimetable.events({
   },
   'click .js-export-xlsx': (event, templateInstance) => {
     event.preventDefault()
-    let unit = i18next.t('globals.hour_plural')
+    let unit = t('globals.hour_plural')
     if (Meteor.user()) {
       unit = getUserTimeUnitVerbose()
     }
-    const data = [[i18next.t('globals.date'), i18next.t('globals.project'), i18next.t('globals.resource'), unit]]
+    const data = [[t('globals.date'), t('globals.project'), t('globals.resource'), unit]]
     for (const timeEntry of templateInstance.dailyTimecards.get().map(dailyTimecardMapper)) {
       data.push([dayjs(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
     }

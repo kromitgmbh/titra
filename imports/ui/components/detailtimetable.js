@@ -1,14 +1,13 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import i18next from 'i18next'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
 import bootstrap from 'bootstrap'
+import { i18nReady, t } from '../../utils/i18n.js'
 import Timecards from '../../api/timecards/timecards'
 import CustomFields from '../../api/customfields/customfields'
 import {
-  i18nextReady,
   addToolTipToTableCell,
   timeInUserUnit,
   getGlobalSetting,
@@ -100,35 +99,35 @@ Template.detailtimetable.onRendered(() => {
   dayjs.extend(utc)
   templateInstance.autorun(() => {
     if (templateInstance.detailedTimeEntriesForPeriodHandle.ready()
-      && templateInstance.projectUsersHandle.ready() && i18nextReady.get()) {
+      && templateInstance.projectUsersHandle.ready() && i18nReady.get()) {
       const data = Timecards.find(templateInstance.selector[0], templateInstance.selector[1])
         .fetch().map(detailedDataTableMapper)
       if (data.length === 0) {
         $('.dt-row-totalRow').remove()
       }
       const columns = [
-        { name: i18next.t('globals.project'), editable: false, format: addToolTipToTableCell },
+        { name: t('globals.project'), editable: false, format: addToolTipToTableCell },
         {
-          name: i18next.t('globals.date'),
+          name: t('globals.date'),
           editable: false,
           compareValue: (cell, keyword) => [dayjs.utc(cell, getGlobalSetting('dateformat')).toDate(), dayjs(keyword, getGlobalSetting('dateformat')).toDate()],
           format: addToolTipToTableCell,
         },
-        { name: i18next.t('globals.task'), editable: false, format: addToolTipToTableCell },
-        { name: i18next.t('globals.resource'), editable: false, format: addToolTipToTableCell },
+        { name: t('globals.task'), editable: false, format: addToolTipToTableCell },
+        { name: t('globals.resource'), editable: false, format: addToolTipToTableCell },
         {
           name: getUserTimeUnitVerbose(),
           editable: false,
           format: numberWithUserPrecision,
         },
         {
-          name: i18next.t('details.state'),
+          name: t('details.state'),
           editable: true,
           format: (value) => {
             if (value === null) {
               return ''
             }
-            return value ? addToolTipToTableCell(i18next.t(`details.${value}`)) : addToolTipToTableCell(i18next.t('details.new'))
+            return value ? addToolTipToTableCell(t(`details.${value}`)) : addToolTipToTableCell(t('details.new'))
           },
         }]
       if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
@@ -142,7 +141,7 @@ Template.detailtimetable.onRendered(() => {
       }
       columns.push(
         {
-          name: i18next.t('navigation.edit'),
+          name: t('navigation.edit'),
           editable: false,
           dropdown: false,
           focusable: false,
@@ -168,7 +167,7 @@ Template.detailtimetable.onRendered(() => {
               clusterize: false,
               layout: 'fluid',
               showTotalRow: true,
-              noDataMessage: i18next.t('tabular.sZeroRecords'),
+              noDataMessage: t('tabular.sZeroRecords'),
               events: {
                 onSortColumn(column) {
                   if (column) {
@@ -184,10 +183,10 @@ Template.detailtimetable.onRendered(() => {
                     const $select = document.createElement('select')
                     $select.classList = 'form-control'
                     parent.style.padding = 0
-                    $select.options.add(new Option(i18next.t('details.new'), 'new'))
-                    $select.options.add(new Option(i18next.t('details.exported'), 'exported'))
-                    $select.options.add(new Option(i18next.t('details.billed'), 'billed'))
-                    $select.options.add(new Option(i18next.t('details.notBillable'), 'notBillable'))
+                    $select.options.add(new Option(t('details.new'), 'new'))
+                    $select.options.add(new Option(t('details.exported'), 'exported'))
+                    $select.options.add(new Option(t('details.billed'), 'billed'))
+                    $select.options.add(new Option(t('details.notBillable'), 'notBillable'))
 
                     parent.appendChild($select)
                     return {
@@ -204,7 +203,7 @@ Template.detailtimetable.onRendered(() => {
                           if (error) {
                             console.error(error)
                           } else {
-                            showToast(i18next.t('notifications.time_entry_updated'))
+                            showToast(t('notifications.time_entry_updated'))
                           }
                         })
                       },
@@ -267,9 +266,9 @@ Template.detailtimetable.events({
     event.preventDefault()
     let csvArray
     if (getGlobalSetting('useState')) {
-      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${getUserTimeUnitVerbose()},${i18next.t('details.state')}`]
+      csvArray = [`\uFEFF${t('globals.project')},${t('globals.date')},${t('globals.task')},${t('globals.resource')},${getUserTimeUnitVerbose()},${t('details.state')}`]
     } else {
-      csvArray = [`\uFEFF${i18next.t('globals.project')},${i18next.t('globals.date')},${i18next.t('globals.task')},${i18next.t('globals.resource')},${getUserTimeUnitVerbose()}`]
+      csvArray = [`\uFEFF${t('globals.project')},${t('globals.date')},${t('globals.task')},${t('globals.resource')},${getUserTimeUnitVerbose()}`]
     }
     if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
       csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'time_entry' }).fetch().map((field) => field.desc).join(',')}\r\n`
@@ -283,7 +282,7 @@ Template.detailtimetable.events({
       }
       row.splice(row.length - 1, 1)
       if (getGlobalSetting('useState')) {
-        row[5] = i18next.t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)
+        row[5] = t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)
       } else {
         row.splice(5, 1)
       }
@@ -301,9 +300,9 @@ Template.detailtimetable.events({
     event.preventDefault()
     let data
     if (getGlobalSetting('useState')) {
-      data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), getUserTimeUnitVerbose(), i18next.t('details.state')]]
+      data = [[t('globals.project'), t('globals.date'), t('globals.task'), t('globals.resource'), getUserTimeUnitVerbose(), t('details.state')]]
     } else {
-      data = [[i18next.t('globals.project'), i18next.t('globals.date'), i18next.t('globals.task'), i18next.t('globals.resource'), getUserTimeUnitVerbose()]]
+      data = [[t('globals.project'), t('globals.date'), t('globals.task'), t('globals.resource'), getUserTimeUnitVerbose()]]
     }
     if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
       for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
@@ -321,7 +320,7 @@ Template.detailtimetable.events({
       for (const attribute of timeEntry) {
         if (index !== 6) {
           if (index === 5 && getGlobalSetting('useState')) {
-            row.push(i18next.t(`details.${attribute !== undefined ? attribute : 'new'}`))
+            row.push(t(`details.${attribute !== undefined ? attribute : 'new'}`))
           } else if (index !== 5) {
             row.push(attribute)
           }
@@ -348,14 +347,14 @@ Template.detailtimetable.events({
   'click .js-share': (event, templateInstance) => {
     event.preventDefault()
     if ($('#period').val() === 'all' || $('.js-target-project').val() === 'all') {
-      showToast(i18next.t('notifications.sanity'))
+      showToast(t('notifications.sanity'))
       return
     }
     Meteor.call('addDashboard', {
       projectId: $('.js-target-project').val(), resourceId: $('#resourceselect').val(), customer: $('#customerselect').val(), timePeriod: $('#period').val(),
     }, (error, _id) => {
       if (error) {
-        showToast(i18next.t('notifications.dashboard_creation_failed', { error }))
+        showToast(t('notifications.dashboard_creation_failed', { error }))
         // console.error(error)
       } else {
         $('#dashboardURL').val(FlowRouter.url('dashboard', { _id }))
@@ -371,9 +370,9 @@ Template.detailtimetable.events({
         projectId: $('.js-target-project').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
       }, (error, result) => {
         if (error) {
-          showToast(i18next.t('notifications.export_failed', { error }))
+          showToast(t('notifications.export_failed', { error }))
         } else {
-          showToast(i18next.t(result))
+          showToast(t(result))
         }
       })
     } else {
@@ -381,21 +380,21 @@ Template.detailtimetable.events({
         if (error) {
           console.error(error)
         } else {
-          showToast(i18next.t('notifications.time_entry_updated'))
+          showToast(t('notifications.time_entry_updated'))
         }
       })
     }
   },
   'click .js-delete': (event, templateInstance) => {
     event.preventDefault()
-    if (confirm(i18next.t('notifications.delete_confirm'))) {
+    if (confirm(t('notifications.delete_confirm'))) {
       Meteor.call('deleteTimeCard', { timecardId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
         if (!error) {
-          showToast(i18next.t('notifications.time_entry_deleted'))
+          showToast(t('notifications.time_entry_deleted'))
         } else {
           console.error(error)
           if (typeof error.error === 'string') {
-            showToast(i18next.t(error.error.replace('[', '').replace(']', '')))
+            showToast(t(error.error.replace('[', '').replace(']', '')))
           }
         }
       })

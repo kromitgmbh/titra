@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import i18next from 'i18next'
+import { t } from '../../utils/i18n.js'
 import './projectlist.html'
 import Projects from '../../api/projects/projects'
 import '../components/projectchart.js'
@@ -93,10 +93,10 @@ Template.projectlist.events({
     event.preventDefault()
     event.stopPropagation()
     const projectId = event.currentTarget.parentElement.parentElement.id
-    if (confirm(i18next.t('notifications.project_delete_confirm'))) {
+    if (confirm(t('notifications.project_delete_confirm'))) {
       Meteor.call('deleteProject', { projectId }, (error) => {
         if (!error) {
-          showToast(i18next.t('notifications.project_delete_success'))
+          showToast(t('notifications.project_delete_success'))
         } else {
           console.error(error)
         }
@@ -109,7 +109,7 @@ Template.projectlist.events({
     const projectId = event.currentTarget.parentElement.parentElement.id
     Meteor.call('archiveProject', { projectId }, (error) => {
       if (!error) {
-        showToast(i18next.t('notifications.project_archive_success'))
+        showToast(t('notifications.project_archive_success'))
       } else {
         console.error(error)
       }
@@ -121,7 +121,7 @@ Template.projectlist.events({
     const projectId = event.currentTarget.parentElement.parentElement.id
     Meteor.call('restoreProject', { projectId }, (error) => {
       if (!error) {
-        showToast(i18next.t('notifications.project_restore_success'))
+        showToast(t('notifications.project_restore_success'))
       } else {
         console.error(error)
       }

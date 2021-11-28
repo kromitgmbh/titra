@@ -1,12 +1,14 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import i18next from 'i18next'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import Bootstrap from 'bootstrap'
+import { i18nReady, t } from '../../utils/i18n.js'
 import './projectTasks.html'
 import Tasks from '../../api/tasks/tasks'
 import './taskModal.js'
-import { i18nextReady, addToolTipToTableCell, getGlobalSetting, showToast } from '../../utils/frontend_helpers'
+import {
+  addToolTipToTableCell, getGlobalSetting, showToast,
+} from '../../utils/frontend_helpers'
 
 dayjs.extend(utc)
 
@@ -19,41 +21,41 @@ Template.projectTasks.onRendered(() => {
   const templateInstance = Template.instance()
   const tasks = Tasks.find({ projectId: FlowRouter.getParam('id') })
   templateInstance.autorun(() => {
-    if (templateInstance.subscriptionsReady() && i18nextReady.get() && tasks.count() > 0) {
+    if (templateInstance.subscriptionsReady() && i18nReady.get() && tasks.count() > 0) {
       const columns = [
         {
-          name: i18next.t('project.default_task'),
+          name: t('project.default_task'),
           editable: false,
           width: 1,
           format: (value) => `<div class="form-check"><input type="checkbox" data-id="${value}" class="form-check-input mx-auto" ${Tasks.findOne({ _id: value }).isDefaultTask ? 'checked' : ''}/></div>`,
         },
         {
-          name: i18next.t('globals.task'),
+          name: t('globals.task'),
           editable: true,
           format: addToolTipToTableCell,
           width: 2,
         },
         {
-          name: i18next.t('task.startDate'),
+          name: t('task.startDate'),
           editable: true,
           compareValue: (cell, keyword) => [dayjs.utc(cell, getGlobalSetting('dateformat')).toDate(), dayjs(keyword, getGlobalSetting('dateformat')).toDate()],
           format: addToolTipToTableCell,
         },
         {
-          name: i18next.t('task.endDate'),
+          name: t('task.endDate'),
           editable: true,
           compareValue: (cell, keyword) => [dayjs.utc(cell, getGlobalSetting('dateformat')).toDate(), dayjs(keyword, getGlobalSetting('dateformat')).toDate()],
           format: addToolTipToTableCell,
         },
         {
-          name: i18next.t('task.dependencies'),
+          name: t('task.dependencies'),
           editable: true,
           format: addToolTipToTableCell,
           width: 2,
         },
       ]
       const data = tasks.fetch()?.map((task) => [task._id, task.name, dayjs(task.start).format(getGlobalSetting('dateformat')), dayjs(task.end).format(getGlobalSetting('dateformat')),
-      task.dependencies?.map((dep) => Tasks.findOne({ _id: dep })?.name).join(','),
+        task.dependencies?.map((dep) => Tasks.findOne({ _id: dep })?.name).join(','),
       ])
       if (!templateInstance.datatable) {
         import('frappe-datatable/dist/frappe-datatable.css').then(() => {
@@ -65,7 +67,7 @@ Template.projectTasks.onRendered(() => {
               serialNoColumn: false,
               clusterize: false,
               layout: 'ratio',
-              noDataMessage: i18next.t('tabular.sZeroRecords'),
+              noDataMessage: t('tabular.sZeroRecords'),
               getEditor(colIndex, rowIndex, value, parent, column, row, data) {
                 templateInstance.editTaskID.set(row[0].content)
                 new Bootstrap.Modal(templateInstance.$('#task-modal')).show()
@@ -128,7 +130,7 @@ Template.projectTasks.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('notifications.settings_saved_success'))
+        showToast(t('notifications.settings_saved_success'))
       }
     })
   },

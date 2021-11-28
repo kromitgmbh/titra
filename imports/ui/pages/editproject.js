@@ -3,7 +3,7 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import 'jquery-serializejson'
 import '@simonwep/pickr/dist/themes/monolith.min.css'
 import Pickr from '@simonwep/pickr/dist/pickr.min'
-import i18next from 'i18next'
+import { t } from '../../utils/i18n.js'
 import './editproject.html'
 import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
@@ -169,7 +169,7 @@ Template.editproject.events({
       }, (error) => {
         if (!error) {
           templateInstance.$('#name').removeClass('is-invalid')
-          showToast(i18next.t('notifications.project_update_success'))
+          showToast(t('notifications.project_update_success'))
         } else {
           console.error(error)
         }
@@ -179,7 +179,7 @@ Template.editproject.events({
         projectArray,
       }, (error, result) => {
         if (!error) {
-          showToast(i18next.t('notifications.project_create_success'))
+          showToast(t('notifications.project_create_success'))
           FlowRouter.go('editproject', { id: result })
         } else {
           console.error(error)
@@ -195,13 +195,13 @@ Template.editproject.events({
     event.preventDefault()
     event.stopPropagation()
     const templateInstance = Template.instance()
-    new BsDialogs().confirm('', i18next.t('notifications.project_delete_confirm')).then((result) => {
+    new BsDialogs().confirm('', t('notifications.project_delete_confirm')).then((result) => {
       if (result) {
         templateInstance.deletion.set(true)
         Meteor.call('deleteProject', { projectId: FlowRouter.getParam('id') }, (error) => {
           if (!error) {
             FlowRouter.go('projectlist')
-            showToast(i18next.t('notifications.project_delete_success'))
+            showToast(t('notifications.project_delete_success'))
           } else {
             console.error(error)
           }
@@ -214,7 +214,7 @@ Template.editproject.events({
     event.stopPropagation()
     Meteor.call('archiveProject', { projectId: FlowRouter.getParam('id') }, (error) => {
       if (!error) {
-        showToast(i18next.t('notifications.project_archive_success'))
+        showToast(t('notifications.project_archive_success'))
       } else {
         console.error(error)
       }
@@ -225,7 +225,7 @@ Template.editproject.events({
     event.stopPropagation()
     Meteor.call('restoreProject', { projectId: FlowRouter.getParam('id') }, (error) => {
       if (!error) {
-        showToast(i18next.t('notifications.project_restore_success'))
+        showToast(t('notifications.project_restore_success'))
       } else {
         console.error(error)
       }

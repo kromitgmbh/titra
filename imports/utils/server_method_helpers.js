@@ -1,6 +1,6 @@
-import i18next from 'i18next'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { t } from './i18n.js'
 import Projects from '../api/projects/projects.js'
 import projectUsers from '../api/users/users.js'
 import { periodToDates } from './periodHelpers.js'
@@ -23,14 +23,14 @@ function getProjectListById(projectId) {
 }
 function checkAuthentication(context) {
   if (!context.userId) {
-    throw new Meteor.Error(i18next.t('notifications.auth_error_method'))
+    throw new Meteor.Error(t('notifications.auth_error_method'))
   }
 }
 function checkAdminAuthentication(context) {
   if (!context.userId) {
-    throw new Meteor.Error(i18next.t('notifications.auth_error_method'))
+    throw new Meteor.Error(t('notifications.auth_error_method'))
   } else if (!Meteor.users.findOne({ _id: context.userId }).isAdmin) {
-    throw new Meteor.Error(i18next.t('notifications.auth_error_method'))
+    throw new Meteor.Error(t('notifications.auth_error_method'))
   }
 }
 function getProjectListByCustomer(customer) {

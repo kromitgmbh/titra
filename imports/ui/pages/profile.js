@@ -1,8 +1,7 @@
 import namedavatar from 'namedavatar'
 import '@simonwep/pickr/dist/themes/monolith.min.css'
 import Pickr from '@simonwep/pickr/dist/pickr.min'
-import i18next from 'i18next'
-
+import { t } from '../../utils/i18n.js'
 import '../components/backbutton.js'
 import './profile.html'
 import { getUserSetting, showToast } from '../../utils/frontend_helpers.js'
@@ -41,9 +40,9 @@ Template.profile.events({
     }
     Meteor.call('updateProfile', updateJSON, (error) => {
       if (error) {
-        showToast(i18next.t(error.error))
+        showToast(t(error.error))
       } else {
-        showToast(i18next.t('notifications.settings_saved_success'))
+        showToast(t('notifications.settings_saved_success'))
         templateInstance.$('#imagePreview').hide()
       }
     })

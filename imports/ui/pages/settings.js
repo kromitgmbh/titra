@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
-import i18next from 'i18next'
+import { t } from '../../utils/i18n.js'
 import './settings.html'
 import '../components/backbutton.js'
 import { getUserSetting, showToast } from '../../utils/frontend_helpers'
@@ -66,9 +66,9 @@ Template.settings.events({
     },
     (error) => {
       if (error) {
-        showToast(i18next.t(error.error))
+        showToast(t(error.error))
       } else {
-        showToast(i18next.t('notifications.settings_saved_success'))
+        showToast(t('notifications.settings_saved_success'))
         templateInstance.$('#imagePreview').hide()
       }
     })
@@ -88,7 +88,7 @@ Template.settings.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('notifications.settings_saved_success'))
+        showToast(t('notifications.settings_saved_success'))
       }
     })
   },

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { Random } from 'meteor/random'
-import i18next from 'i18next'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import { t } from '../../utils/i18n.js'
 import './administration.html'
 import { Globalsettings } from '../../api/globalsettings/globalsettings'
 import { displayUserAvatar, validateEmail, showToast } from '../../utils/frontend_helpers'
@@ -31,18 +31,18 @@ Template.administration.helpers({
   isTextArea: (setting) => setting.type === 'textarea',
   extensions: () => (Extensions.find({}).fetch().length > 0 ? Extensions.find({}) : false),
   customfields: () => (CustomFields.find({}).fetch().length > 0 ? CustomFields.find({}) : false),
-  getClassName: (name) => i18next.t(`globals.${name}`),
+  getClassName: (name) => t(`globals.${name}`),
 })
 
 Template.administration.events({
   'click .js-delete': (event, templateInstance) => {
     event.preventDefault()
-    if (confirm(i18next.t('administration.user_deletion_confirmation'))) {
+    if (confirm(t('administration.user_deletion_confirmation'))) {
       Meteor.call('adminDeleteUser', { userId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
         if (error) {
           console.error(error)
         } else {
-          showToast(i18next.t('administration.user_deleted'))
+          showToast(t('administration.user_deleted'))
         }
       })
     }
@@ -53,8 +53,8 @@ Template.administration.events({
     const email = templateInstance.$('#email').val()
     const password = templateInstance.$('#password').val()
     const isAdmin = templateInstance.$('#isAdmin').is(':checked')
-    const currentLanguageProject = i18next.t('globals.project')
-    const currentLanguageProjectDesc = i18next.t('project.first_project_desc')
+    const currentLanguageProject = t('globals.project')
+    const currentLanguageProjectDesc = t('project.first_project_desc')
     if (!validateEmail(email)) {
       templateInstance.$('#email').addClass('is-invalid')
       return
@@ -71,7 +71,7 @@ Template.administration.events({
           templateInstance.$('#email').val('')
           templateInstance.$('#password').val('')
           templateInstance.$('#isAdmin').prop('checked', false)
-          showToast(i18next.t('administration.user_created'))
+          showToast(t('administration.user_created'))
         }
         templateInstance.$('#email').removeClass('is-invalid')
       })
@@ -83,7 +83,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('administration.user_updated'))
+        showToast(t('administration.user_updated'))
       }
     })
   },
@@ -93,7 +93,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('administration.user_updated'))
+        showToast(t('administration.user_updated'))
       }
     })
   },
@@ -107,7 +107,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('notifications.settings_saved_success'))
+        showToast(t('notifications.settings_saved_success'))
       }
     })
   },
@@ -130,7 +130,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('notifications.settings_saved_success'))
+        showToast(t('notifications.settings_saved_success'))
       }
     })
   },
@@ -140,7 +140,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('notifications.settings_saved_success'))
+        showToast(t('notifications.settings_saved_success'))
       }
     })
   },
@@ -156,7 +156,7 @@ Template.administration.events({
           if (error) {
             console.error(error)
           } else {
-            showToast(i18next.t(result))
+            showToast(t(result))
           }
         })
       }
@@ -168,7 +168,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('administration.extension_removed'))
+        showToast(t('administration.extension_removed'))
       }
     })
   },
@@ -178,7 +178,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('administration.extension_launched'))
+        showToast(t('administration.extension_launched'))
       }
     })
   },
@@ -188,7 +188,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('notifications.success'))
+        showToast(t('notifications.success'))
       }
     })
   },
@@ -229,7 +229,7 @@ Template.administration.events({
         templateInstance.$('#customfieldName').val('')
         templateInstance.$('#customfieldDesc').val('')
         templateInstance.$('#customfieldClassname').val('')
-        showToast(i18next.t('notifications.success'))
+        showToast(t('notifications.success'))
       }
     })
   },
@@ -241,7 +241,7 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
-        showToast(i18next.t('notifications.success'))
+        showToast(t('notifications.success'))
       }
     })
   },

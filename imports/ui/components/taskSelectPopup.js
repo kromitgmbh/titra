@@ -1,11 +1,13 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import i18next from 'i18next'
 import './taskSelectPopup.html'
 import './datatable.js'
 import Tasks from '../../api/tasks/tasks.js'
 import Projects from '../../api/projects/projects.js'
-import { getGlobalSetting, getUserSetting, i18nextReady, addToolTipToTableCell } from '../../utils/frontend_helpers'
+import { i18nReady, t } from '../../utils/i18n.js'
+import {
+  getGlobalSetting, getUserSetting, addToolTipToTableCell,
+} from '../../utils/frontend_helpers'
 
 Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
   dayjs.extend(utc)
@@ -25,13 +27,13 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
   })
   templateInstance.autorun(() => {
     if (templateInstance.modalDisplayed.get()) {
-      if (i18nextReady.get()) {
+      if (i18nReady.get()) {
         templateInstance.localTasksColumns = new ReactiveVar([{
-          name: i18next.t('globals.task'),
+          name: t('globals.task'),
           editable: false,
           format: (value) => `<button type="button" class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
         }, {
-          name: i18next.t('task.lastUsed'),
+          name: t('task.lastUsed'),
           editable: false,
           format: (value) => dayjs(value, 'YYYY/MM/DD').format(getGlobalSetting('dateformat')),
         }])
@@ -97,14 +99,14 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
   })
   templateInstance.autorun(() => {
     if (templateInstance.modalDisplayed.get()) {
-      if (i18nextReady.get()) {
+      if (i18nReady.get()) {
         templateInstance.wekanTasksColumns = new ReactiveVar([
           {
-            name: i18next.t('globals.task'),
+            name: t('globals.task'),
             format: (value) => `<button type="button" class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
           },
           {
-            name: i18next.t('globals.description'),
+            name: t('globals.description'),
             format: addToolTipToTableCell,
           }])
       }
@@ -123,14 +125,14 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
   })
   templateInstance.autorun(() => {
     if (templateInstance.modalDisplayed.get()) {
-      if (i18nextReady.get()) {
+      if (i18nReady.get()) {
         templateInstance.zammadTicketsColumns = new ReactiveVar([
           {
-            name: i18next.t('globals.task'),
+            name: t('globals.task'),
             format: (value) => `<button type="button" class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
           },
           {
-            name: i18next.t('globals.description'),
+            name: t('globals.description'),
             format: addToolTipToTableCell,
           }])
         if (!templateInstance.zammadTicketsData.get() && getGlobalSetting('enableZammad') && getUserSetting('zammadurl') && getUserSetting('zammadtoken')) {

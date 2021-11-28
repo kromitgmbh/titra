@@ -1,5 +1,5 @@
 import './datatable.html'
-import i18next from 'i18next'
+import { t } from '../../utils/i18n.js'
 
 Template.datatable.onRendered(() => {
   const templateInstance = Template.instance()
@@ -17,7 +17,7 @@ Template.datatable.onRendered(() => {
               serialNoColumn: false,
               clusterize: false,
               layout: 'fluid',
-              noDataMessage: i18next.t('tabular.sZeroRecords'),
+              noDataMessage: t('tabular.sZeroRecords'),
             }
             try {
               window.requestAnimationFrame(() => {
