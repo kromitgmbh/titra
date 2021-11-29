@@ -1,8 +1,8 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './projectAccessRights.html'
-import { t } from '../../utils/i18n.js'
+import { t, i18nReady } from '../../utils/i18n.js'
 import {
-  validateEmail, getGlobalSetting, i18nReady, showToast,
+  validateEmail, getGlobalSetting, showToast,
 } from '../../utils/frontend_helpers'
 import Projects from '../../api/projects/projects.js'
 
