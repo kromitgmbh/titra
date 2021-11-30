@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { NodeVM } from 'vm2'
-import fetch from 'meteor/fetch'
+import { fetch } from 'meteor/fetch'
 import { check, Match } from 'meteor/check'
 import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'
