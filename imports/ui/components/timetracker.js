@@ -5,7 +5,8 @@ import dayjs from 'dayjs'
 import preciseDiff from 'dayjs-precise-range'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './timetracker.html'
-import { getUserSetting } from '../../utils/frontend_helpers'
+import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
+import CustomFields from '../../api/customfields/customfields'
 
 function pad(num, size) {
   const s = `0000${num}`
@@ -14,9 +15,29 @@ function pad(num, size) {
 
 Template.timetracker.onCreated(function createTimeTracker() {
   this.timer = new ReactiveVar(null)
+  this.task = new ReactiveVar()
+  this.project = new ReactiveVar()
+  this.subscribe('customfieldsForClass', { classname: 'time_entry' })
+  this.customFields = new ReactiveVar([])
+  if (getGlobalSetting('useStartTime')) {
+    this.startTime = new ReactiveVar()
+  }
   dayjs.extend(preciseDiff)
   this.autorun(() => {
     const storedTimer = getUserSetting('timer')
+    const storedTask = getUserSetting('timer_task')
+    const storedProject = getUserSetting('timer_project')
+    const storedCustomFields = getUserSetting('timer_custom_fields')
+    const storedStartTime = getUserSetting('timer_start_time')
+    if (storedTask) {
+      this.task.set(storedTask)
+    }
+    if (storedProject) {
+      this.project.set(storedProject)
+    }
+    if (storedStartTime) {
+      this.startTime.set(storedStartTime)
+    }
     if (storedTimer) {
       this.timer.set(dayjs(storedTimer))
       if (!this.intervalHandle) {
@@ -25,6 +46,9 @@ Template.timetracker.onCreated(function createTimeTracker() {
           $('.js-timer').val(`${pad(duration.hours, 2)}:${pad(duration.minutes, 2)}:${pad(duration.seconds, 2)}`)
         }, 1000)
       }
+    }
+    if (storedCustomFields) {
+      this.customFields.set(storedCustomFields)
     }
   })
 })
@@ -38,24 +62,65 @@ Template.timetracker.events({
     }
     const duration = dayjs.preciseDiff(dayjs(), templateInstance.timer.get(), true)
     const hours = (Number(duration.days * getUserSetting('hoursToDays'))) + Number(duration.hours) + Number((duration.minutes / 60))
-    $('#hours').val(Number(hours).toFixed(getUserSetting('precision')))
+    const project = templateInstance.project.get()
+    const task = templateInstance.task.get()
+    if (templateInstance.customFields.get().length > 0) {
+      for (const customField of templateInstance.customFields.get()) {
+        $(`#${customField.name}`).val(customField.value)
+      }
+    }
+    if (getGlobalSetting('useStartTime')) {
+      $('#startTime').val(templateInstance.startTime.get())
+    }
+    $('#hours').val(Number(hours).toFixed(getUserSetting('precision'))).trigger('change')
+    if (project) {
+      $('.js-target-project').val(project).trigger('change')
+    }
+    if (task) {
+      $('.js-tasksearch-input').val(task)
+    }
     Meteor.clearTimeout(templateInstance.intervalHandle)
     templateInstance.intervalHandle = undefined
-    Meteor.call('setTimer', { timestamp: undefined }, (error) => {
+    Meteor.call('setTimer', {}, (error) => {
       if (error) {
         console.error(error)
       }
     })
-    Template.instance().timer.set(null)
+    templateInstance.timer.set(null)
+    templateInstance.project.set(null)
+    templateInstance.task.set(null)
+    if (getGlobalSetting('useStartTime')) {
+      templateInstance.startTime.set(null)
+    }
   },
-  'click .js-start': (event) => {
+  'click .js-start': (event, templateInstance) => {
     event.preventDefault()
-    Meteor.call('setTimer', { timestamp: new Date() }, (error) => {
+    templateInstance.timer.set(new Date())
+    templateInstance.project.set($('.js-target-project').val())
+    templateInstance.task.set($('.js-tasksearch-input').val())
+    templateInstance.startTime.set($('#startTime').val())
+    const customFields = CustomFields.find().fetch()
+    const customFieldsToSave = []
+    if (customFields.length > 0) {
+      for (const customField of customFields) {
+        const customFieldEntry = {}
+        customFieldEntry.name = customField.name
+        customFieldEntry.value = $(`#${customField.name}`).val()
+        customFieldsToSave.push(customFieldEntry)
+      }
+    }
+    templateInstance.customFields.set(customFieldsToSave)
+    Meteor.call('setTimer', {
+      timestamp: new Date(),
+      project: $('.js-target-project').val(),
+      task: $('.js-tasksearch-input').val(),
+      startTime: $('#startTime').val(),
+      customFields: customFieldsToSave,
+    }, (error) => {
       if (error) {
         console.error(error)
       }
     })
-    Template.instance().timer.set(new Date())
   },
 })
 

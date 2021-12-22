@@ -42,14 +42,18 @@ Template.projectselect.onCreated(function createTrackTime() {
 Template.projectselect.helpers({
   projects: () => {
     if (FlowRouter.getQueryParam('customer') && FlowRouter.getQueryParam('customer') !== 'all') {
-      return Projects.find({
-        customer: FlowRouter.getQueryParam('customer'),
-        $or: [{ archived: { $exists: false } }, { archived: false }],
-      },
-      { sort: { priority: 1, name: 1 } })
+      return Projects.find(
+        {
+          customer: FlowRouter.getQueryParam('customer'),
+          $or: [{ archived: { $exists: false } }, { archived: false }],
+        },
+        { sort: { priority: 1, name: 1 } },
+      )
     }
-    return Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] },
-      { sort: { priority: 1, name: 1 } })
+    return Projects.find(
+      { $or: [{ archived: { $exists: false } }, { archived: false }] },
+      { sort: { priority: 1, name: 1 } },
+    )
   },
   selectedId: () => Template.instance().selectedId.get(),
   displayProjectInfo: () => Template.instance().data.displayProjectInfo
@@ -66,9 +70,9 @@ Template.projectselect.events({
     }
     const project = Projects.findOne({ _id: templateInstance.selectedId.get() })
     if (!project?.defaultTask) {
-      $('.js-tasksearch-input').focus()
+      $('.js-tasksearch-input').first().trigger('focus')
     } else {
-      $('#hours').first().focus()
+      $('#hours').first().trigger('focus')
     }
   },
 })

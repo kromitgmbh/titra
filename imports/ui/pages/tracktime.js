@@ -134,7 +134,8 @@ Template.tracktime.events({
     const customfields = {}
     templateInstance.$('.js-customfield').each((i, el) => { customfields[$(el).attr('id')] = $(el).val() })
     const buttonLabel = $('.js-save').first().text()
-    const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > .js-target-project')
+    const selectedProjectElement = $('.js-tracktime-projectselect > div > .js-target-project')
+    templateInstance.projectId.set(selectedProjectElement.val())
     let hours = templateInstance.$('#hours').val()
     if (!templateInstance.projectId.get()) {
       selectedProjectElement.addClass('is-invalid')
@@ -200,6 +201,7 @@ Template.tracktime.events({
           if (templateInstance.data.tcid) {
             $('#edit-tc-entry-modal').modal('hide')
           }
+          selectedProjectElement.removeClass('is-invalid')
         }
         templateInstance.$(event.currentTarget).text(buttonLabel)
         templateInstance.$(event.currentTarget).prop('disabled', false)
@@ -222,6 +224,7 @@ Template.tracktime.events({
           templateInstance.$('.js-show-timecards').slideDown('fast')
           templateInstance.$('[data-bs-toggle="tooltip"]').tooltip()
           $('#edit-tc-entry-modal').modal('hide')
+          selectedProjectElement.removeClass('is-invalid')
         }
         templateInstance.$('.js-save').text(buttonLabel)
         templateInstance.$('.js-save').prop('disabled', false)

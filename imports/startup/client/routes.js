@@ -13,6 +13,9 @@ if (!Meteor.settings.public.sandstorm) {
       redirect('/signIn')
     }
   }], { except: ['dashboard', 'signIn', 'changePassword', 'register', 'reset-password', 'try'] })
+  FlowRouter.triggers.exit([() => {
+    $("[data-toggle='popover']").popover('hide')
+  }])
 }
 FlowRouter.route('*', {
   action: () => {

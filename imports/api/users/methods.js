@@ -108,7 +108,7 @@ Meteor.methods({
     throw new Meteor.Error('Unable to claim admin rights, only the first user on a server is allowed to do this.')
   },
   adminCreateUser({
-    name, email, password, isAdmin, currentLanguageProject, currentLanguageProjectDesc
+    name, email, password, isAdmin, currentLanguageProject, currentLanguageProjectDesc,
   }) {
     checkAdminAuthentication(this)
     check(name, String)
@@ -146,13 +146,39 @@ Meteor.methods({
       },
     })
   },
-  setTimer({ timestamp }) {
+  setTimer({
+    timestamp, project, task, startTime, customFields,
+  }) {
     checkAuthentication(this)
     check(timestamp, Match.Maybe(Date))
+    check(project, Match.Maybe(String))
+    check(task, Match.Maybe(String))
+    check(startTime, Match.Maybe(String))
+    check(customFields, Match.Maybe(Array))
     if (!timestamp) {
       Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer': '' } })
     } else {
       Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer': timestamp } })
+    }
+    if (!project) {
+      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer_project': '' } })
+    } else {
+      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer_project': project } })
+    }
+    if (!task) {
+      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer_task': '' } })
+    } else {
+      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer_task': task } })
+    }
+    if (!customFields) {
+      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer_custom_fields': '' } })
+    } else {
+      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer_custom_fields': customFields } })
+    }
+    if (!startTime) {
+      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer_start_time': '' } })
+    } else {
+      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer_start_time': startTime } })
     }
   },
 })

@@ -24,7 +24,7 @@ Template.tasksearch.events({
     templateInstance.$('.js-tasksearch-input').removeClass('is-invalid')
   },
   'blur .js-tasksearch-input': (event, templateInstance) => {
-    if (!event.relatedTarget) {
+    if (!event.relatedTarget || $(event.relatedTarget).is($('.js-target-project').first())) {
       templateInstance.$('.js-tasksearch-results').addClass('d-none')
     }
   },
@@ -77,6 +77,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
   this.filter = new ReactiveVar()
   this.wekanAPITasks = new ReactiveVar()
   this.zammadAPITasks = new ReactiveVar()
+  this.project = new ReactiveVar()
   // this.lastTimecards = new ReactiveVar()
   this.autorun(() => {
     let tcid
@@ -96,6 +97,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
     if (FlowRouter.getParam('projectId')) {
       const project = Projects.findOne({ _id: FlowRouter.getParam('projectId') })
       if (project) {
+        this.project.set(project)
         if (project.wekanurl) {
           if (Meteor.settings.public.sandstorm) {
             const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
