@@ -12,9 +12,9 @@ reactive-var@1.0.11            # Reactive variable for tracker
 tracker@1.2.0                 # Meteor's client-side reactive programming library
 
 standard-minifier-css@1.7.4   # CSS minifier run for production mode
-standard-minifier-js@2.7.2    # JS minifier run for production mode
+standard-minifier-js@2.8.0    # JS minifier run for production mode
 es5-shim@4.8.0                # ECMAScript 5 compatibility for older browsers.
-ecmascript@0.16.0              # Enable ECMAScript2015+ syntax in app code
+ecmascript@0.16.1              # Enable ECMAScript2015+ syntax in app code
 shell-server@0.5.0            # Server-side component of the `meteor shell` command
 
 fourseven:scss@4.5.0

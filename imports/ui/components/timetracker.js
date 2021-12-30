@@ -95,10 +95,10 @@ Template.timetracker.events({
   },
   'click .js-start': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.timer.set(new Date())
-    templateInstance.project.set($('.js-target-project').val())
-    templateInstance.task.set($('.js-tasksearch-input').val())
-    templateInstance.startTime.set($('#startTime').val())
+    templateInstance.timer?.set(new Date())
+    templateInstance.project?.set($('.js-target-project').val())
+    templateInstance.task?.set($('.js-tasksearch-input').val())
+    templateInstance.startTime?.set($('#startTime').val())
     const customFields = CustomFields.find().fetch()
     const customFieldsToSave = []
     if (customFields.length > 0) {
@@ -109,7 +109,7 @@ Template.timetracker.events({
         customFieldsToSave.push(customFieldEntry)
       }
     }
-    templateInstance.customFields.set(customFieldsToSave)
+    templateInstance.customFields?.set(customFieldsToSave)
     Meteor.call('setTimer', {
       timestamp: new Date(),
       project: $('.js-target-project').val(),
