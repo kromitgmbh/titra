@@ -161,7 +161,9 @@
     "zammad_api_token": "Zammad Personal Access Token",
     "custom_css": "Benutzerdefiniertes CSS",
     "custom_html": "Benuzterdefiniertes HTML",
-    "custom_placeholder_content": "Benutzerdefinierter Inhalt für den Platzhalter"
+    "custom_placeholder_content": "Benutzerdefinierter Inhalt für den Platzhalter",
+    "show_custom_fields_in_details": "Benutzerdefinierte Felder in den Details anzeigen/exportieren?",
+    "show_customer_in_details": "Spalte Kunde in den Details anzeigen/exportieren?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

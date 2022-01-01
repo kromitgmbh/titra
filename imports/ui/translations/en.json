@@ -162,7 +162,9 @@
     "zammad_api_token": "Zammad Personal Access Token",
     "custom_css": "Custom CSS",
     "custom_html": "Custom HTML",
-    "custom_placeholder_content": "Custom Placeholder Content"
+    "custom_placeholder_content": "Custom Placeholder Content",
+    "show_custom_fields_in_details": "Show/export custom fields in details view?",
+    "show_customer_in_details": "Show/export customer field in details view?"
   },
   "customer": {
     "select_customer": "Select a customer",

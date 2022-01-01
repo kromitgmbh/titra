@@ -28,20 +28,30 @@ const Counts = new Mongo.Collection('counts')
 dayjs.extend(utc)
 
 function detailedDataTableMapper(entry) {
-  const mapping = [Projects.findOne({ _id: entry.projectId }) ? Projects.findOne({ _id: entry.projectId }).name : '',
+  const project = Projects.findOne({ _id: entry.projectId })
+  const mapping = [project ? project.name : '',
     dayjs.utc(entry.date).format(getGlobalSetting('dateformat')),
     entry.task,
-    projectUsers.findOne() ? projectUsers.findOne().users.find((elem) => elem._id === entry.userId)?.profile?.name : '',
-    Number(timeInUserUnit(entry.hours)),
-    entry.state]
-  if (!getGlobalSetting('useState')) {
-    mapping.splice(5, 1)
-  }
-  if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
-    for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
-      mapping.push(entry[customfield.name])
+    projectUsers.findOne() ? projectUsers.findOne().users.find((elem) => elem._id === entry.userId)?.profile?.name : '']
+  if (getGlobalSetting('showCustomFieldsInDetails')) {
+    if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
+      for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
+        mapping.push(entry[customfield.name])
+      }
+    }
+    if (CustomFields.find({ classname: 'project' }).count() > 0) {
+      for (const customfield of CustomFields.find({ classname: 'project' }).fetch()) {
+        mapping.push(project[customfield.name])
+      }
     }
   }
+  if (getGlobalSetting('showCustomerInDetails')) {
+    mapping.push(project ? project.customer : '')
+  }
+  if (getGlobalSetting('useState')) {
+    mapping.push(entry.state)
+  }
+  mapping.push(Number(timeInUserUnit(entry.hours)))
   mapping.push(entry._id)
   return mapping
 }
@@ -51,6 +61,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
   this.sort = new ReactiveVar()
   this.tcid = new ReactiveVar()
   this.subscribe('customfieldsForClass', { classname: 'time_entry' })
+  this.subscribe('customfieldsForClass', { classname: 'project' })
   this.autorun(() => {
     if (this.data.project.get()
       && this.data.resource.get()
@@ -114,32 +125,52 @@ Template.detailtimetable.onRendered(() => {
           format: addToolTipToTableCell,
         },
         { name: t('globals.task'), editable: false, format: addToolTipToTableCell },
-        { name: t('globals.resource'), editable: false, format: addToolTipToTableCell },
+        { name: t('globals.resource'), editable: false, format: addToolTipToTableCell }]
+      if (getGlobalSetting('showCustomFieldsInDetails')) {
+        if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
+          for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
+            columns.push({
+              name: customfield.desc,
+              editable: false,
+              format: addToolTipToTableCell,
+            })
+          }
+        }
+        if (CustomFields.find({ classname: 'project' }).count() > 0) {
+          for (const customfield of CustomFields.find({ classname: 'project' }).fetch()) {
+            columns.push({
+              name: customfield.desc,
+              editable: false,
+              format: addToolTipToTableCell,
+            })
+          }
+        }
+      }
+      if (getGlobalSetting('showCustomerInDetails')) {
+        columns.push(
+          { name: t('globals.customer'), editable: false, format: addToolTipToTableCell },
+        )
+      }
+      if (getGlobalSetting('useState')) {
+        columns.push(
+          {
+            name: t('details.state'),
+            editable: true,
+            format: (value) => {
+              if (value === null) {
+                return ''
+              }
+              return value ? addToolTipToTableCell(t(`details.${value}`)) : addToolTipToTableCell(t('details.new'))
+            },
+          },
+        )
+      }
+      columns.push(
         {
           name: getUserTimeUnitVerbose(),
           editable: false,
           format: numberWithUserPrecision,
         },
-        {
-          name: t('details.state'),
-          editable: true,
-          format: (value) => {
-            if (value === null) {
-              return ''
-            }
-            return value ? addToolTipToTableCell(t(`details.${value}`)) : addToolTipToTableCell(t('details.new'))
-          },
-        }]
-      if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
-        for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
-          columns.push({
-            name: customfield.desc,
-            editable: false,
-            format: addToolTipToTableCell,
-          })
-        }
-      }
-      columns.push(
         {
           name: t('navigation.edit'),
           editable: false,
@@ -153,9 +184,6 @@ Template.detailtimetable.onRendered(() => {
             : ''),
         },
       )
-      if (!getGlobalSetting('useState')) {
-        columns.splice(5, 1)
-      }
       if (!templateInstance.datatable) {
         import('frappe-datatable/dist/frappe-datatable.css').then(() => {
           import('frappe-datatable').then((datatable) => {
@@ -165,7 +193,7 @@ Template.detailtimetable.onRendered(() => {
               data,
               serialNoColumn: false,
               clusterize: false,
-              layout: 'fluid',
+              layout: 'ratio',
               showTotalRow: true,
               noDataMessage: t('tabular.sZeroRecords'),
               events: {
@@ -179,7 +207,7 @@ Template.detailtimetable.onRendered(() => {
             if (getGlobalSetting('useState')) {
               datatableConfig
                 .getEditor = (colIndex, rowIndex, value, parent, column, row, editorData) => {
-                  if (colIndex === '5' && Timecards.findOne({ _id: editorData[6] }).userId === Meteor.userId() && rowIndex !== 'totalRow') {
+                  if (column.name === t('details.state') && Timecards.findOne({ _id: editorData[editorData.length - 1] }).userId === Meteor.userId() && rowIndex !== 'totalRow') {
                     const $select = document.createElement('select')
                     $select.classList = 'form-control'
                     parent.style.padding = 0
@@ -264,15 +292,23 @@ Template.detailtimetable.helpers({
 Template.detailtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
-    let csvArray
+    const csvArray = [`\uFEFF${t('globals.project')},${t('globals.date')},${t('globals.task')},${t('globals.resource')}`]
+
+    if (getGlobalSetting('showCustomFieldsInDetails')) {
+      if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
+        csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'time_entry' }).fetch().map((field) => field.desc).join(',')}`
+      }
+      if (CustomFields.find({ classname: 'project' }).count() > 0) {
+        csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'project' }).fetch().map((field) => field.desc).join(',')}`
+      }
+    }
+    if (getGlobalSetting('showCustomerInDetails')) {
+      csvArray[0] = `${csvArray[0]},${t('globals.customer')}`
+    }
     if (getGlobalSetting('useState')) {
-      csvArray = [`\uFEFF${t('globals.project')},${t('globals.date')},${t('globals.task')},${t('globals.resource')},${getUserTimeUnitVerbose()},${t('details.state')}`]
-    } else {
-      csvArray = [`\uFEFF${t('globals.project')},${t('globals.date')},${t('globals.task')},${t('globals.resource')},${getUserTimeUnitVerbose()}`]
+      csvArray[0] = `${csvArray[0]},${t('details.state')}`
     }
-    if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
-      csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'time_entry' }).fetch().map((field) => field.desc).join(',')}\r\n`
-    }
+    csvArray[0] = `${csvArray[0]},${getUserTimeUnitVerbose()}\r\n`
     for (const timeEntry of Timecards
       .find(templateInstance.selector[0], templateInstance.selector[1])
       .fetch().map(detailedDataTableMapper)) {
@@ -282,14 +318,14 @@ Template.detailtimetable.events({
       }
       row.splice(row.length - 1, 1)
       if (getGlobalSetting('useState')) {
-        row[5] = t(`details.${timeEntry[5] ? timeEntry[5] : 'new'}`)
-      } else {
-        row.splice(5, 1)
+        row[row.length - 2] = t(`details.${timeEntry[timeEntry.length - 3] ? timeEntry[timeEntry.length - 3] : 'new'}`)
       }
       csvArray.push(`${row.join(',')}\r\n`)
     }
-    saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }),
-      `titra_export_${dayjs().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.csv`)
+    saveAs(
+      new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }),
+      `titra_export_${dayjs().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.csv`,
+    )
     Meteor.call('setTimeEntriesState', { timeEntries: Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch().map((entry) => entry._id), state: 'exported' }, (error) => {
       if (error) {
         console.error(error)
@@ -298,40 +334,46 @@ Template.detailtimetable.events({
   },
   'click .js-export-xlsx': (event, templateInstance) => {
     event.preventDefault()
-    let data
-    if (getGlobalSetting('useState')) {
-      data = [[t('globals.project'), t('globals.date'), t('globals.task'), t('globals.resource'), getUserTimeUnitVerbose(), t('details.state')]]
-    } else {
-      data = [[t('globals.project'), t('globals.date'), t('globals.task'), t('globals.resource'), getUserTimeUnitVerbose()]]
-    }
-    if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
-      for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
-        data[0].push(customfield.desc)
+    const data = [[t('globals.project'), t('globals.date'), t('globals.task'), t('globals.resource')]]
+    if (getGlobalSetting('showCustomFieldsInDetails')) {
+      if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
+        for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
+          data[0].push(customfield.desc)
+        }
+      }
+      if (CustomFields.find({ classname: 'project' }).count() > 0) {
+        for (const customfield of CustomFields.find({ classname: 'project' }).fetch()) {
+          data[0].push(customfield.desc)
+        }
       }
     }
-    if (!getGlobalSetting('useState')) {
-      data[0].splice(5, 1)
+    if (getGlobalSetting('showCustomerInDetails')) {
+      data[0].push(t('globals.customer'))
     }
+    if (getGlobalSetting('useState')) {
+      data[0].push(t('details.state'))
+    }
+    data[0].push(getUserTimeUnitVerbose())
     for (const timeEntry of Timecards
       .find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
       .map(detailedDataTableMapper)) {
       const row = []
       let index = 0
+      timeEntry.splice(timeEntry.length - 1, 1)
       for (const attribute of timeEntry) {
-        if (index !== 6) {
-          if (index === 5 && getGlobalSetting('useState')) {
-            row.push(t(`details.${attribute !== undefined ? attribute : 'new'}`))
-          } else if (index !== 5) {
-            row.push(attribute)
-          }
+        if (index === timeEntry.length - 2 && getGlobalSetting('useState')) {
+          row.push(t(`details.${attribute !== undefined ? attribute : 'new'}`))
+        } else {
+          row.push(attribute || '')
         }
         index += 1
       }
-      // row.splice(row.length - 1, 1)
       data.push(row)
     }
-    saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'titra export').createDownloadUrl(),
-      `titra_export_${dayjs().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.xlsx`)
+    saveAs(
+      new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'titra export').createDownloadUrl(),
+      `titra_export_${dayjs().format('YYYYMMDD-HHmm')}_${$('#resourceselect option:selected').text().replace(' ', '_').toLowerCase()}.xlsx`,
+    )
     Meteor.call('setTimeEntriesState', { timeEntries: Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch().map((entry) => entry._id), state: 'exported' }, (error) => {
       if (error) {
         console.error(error)

@@ -93,5 +93,10 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'customPlaceholderContent', description: 'settings.custom_placeholder_content', type: 'textarea', value: '',
 })
-
+defaultSettings.push({
+  name: 'showCustomFieldsInDetails', description: 'settings.show_custom_fields_in_details', type: 'text', value: 'true',
+})
+defaultSettings.push({
+  name: 'showCustomerInDetails', description: 'settings.show_customer_in_details', type: 'text', value: 'true',
+})
 export { defaultSettings, Globalsettings }
