@@ -134,7 +134,7 @@ Template.tracktime.events({
     const customfields = {}
     templateInstance.$('.js-customfield').each((i, el) => { customfields[$(el).attr('id')] = $(el).val() })
     const buttonLabel = $('.js-save').first().text()
-    const selectedProjectElement = $('.js-tracktime-projectselect > div > .js-target-project')
+    const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > div > .js-target-project')
     templateInstance.projectId.set(selectedProjectElement.val())
     let hours = templateInstance.$('#hours').val()
     if (!templateInstance.projectId.get()) {
