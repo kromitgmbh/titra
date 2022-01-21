@@ -191,9 +191,11 @@ Template.wekanInterfaceSettings.events({
   'change .js-wekan-list-entry': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-wekan-swimlane-entry').prop('checked', false)
+    $('.js-save').trigger('click')
   },
   'change .js-wekan-swimlane-entry': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-wekan-list-entry').prop('checked', false)
+    $('.js-save').trigger('click')
   },
 })

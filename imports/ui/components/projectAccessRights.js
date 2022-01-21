@@ -98,7 +98,8 @@ Template.projectAccessRights.onRendered(() => {
   })
 })
 Template.projectAccessRights.helpers({
-  public: () => (Template.instance().project.get() ? Template.instance().project.public : false),
+  public: () => (Template.instance().project.get()
+    ? Template.instance().project.get().public : false),
   disablePublic: () => getGlobalSetting('disablePublicProjects'),
 })
 Template.projectAccessRights.events({
