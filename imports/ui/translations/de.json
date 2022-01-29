@@ -357,7 +357,8 @@
     "possible_values_hint": "Komma separarierte Werte (z.B.: a,b,c,d)",
     "no_customfields": "Es wurden noch keine benutzerdefinierten Attribute erstellt.",
     "no_extensions": "Es wurden noch keine Erweiterungen installiert.",
-    "extension_removed": "Die Erweiterung wurde erfolgreich entfernt"
+    "extension_removed": "Die Erweiterung wurde erfolgreich entfernt",
+    "edit_custom_field": "Benutzerdefiniertes Attribut bearbeiten"
   },
   "wekan": {
     "list": "Wekan Liste",

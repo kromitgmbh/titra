@@ -154,12 +154,12 @@ Template.editproject.events({
     const selectedWekanSwimlanes = $('.js-wekan-swimlane-entry:checked').toArray().map((entry) => entry.value)
     if (selectedWekanLists.length > 0) {
       projectArray.push({ name: 'selectedWekanList', value: $('.js-wekan-list-entry:checked').toArray().map((entry) => entry.value) })
-    } else {
+    } else if ($('#wekan-list-container').children().length > 0) {
       projectArray.push({ name: 'selectedWekanList', value: [] })
     }
     if (selectedWekanSwimlanes.length > 0) {
       projectArray.push({ name: 'selectedWekanSwimlanes', value: $('.js-wekan-swimlane-entry:checked').toArray().map((entry) => entry.value) })
-    } else {
+    } else if ($('#wekan-swimlane-container').children().length > 0) {
       projectArray.push({ name: 'selectedWekanSwimlanes', value: [] })
     }
     if (FlowRouter.getParam('id')) {

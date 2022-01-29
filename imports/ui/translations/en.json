@@ -350,7 +350,8 @@
     "possible_values_hint": "Separate values with a comma (e.g. a,b,c,d).",
     "no_customfields": "No custom fields have been defined yet.",
     "no_extensions": "No extensions have been installed yet.",
-    "extension_removed": "The extension has been removed successfully."
+    "extension_removed": "The extension has been removed successfully.",
+    "edit_custom_field": "Edit custom field"
   },
   "wekan": {
     "list": "Wekan list",

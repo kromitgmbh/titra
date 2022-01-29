@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import bootstrap from 'bootstrap'
 import { Random } from 'meteor/random'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { t } from '../../utils/i18n.js'
@@ -11,6 +12,7 @@ import CustomFields from '../../api/customfields/customfields.js'
 
 Template.administration.onCreated(function administrationCreated() {
   this.limit = new ReactiveVar(25)
+  this.editCustomFieldId = new ReactiveVar()
   this.subscribe('extensions')
   this.subscribe('customfields')
   this.autorun(() => {
@@ -241,6 +243,35 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
+        showToast(t('notifications.success'))
+      }
+    })
+  },
+  'click .js-edit-customfield': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.editCustomFieldId.set(templateInstance.$(event.currentTarget).data('customfield-id'))
+    const customField = CustomFields.findOne({ _id: templateInstance.$(event.currentTarget).data('customfield-id') })
+    if (customField) {
+      templateInstance.$('#editCustomfieldClassname').val(customField.classname)
+      templateInstance.$('#editCustomfieldName').val(customField.name)
+      templateInstance.$('#editCustomfieldDesc').val(customField.desc)
+      templateInstance.$('#editCustomfieldType').val(customField.type)
+      templateInstance.$('#editCustomfieldPossibleValues').val(customField.possibleValues)
+    }
+  },
+  'click .js-update-customfield': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('updateCustomField', {
+      _id: templateInstance.editCustomFieldId.get(),
+      desc: templateInstance.$('#editCustomfieldDesc').val(),
+      type: templateInstance.$('#editCustomfieldType').val(),
+      possibleValues: templateInstance.$('#editCustomfieldPossibleValues').val() !== '' ? templateInstance.$('#editCustomfieldPossibleValues').val().split(',') : undefined,
+    }, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        templateInstance.editCustomFieldId.set('')
+        templateInstance.$('.js-edit-customfield-modal').modal('hide')
         showToast(t('notifications.success'))
       }
     })
