@@ -5,6 +5,7 @@ import { checkAuthentication, checkAdminAuthentication } from '../../utils/serve
 Meteor.methods({
   updateSettings({
     unit,
+    startOfWeek,
     timeunit,
     timetrackview,
     enableWekan,
@@ -21,6 +22,7 @@ Meteor.methods({
     zammadurl,
   }) {
     check(unit, String)
+    check(startOfWeek, Number)
     check(timeunit, String)
     check(timetrackview, String)
     check(enableWekan, Boolean)
@@ -39,6 +41,7 @@ Meteor.methods({
     Meteor.users.update({ _id: this.userId }, {
       $set: {
         'profile.unit': unit,
+        'profile.startOfWeek': startOfWeek,
         'profile.timeunit': timeunit,
         'profile.timetrackview': timetrackview,
         'profile.enableWekan': enableWekan,
@@ -61,6 +64,7 @@ Meteor.methods({
     Meteor.users.update({ _id: this.userId }, {
       $unset: {
         'profile.unit': '',
+        'profile.startOfWeek': '',
         'profile.timeunit': '',
         'profile.timetrackview': '',
         'profile.enableWekan': '',
