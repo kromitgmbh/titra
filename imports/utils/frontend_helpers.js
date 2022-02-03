@@ -11,11 +11,7 @@ function getGlobalSetting(name) {
 function getUserSetting(field) {
   check(field, String)
   if ((Meteor.isClient && !Meteor.loggingIn()) && Meteor.user() && Meteor.user().profile) {
-    if (field === 'startOfWeek') { // This field can be zero
-      return Meteor.user().profile[field]
-    }
-
-    return Meteor.user().profile[field] ? Meteor.user().profile[field] : getGlobalSetting(field)
+    return typeof Meteor.user().profile[field] !== 'undefined' ? Meteor.user().profile[field] : getGlobalSetting(field)
   }
   return false
 }
