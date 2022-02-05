@@ -30,15 +30,25 @@ const loadLanguage = (language, i18nextDebugMode) => {
   // Meteor.js is not very smart
   // eslint-disable-next no-constant-condition
   if (false) {
-    import('/imports/ui/translations/en.json')
-    import('/imports/ui/translations/de.json')
-    import('/imports/ui/translations/fr.json')
+    import('../ui/translations/en.json')
+    import('../ui/translations/de.json')
+    import('../ui/translations/fr.json')
   }
   import(`/imports/ui/translations/${language}.json`).then((lang) => {
     i18nReady.set(false)
     setup(lang.default, language, i18nextDebugMode)
     i18nReady.set(true)
     $('html').attr('lang', language)
+  }).catch(() => {
+    import('../ui/translations/en.json').then((lang) => {
+      if (i18nextDebugMode) {
+        console.log('Language not found, using default language en')
+      }
+      i18nReady.set(false)
+      setup(lang.default, 'en', i18nextDebugMode)
+      i18nReady.set(true)
+      $('html').attr('lang', 'en')
+    })
   })
 }
 export {
