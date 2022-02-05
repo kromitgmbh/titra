@@ -14,15 +14,13 @@ Template.weektable.onCreated(function weekTableCreated() {
   dayjs.extend(utc)
   dayjs.extend(customParseFormat)
   this.subscribe('myprojects', {})
-  // attention: this is a workaround because we are currently hard coding the european week format
-  // where weeks start on Monday - in the future this needs to be updated based on a user specific
-  // 'start of the week' setting
-  this.startDate = new ReactiveVar(dayjs.utc().startOf('week').add(1, 'day'))
-  this.endDate = new ReactiveVar(dayjs.utc().endOf('week').add(1, 'day'))
+
+  this.startDate = new ReactiveVar(dayjs.utc().startOf('week').add(getUserSetting('startOfWeek'), 'day'))
+  this.endDate = new ReactiveVar(dayjs.utc().endOf('week').add(getUserSetting('startOfWeek'), 'day'))
   this.autorun(() => {
     if (FlowRouter.getQueryParam('date')) {
-      this.startDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).startOf('week').add(1, 'day'), 'YYYY-MM-DD')
-      this.endDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).endOf('week').add(1, 'day'), 'YYYY-MM-DD')
+      this.startDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).startOf('week').add(getUserSetting('startOfWeek'), 'day'), 'YYYY-MM-DD')
+      this.endDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).endOf('week').add(getUserSetting('startOfWeek'), 'day'), 'YYYY-MM-DD')
     }
   })
 })

@@ -28,6 +28,7 @@ Template.settings.onRendered(function settingsRendered() {
 
 Template.settings.helpers({
   unit: () => getUserSetting('unit'),
+  startOfWeek: () => getUserSetting('startOfWeek'),
   dailyStartTime: () => getUserSetting('dailyStartTime'),
   breakStartTime: () => getUserSetting('breakStartTime'),
   breakDuration: () => getUserSetting('breakDuration'),
@@ -50,6 +51,7 @@ Template.settings.events({
     Meteor.call('updateSettings', {
       unit: templateInstance.$('#unit').val(),
       precision: Number(templateInstance.$('#precision').val()),
+      startOfWeek: Number(templateInstance.$('#startOfWeek').val()),
       timeunit: templateInstance.$('#timeunit').val(),
       timetrackview: templateInstance.$('#timetrackview').val(),
       hoursToDays: Number(templateInstance.$('#hoursToDays').val()),

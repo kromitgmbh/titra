@@ -11,7 +11,7 @@ function getGlobalSetting(name) {
 function getUserSetting(field) {
   check(field, String)
   if ((Meteor.isClient && !Meteor.loggingIn()) && Meteor.user() && Meteor.user().profile) {
-    return Meteor.user().profile[field] ? Meteor.user().profile[field] : getGlobalSetting(field)
+    return typeof Meteor.user().profile[field] !== 'undefined' ? Meteor.user().profile[field] : getGlobalSetting(field)
   }
   return false
 }
@@ -25,7 +25,7 @@ function addToolTipToTableCell(value) {
 
 function getWeekDays(date) {
   const calendar = date.clone().startOf('week')
-  return new Array(7).fill(0).map((value, index) => (calendar.add(index + getGlobalSetting('startOfWeek'), 'day').format(getGlobalSetting('weekviewDateFormat'))))
+  return new Array(7).fill(0).map((value, index) => (calendar.add(index + getUserSetting('startOfWeek'), 'day').format(getGlobalSetting('weekviewDateFormat'))))
 }
 
 function numberWithUserPrecision(number) {

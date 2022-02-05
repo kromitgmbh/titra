@@ -33,7 +33,7 @@ Template.tracktime.onRendered(() => {
       },
       appendTo: templateInstance.firstNode,
       mode: 'dp-modal',
-      dayOffset: getGlobalSetting('startOfWeek'),
+      dayOffset: getUserSetting('startOfWeek'),
     }).on('select', (_, dp) => {
       if (!dp.state.selectedDate) {
         templateInstance.$('.js-date').first().val(dayjs().format(getGlobalSetting('dateformatVerbose')))

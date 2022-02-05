@@ -7,7 +7,7 @@ import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
 import './calendar.html'
 import './editTimeEntryModal.js'
-import { emojify } from '../../utils/frontend_helpers.js'
+import {emojify, getUserSetting} from '../../utils/frontend_helpers.js'
 
 Template.calendar.onCreated(function calendarCreated() {
   dayjs.extend(utc)
@@ -43,7 +43,7 @@ Template.calendar.onRendered(() => {
               aspectRatio: 2,
               height: 'auto',
               timeZone: 'UTC',
-              firstDay: 1,
+              firstDay: getUserSetting('startOfWeek'),
               themeSystem: 'bootstrap',
               events: (fetchInfo, successCallback) => {
                 templateInstance.startDate.set(fetchInfo.start)
