@@ -148,7 +148,7 @@
     "date_format": "Datumsformat",
     "verbose_date_format": "Detailliertes Datumsformat",
     "weekview_date_format": "Datumsformat Wochenansicht",
-    "startof_week": "Wochenbeginn",
+    "startof_week": "Wochenbeginn (0=Sonntag, 1=Montag, etc.)",
     "use_state": "Status für Zeiteinträge verwenden?",
     "disable_user_registration": "Registrierung neuer Benutzer deaktivieren?",
     "enable_anonymous_logins": "Anonyme Benutzer erlauben (aktiviert die /try Route)?",
