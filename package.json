@@ -40,7 +40,7 @@
     "raw-body": "^2.4.2",
     "sortablejs": "^1.14.0",
     "tiny-date-picker": "^3.2.8",
-    "vm2": "^3.9.5"
+    "vm2": "^3.9.6"
   },
   "devDependencies": {
     "@babel/core": "^7.17.0",
