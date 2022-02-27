@@ -16,7 +16,9 @@ Template.projectchart.helpers({
     return ProjectStats.findOne({ _id: Template.instance().data.projectId })
       ? Number(ProjectStats.findOne({
         _id: Template.instance().data.projectId,
-      }).totalHours).toFixed(precision)
+      }).totalHours ? ProjectStats.findOne({
+          _id: Template.instance().data.projectId,
+        }).totalHours : 0).toFixed(precision)
       : false
   },
   hourIndicator() {
