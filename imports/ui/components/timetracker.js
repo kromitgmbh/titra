@@ -61,7 +61,8 @@ Template.timetracker.events({
       return
     }
     const duration = dayjs.preciseDiff(dayjs(), templateInstance.timer.get(), true)
-    const hours = (Number(duration.days * getUserSetting('hoursToDays'))) + Number(duration.hours) + Number((duration.minutes / 60))
+    const hours = (Number(duration.days * 24))
+      + Number(duration.hours) + Number((duration.minutes / 60))
     const project = templateInstance.project.get()
     const task = templateInstance.task.get()
     if (templateInstance.customFields.get().length > 0) {
