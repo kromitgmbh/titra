@@ -6,8 +6,8 @@ services:
     depends_on:
       - mongodb
     environment:
-      - ROOT_URL=${ROOT_URL}
-      - MONGO_URL=mongodb://mongodb/titra
+      - ROOT_URL=${ROOT_URL}?directConnect=true
+      - MONGO_URL=mongodb://mongodb/titra?directConnection=true
       - PORT=3000
     ports:
       - "3000:3000"
