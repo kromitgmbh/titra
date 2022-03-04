@@ -189,10 +189,10 @@ Template.dashboard.onRendered(() => {
 Template.dashboard.helpers({
   timecards: () => (Timecards.find().fetch().length > 0 ? Timecards.find() : false),
   projectName: () => (Projects.findOne() ? Projects.findOne().name : false),
-  formatDate: (date) => dayjs(date).format(getGlobalSetting('dateformatVerbose')),
+  formatDate: (date) => dayjs.utc(date).format(getGlobalSetting('dateformatVerbose')),
   timeunit: () => timeUnitHelper(),
-  startDate: () => (Dashboards.findOne() ? dayjs(Dashboards.findOne().startDate).format(getGlobalSetting('dateformat')) : false),
-  endDate: () => (Dashboards.findOne() ? dayjs(Dashboards.findOne().endDate).format(getGlobalSetting('dateformat')) : false),
+  startDate: () => (Dashboards.findOne() ? dayjs.utc(Dashboards.findOne().startDate).format(getGlobalSetting('dateformat')) : false),
+  endDate: () => (Dashboards.findOne() ? dayjs.utc(Dashboards.findOne().endDate).format(getGlobalSetting('dateformat')) : false),
   dashBoardResource: () => (Dashboards.findOne()
     ? Meteor.users.findOne(Dashboards.findOne().resourceId)?.profile?.name : false),
   customer: () => (Dashboards.findOne() ? Dashboards.findOne().customer : false),
