@@ -12,9 +12,10 @@ jobs:
         uses: actions/checkout@master
       - name: autotag
         id: autotag
-        uses: butlerlogic/action-autotag@1.0.2
+        uses: butlerlogic/action-autotag@stable
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          strategy: package
           tag_message: ${{ github.event.head_commit.message }}
       - name: create_release
         env:
