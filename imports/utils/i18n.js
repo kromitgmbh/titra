@@ -42,7 +42,7 @@ const loadLanguage = (language, i18nextDebugMode) => {
   }).catch(() => {
     import('../ui/translations/en.json').then((lang) => {
       if (i18nextDebugMode) {
-        console.log('Language not found, using default language en')
+        console.warn('Language not found, using default language en')
       }
       i18nReady.set(false)
       setup(lang.default, 'en', i18nextDebugMode)

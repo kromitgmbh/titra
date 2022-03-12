@@ -6,7 +6,7 @@ services:
     depends_on:
       - mongodb
     environment:
-      - ROOT_URL=${ROOT_URL}?directConnect=true
+      - ROOT_URL=${ROOT_URL}
       - MONGO_URL=mongodb://mongodb/titra?directConnection=true
       - PORT=3000
     ports:
@@ -15,7 +15,7 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
     restart: always
   mongodb:
-    image: mongo:4.4
+    image: mongo:5.0
     container_name: mongodb
     restart: always
     volumes:

@@ -27,4 +27,7 @@ Meteor.startup(() => {
       eval(extension.server)
     }
   }
+  if (process.env.NODE_ENV !== 'development') {
+    console.log(`titra started on port ${process.env.PORT}`)
+  }
 })
