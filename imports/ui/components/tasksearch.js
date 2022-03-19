@@ -71,6 +71,10 @@ Template.tasksearch.events({
       templateInstance.$('.js-tasksearch-input').focus()
     }
   },
+  'click .js-show-task-select-popup': (event) => {
+    event.preventDefault()
+    $('#taskSelectPopup').modal('show')
+  },
 })
 
 Template.tasksearch.onCreated(function tasksearchcreated() {
@@ -149,6 +153,15 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
   })
   this.autorun(() => {
     this.subscribe('mytasks', { filter: this.filter.get(), projectId: this.data.projectId.get() ? this.data.projectId.get() : FlowRouter.getParam('projectId') })
+  })
+  this.autorun(() => {
+    if (this.data.projectId.get()) {
+      Blaze.renderWithData(
+        Template.taskSelectPopup,
+        { projectId: this.data.projectId },
+        document.body,
+      )
+    }
   })
 })
 Template.tasksearch.helpers({

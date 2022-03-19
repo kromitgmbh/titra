@@ -5,15 +5,12 @@
   <div class="input-group form-floating">
     <input type="text" value="{{task}}" class="js-tasksearch-input form-control" placeholder='{{t "tracktime.task_placeholder"}}'/>
     {{#if displayTaskSelectionIcon}}
-      <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#taskSelectPopup">
+      <button type="button" class="btn btn-outline-secondary js-show-task-select-popup">
           <i class="fas fa-list-alt"></i>
       </button>
     {{/if}}
     <label class="form-label" for="task">{{t "globals.task"}}</label>
   </div>
-  {{/if}}
-  {{#if displayTaskSelectionIcon}}
-    {{> taskSelectPopup projectId=projectId}}
   {{/if}}
   {{#if tasks}}
     <div class="list-group js-tasksearch-results position-absolute d-none" style="z-index:999;">
