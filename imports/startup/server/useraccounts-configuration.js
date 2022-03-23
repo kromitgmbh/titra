@@ -26,6 +26,6 @@ Accounts.onCreateUser((options, user) => {
   }
   return localUser
 })
-Accounts.emailTemplates.from = `${getGlobalSetting('fromAddress')} <${getGlobalSetting('fromAddress')}>`
+Accounts.emailTemplates.from = `${getGlobalSetting('fromName')} <${getGlobalSetting('fromAddress')}>`
 Accounts.emailTemplates.enrollAccount.subject = (user) => `Welcome to Awesome Town, ${user.profile.name}`
-Accounts.emailTemplates.resetPassword.from = () => `${getGlobalSetting('fromAddress')} Password Reset <${getGlobalSetting('fromAddress')}>`
+Accounts.emailTemplates.resetPassword.from = () => `${getGlobalSetting('fromName')} Password Reset <${getGlobalSetting('fromAddress')}>`
