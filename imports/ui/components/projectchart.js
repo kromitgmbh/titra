@@ -57,11 +57,9 @@ Template.projectchart.helpers({
   },
   turnOver() {
     const precision = getUserSetting('precision')
-    return Projects.findOne({ _id: Template.instance().data.projectId }).rate
-      && ProjectStats.findOne({ _id: Template.instance().data.projectId })
-      ? Number(Projects.findOne({ _id: Template.instance().data.projectId }).rate
-          * ProjectStats.findOne({ _id: Template.instance().data.projectId }).totalHours)
-        .toFixed(precision) : false
+    const project = Projects.findOne({ _id: Template.instance().data.projectId })
+    return project && project.rate && project.totalHours
+      ? Number(project.rate * project.totalHours).toFixed(precision) : false
   },
   target() {
     return Number(Projects.findOne({ _id: Template.instance().data.projectId }).target) > 0

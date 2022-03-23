@@ -21,8 +21,8 @@ Template.projectProgress.helpers({
   },
   percentage() {
     const projectStats = ProjectStats.findOne({ _id: Template.currentData()._id })
-    return projectStats
-      ? Number(projectStats.totalHours * 100 / Template.currentData().target)
+    return projectStats && projectStats.totalHours && Template.currentData().target
+      ? Number((projectStats.totalHours * 100) / Template.currentData().target)
         .toFixed(0) : false
   },
   target() {
