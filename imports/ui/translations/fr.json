@@ -155,7 +155,9 @@
     "zammad_api_token": "Clef d'accès personnel Zammad",
     "custom_css": "CSS personnalisé",
     "custom_html": "HTML personnalisé",
-    "custom_placeholder_content": "Contenu de placeholder personnalisé"
+    "custom_placeholder_content": "Contenu de placeholder personnalisé",
+    "mail_from_address": "Courrier de l'adresse",
+    "mail_from_name": "Courriel du nom"
   },
   "customer": {
     "select_customer": "Selectionner un client",

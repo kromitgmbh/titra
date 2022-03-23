@@ -99,4 +99,10 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'showCustomerInDetails', description: 'settings.show_customer_in_details', type: 'text', value: 'true',
 })
+defaultSettings.push({
+  name: 'fromAddress', description: 'settings.mail_from_address', type: 'text', value: 'no-reply@titra.io',
+})
+defaultSettings.push({
+  name: 'fromName', description: 'settings.mail_from_name', type: 'text', value: 'titra',
+})
 export { defaultSettings, Globalsettings }
