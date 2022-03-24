@@ -130,7 +130,7 @@ Template.detailtimetable.onRendered(() => {
         if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
           for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
             columns.push({
-              name: customfield.desc,
+              name: customfield.name,
               editable: false,
               format: addToolTipToTableCell,
             })
@@ -139,7 +139,7 @@ Template.detailtimetable.onRendered(() => {
         if (CustomFields.find({ classname: 'project' }).count() > 0) {
           for (const customfield of CustomFields.find({ classname: 'project' }).fetch()) {
             columns.push({
-              name: customfield.desc,
+              name: customfield.name,
               editable: false,
               format: addToolTipToTableCell,
             })
@@ -296,10 +296,10 @@ Template.detailtimetable.events({
 
     if (getGlobalSetting('showCustomFieldsInDetails')) {
       if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
-        csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'time_entry' }).fetch().map((field) => field.desc).join(',')}`
+        csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'time_entry' }).fetch().map((field) => field.name).join(',')}`
       }
       if (CustomFields.find({ classname: 'project' }).count() > 0) {
-        csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'project' }).fetch().map((field) => field.desc).join(',')}`
+        csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'project' }).fetch().map((field) => field.name).join(',')}`
       }
     }
     if (getGlobalSetting('showCustomerInDetails')) {
@@ -338,12 +338,12 @@ Template.detailtimetable.events({
     if (getGlobalSetting('showCustomFieldsInDetails')) {
       if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
         for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
-          data[0].push(customfield.desc)
+          data[0].push(customfield.name)
         }
       }
       if (CustomFields.find({ classname: 'project' }).count() > 0) {
         for (const customfield of CustomFields.find({ classname: 'project' }).fetch()) {
-          data[0].push(customfield.desc)
+          data[0].push(customfield.name)
         }
       }
     }
