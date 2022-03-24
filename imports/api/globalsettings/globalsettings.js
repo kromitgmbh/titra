@@ -103,6 +103,6 @@ defaultSettings.push({
   name: 'fromAddress', description: 'settings.mail_from_address', type: 'text', value: 'no-reply@titra.io',
 })
 defaultSettings.push({
-  name: 'fromName', description: 'settings.mail_from_name', type: 'text', value: 'titra',
+  name: 'fromName', description: 'settings.mail_from_name', type: 'text', value: 'Titra',
 })
 export { defaultSettings, Globalsettings }
