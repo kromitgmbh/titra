@@ -29,7 +29,7 @@ titra is available in the [DigitalOcean Marketplace](https://marketplace.digital
 
 
 ## Documentation and more
-Checkout our [wiki](https://titra.io/en/wiki/) for best practices and to learn how to setup interfaces with external tools like Wekan.
+Checkout our [wiki](https://wiki.titra.io) for best practices and to learn how to setup interfaces with external tools like Wekan.
 
 
 
