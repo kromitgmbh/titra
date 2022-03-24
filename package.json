@@ -1,13 +1,13 @@
 {
   "name": "titra",
-  "version": "0.71.1",
+  "version": "0.72.1",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
     "@babel/runtime": "^7.17.8",
-    "@fortawesome/fontawesome-free": "^6.1.0",
+    "@fortawesome/fontawesome-free": "^6.1.1",
     "@fullcalendar/core": "^5.10.1",
     "@fullcalendar/daygrid": "^5.10.1",
     "@fullcalendar/interaction": "^5.10.1",
@@ -38,7 +38,7 @@
     "quill-delta-to-html": "^0.12.0",
     "randomcolor": "^0.6.2",
     "raw-body": "^2.5.1",
-    "sortablejs": "^1.14.0",
+    "sortablejs": "^1.15.0",
     "tiny-date-picker": "^3.2.8",
     "vm2": "^3.9.9"
   },

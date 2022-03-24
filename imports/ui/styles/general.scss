@@ -293,10 +293,3 @@ button.dp-clear {
 .dropdown-item:hover {
   background-color: $primary;
 }
-
-.modal:nth-of-type(even) {
-  z-index: 1062 !important;
-}
-.modal-backdrop.show:nth-of-type(even) {
-  z-index: 1061 !important;
-}
