@@ -31,6 +31,8 @@ Template.administration.helpers({
   globalsettings: () => Globalsettings.find(),
   stringify: (string) => string.toString(),
   isTextArea: (setting) => setting.type === 'textarea',
+  isCheckbox: (setting) => setting.type === 'checkbox',
+  isChecked: (setting) => setting.value.toString() === 'true' ? 'checked' : '',
   extensions: () => (Extensions.find({}).fetch().length > 0 ? Extensions.find({}) : false),
   customfields: () => (CustomFields.find({}).fetch().length > 0 ? CustomFields.find({}) : false),
   getClassName: (name) => t(`globals.${name}`),
@@ -121,6 +123,8 @@ Template.administration.events({
       let value = templateInstance.$(element).val()
       if (element.type === 'number') {
         value = Number(value)
+      } else if (element.type === 'checkbox') {
+        value = templateInstance.$(element).is(':checked')
       } else if (value === 'true') {
         value = true
       } else if (value === 'false') {

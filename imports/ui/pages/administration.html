@@ -2,7 +2,7 @@
     <ul class="nav nav-tabs" id="administration-tab-pane" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="daily-tab" data-bs-toggle="tab" href="#globalsettings" role="tab" aria-controls="globalsettings" aria-selected="true">{{t "settings.global_settings"}}</a>
-          </li> 
+          </li>
         <li class="nav-item">
           <a class="nav-link" id="users-tab" data-bs-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">{{t "administration.users"}}</a>
         </li>
@@ -14,7 +14,7 @@
         </li>
     </ul>
     <div class="tab-content" id="administration-content">
-        <div class="tab-pane fade show active table-responsive p-3 tab-borders" id="globalsettings">
+        <div class="tab-pane fade show active table-responsive p-3 tab-borders form-switch" id="globalsettings">
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -31,11 +31,18 @@
                                 <td>
                                     {{#if isTextArea setting}}
                                         <textarea id="{{setting.name}}" name="{{setting.name}}" value="{{setting.value}}" class="form-control js-setting-input"></textarea>
+                                    {{else if isCheckbox setting}}
+                                        <input id="{{setting.name}}" name="{{setting.name}}" type="checkbox"  class="form-check-input js-setting-input"
+                                        {{isChecked setting}}/>
                                     {{else}}
                                         <input id="{{setting.name}}" name="{{setting.name}}" type="{{setting.type}}" value="{{stringify setting.value}}" class="form-control js-setting-input"/>
                                     {{/if}}
                                 </td>
-                                <td><button type="button" class="btn js-reset" data-setting-name="{{setting.name}}"><i class="fa fa-undo" title='{{t "settings.reset"}}'></i></button></td>
+                                <td>
+                                    <button type="button" class="btn js-reset" data-setting-name="{{setting.name}}">
+                                        <i class="fa fa-undo" title='{{t "settings.reset"}}'></i>
+                                    </button>
+                                </td>
                             </tr>
                         {{/each}}
                     </tbody>

@@ -293,3 +293,9 @@ button.dp-clear {
 .dropdown-item:hover {
   background-color: $primary;
 }
+
+.form-check-input {
+  transform: scale(1.5);
+  vertical-align: middle;
+  margin-left: 10px !important;
+}

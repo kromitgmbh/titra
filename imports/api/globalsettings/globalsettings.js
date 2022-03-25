@@ -30,10 +30,10 @@ defaultSettings.push({
   name: 'regularWorkingTime', description: 'details.regularWorkingTime', type: 'number', value: 8,
 })
 defaultSettings.push({
-  name: 'addBreakToWorkingTime', description: 'details.addBreakToWorkingTime', type: 'text', value: true,
+  name: 'addBreakToWorkingTime', description: 'details.addBreakToWorkingTime', type: 'checkbox', value: true,
 })
 defaultSettings.push({
-  name: 'enableWekan', description: 'settings.enable_wekan_integration', type: 'text', value: true,
+  name: 'enableWekan', description: 'settings.enable_wekan_integration', type: 'checkbox', value: true,
 })
 defaultSettings.push({
   name: 'dateformat', description: 'settings.date_format', type: 'text', value: 'DD.MM.YYYY',
@@ -48,16 +48,16 @@ defaultSettings.push({
   name: 'startOfWeek', description: 'settings.startof_week', type: 'number', value: 1,
 })
 defaultSettings.push({
-  name: 'useState', description: 'settings.use_state', type: 'text', value: true,
+  name: 'useState', description: 'settings.use_state', type: 'checkbox', value: true,
 })
 defaultSettings.push({
-  name: 'disableUserRegistration', description: 'settings.disable_user_registration', type: 'text', value: false,
+  name: 'disableUserRegistration', description: 'settings.disable_user_registration', type: 'checkbox', value: false,
 })
 defaultSettings.push({
-  name: 'enableAnonymousLogins', description: 'settings.enable_anonymous_logins', type: 'text', value: false,
+  name: 'enableAnonymousLogins', description: 'settings.enable_anonymous_logins', type: 'checkbox', value: false,
 })
 defaultSettings.push({
-  name: 'disablePublicProjects', description: 'settings.disable_public_projects', type: 'text', value: false,
+  name: 'disablePublicProjects', description: 'settings.disable_public_projects', type: 'checkbox', value: false,
 })
 defaultSettings.push({
   name: 'timeEntryRule',
@@ -79,10 +79,10 @@ defaultSettings.push({
   return true;`,
 })
 defaultSettings.push({
-  name: 'useStartTime', description: 'settings.use_start_time', type: 'text', value: false,
+  name: 'useStartTime', description: 'settings.use_start_time', type: 'checkbox', value: false,
 })
 defaultSettings.push({
-  name: 'enableZammad', description: 'settings.enable_zammad_integration', type: 'text', value: true,
+  name: 'enableZammad', description: 'settings.enable_zammad_integration', type: 'checkbox', value: true,
 })
 defaultSettings.push({
   name: 'customCSS', description: 'settings.custom_css', type: 'textarea', value: '',
@@ -94,9 +94,9 @@ defaultSettings.push({
   name: 'customPlaceholderContent', description: 'settings.custom_placeholder_content', type: 'textarea', value: '',
 })
 defaultSettings.push({
-  name: 'showCustomFieldsInDetails', description: 'settings.show_custom_fields_in_details', type: 'text', value: 'true',
+  name: 'showCustomFieldsInDetails', description: 'settings.show_custom_fields_in_details', type: 'checkbox', value: 'true',
 })
 defaultSettings.push({
-  name: 'showCustomerInDetails', description: 'settings.show_customer_in_details', type: 'text', value: 'true',
+  name: 'showCustomerInDetails', description: 'settings.show_customer_in_details', type: 'checkbox', value: 'true',
 })
 export { defaultSettings, Globalsettings }
