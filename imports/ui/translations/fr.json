@@ -155,7 +155,8 @@
     "zammad_api_token": "Clef d'accès personnel Zammad",
     "custom_css": "CSS personnalisé",
     "custom_html": "HTML personnalisé",
-    "custom_placeholder_content": "Contenu de placeholder personnalisé"
+    "custom_placeholder_content": "Contenu de placeholder personnalisé",
+    "show_name_custom_field_in_details": "Afficher le nom des champs personnalisés dans la vue détaillée ?"
   },
   "customer": {
     "select_customer": "Selectionner un client",
