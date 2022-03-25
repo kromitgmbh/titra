@@ -1,4 +1,5 @@
 import { Accounts } from 'meteor/accounts-base'
+import { getGlobalSetting } from '../../utils/frontend_helpers'
 // import { AccountsAnonymous } from 'meteor/faburem:accounts-anonymous'
 import dockerNames from 'docker-names'
 import initNewUser from '../../api/projects/setup.js'
@@ -25,6 +26,6 @@ Accounts.onCreateUser((options, user) => {
   }
   return localUser
 })
-Accounts.emailTemplates.from = 'titra <no-reply@titra.io>'
+Accounts.emailTemplates.from = `${getGlobalSetting('fromName')} <${getGlobalSetting('fromAddress')}>`
 Accounts.emailTemplates.enrollAccount.subject = (user) => `Welcome to Awesome Town, ${user.profile.name}`
-Accounts.emailTemplates.resetPassword.from = () => 'titra Password Reset <no-reply@titra.io>'
+Accounts.emailTemplates.resetPassword.from = () => `${getGlobalSetting('fromName')} Password Reset <${getGlobalSetting('fromAddress')}>`
