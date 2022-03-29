@@ -105,4 +105,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'fromName', description: 'settings.mail_from_name', type: 'text', value: 'Titra',
 })
+defaultSettings.push({
+  name: 'showNameOfCustomFieldInDetails', description: 'settings.show_name_custom_field_in_details', type: 'text', value: false,
+})
 export { defaultSettings, Globalsettings }

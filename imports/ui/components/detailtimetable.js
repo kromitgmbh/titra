@@ -27,6 +27,11 @@ const Counts = new Mongo.Collection('counts')
 
 dayjs.extend(utc)
 
+let customFieldType = 'desc';
+if (getGlobalSetting('showNameOfCustomFieldInDetails')) {
+  customFieldType = 'name';
+}
+
 function detailedDataTableMapper(entry) {
   const project = Projects.findOne({ _id: entry.projectId })
   const mapping = [project ? project.name : '',
@@ -36,12 +41,12 @@ function detailedDataTableMapper(entry) {
   if (getGlobalSetting('showCustomFieldsInDetails')) {
     if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
       for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
-        mapping.push(entry[customfield.name])
+        mapping.push(entry[customfield[customFieldType]])
       }
     }
     if (CustomFields.find({ classname: 'project' }).count() > 0) {
       for (const customfield of CustomFields.find({ classname: 'project' }).fetch()) {
-        mapping.push(project[customfield.name])
+        mapping.push(project[customfield[customFieldType]])
       }
     }
   }
@@ -130,7 +135,7 @@ Template.detailtimetable.onRendered(() => {
         if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
           for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
             columns.push({
-              name: customfield.desc,
+              name: customfield[customFieldType],
               editable: false,
               format: addToolTipToTableCell,
             })
@@ -139,7 +144,7 @@ Template.detailtimetable.onRendered(() => {
         if (CustomFields.find({ classname: 'project' }).count() > 0) {
           for (const customfield of CustomFields.find({ classname: 'project' }).fetch()) {
             columns.push({
-              name: customfield.desc,
+              name: customfield[customFieldType],
               editable: false,
               format: addToolTipToTableCell,
             })
@@ -296,10 +301,10 @@ Template.detailtimetable.events({
 
     if (getGlobalSetting('showCustomFieldsInDetails')) {
       if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
-        csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'time_entry' }).fetch().map((field) => field.desc).join(',')}`
+        csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'time_entry' }).fetch().map((field) => field[customFieldType]).join(',')}`
       }
       if (CustomFields.find({ classname: 'project' }).count() > 0) {
-        csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'project' }).fetch().map((field) => field.desc).join(',')}`
+        csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'project' }).fetch().map((field) => field[customFieldType]).join(',')}`
       }
     }
     if (getGlobalSetting('showCustomerInDetails')) {
@@ -338,12 +343,12 @@ Template.detailtimetable.events({
     if (getGlobalSetting('showCustomFieldsInDetails')) {
       if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
         for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
-          data[0].push(customfield.desc)
+          data[0].push(customfield[customFieldType])
         }
       }
       if (CustomFields.find({ classname: 'project' }).count() > 0) {
         for (const customfield of CustomFields.find({ classname: 'project' }).fetch()) {
-          data[0].push(customfield.desc)
+          data[0].push(customfield[customFieldType])
         }
       }
     }
