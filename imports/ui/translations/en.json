@@ -166,7 +166,8 @@
     "show_custom_fields_in_details": "Show/export custom fields in details view?",
     "show_customer_in_details": "Show/export customer field in details view?",
     "mail_from_address": "Mail from address",
-    "mail_from_name": "Mail from name"
+    "mail_from_name": "Mail from name",
+    "show_name_custom_field_in_details": "Show name for custom fields in details view?"
   },
   "customer": {
     "select_customer": "Select a customer",

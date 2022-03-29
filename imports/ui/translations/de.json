@@ -165,7 +165,8 @@
     "show_custom_fields_in_details": "Benutzerdefinierte Felder in den Details anzeigen/exportieren?",
     "show_customer_in_details": "Spalte Kunde in den Details anzeigen/exportieren?",
     "mail_from_address": "Mail von Adresse",
-    "mail_from_name": "E-Mail von Name"
+    "mail_from_name": "E-Mail von Name",
+    "show_name_custom_field_in_details": "Namen für benutzerdefinierte Felder in der Detailansicht anzeigen?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

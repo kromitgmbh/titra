@@ -157,7 +157,8 @@
     "custom_html": "HTML personnalisé",
     "custom_placeholder_content": "Contenu de placeholder personnalisé",
     "mail_from_address": "Courrier de l'adresse",
-    "mail_from_name": "Courriel du nom"
+    "mail_from_name": "Courriel du nom",
+    "show_name_custom_field_in_details": "Afficher le nom des champs personnalisés dans la vue détaillée ?"
   },
   "customer": {
     "select_customer": "Selectionner un client",
