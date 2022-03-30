@@ -108,4 +108,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'showNameOfCustomFieldInDetails', description: 'settings.show_name_custom_field_in_details', type: 'text', value: false,
 })
+defaultSettings.push({
+  name: 'enableOpenIDConnect', description: 'settings.enable_open_id_connect', type: 'text', value: false,
+})
 export { defaultSettings, Globalsettings }

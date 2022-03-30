@@ -167,7 +167,8 @@
     "show_customer_in_details": "Show/export customer field in details view?",
     "mail_from_address": "Mail from address",
     "mail_from_name": "Mail from name",
-    "show_name_custom_field_in_details": "Show name for custom fields in details view?"
+    "show_name_custom_field_in_details": "Show name for custom fields in details view?",
+    "enable_open_id_connect": "Enable OpenID Connect?"
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -301,6 +302,7 @@
     "no_account": "Don't have an account?",
     "register": "Register",
     "sign_in": "Sign In",
+    "sign_in_oidc": "Sign In with OpenID Connect",
     "login_or_signup": "Please login or sign up to continue.",
     "login_failed": "Unable to login, please check your username/password.",
     "fullname_placholder": "Your Fullname",
@@ -354,7 +356,10 @@
     "no_customfields": "No custom fields have been defined yet.",
     "no_extensions": "No extensions have been installed yet.",
     "extension_removed": "The extension has been removed successfully.",
-    "edit_custom_field": "Edit custom field"
+    "edit_custom_field": "Edit custom field",
+    "oidc": "OpenID Connect",
+    "oidc_reset": "To reset the OpenID Connect settings you need to restart your Titra instance with this enviroment variable set",
+    "oidc_reset_enabled": "WARNING: OpenID Connect Reset is enabled, so if you restart your Titra instance, your OpenID Connect settings will be deleted."
   },
   "wekan": {
     "list": "Wekan list",

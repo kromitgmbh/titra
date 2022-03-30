@@ -36,6 +36,15 @@
               </fieldset>
             </form>
           </div>
+
+          {{#if getGlobalSetting "enableOpenIDConnect"}}
+          <div class="mt-2">
+            <button type="button" class="btn btn-dark form-control" id="oidc">
+              {{t "login.sign_in_oidc"}}
+            </button>
+          </div>
+          {{/if}}
+
           {{#unless getGlobalSetting "disableUserRegistration"}}
             <div class="at-signup-link mt-2">
               <p>

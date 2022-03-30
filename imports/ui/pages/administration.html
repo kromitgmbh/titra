@@ -2,13 +2,18 @@
     <ul class="nav nav-tabs" id="administration-tab-pane" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="daily-tab" data-bs-toggle="tab" href="#globalsettings" role="tab" aria-controls="globalsettings" aria-selected="true">{{t "settings.global_settings"}}</a>
-          </li> 
+          </li>
         <li class="nav-item">
           <a class="nav-link" id="users-tab" data-bs-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">{{t "administration.users"}}</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="customfields-tab" data-bs-toggle="tab" href="#customfields" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.customfields"}}</a>
         </li>
+        {{#if getGlobalSetting "enableOpenIDConnect"}}
+        <li class="nav-item">
+            <a class="nav-link" id="login-tab" data-bs-toggle="tab" href="#oidc" role="tab" aria-controls="oidc" aria-selected="false">{{t "administration.oidc"}}</a>
+        </li>
+        {{/if}}
         <li class="nav-item">
             <a class="nav-link" id="extensions-tab" data-bs-toggle="tab" href="#extensions" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.extensions"}}</a>
         </li>
@@ -210,6 +215,51 @@
                 <p>{{t "administration.no_customfields"}}</p>
             {{/if}}
         </div>
+        {{#if getGlobalSetting "enableOpenIDConnect"}}
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="oidc">
+            {{#if oidcresetting}}
+            <div class="alert alert-warning text-center" style="margin-top:-1.5rem;">
+                {{t "administration.oidc_reset_enabled"}}
+            </div>
+            {{/if}}
+            {{#if oidcconfigured}}
+            <p>{{t "administration.oidc_reset"}}: <b>RESET_OIDC=true</b></p>
+            {{else}}
+            {{> configureLoginServiceDialogForOidc}}
+            {{/if}}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{t "globals.name"}}</th>
+                            <th scope="col">{{t "administration.value"}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each setting in oidcsettings}}
+                        <tr>
+                            <td>{{setting.label}}</td>
+                            <td>
+                            {{#if oidcconfigured}}
+                                {{oidcvalue setting.property}}
+                            {{else}}
+                                <input id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="text" value="" class="form-control js-setting-input"/>
+                            {{/if}}
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            {{#unless oidcconfigured}}
+            <div class="row">
+                <div class="col-1 ms-auto b-grid">
+                    <button type="button" class="btn btn-primary js-update-oidc">{{t "navigation.save"}}</button>
+                </div>
+            </div>
+            {{/unless}}
+        </div>
+        {{/if}}
         <div class="tab-pane fade table-responsive p-3 tab-borders" id="extensions">
             <div class="card mb-3">
                 <div class="card-header">

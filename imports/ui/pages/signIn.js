@@ -3,6 +3,24 @@ import { validateEmail } from '../../utils/frontend_helpers'
 import { t } from '../../utils/i18n.js'
 import './signIn.html'
 
+function handleLoginResult(error) {
+  if (error) {
+    templateInstance.$('.notification').text(t(`login.${error.error}`))
+    document.querySelector('.notification').classList.remove('d-none')
+  } else {
+    FlowRouter.go('projectlist')
+  }
+}
+
+function signInOidc(event, templateInstance) {
+  event.preventDefault()
+  let res = Meteor.loginWithOidc({
+    loginStyle: 'popup'
+  }, (error) => {
+    handleLoginResult(error)
+  });
+}
+
 function signIn(event, templateInstance) {
   event.preventDefault()
   if (!templateInstance.$('#at-field-email').val() || !validateEmail(templateInstance.$('#at-field-email').val())) {
@@ -13,32 +31,23 @@ function signIn(event, templateInstance) {
     templateInstance.$('#at-field-password').addClass('is-invalid')
     return
   }
+
+  let loginMethod;
   if (Meteor.loginWithLDAP) {
-    Meteor.loginWithLDAP(templateInstance.$('#at-field-email').val(), templateInstance.$('#at-field-password').val(), {}, (error) => {
-      templateInstance.$('#at-field-email').removeClass('is-invalid')
-      templateInstance.$('#at-field-password').removeClass('is-invalid')
-      if (error) {
-        templateInstance.$('.notification').text(t(`login.${error.error}`))
-        document.querySelector('.notification').classList.remove('d-none')
-      } else {
-        FlowRouter.go('projectlist')
-      }
-    })
+    loginMethod = Meteor.loginWithLDAP;
   } else {
-    Meteor.loginWithPassword(templateInstance.$('#at-field-email').val(), templateInstance.$('#at-field-password').val(), (error) => {
-      templateInstance.$('#at-field-email').removeClass('is-invalid')
-      templateInstance.$('#at-field-password').removeClass('is-invalid')
-      if (error) {
-        templateInstance.$('.notification').text(t(`login.${error.error}`))
-        document.querySelector('.notification').classList.remove('d-none')
-      } else {
-        FlowRouter.go('projectlist')
-      }
-    })
+    loginMethod = Meteor.loginWithPassword;
   }
+
+  loginMethod(templateInstance.$('#at-field-email').val(), templateInstance.$('#at-field-password').val(), (error) => {
+    templateInstance.$('#at-field-email').removeClass('is-invalid')
+    templateInstance.$('#at-field-password').removeClass('is-invalid')
+    handleLoginResult(error)
+  })
 }
 
 Template.signIn.events({
+  'click #oidc': signInOidc,
   'click #signIn': signIn,
   'keypress #at-field-password': (event, templateInstance) => {
     if (event.keyCode === 13) {

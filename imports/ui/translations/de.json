@@ -166,7 +166,8 @@
     "show_customer_in_details": "Spalte Kunde in den Details anzeigen/exportieren?",
     "mail_from_address": "Mail von Adresse",
     "mail_from_name": "E-Mail von Name",
-    "show_name_custom_field_in_details": "Namen für benutzerdefinierte Felder in der Detailansicht anzeigen?"
+    "show_name_custom_field_in_details": "Namen für benutzerdefinierte Felder in der Detailansicht anzeigen?",
+    "enable_open_id_connect": "OpenID Connect aktivieren?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -307,6 +308,7 @@
     "no_account": "Noch kein Benutzerkonto?",
     "register": "Registrieren",
     "sign_in": "Anmelden",
+    "sign_in_oidc": "Anmelden mit OpenID Connect",
     "login_or_signup": "Bitte melden Sie sich an um fortzufahren.",
     "login_failed": "Anmeldung fehlgeschlagen, bitte überprüfen Sie Benutzername und Passwort.",
     "fullname_placholder": "Vorname und Nachname",
@@ -361,7 +363,10 @@
     "no_customfields": "Es wurden noch keine benutzerdefinierten Attribute erstellt.",
     "no_extensions": "Es wurden noch keine Erweiterungen installiert.",
     "extension_removed": "Die Erweiterung wurde erfolgreich entfernt",
-    "edit_custom_field": "Benutzerdefiniertes Attribut bearbeiten"
+    "edit_custom_field": "Benutzerdefiniertes Attribut bearbeiten",
+    "oidc": "OpenID Connect",
+    "oidc_reset": "Um die OpenID Connect-Einstellungen zurückzusetzen, müssen Sie Ihre Titra-Instanz mit diesem Umgebungsvariablensatz neu starten",
+    "oidc_reset_enabled": "WARNUNG: OpenID Connect Reset ist aktiviert, wenn Sie also Ihre Titra-Instanz neu starten, werden Ihre OpenID Connect-Einstellungen gelöscht."
   },
   "wekan": {
     "list": "Wekan Liste",

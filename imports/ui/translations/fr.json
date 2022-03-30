@@ -158,7 +158,8 @@
     "custom_placeholder_content": "Contenu de placeholder personnalisé",
     "mail_from_address": "Courrier de l'adresse",
     "mail_from_name": "Courriel du nom",
-    "show_name_custom_field_in_details": "Afficher le nom des champs personnalisés dans la vue détaillée ?"
+    "show_name_custom_field_in_details": "Afficher le nom des champs personnalisés dans la vue détaillée ?",
+    "enable_open_id_connect": "Activer OpenID Connect ?"
   },
   "customer": {
     "select_customer": "Selectionner un client",
@@ -286,6 +287,7 @@
     "no_account": "Pas de compte?",
     "register": "Inscription",
     "sign_in": "Connexion",
+    "sign_in_oidc": "Connexion avec OpenID Connect",
     "login_or_signup": "Veuillez vous connecter ou vous enregistrer pour continuer.",
     "login_failed": "Impossible de se connecter. Veuillez vérifier votre identifiant / mot de passe.",
     "fullname_placholder": "Votre nom complet",
@@ -338,7 +340,10 @@
     "possible_values_hint": "Valeurs séparées par une virgule (par exemple a,b,c,d).",
     "no_customfields": "Aucun champ personnalisé défini pour le moment.",
     "no_extensions": "Pas d'extension installée pour le moment.",
-    "extension_removed": "L'extension a été supprimée avec succès."
+    "extension_removed": "L'extension a été supprimée avec succès.",
+    "oidc": "OpenID Connect",
+    "oidc_reset": "Pour réinitialiser les paramètres OpenID Connect, vous devez redémarrer votre instance Titra avec cet ensemble de variables d'environnement",
+    "oidc_reset_enabled": "AVERTISSEMENT : OpenID Connect Reset est activé, donc si vous redémarrez votre instance Titra, vos paramètres OpenID Connect seront supprimés."
   },
   "wekan": {
     "list": "Liste Wekan",
