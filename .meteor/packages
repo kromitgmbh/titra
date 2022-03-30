@@ -31,3 +31,5 @@ ostrio:flow-router-extra
 jquery@3.0.0
 faburem:accounts-anonymous
 mdg:validated-method
+service-configuration
+seluxit:accounts-oidc
