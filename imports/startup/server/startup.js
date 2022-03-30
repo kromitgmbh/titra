@@ -29,14 +29,6 @@ Meteor.startup(() => {
     }
   }
 
-  if (process.env.RESET_OIDC === 'true') {
-    ServiceConfiguration.configurations.remove({
-      service: 'oidc',
-    })
-    // eslint-disable-next-line no-console, i18next/no-literal-string
-    console.log('Reset oidc configuration')
-  }
-
   if (process.env.NODE_ENV !== 'development') {
     // eslint-disable-next-line no-console
     console.log(`titra started on port ${process.env.PORT}`)

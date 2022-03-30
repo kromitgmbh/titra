@@ -217,16 +217,7 @@
         </div>
         {{#if getGlobalSetting "enableOpenIDConnect"}}
         <div class="tab-pane fade table-responsive p-3 tab-borders" id="oidc">
-            {{#if oidcresetting}}
-            <div class="alert alert-warning text-center" style="margin-top:-1.5rem;">
-                {{t "administration.oidc_reset_enabled"}}
-            </div>
-            {{/if}}
-            {{#if oidcconfigured}}
-            <p>{{t "administration.oidc_reset"}}: <b>RESET_OIDC=true</b></p>
-            {{else}}
             {{> configureLoginServiceDialogForOidc}}
-            {{/if}}
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -240,24 +231,18 @@
                         <tr>
                             <td>{{setting.label}}</td>
                             <td>
-                            {{#if oidcconfigured}}
-                                {{oidcvalue setting.property}}
-                            {{else}}
-                                <input id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="text" value="" class="form-control js-setting-input"/>
-                            {{/if}}
+                                <input id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="text" value="{{oidcvalue setting.property}}" class="form-control js-setting-input"/>
                             </td>
                         </tr>
                         {{/each}}
                     </tbody>
                 </table>
             </div>
-            {{#unless oidcconfigured}}
             <div class="row">
                 <div class="col-1 ms-auto b-grid">
                     <button type="button" class="btn btn-primary js-update-oidc">{{t "navigation.save"}}</button>
                 </div>
             </div>
-            {{/unless}}
         </div>
         {{/if}}
         <div class="tab-pane fade table-responsive p-3 tab-borders" id="extensions">

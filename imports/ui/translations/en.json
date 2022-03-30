@@ -357,9 +357,7 @@
     "no_extensions": "No extensions have been installed yet.",
     "extension_removed": "The extension has been removed successfully.",
     "edit_custom_field": "Edit custom field",
-    "oidc": "OpenID Connect",
-    "oidc_reset": "To reset the OpenID Connect settings you need to restart your Titra instance with this enviroment variable set",
-    "oidc_reset_enabled": "WARNING: OpenID Connect Reset is enabled, so if you restart your Titra instance, your OpenID Connect settings will be deleted."
+    "oidc": "OpenID Connect"
   },
   "wekan": {
     "list": "Wekan list",

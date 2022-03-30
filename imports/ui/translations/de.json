@@ -364,9 +364,7 @@
     "no_extensions": "Es wurden noch keine Erweiterungen installiert.",
     "extension_removed": "Die Erweiterung wurde erfolgreich entfernt",
     "edit_custom_field": "Benutzerdefiniertes Attribut bearbeiten",
-    "oidc": "OpenID Connect",
-    "oidc_reset": "Um die OpenID Connect-Einstellungen zurückzusetzen, müssen Sie Ihre Titra-Instanz mit diesem Umgebungsvariablensatz neu starten",
-    "oidc_reset_enabled": "WARNUNG: OpenID Connect Reset ist aktiviert, wenn Sie also Ihre Titra-Instanz neu starten, werden Ihre OpenID Connect-Einstellungen gelöscht."
+    "oidc": "OpenID Connect"
   },
   "wekan": {
     "list": "Wekan Liste",
