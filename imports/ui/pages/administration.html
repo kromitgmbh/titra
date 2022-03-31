@@ -32,7 +32,7 @@
                                     {{#if isTextArea setting}}
                                         <textarea id="{{setting.name}}" name="{{setting.name}}" value="{{setting.value}}" class="form-control js-setting-input"></textarea>
                                     {{else if isCheckbox setting}}
-                                        <input id="{{setting.name}}" name="{{setting.name}}" type="checkbox"  class="form-check-input js-setting-input"
+                                        <input id="{{setting.name}}" name="{{setting.name}}" type="checkbox"  class="form-check-input js-setting-input form-checkbox"
                                         {{isChecked setting}}/>
                                     {{else}}
                                         <input id="{{setting.name}}" name="{{setting.name}}" type="{{setting.type}}" value="{{stringify setting.value}}" class="form-control js-setting-input"/>
