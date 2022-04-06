@@ -29,7 +29,6 @@ RUN chmod +x /tmp/node-prune.sh
 RUN /tmp/node-prune.sh
 RUN rm -r /app/bundle/programs/server/npm/node_modules/meteor/babel-compiler/node_modules/typescript
 RUN rm -r /app/bundle/programs/server/npm/node_modules/meteor/babel-compiler/node_modules/@babel
-RUN rm -r /app/bundle/programs/server/npm/node_modules/meteor/minifier-css/
 RUN rm -r /app/bundle/programs/server/npm/node_modules/@neovici/nullxlsx/cc-test-reporter
 
 FROM node:14.1-alpine
