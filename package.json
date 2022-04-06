@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.74.0",
+  "version": "0.74.1",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -34,6 +34,7 @@
     "meteor-node-stubs": "^1.2.1",
     "namedavatar": "^1.2.0",
     "node-emoji": "^1.11.0",
+    "postcss": "^8.4.12",
     "quill": "^1.3.7",
     "quill-delta-to-html": "^0.12.0",
     "randomcolor": "^0.6.2",
