@@ -54,7 +54,6 @@ function insertTimeCard(projectId, task, date, hours, userId, customfields) {
     task: task.replace(/(:\S*:)/g, emojify),
     ...customfields,
   }
-
   if (!Tasks.findOne({ userId, name: task.replace(/(:\S*:)/g, emojify) })) {
     Tasks.insert({
       userId, lastUsed: new Date(), name: task.replace(/(:\S*:)/g, emojify), ...customfields,
@@ -92,19 +91,23 @@ function upsertTimecard(projectId, task, date, hours, userId) {
       task: task.replace(/(:\S*:)/g, emojify),
     })
   }
-  return Timecards.update({
-    userId,
-    projectId,
-    date,
-    task: task.replace(/(:\S*:)/g, emojify),
-  },
-  {
-    userId,
-    projectId,
-    date,
-    hours,
-    task: task.replace(/(:\S*:)/g, emojify),
-  }, { upsert: true })
+  return Timecards.update(
+    {
+      userId,
+      projectId,
+      date,
+      task: task.replace(/(:\S*:)/g, emojify),
+    },
+    {
+      userId,
+      projectId,
+      date,
+      hours,
+      task: task.replace(/(:\S*:)/g, emojify),
+    },
+
+    { upsert: true },
+  )
 }
 
 Meteor.methods({

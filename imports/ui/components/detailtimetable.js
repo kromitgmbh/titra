@@ -27,9 +27,9 @@ const Counts = new Mongo.Collection('counts')
 
 dayjs.extend(utc)
 
-let customFieldType = 'desc';
+let customFieldType = 'desc'
 if (getGlobalSetting('showNameOfCustomFieldInDetails')) {
-  customFieldType = 'name';
+  customFieldType = 'name'
 }
 
 function detailedDataTableMapper(entry) {
@@ -126,7 +126,7 @@ Template.detailtimetable.onRendered(() => {
         {
           name: t('globals.date'),
           editable: false,
-          compareValue: (cell, keyword) => [dayjs.utc(cell, getGlobalSetting('dateformat')).toDate(), dayjs(keyword, getGlobalSetting('dateformat')).toDate()],
+          compareValue: (cell, keyword) => [dayjs.utc(cell, getGlobalSetting('dateformat')).toDate(), dayjs.utc(keyword, getGlobalSetting('dateformat')).toDate()],
           format: addToolTipToTableCell,
         },
         { name: t('globals.task'), editable: false, format: addToolTipToTableCell },
