@@ -1,11 +1,16 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import { validateEmail } from '../../utils/frontend_helpers'
+import { validateEmail, getGlobalSetting } from '../../utils/frontend_helpers'
+import { isOidcConfigured } from '../../api/openid/openid'
 import { t } from '../../utils/i18n.js'
 import './signIn.html'
 
-function handleLoginResult(error) {
+function handleLoginResult(error, templateInstance) {
   if (error) {
-    templateInstance.$('.notification').text(t(`login.${error.error}`))
+    if(error.message) {
+      templateInstance.$('.notification').text(error.message)
+    } else {
+      templateInstance.$('.notification').text(t(`login.${error.error}`))
+    }
     document.querySelector('.notification').classList.remove('d-none')
   } else {
     FlowRouter.go('projectlist')
@@ -14,11 +19,9 @@ function handleLoginResult(error) {
 
 function signInOidc(event, templateInstance) {
   event.preventDefault()
-  let res = Meteor.loginWithOidc({
-    loginStyle: 'popup'
-  }, (error) => {
-    handleLoginResult(error)
-  });
+  const res = Meteor.loginWithOidc((error) => {
+    handleLoginResult(error, templateInstance)
+  })
 }
 
 function signIn(event, templateInstance) {
@@ -32,19 +35,24 @@ function signIn(event, templateInstance) {
     return
   }
 
-  let loginMethod;
+  let loginMethod
   if (Meteor.loginWithLDAP) {
-    loginMethod = Meteor.loginWithLDAP;
+    loginMethod = Meteor.loginWithLDAP
   } else {
-    loginMethod = Meteor.loginWithPassword;
+    loginMethod = Meteor.loginWithPassword
   }
 
   loginMethod(templateInstance.$('#at-field-email').val(), templateInstance.$('#at-field-password').val(), (error) => {
     templateInstance.$('#at-field-email').removeClass('is-invalid')
     templateInstance.$('#at-field-password').removeClass('is-invalid')
-    handleLoginResult(error)
+    handleLoginResult(error, templateInstance)
   })
 }
+
+Template.signIn.helpers({
+  isOidcConfigured: () => isOidcConfigured(),
+  disableUserRegistration: () => getGlobalSetting("disableUserRegistration")
+})
 
 Template.signIn.events({
   'click #oidc': signInOidc,

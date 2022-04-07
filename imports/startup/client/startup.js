@@ -78,6 +78,11 @@ Meteor.startup(() => {
       $('body').append(`<div>${getGlobalSetting('customHTML')}</div>`)
     }
   })
+  Tracker.autorun(() => {
+    if (getGlobalSetting('enableOpenIDConnect')) {
+      import('../../api/openid/client')
+    }
+  })
 
   hotkeys('command+s,d,w,m', (event, handler) => {
     event.preventDefault()

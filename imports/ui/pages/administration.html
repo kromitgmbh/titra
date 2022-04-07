@@ -217,7 +217,7 @@
         </div>
         {{#if getGlobalSetting "enableOpenIDConnect"}}
         <div class="tab-pane fade table-responsive p-3 tab-borders" id="oidc">
-            {{> configureLoginServiceDialogForOidc}}
+            {{t "administration.oidc_configure"}}: <span class="url">{{siteUrl}}_oauth/oidc</span>
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -227,11 +227,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{#each setting in oidcsettings}}
+                        {{#each setting in oidcSettings}}
                         <tr>
                             <td>{{setting.label}}</td>
                             <td>
-                                <input id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="text" value="{{oidcvalue setting.property}}" class="form-control js-setting-input"/>
+                                <input id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="text" value="{{oidcValue setting.property}}" class="form-control js-setting-input"/>
                             </td>
                         </tr>
                         {{/each}}

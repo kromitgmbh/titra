@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 import { Random } from 'meteor/random'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import { Oidc } from 'meteor/seluxit:oidc'
 import { t } from '../../utils/i18n.js'
 import './administration.html'
 import { Globalsettings } from '../../api/globalsettings/globalsettings'
@@ -9,6 +8,7 @@ import { displayUserAvatar, validateEmail, showToast } from '../../utils/fronten
 import '../components/limitpicker.js'
 import Extensions from '../../api/extensions/extensions'
 import CustomFields from '../../api/customfields/customfields.js'
+import { oidcFields, getOidcConfiguration } from '../../api/openid/openid.js'
 
 Template.administration.onCreated(function administrationCreated() {
   this.limit = new ReactiveVar(25)
@@ -34,10 +34,9 @@ Template.administration.helpers({
   extensions: () => (Extensions.find({}).fetch().length > 0 ? Extensions.find({}) : false),
   customfields: () => (CustomFields.find({}).fetch().length > 0 ? CustomFields.find({}) : false),
   getClassName: (name) => t(`globals.${name}`),
-  oidcconfigured: () => ServiceConfiguration.configurations.findOne({ service: 'oidc' }) !== undefined,
-  oidcresetting: () => process.env.RESET_OIDC === 'true',
-  oidcsettings: () => Oidc.fields,
-  oidcvalue: (name) => ServiceConfiguration.configurations.findOne({ service: 'oidc' })[name],
+  oidcSettings: () => oidcFields,
+  oidcValue: (name) => getOidcConfiguration(name),
+  siteUrl: () => Meteor.absoluteUrl({ replaceLocalhost: true }),
 })
 
 Template.administration.events({

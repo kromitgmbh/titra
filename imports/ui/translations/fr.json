@@ -341,7 +341,8 @@
     "no_customfields": "Aucun champ personnalisé défini pour le moment.",
     "no_extensions": "Pas d'extension installée pour le moment.",
     "extension_removed": "L'extension a été supprimée avec succès.",
-    "oidc": "OpenID Connect"
+    "oidc": "OpenID Connect",
+    "oidc_configure": "Vous devrez créer une configuration client OpenID Connect avec votre fournisseur. Définissez les URL de rappel d'application sur"
   },
   "wekan": {
     "list": "Liste Wekan",

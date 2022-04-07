@@ -364,7 +364,8 @@
     "no_extensions": "Es wurden noch keine Erweiterungen installiert.",
     "extension_removed": "Die Erweiterung wurde erfolgreich entfernt",
     "edit_custom_field": "Benutzerdefiniertes Attribut bearbeiten",
-    "oidc": "OpenID Connect"
+    "oidc": "OpenID Connect",
+    "oidc_configure": "Sie müssen bei Ihrem Anbieter eine OpenID Connect-Clientkonfiguration erstellen. Legen Sie App-Callback-URLs fest auf"
   },
   "wekan": {
     "list": "Wekan Liste",

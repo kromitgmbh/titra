@@ -37,7 +37,7 @@
             </form>
           </div>
 
-          {{#if getGlobalSetting "enableOpenIDConnect"}}
+          {{#if isOidcConfigured}}
           <div class="mt-2">
             <button type="button" class="btn btn-dark form-control" id="oidc">
               {{t "login.sign_in_oidc"}}
@@ -45,7 +45,7 @@
           </div>
           {{/if}}
 
-          {{#unless getGlobalSetting "disableUserRegistration"}}
+          {{#unless disableUserRegistration}}
             <div class="at-signup-link mt-2">
               <p>
                 {{t "login.no_account"}}
