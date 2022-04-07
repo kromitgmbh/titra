@@ -29,7 +29,7 @@ Template.tracktime.onRendered(() => {
         return date ? dayjs(date).format(getGlobalSetting('dateformatVerbose')) : dayjs.format(getGlobalSetting('dateformatVerbose'))
       },
       parse(date) {
-        return dayjs(date, getGlobalSetting('dateformatVerbose'))
+        return dayjs(date, [getGlobalSetting('dateformatVerbose'), undefined]).toDate()
       },
       appendTo: templateInstance.firstNode,
       mode: 'dp-modal',
