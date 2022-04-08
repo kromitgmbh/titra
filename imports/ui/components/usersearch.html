@@ -1,0 +1,19 @@
+<template name="usersearch">
+  {{#if isComponent}}
+    <input type="text" value="{{user}}" class="js-usersearch-input form-control" placeholder='{{t "tracktime.user_placeholder"}}'/>
+  {{else}}
+  <div class="input-group form-floating">
+    <input type="text" value="{{user}}" class="js-usersearch-input form-control" placeholder='{{t "tracktime.user_placeholder"}}'/>
+    <label class="form-label" for="user">{{t "globals.user"}}</label>
+  </div>
+  {{/if}}
+  {{#if users}}
+    <div class="list-group js-usersearch-results position-absolute d-none" style="z-index:999;">
+      {{#each user in users}}
+        <button type="button" id="{{user._id}}" class="list-group-item list-group-item-action js-usersearch-result" tabindex="{{@index}}">
+          <span class="js-usersearch-user-name">{{getMail user}}</span>
+        </button>
+      {{/each}}
+    </div>
+  {{/if}}
+</template>

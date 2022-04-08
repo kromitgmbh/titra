@@ -43,7 +43,7 @@
               {{/if}}
             {{else}}
               {{t "globals.loading"}}
-            {{/if}} 
+            {{/if}}
           </div>
           <ul class="list-group list-group-flush js-show-timecards" style="display:none;">
             {{#if Template.subscriptionsReady}}
@@ -67,8 +67,16 @@
                     </a>
                   </div>
                     <div class="row">
-                      <div class="col-4 col-md-4"><span class="d-inline-block text-truncate" style="max-width:100%" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName(timecard.projectId)}}">{{projectName(timecard.projectId)}}</span></div>
-                      <div class="col-5 col-md-6"><span class="d-inline-block text-truncate" style="max-width:100%" data-bs-toggle="tooltip" data-bs-placement="top" title="{{timecard.task}}">{{timecard.task}}</span></div>
+                      <div class="col-4 col-md-4">
+                        <span class="d-inline-block text-truncate" style="max-width:100%" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName(timecard.projectId)}}">
+                          {{projectName(timecard.projectId)}}
+                        </span>
+                      </div>
+                      <div class="col-5 col-md-6">
+                        <span class="d-inline-block text-truncate" style="max-width:100%" data-bs-toggle="tooltip" data-bs-placement="top" title="{{timecard.task}}">
+                          {{timecard.task}}
+                        </span>
+                      </div>
                       <div class="col-3 col-md-2 text-centered">{{timeInUserUnit(timecard.hours)}}</div>
                     </div>
                   </a>
@@ -81,6 +89,11 @@
     <div class="mb-3 js-tracktime-projectselect mb-3">
       {{>projectselect tcid=tcid projectId=reactiveProjectId displayProjectInfo=true}}
     </div>
+    {{#if logForOtherUsers}}
+    <div class="mb-3 mb-3">
+      {{>usersearch tcid=tcid projectId=reactiveProjectId user=user}}
+    </div>
+    {{/if}}
     <div class="mb-3 mb-3">
       {{>tasksearch tcid=tcid projectId=reactiveProjectId task=task}}
     </div>

@@ -63,6 +63,25 @@ Meteor.methods({
       beforePreviousMonthHours,
     }
   },
+  getProjectUsers({ projectId }) {
+    check(projectId, String)
+    checkAuthentication(this)
+    const data = []
+    const project = Projects.findOne({ _id: projectId })
+    if (project?.team) {
+      const { team } = project
+      if (team.indexOf(project.userId) === -1) {
+        team.push(project.userId)
+      }
+      for (const member of team) {
+        const user = Meteor.users.findOne({ _id: member })
+        if (user !== undefined) {
+          data.push({ _id: user._id, emails: user.emails, profile: user.profile })
+        }
+      }
+    }
+    return data
+  },
   updateProject({ projectId, projectArray }) {
     check(projectId, String)
     check(projectArray, Array)

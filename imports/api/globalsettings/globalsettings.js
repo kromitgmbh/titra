@@ -108,4 +108,8 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'showNameOfCustomFieldInDetails', description: 'settings.show_name_custom_field_in_details', type: 'text', value: false,
 })
+defaultSettings.push({
+  name: 'enableLogForOtherUsers', description: 'settings.enable_log_for_other_users', type: 'text', value: false,
+})
+
 export { defaultSettings, Globalsettings }

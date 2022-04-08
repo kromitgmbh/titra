@@ -106,6 +106,22 @@ function upsertTimecard(projectId, task, date, hours, userId) {
     task: task.replace(/(:\S*:)/g, emojify),
   }, { upsert: true })
 }
+function checkProjectAdministratorAndUser(projectId, administratorId, userId) {
+  const targetProject = Projects.findOne({ _id: projectId })
+  if (!targetProject
+    || !(targetProject.userId === administratorId
+      || targetProject.admins.indexOf(administratorId) >= 0)) {
+    throw new Meteor.Error('notifications.only_administrator_can_register_time')
+  }
+  const user = Meteor.users.findOne({ 'emails.0.address': userId })
+  if (!user) {
+    throw new Meteor.Error('notifications.user_not_found')
+  }
+  if (targetProject.team.indexOf(user._id)) {
+    throw new Meteor.Error('notifications.user_not_found_in_project')
+  }
+  return user._id
+}
 
 Meteor.methods({
   insertTimeCard({
@@ -114,17 +130,24 @@ Meteor.methods({
     date,
     hours,
     customfields,
+    user,
   }) {
     check(projectId, String)
     check(task, String)
     check(date, Date)
     check(hours, Number)
     check(customfields, Match.Maybe(Object))
+    check(user, String)
     checkAuthentication(this)
+
+    let { userId } = this
+    if (user !== this.userId) {
+      userId = checkProjectAdministratorAndUser(projectId, this.userId, user)
+    }
     checkTimeEntryRule({
-      userId: this.userId, projectId, task, state: 'new', date, hours,
+      userId, projectId, task, state: 'new', date, hours,
     })
-    insertTimeCard(projectId, task, date, hours, this.userId, customfields)
+    insertTimeCard(projectId, task, date, hours, userId, customfields)
   },
   upsertWeek(weekArray) {
     checkAuthentication(this)
@@ -152,6 +175,7 @@ Meteor.methods({
     date,
     hours,
     customfields,
+    user,
   }) {
     check(projectId, String)
     check(_id, String)
@@ -159,13 +183,20 @@ Meteor.methods({
     check(date, Date)
     check(hours, Number)
     check(customfields, Match.Maybe(Object))
+    check(user, String)
     checkAuthentication(this)
+
+    let { userId } = this
+    if (user !== this.userId) {
+      userId = checkProjectAdministratorAndUser(projectId, this.userId, user)
+    }
+
     const timecard = Timecards.findOne({ _id })
     checkTimeEntryRule({
-      userId: this.userId, projectId, task, state: timecard.state, date, hours,
+      userId, projectId, task, state: timecard.state, date, hours,
     })
-    if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:\S*:)/g, emojify) })) {
-      Tasks.insert({ userId: this.userId, name: task.replace(/(:\S*:)/g, emojify), ...customfields })
+    if (!Tasks.findOne({ userId, name: task.replace(/(:\S*:)/g, emojify) })) {
+      Tasks.insert({ userId, name: task.replace(/(:\S*:)/g, emojify), ...customfields })
     }
     Timecards.update({ _id }, {
       $set: {

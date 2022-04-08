@@ -34,7 +34,8 @@
     "no": "Nein",
     "cancel": "Abbrechen",
     "ok": "Ok",
-    "definition": "Definition"
+    "definition": "Definition",
+    "user": "Benutzer"
   },
   "navigation": {
     "track": "Erfassen",
@@ -74,7 +75,8 @@
     "actions": "Aktionen",
     "start_timer": "Timer starten",
     "start_time": "Beginn",
-    "timer": "Stoppuhr"
+    "timer": "Stoppuhr",
+    "user_placeholder": "Benutzer eingeben oder suchen ..."
   },
   "overview": {
     "all_projects": "Alle Projekte",
@@ -166,7 +168,8 @@
     "show_customer_in_details": "Spalte Kunde in den Details anzeigen/exportieren?",
     "mail_from_address": "Mail von Adresse",
     "mail_from_name": "E-Mail von Name",
-    "show_name_custom_field_in_details": "Namen für benutzerdefinierte Felder in der Detailansicht anzeigen?"
+    "show_name_custom_field_in_details": "Namen für benutzerdefinierte Felder in der Detailansicht anzeigen?",
+    "enable_log_for_other_users": "Kann der Administrator Zeit für andere Benutzer registrieren?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -288,9 +291,11 @@
     "auth_error_method": "Sie müssen angemeldet sein um diese Funktion zu verwenden.",
     "only_owner_can_add_team_members": "Nur der Projekt Ersteller kann Team Mitglieder hinzufügen.",
     "only_owner_can_remove_team_members": "Nur der Projekt Ersteller kann Team Mitglieder entfernen.",
+    "only_administrator_can_register_time": "Nur Administratoren können Zeit für einen anderen Benutzer registrieren.",
     "team_member_added_success": "Team Mitglied hinzugefügt.",
     "team_member_removed_success": "Team Mitglied entfernt.",
     "user_not_found": "Wir konnten keinen Benutzer mit dieser E-mail Adresse finden, bitte stellen Sie sicher dass der Benutzer existiert.",
+    "user_not_found_in_project": "In diesem Projekt konnte kein Benutzer mit dieser E-Mail-Adresse gefunden werden.",
     "project_priority_success": "Projekt Priorität aktualisiert",
     "password_changed": "Ihr Passwort wurde erfolgreich geändert.",
     "connectioncheck": "Keine Verbindung zum Server. Nächster Versuch ",

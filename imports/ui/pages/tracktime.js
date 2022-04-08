@@ -19,6 +19,7 @@ import '../components/timetracker.js'
 import '../components/weektable.js'
 import '../components/calendar.js'
 import '../components/backbutton.js'
+import '../components/usersearch.js'
 import CustomFields from '../../api/customfields/customfields.js'
 
 Template.tracktime.onRendered(() => {
@@ -160,6 +161,7 @@ Template.tracktime.events({
       return
     }
     const projectId = templateInstance.projectId.get()
+    const user = templateInstance.$('.js-usersearch-input')?.val() || Meteor.userId()
     const task = templateInstance.$('.js-tasksearch-input').val()
     const date = dayjs.utc(templateInstance.$('.js-date').val(), getGlobalSetting('dateformatVerbose')).toDate()
     if (getGlobalSetting('useStartTime') && !templateInstance.tcid?.get()) {
@@ -182,7 +184,7 @@ Template.tracktime.events({
     templateInstance.$('.js-save').prop('disabled', true)
     if (templateInstance.tcid.get()) {
       Meteor.call('updateTimeCard', {
-        _id: templateInstance.tcid.get(), projectId, date, hours, task, customfields,
+        _id: templateInstance.tcid.get(), projectId, date, hours, task, customfields, user,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -208,7 +210,7 @@ Template.tracktime.events({
       })
     } else {
       Meteor.call('insertTimeCard', {
-        projectId, date, hours, task, customfields,
+        projectId, date, hours, task, customfields, user,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -366,6 +368,17 @@ Template.tracktime.helpers({
   customfields: () => CustomFields.find({ classname: 'time_entry' }),
   getCustomFieldValue: (fieldId) => (Template.instance().time_entry.get()
     ? Template.instance().time_entry.get()[fieldId] : false),
+  logForOtherUsers: () => {
+    if(getGlobalSetting('enableLogForOtherUsers') && Template?.instance()?.projectId?.get()) {
+      const targetProject = Projects.findOne({ _id: Template.instance().projectId.get() })
+      if (targetProject
+          && (targetProject.userId === Meteor.userId()
+              || targetProject.admins?.indexOf(Meteor.userId()) >= 0)) {
+        return true;
+      }
+    }
+    return false;
+  }
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

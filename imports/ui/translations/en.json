@@ -34,7 +34,8 @@
     "no": "No",
     "cancel": "Cancel",
     "ok": "Ok",
-    "definition": "Definition"
+    "definition": "Definition",
+    "user": "User"
   },
   "navigation": {
     "track": "Track",
@@ -74,7 +75,8 @@
     "actions": "Actions",
     "start_timer": "Start timer",
     "start_time": "Start time",
-    "timer": "Timer"
+    "timer": "Timer",
+    "user_placeholder": "Enter or search for user ..."
   },
   "overview": {
     "all_projects": "All projects",
@@ -167,7 +169,8 @@
     "show_customer_in_details": "Show/export customer field in details view?",
     "mail_from_address": "Mail from address",
     "mail_from_name": "Mail from name",
-    "show_name_custom_field_in_details": "Show name for custom fields in details view?"
+    "show_name_custom_field_in_details": "Show name for custom fields in details view?",
+    "enable_log_for_other_users": "Can administrator register time for other users?"
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -282,9 +285,11 @@
     "auth_error_method": "You have to be signed in to use this method.",
     "only_owner_can_add_team_members": "Only the project owner can add new team members",
     "only_owner_can_remove_team_members": "Only the project owner can remove team members",
+    "only_administrator_can_register_time": "Only administrators can register time for another user.",
     "team_member_added_success": "Team member added.",
     "team_member_removed_success": "Team member removed.",
     "user_not_found": "No user with this e-mail address could be found, please create the corresponding user account first.",
+    "user_not_found_in_project": "No user with this e-mail address could be found in this project.",
     "project_priority_success": "Project priority updated successfully",
     "password_changed": "Your password has been changed.",
     "connectioncheck": "Could not connect to server. Trying again ",

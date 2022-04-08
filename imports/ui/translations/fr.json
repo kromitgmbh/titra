@@ -29,7 +29,8 @@
     "or": "ou",
     "time_entry": "Entrée de temps",
     "class": "Classe",
-    "type": "Type"
+    "type": "Type",
+    "user": "Utilisateur"
   },
   "navigation": {
     "track": "Suivi",
@@ -69,7 +70,8 @@
     "actions": "Actions",
     "start_timer": "Démarrer le chronomètre",
     "start_time": "Arrêter le chronomètre",
-    "timer": "chronomètre"
+    "timer": "chronomètre",
+    "user_placeholder": "Saisir ou rechercher un utilisateur..."
   },
   "overview": {
     "all_projects": "Tous les projets",
@@ -158,7 +160,8 @@
     "custom_placeholder_content": "Contenu de placeholder personnalisé",
     "mail_from_address": "Courrier de l'adresse",
     "mail_from_name": "Courriel du nom",
-    "show_name_custom_field_in_details": "Afficher le nom des champs personnalisés dans la vue détaillée ?"
+    "show_name_custom_field_in_details": "Afficher le nom des champs personnalisés dans la vue détaillée ?",
+    "enable_log_for_other_users": "L'administrateur peut-il enregistrer du temps pour d'autres utilisateurs ?"
   },
   "customer": {
     "select_customer": "Selectionner un client",
@@ -267,9 +270,11 @@
     "auth_error_method": "Vous devez être connecté pour utiliser cette méthode.",
     "only_owner_can_add_team_members": "Seulement le propriétaire du projet peut ajouter de nouveaux membres",
     "only_owner_can_remove_team_members": "Seulement le propriétaire du projet peut supprimer des membres",
+    "only_administrator_can_register_time": "Seuls les administrateurs peuvent enregistrer l'heure d'un autre utilisateur.",
     "team_member_added_success": "Membre d'équipe ajouté.",
     "team_member_removed_success": "Membre d'équipe supprimé.",
     "user_not_found": "Aucun utilisateur n'a cette adresse e-mail. Veuillez inscrire l'utilisateur avec cette adresse avant de vous connecter.",
+    "user_not_found_in_project": "Aucun utilisateur avec cette adresse e-mail n'a pu être trouvé dans ce projet.",
     "project_priority_success": "Priorité projet mise à jour avec succès",
     "password_changed": "Votre mot de passe a été changé.",
     "connectioncheck": "Impossible de se connecter au serveur. Veuillez réessayer. ",
