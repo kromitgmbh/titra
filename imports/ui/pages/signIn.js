@@ -1,5 +1,6 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { validateEmail, getGlobalSetting } from '../../utils/frontend_helpers'
+import { isOidcConfigured } from '../../utils/oidc_helper'
 import { t } from '../../utils/i18n.js'
 import './signIn.html'
 
@@ -49,7 +50,7 @@ function signIn(event, templateInstance) {
 }
 
 Template.signIn.helpers({
-  isOidcConfigured: () => getGlobalSetting('enableOpenIDConnect'),
+  isOidcConfigured: () => isOidcConfigured(),
   disableUserRegistration: () => getGlobalSetting("disableUserRegistration")
 })
 
