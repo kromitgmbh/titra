@@ -1,6 +1,5 @@
-/* eslint-disable i18next/no-literal-string */
 import { ServiceConfiguration } from 'meteor/service-configuration'
-import { getGlobalSetting } from '../../utils/frontend_helpers'
+import { getGlobalSetting } from './frontend_helpers'
 
 const SERVICE_NAME = 'oidc'
 
@@ -27,5 +26,4 @@ function getOidcConfiguration(name) {
   }
   return ''
 }
-
 export { oidcFields, isOidcConfigured, getOidcConfiguration }

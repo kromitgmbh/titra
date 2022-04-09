@@ -8,7 +8,7 @@ import { displayUserAvatar, validateEmail, showToast } from '../../utils/fronten
 import '../components/limitpicker.js'
 import Extensions from '../../api/extensions/extensions'
 import CustomFields from '../../api/customfields/customfields.js'
-import { oidcFields, getOidcConfiguration } from '../../api/openid/openid.js'
+import { oidcFields, getOidcConfiguration } from '../../utils/oidc_helper'
 
 Template.administration.onCreated(function administrationCreated() {
   this.limit = new ReactiveVar(25)

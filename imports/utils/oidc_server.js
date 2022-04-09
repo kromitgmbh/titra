@@ -6,8 +6,6 @@ import { HTTP } from 'meteor/http'
 
 const SERVICE_NAME = 'oidc'
 
-Accounts.oauth.registerService(SERVICE_NAME)
-
 let userAgent = 'Meteor'
 if (Meteor.release) {
   userAgent += `/${Meteor.release}`
@@ -122,42 +120,47 @@ function getUserInfo(accessToken, expiresAt) {
   return getUserInfoFromToken(accessToken)
 }
 
-OAuth.registerService(SERVICE_NAME, 2, null, (query) => {
-  const token = getToken(query)
-  const accessToken = token.access_token || token.id_token
-  const expiresAt = (+new Date()) + (1000 * parseInt(token.expires_in, 10))
-  const userinfo = getUserInfo(accessToken, expiresAt)
+function registerOidc() {
+  Accounts.oauth.registerService(SERVICE_NAME)
 
-  const serviceData = {
-    id: userinfo.id,
-    username: userinfo.username,
-    accessToken: userinfo.accessToken,
-    expiresAt: userinfo.expiresAt,
-    email: userinfo.email,
-  }
+  OAuth.registerService(SERVICE_NAME, 2, null, (query) => {
+    const token = getToken(query)
+    const accessToken = token.access_token || token.id_token
+    const expiresAt = (+new Date()) + (1000 * parseInt(token.expires_in, 10))
+    const userinfo = getUserInfo(accessToken, expiresAt)
 
-  if (accessToken) {
-    const tokenContent = getTokenContent(accessToken)
-    getConfiguration().idTokenWhitelistFields.forEach((key) => {
-      serviceData[key] = tokenContent[key]
-    })
-  }
+    const serviceData = {
+      id: userinfo.id,
+      username: userinfo.username,
+      accessToken: userinfo.accessToken,
+      expiresAt: userinfo.expiresAt,
+      email: userinfo.email,
+    }
 
-  if (token.refresh_token) {
-    serviceData.refreshToken = token.refresh_token
-  }
+    if (accessToken) {
+      const tokenContent = getTokenContent(accessToken)
+      getConfiguration().idTokenWhitelistFields.forEach((key) => {
+        serviceData[key] = tokenContent[key]
+      })
+    }
 
-  const profile = {
-    name: userinfo.name,
-  }
+    if (token.refresh_token) {
+      serviceData.refreshToken = token.refresh_token
+    }
 
-  const email = {
-    address: userinfo.email,
-    verified: true,
-  }
+    const profile = {
+      name: userinfo.name,
+    }
 
-  return {
-    serviceData,
-    options: { profile, emails: [email] },
-  }
-})
+    const email = {
+      address: userinfo.email,
+      verified: true,
+    }
+
+    return {
+      serviceData,
+      options: { profile, emails: [email] },
+    }
+  })
+}
+export { registerOidc }
