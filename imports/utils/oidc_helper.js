@@ -22,7 +22,8 @@ function isOidcConfigured() {
 
 function getOidcConfiguration(name) {
   if (getGlobalSetting('enableOpenIDConnect')) {
-    return ServiceConfiguration.configurations.findOne({ service: SERVICE_NAME })[name]
+    return ServiceConfiguration.configurations.findOne({ service: SERVICE_NAME })
+      ? ServiceConfiguration.configurations.findOne({ service: SERVICE_NAME })[name] : false
   }
   return ''
 }
