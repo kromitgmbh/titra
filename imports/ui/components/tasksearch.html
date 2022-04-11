@@ -1,9 +1,9 @@
 <template name="tasksearch">
   {{#if isComponent}}
-    <input type="text" value="{{task}}" class="js-tasksearch-input form-control" placeholder='{{t "tracktime.task_placeholder"}}'/>
+    <input type="text" value="{{task}}" class="js-tasksearch-input form-control" autocomplete="off" placeholder='{{t "tracktime.task_placeholder"}}'/>
   {{else}}
   <div class="input-group form-floating">
-    <input type="text" value="{{task}}" class="js-tasksearch-input form-control" placeholder='{{t "tracktime.task_placeholder"}}'/>
+    <input type="text" value="{{task}}" class="js-tasksearch-input form-control" autocomplete="off" placeholder='{{t "tracktime.task_placeholder"}}'/>
     {{#if displayTaskSelectionIcon}}
       <button type="button" class="btn btn-outline-secondary js-show-task-select-popup">
           <i class="fas fa-list-alt"></i>
