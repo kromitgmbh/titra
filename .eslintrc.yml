@@ -30,7 +30,7 @@ rules:
   # overwrite some rules (avoid semicolons)
   semi: [2, 'never']
   no-unexpected-multiline: 2
-  no-underscore-dangle: ['error', { allow: ['_id']}]
+  no-underscore-dangle: ['error', { allow: ['_id', '_loginStyle','_redirectUri','_stateParam']}]
   no-throw-literal: 0
   new-cap: 1
   object-shorthand: 1
@@ -38,5 +38,5 @@ rules:
   import/no-unresolved: [2, { ignore: ['^meteor'] }]
   no-console: [2, { allow: ['warn', 'error'] }]
   no-restricted-syntax: [2, 'DebuggerStatement', 'LabeledStatement', 'WithStatement']
-  i18next/no-literal-string: [1, { "ignoreCallee": ["$","get","set","add","added","changed","children","html","prop","call","on","is","tab","addClass","removeClass","toggle","querySelector","querySelectorAll","go","remove","getParam","getQueryParam","moment","format","subscribe","publish","setParams","setQueryParams","startOf","endOf","Collection","subtract","find","data"] }] 
+  i18next/no-literal-string: [1, { "ignoreCallee": ["$","get","set","add","added","changed","children","html","prop","call","on","is","tab","addClass","removeClass","toggle","querySelector","querySelectorAll","go","remove","getParam","getQueryParam","moment","format","subscribe","publish","setParams","setQueryParams","startOf","endOf","Collection","subtract","find","data","getGlobalSetting","getUserSetting"] }]
   import/extensions: 0

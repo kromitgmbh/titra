@@ -1,7 +1,28 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import { validateEmail } from '../../utils/frontend_helpers'
+import { validateEmail, getGlobalSetting } from '../../utils/frontend_helpers'
+import { isOidcConfigured } from '../../utils/oidc_helper'
 import { t } from '../../utils/i18n.js'
 import './signIn.html'
+
+function handleLoginResult(error, templateInstance) {
+  if (error) {
+    if(error.message) {
+      templateInstance.$('.notification').text(error.message)
+    } else {
+      templateInstance.$('.notification').text(t(`login.${error.error}`))
+    }
+    document.querySelector('.notification').classList.remove('d-none')
+  } else {
+    FlowRouter.go('projectlist')
+  }
+}
+
+function signInOidc(event, templateInstance) {
+  event.preventDefault()
+  const res = Meteor.loginWithOidc((error) => {
+    handleLoginResult(error, templateInstance)
+  })
+}
 
 function signIn(event, templateInstance) {
   event.preventDefault()
@@ -13,32 +34,28 @@ function signIn(event, templateInstance) {
     templateInstance.$('#at-field-password').addClass('is-invalid')
     return
   }
+
+  let loginMethod
   if (Meteor.loginWithLDAP) {
-    Meteor.loginWithLDAP(templateInstance.$('#at-field-email').val(), templateInstance.$('#at-field-password').val(), {}, (error) => {
-      templateInstance.$('#at-field-email').removeClass('is-invalid')
-      templateInstance.$('#at-field-password').removeClass('is-invalid')
-      if (error) {
-        templateInstance.$('.notification').text(t(`login.${error.error}`))
-        document.querySelector('.notification').classList.remove('d-none')
-      } else {
-        FlowRouter.go('projectlist')
-      }
-    })
+    loginMethod = Meteor.loginWithLDAP
   } else {
-    Meteor.loginWithPassword(templateInstance.$('#at-field-email').val(), templateInstance.$('#at-field-password').val(), (error) => {
-      templateInstance.$('#at-field-email').removeClass('is-invalid')
-      templateInstance.$('#at-field-password').removeClass('is-invalid')
-      if (error) {
-        templateInstance.$('.notification').text(t(`login.${error.error}`))
-        document.querySelector('.notification').classList.remove('d-none')
-      } else {
-        FlowRouter.go('projectlist')
-      }
-    })
+    loginMethod = Meteor.loginWithPassword
   }
+
+  loginMethod(templateInstance.$('#at-field-email').val(), templateInstance.$('#at-field-password').val(), (error) => {
+    templateInstance.$('#at-field-email').removeClass('is-invalid')
+    templateInstance.$('#at-field-password').removeClass('is-invalid')
+    handleLoginResult(error, templateInstance)
+  })
 }
 
+Template.signIn.helpers({
+  isOidcConfigured: () => isOidcConfigured(),
+  disableUserRegistration: () => getGlobalSetting("disableUserRegistration")
+})
+
 Template.signIn.events({
+  'click #oidc': signInOidc,
   'click #signIn': signIn,
   'keypress #at-field-password': (event, templateInstance) => {
     if (event.keyCode === 13) {

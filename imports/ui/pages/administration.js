@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import bootstrap from 'bootstrap'
 import { Random } from 'meteor/random'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { t } from '../../utils/i18n.js'
@@ -9,6 +8,7 @@ import { displayUserAvatar, validateEmail, showToast } from '../../utils/fronten
 import '../components/limitpicker.js'
 import Extensions from '../../api/extensions/extensions'
 import CustomFields from '../../api/customfields/customfields.js'
+import { oidcFields, getOidcConfiguration } from '../../utils/oidc_helper'
 
 Template.administration.onCreated(function administrationCreated() {
   this.limit = new ReactiveVar(25)
@@ -34,13 +34,16 @@ Template.administration.helpers({
   extensions: () => (Extensions.find({}).fetch().length > 0 ? Extensions.find({}) : false),
   customfields: () => (CustomFields.find({}).fetch().length > 0 ? CustomFields.find({}) : false),
   getClassName: (name) => t(`globals.${name}`),
+  oidcSettings: () => oidcFields,
+  oidcValue: (name) => getOidcConfiguration(name),
+  siteUrl: () => Meteor.absoluteUrl({ replaceLocalhost: true }),
 })
 
 Template.administration.events({
   'click .js-delete': (event, templateInstance) => {
     event.preventDefault()
     if (confirm(t('administration.user_deletion_confirmation'))) {
-      Meteor.call('adminDeleteUser', { userId: templateInstance.$(event.currentTarget).data('id') }, (error, result) => {
+      Meteor.call('adminDeleteUser', { userId: templateInstance.$(event.currentTarget).data('id') }, (error) => {
         if (error) {
           console.error(error)
         } else {
@@ -103,7 +106,7 @@ Template.administration.events({
     event.preventDefault()
     templateInstance.$('#password').val(Random.id())
   },
-  'click #reset': (event, templateInstance) => {
+  'click #reset': (event) => {
     event.preventDefault()
     Meteor.call('resetSettings', (error) => {
       if (error) {
@@ -116,6 +119,7 @@ Template.administration.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
     const settingsArray = []
+    // eslint-disable-next-line i18next/no-literal-string
     for (const element of templateInstance.$('.js-setting-input')) {
       const { name } = element
       let value = templateInstance.$(element).val()
@@ -146,7 +150,7 @@ Template.administration.events({
       }
     })
   },
-  'change #extensionFile': (event, templateInstance) => {
+  'change #extensionFile': (event) => {
     event.preventDefault()
     const file = event.currentTarget.files[0]
     const reader = new FileReader()
@@ -272,6 +276,33 @@ Template.administration.events({
       } else {
         templateInstance.editCustomFieldId.set('')
         templateInstance.$('.js-edit-customfield-modal').modal('hide')
+        showToast(t('notifications.success'))
+      }
+    })
+  },
+  'click .js-update-oidc': (event) => {
+    event.preventDefault()
+
+    const configuration = {
+      service: 'oidc',
+      loginStyle: 'popup',
+    }
+
+    // Fetch the value of each input field
+    Oidc.fields.forEach((field) => {
+      configuration[field.property] = document.getElementById(
+        `configure-oidc-${field.property}`
+      ).value.replace(/^\s*|\s*$/g, '') // trim() doesnt work on IE8
+    })
+
+    configuration.idTokenWhitelistFields = configuration.idTokenWhitelistFields.split(' ')
+
+    // Configure this login service
+    Meteor.call('updateOidcSettings', configuration, (error) => {
+      if (error) {
+        // eslint-disable-next-line no-underscore-dangle
+        Meteor._debug('Error configuring login service oidc', error)
+      } else {
         showToast(t('notifications.success'))
       }
     })

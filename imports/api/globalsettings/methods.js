@@ -29,4 +29,11 @@ Meteor.methods({
       }
     }
   },
+  updateOidcSettings(configuration) {
+    checkAdminAuthentication(this)
+    ServiceConfiguration.configurations.remove({
+      service: 'oidc',
+    })
+    ServiceConfiguration.configurations.insert(configuration)
+  }
 })

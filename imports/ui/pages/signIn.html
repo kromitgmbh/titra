@@ -36,7 +36,16 @@
               </fieldset>
             </form>
           </div>
-          {{#unless getGlobalSetting "disableUserRegistration"}}
+
+          {{#if isOidcConfigured}}
+          <div class="mt-2">
+            <button type="button" class="btn btn-dark form-control" id="oidc">
+              {{t "login.sign_in_oidc"}}
+            </button>
+          </div>
+          {{/if}}
+
+          {{#unless disableUserRegistration}}
             <div class="at-signup-link mt-2">
               <p>
                 {{t "login.no_account"}}
