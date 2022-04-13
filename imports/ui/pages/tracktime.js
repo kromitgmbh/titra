@@ -256,14 +256,16 @@ Template.tracktime.events({
   },
   'change .js-date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
-      let date = dayjs(templateInstance.$(event.currentTarget).val(), getGlobalSetting('dateformatVerbose'))
+      let date = dayjs(templateInstance.$(event.currentTarget).val(), [getGlobalSetting('dateformatVerbose'), undefined])
       if (!date.isValid()) {
         date = dayjs()
         event.currentTarget.value = date.format(getGlobalSetting('dateformatVerbose'))
       }
       date = date.format('YYYY-MM-DD')
       // we need this to correctly capture calender change events from the input
-      FlowRouter.setQueryParams({ date })
+      if (!Template.instance().tcid?.get()) {
+        FlowRouter.setQueryParams({ date })
+      }
     }
     // templateInstance.date.set($(event.currentTarget).val())
   },
