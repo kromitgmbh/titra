@@ -111,4 +111,13 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableOpenIDConnect', description: 'settings.enable_open_id_connect', type: 'text', value: false,
 })
+defaultSettings.push({
+  name: 'holidayCountry', description: 'settings.holiday_country', type: 'text', value: '',
+})
+defaultSettings.push({
+  name: 'holidayState', description: 'settings.holiday_state', type: 'text', value: '',
+})
+defaultSettings.push({
+  name: 'holidayRegion', description: 'settings.holiday_region', type: 'text', value: '',
+})
 export { defaultSettings, Globalsettings }

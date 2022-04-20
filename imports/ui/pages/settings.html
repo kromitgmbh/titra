@@ -58,9 +58,26 @@
             <input type="number" class="form-control" id="breakDuration" value="{{breakDuration}}" step="any" />
             <label class="form-label" for="breakDuration"><strong>{{t "settings.break_duration"}}</strong></label>
           </div>
-          <div class="form-floating">
+          <div class="mb-3 form-floating">
             <input type="number" class="form-control" id="regularWorkingTime" value="{{regularWorkingTime}}" step="any" />
             <label class="form-label" for="regularWorkingTime"><strong>{{t "details.regularWorkingTime"}}</strong></label>
+          </div>
+          <div class="card">
+            <div class="card-header">{{t "settings.holiday"}}</div>
+            <div class="card-block">
+              <div class="mb-3 form-floating">
+                <select class="form-select form-control" id="holidayCountry"></select>
+                <label class="form-label" for="holidayCountry"><strong>{{t "settings.holiday_country"}}</strong></label>
+              </div>
+              <div class="mb-3 form-floating">
+                <select class="form-select form-control" id="holidayState"></select>
+                <label class="form-label" for="holidayState"><strong>{{t "settings.holiday_state"}}</strong></label>
+              </div>
+              <div class="form-floating">
+                <select class="form-select form-control" id="holidayRegion"></select>
+                <label class="form-label" for="holidayRegion"><strong>{{t "settings.holiday_region"}}</strong></label>
+              </div>
+            </div>
           </div>
       </div>
     </div>

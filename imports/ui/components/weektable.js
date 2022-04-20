@@ -9,6 +9,7 @@ import Projects from '../../api/projects/projects'
 import {
   clientTimecards, getWeekDays, timeInUserUnit, getGlobalSetting, getUserSetting, showToast,
 } from '../../utils/frontend_helpers'
+import { isHoliday, getHolidayWeekDays } from '../../utils/holiday'
 
 Template.weektable.onCreated(function weekTableCreated() {
   dayjs.extend(utc)
@@ -28,6 +29,9 @@ Template.weektable.onCreated(function weekTableCreated() {
 Template.weektable.helpers({
   weekDays() {
     return getWeekDays(Template.instance().startDate.get())
+  },
+  holidayWeekDays() {
+    return getHolidayWeekDays(Template.instance().startDate.get())
   },
   projects() {
     return Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] })
@@ -62,6 +66,14 @@ Template.weektable.helpers({
   },
   hasData() {
     return clientTimecards.find().fetch().length > 0
+  },
+  isHoliday(weekday) {
+    const start = Template.instance().startDate.get()
+    const holiday = isHoliday(start.add(weekday, 'd'))
+    if (holiday) {
+      return holiday[0].name
+    }
+    return false
   },
 })
 
@@ -234,4 +246,5 @@ Template.weektablerow.helpers({
   reactiveProjectId() {
     return Template.instance().reactiveProjectId
   },
+  isHoliday: (weekday) => weekday,
 })

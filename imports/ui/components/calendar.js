@@ -7,7 +7,8 @@ import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
 import './calendar.html'
 import './editTimeEntryModal.js'
-import {emojify, getUserSetting} from '../../utils/frontend_helpers.js'
+import { emojify, getUserSetting } from '../../utils/frontend_helpers.js'
+import { getHolidays } from '../../utils/holiday.js'
 
 Template.calendar.onCreated(function calendarCreated() {
   dayjs.extend(utc)
@@ -31,7 +32,7 @@ Template.calendar.onRendered(() => {
           import('@fullcalendar/interaction').then((interaction) => {
             const interactionPlugin = interaction.default
             const { Draggable } = interaction
-            const drags = new Draggable(document.querySelector('.js-project-container'), {
+            Draggable(document.querySelector('.js-project-container'), {
               itemSelector: '.drag',
             })
             const calendarEl = document.getElementById('cal')
@@ -67,16 +68,31 @@ Template.calendar.onRendered(() => {
                       hours: it.hours,
                     },
                   }))
+                const holidays = getHolidays(fetchInfo.start, fetchInfo.end)
+                holidays.forEach((holiday) => {
+                  if (holiday.type === 'public') {
+                    events.push({
+                      title: holiday.name,
+                      start: holiday.date,
+                      allDay: true,
+                      display: 'background'
+                    })
+                  }
+                })
                 successCallback(events)
               },
               eventDidMount: (info) => {
                 if (window.innerWidth >= 768) {
+                  let title = `${safeReplacer(info.event.title)}: ${info.event.extendedProps.hours} hours`
+                  if (info.event.id === '') {
+                    title = safeReplacer(info.event.title)
+                  }
                   return {
                     domNodes: $(info.el).tooltip({
                       html: true,
                       placement: 'right',
                       trigger: 'hover',
-                      title: `<span>${safeReplacer(info.event.title)}: ${info.event.extendedProps.hours} hours</span>`,
+                      title: `<span>${title}</span>`,
                     }),
                   }
                 }
@@ -91,10 +107,12 @@ Template.calendar.onRendered(() => {
               },
               eventClick: (eventClickInfo) => {
                 // $('.tooltip').tooltip('dispose')
-                templateInstance.selectedDate.set(undefined)
-                templateInstance.selectedProjectId.set(undefined)
-                templateInstance.tcid.set(eventClickInfo.event.id)
-                new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
+                if (eventClickInfo.event.id !== "") {
+                  templateInstance.selectedDate.set(undefined)
+                  templateInstance.selectedProjectId.set(undefined)
+                  templateInstance.tcid.set(eventClickInfo.event.id)
+                  new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
+                }
                 // FlowRouter.go(`/edit/timecard/${eventClickInfo.event.id}`)
               },
               dateClick: (dateClickInfo) => {
@@ -113,12 +131,14 @@ Template.calendar.onRendered(() => {
     }
   })
   templateInstance.autorun(() => {
-    templateInstance.periodTimecardsSub = templateInstance.subscribe('periodTimecards',
+    templateInstance.periodTimecardsSub = templateInstance.subscribe(
+      'periodTimecards',
       {
         startDate: templateInstance.startDate.get(),
         endDate: templateInstance.endDate.get(),
         userId: Meteor.userId(),
-      })
+      },
+    )
   })
   templateInstance.autorun(() => {
     if (templateInstance.calendarInitialized.get()) {

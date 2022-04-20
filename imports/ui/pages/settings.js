@@ -4,6 +4,40 @@ import { t } from '../../utils/i18n.js'
 import './settings.html'
 import '../components/backbutton.js'
 import { getUserSetting, showToast } from '../../utils/frontend_helpers'
+import { getHolidayCountries, getHolidayStates, getHolidayRegions } from '../../utils/holiday'
+
+function updateHolidayStates(templateInstance) {
+  const holidayState = templateInstance.$('#holidayState')
+  holidayState.empty()
+  const states = getHolidayStates(templateInstance.$('#holidayCountry').val())
+  if (states) {
+    holidayState.prop('disabled', false)
+    holidayState[0].options.add(new Option())
+    Object.keys(states).forEach((key) => {
+      holidayState[0].options.add(new Option(states[key], key))
+    })
+  } else {
+    holidayState.prop('disabled', true)
+  }
+}
+
+function updateHolidayRegion(templateInstance) {
+  const holidayRegion = templateInstance.$('#holidayRegion')
+  holidayRegion.empty()
+  const regions = getHolidayRegions(
+    templateInstance.$('#holidayCountry').val(),
+    templateInstance.$('#holidayState').val(),
+  )
+  if (regions) {
+    holidayRegion.prop('disabled', false)
+    holidayRegion[0].options.add(new Option())
+    Object.keys(regions).forEach((key) => {
+      holidayRegion[0].options.add(new Option(regions[key], key))
+    })
+  } else {
+    holidayRegion.prop('disabled', true)
+  }
+}
 
 Template.settings.onCreated(function settingsCreated() {
   this.displayHoursToDays = new ReactiveVar()
@@ -22,6 +56,18 @@ Template.settings.onRendered(function settingsRendered() {
       templateInstance.$('#breakStartTime').val(getUserSetting('breakStartTime'))
       templateInstance.$('#breakDuration').val(getUserSetting('breakDuration'))
       templateInstance.$('#regularWorkingTime').val(getUserSetting('regularWorkingTime'))
+      const country = getUserSetting('holidayCountry')
+      const holidayCountry = templateInstance.$('#holidayCountry')
+      const countries = getHolidayCountries()
+      holidayCountry[0].options.add(new Option())
+      Object.keys(countries).forEach((key) => {
+        holidayCountry[0].options.add(new Option(countries[key], key))
+      })
+      holidayCountry.val(country)
+      updateHolidayStates(templateInstance)
+      templateInstance.$('#holidayState').val(getUserSetting('holidayState'))
+      updateHolidayRegion(templateInstance)
+      templateInstance.$('#holidayRegion').val(getUserSetting('holidayRegion'))
     }
   })
 })
@@ -63,6 +109,9 @@ Template.settings.events({
       siwapptoken: templateInstance.$('#siwapptoken').val(),
       siwappurl: templateInstance.$('#siwappurl').val(),
       APItoken: templateInstance.$('#titraAPItoken').val(),
+      holidayCountry: templateInstance.$('#holidayCountry').val(),
+      holidayState: templateInstance.$('#holidayState').val(),
+      holidayRegion: templateInstance.$('#holidayRegion').val(),
       zammadtoken: templateInstance.$('#zammadtoken').val(),
       zammadurl: templateInstance.$('#zammadurl').val(),
     },
@@ -84,7 +133,14 @@ Template.settings.events({
       templateInstance.$('#timeunit').val() === 'd',
     )
   },
-  'click .js-reset': (event, templateInstance) => {
+  'change #holidayCountry': (event, templateInstance) => {
+    updateHolidayStates(templateInstance)
+    updateHolidayRegion(templateInstance)
+  },
+  'change #holidayState': (event, templateInstance) => {
+    updateHolidayRegion(templateInstance)
+  },
+  'click .js-reset': (event) => {
     event.preventDefault()
     Meteor.call('resetUserSettings', (error) => {
       if (error) {

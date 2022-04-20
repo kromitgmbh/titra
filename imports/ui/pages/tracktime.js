@@ -11,6 +11,7 @@ import { t } from '../../utils/i18n.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
 import { getGlobalSetting, getUserSetting, showToast } from '../../utils/frontend_helpers.js'
+import { isHoliday }  from '../../utils/holiday.js'
 
 import './tracktime.html'
 import '../components/projectselect.js'
@@ -371,6 +372,8 @@ Template.tracktime.helpers({
   customfields: () => CustomFields.find({ classname: 'time_entry' }),
   getCustomFieldValue: (fieldId) => (Template.instance().time_entry.get()
     ? Template.instance().time_entry.get()[fieldId] : false),
+  holidayToday: () => (isHoliday(Template.instance().date.get())
+    ? isHoliday(Template.instance().date.get())[0].name : false),
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

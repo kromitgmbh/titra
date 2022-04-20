@@ -11,7 +11,11 @@
           <thead class="thead">
             <th scope="col" style="min-width:200px;width:200px">{{t "globals.project"}} / {{t "globals.task"}}</th>
             {{#each weekday in weekDays}}
+            {{#if isHoliday @index }}
+              <th scope="col" style="min-width:122px; background-color: rgb(143, 223, 130);">{{ isHoliday @index }}<br>{{weekday}}</th>
+            {{else}}
               <th scope="col" style="min-width:122px;">{{weekday}}</th>
+            {{/if}}
             {{/each}}
             <th scope="col"></th>
           </thead>

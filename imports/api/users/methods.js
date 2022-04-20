@@ -18,6 +18,9 @@ Meteor.methods({
     breakDuration,
     regularWorkingTime,
     APItoken,
+    holidayCountry,
+    holidayState,
+    holidayRegion,
     zammadtoken,
     zammadurl,
   }) {
@@ -35,6 +38,9 @@ Meteor.methods({
     check(breakDuration, String)
     check(regularWorkingTime, String)
     check(APItoken, String)
+    check(holidayCountry, Match.Maybe(String))
+    check(holidayState, Match.Maybe(String))
+    check(holidayRegion, Match.Maybe(String))
     check(zammadtoken, String)
     check(zammadurl, String)
     checkAuthentication(this)
@@ -50,6 +56,9 @@ Meteor.methods({
         'profile.siwapptoken': siwapptoken,
         'profile.siwappurl': siwappurl,
         'profile.APItoken': APItoken,
+        'profile.holidayCountry': holidayCountry,
+        'profile.holidayState': holidayState,
+        'profile.holidayRegion': holidayRegion,
         'profile.dailyStartTime': dailyStartTime,
         'profile.breakStartTime': breakStartTime,
         'profile.breakDuration': breakDuration,
@@ -74,6 +83,9 @@ Meteor.methods({
         'profile.breakStartTime': '',
         'profile.breakDuration': '',
         'profile.regularWorkingTime': '',
+        'profile.holidayCountry': '',
+        'profile.holidayState': '',
+        'profile.holidayRegion': '',
       },
     })
   },
