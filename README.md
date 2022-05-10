@@ -1,4 +1,4 @@
-[![Docker build](https://github.com/kromitgmbh/titra/actions/workflows/push.yml/badge.svg)](https://github.com/kromitgmbh/titra/actions/workflows/push.yml) ![Docker Pulls](https://img.shields.io/docker/pulls/kromit/titra.svg) ![Latest Release](https://img.shields.io/github/v/release/kromitgmbh/titra.svg)
+[![Docker build](https://github.com/kromitgmbh/titra/actions/workflows/push.yml/badge.svg)](https://github.com/kromitgmbh/titra/actions/workflows/push.yml) ![Docker Pulls](https://badgen.net/docker/pulls/kromit/titra) ![Latest Release](https://img.shields.io/github/v/release/kromitgmbh/titra.svg)
 
 
 # ![titra logo](public/favicons/favicon-32x32.png) titra
@@ -25,6 +25,7 @@ Congratulations! titra should now be up and running at http://localhost:3000
 
 ## Deploy on DigitalOcean
 titra is available in the [DigitalOcean Marketplace](https://marketplace.digitalocean.com/apps/titra) for easy 1-click deployment of droplets. Get started below:
+
 [![do-btn-blue](https://user-images.githubusercontent.com/11456790/74553033-c9399f80-4f56-11ea-9f9f-6f1ac4af50ce.png)](https://cloud.digitalocean.com/droplets/new?image=kromit-titra-18-04#choose-droplet-size)
 
 
@@ -33,4 +34,4 @@ Checkout our [wiki](https://wiki.titra.io) for best practices and to learn how t
 
 
 
-Built with ❤️by [kromit](https://kromit.at) in 🇦🇹
+Built with ❤️ by [kromit](https://kromit.at) in 🇦🇹
