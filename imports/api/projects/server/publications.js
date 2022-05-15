@@ -39,12 +39,12 @@ Meteor.publish('projectStats', function projectStats(projectId) {
   }
   let initializing = true
   const currentMonthName = dayjs.utc().format('MMM')
-  const currentMonthStart = dayjs.utc().startOf('month')
-  const currentMonthEnd = dayjs.utc().endOf('month')
+  const currentMonthStart = dayjs.utc().startOf('month').toDate()
+  const currentMonthEnd = dayjs.utc().endOf('month').toDate()
   const previousMonthName = dayjs.utc().subtract('1', 'month').format('MMM')
-  const previousMonthStart = dayjs.utc().subtract('1', 'month').startOf('month')
-  const previousMonthEnd = dayjs.utc().subtract('1', 'month').endOf('month')
-  const beforePreviousMonthStart = dayjs.utc().subtract('2', 'month').startOf('month')
+  const previousMonthStart = dayjs.utc().subtract('1', 'month').startOf('month').toDate()
+  const previousMonthEnd = dayjs.utc().subtract('1', 'month').endOf('month').toDate()
+  const beforePreviousMonthStart = dayjs.utc().subtract('2', 'month').startOf('month').toDate()
   const beforePreviousMonthEnd = dayjs.utc().subtract('2', 'month').endOf('month')
   const beforePreviousMonthName = dayjs.utc().subtract('2', 'month').format('MMM')
 
@@ -52,32 +52,93 @@ Meteor.publish('projectStats', function projectStats(projectId) {
   let currentMonthHours = 0
   let previousMonthHours = 0
   let beforePreviousMonthHours = 0
-  totalHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{$match: { projectId }}, {$group:{_id: null, totalHours:{$sum: "$hours"}}}]).toArray())[0]?.totalHours)
-  currentMonthHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{$match: { projectId, date: { $gte: currentMonthStart, $lte: currentMonthEnd } }}, {$group:{_id: null, currentMonthHours:{$sum: "$hours"}}}]).toArray())[0]?.currentMonthHours)
-  previousMonthHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{$match: { projectId, date: { $gte: previousMonthStart, $lte: previousMonthEnd } }}, {$group:{_id: null, previousMonthHours:{$sum: "$hours"}}}]).toArray())[0]?.previousMonthHours)
-  beforePreviousMonthHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{$match: { projectId, date: { $gte: beforePreviousMonthStart, $lte: beforePreviousMonthStart } }}, {$group:{_id: null, beforePreviousMonthHours:{$sum: "$hours"}}}]).toArray())[0]?.beforePreviousMonthHours)
-
+  totalHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{
+    $match: { projectId },
+  }, {
+    $group: { _id: null, totalHours: { $sum: '$hours' } },
+  }]).toArray())[0]?.totalHours)
+  currentMonthHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: currentMonthStart, $lte: currentMonthEnd } } }, { $group: { _id: null, currentMonthHours: { $sum: '$hours' } } }]).toArray())[0]?.currentMonthHours)
+  previousMonthHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: previousMonthStart, $lte: previousMonthEnd } } }, { $group: { _id: null, previousMonthHours: { $sum: '$hours' } } }]).toArray())[0]?.previousMonthHours)
+  beforePreviousMonthHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: beforePreviousMonthStart, $lte: beforePreviousMonthStart } } }, { $group: { _id: null, beforePreviousMonthHours: { $sum: '$hours' } } }]).toArray())[0]?.beforePreviousMonthHours)
   // observeChanges only returns after the initial `added` callbacks
   // have run. Until then, we don't want to send a lot of
   // `self.changed()` messages - hence tracking the
   // `initializing` state.
-  const handle = Timecards.find({ projectId, date: { $gte: beforePreviousMonthStart.toDate() } }).observeChanges({
-    added: (timecardId) => {
-      if (!initializing) {
-        const timecard = Timecards.findOne({ _id: timecardId })
-        if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
-          currentMonthHours += Number.parseFloat(timecard.hours)
+  const handle = Timecards.find({ projectId, date: { $gte: beforePreviousMonthStart } })
+    .observeChanges({
+      added: (timecardId) => {
+        if (!initializing) {
+          const timecard = Timecards.findOne({ _id: timecardId })
+          if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+            currentMonthHours += Number.parseFloat(timecard.hours)
+          }
+          if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+            previousMonthHours += Number.parseFloat(timecard.hours)
+          }
+          if (dayjs(new Date(timecard.date))
+            .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
+            beforePreviousMonthHours += Number.parseFloat(timecard.hours)
+          }
+          totalHours += Number.parseFloat(timecard.hours)
+          this.changed(
+            'projectStats',
+            projectId,
+            {
+              totalHours,
+              currentMonthName,
+              currentMonthHours,
+              previousMonthHours,
+              previousMonthName,
+              beforePreviousMonthName,
+              beforePreviousMonthHours,
+            },
+          )
         }
-        if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
-          previousMonthHours += Number.parseFloat(timecard.hours)
+      },
+      removed: (timecardId) => {
+        if (!initializing) {
+          const timecard = Timecards.findOne({ _id: timecardId })
+          if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+            currentMonthHours += Number.parseFloat(timecard.hours)
+          }
+          if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+            previousMonthHours += Number.parseFloat(timecard.hours)
+          }
+          if (dayjs(new Date(timecard.date))
+            .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
+            beforePreviousMonthHours += Number.parseFloat(timecard.hours)
+          }
+          totalHours += Number.parseFloat(timecard.hours)
+          this.changed(
+            'projectStats',
+            projectId,
+            {
+              totalHours,
+              currentMonthName,
+              currentMonthHours,
+              previousMonthHours,
+              previousMonthName,
+              beforePreviousMonthName,
+              beforePreviousMonthHours,
+            },
+          )
         }
-        if (dayjs(new Date(timecard.date))
-          .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
-          beforePreviousMonthHours += Number.parseFloat(timecard.hours)
-        }
-        totalHours += Number.parseFloat(timecard.hours)
-        this.changed('projectStats', projectId,
-          {
+      },
+      changed: (timecardId) => {
+        if (!initializing) {
+          const timecard = Timecards.findOne({ _id: timecardId })
+          if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+            currentMonthHours += Number.parseFloat(timecard.hours)
+          }
+          if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+            previousMonthHours += Number.parseFloat(timecard.hours)
+          }
+          if (dayjs(new Date(timecard.date))
+            .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
+            beforePreviousMonthHours += Number.parseFloat(timecard.hours)
+          }
+          totalHours += Number.parseFloat(timecard.hours)
+          this.changed('projectStats', projectId, {
             totalHours,
             currentMonthName,
             currentMonthHours,
@@ -86,60 +147,9 @@ Meteor.publish('projectStats', function projectStats(projectId) {
             beforePreviousMonthName,
             beforePreviousMonthHours,
           })
-      }
-    },
-    removed: (timecardId) => {
-      if (!initializing) {
-        const timecard = Timecards.findOne({ _id: timecardId })
-        if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
-          currentMonthHours += Number.parseFloat(timecard.hours)
         }
-        if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
-          previousMonthHours += Number.parseFloat(timecard.hours)
-        }
-        if (dayjs(new Date(timecard.date))
-          .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
-          beforePreviousMonthHours += Number.parseFloat(timecard.hours)
-        }
-        totalHours += Number.parseFloat(timecard.hours)
-        this.changed('projectStats', projectId,
-          {
-            totalHours,
-            currentMonthName,
-            currentMonthHours,
-            previousMonthHours,
-            previousMonthName,
-            beforePreviousMonthName,
-            beforePreviousMonthHours,
-          })
-      }
-    },
-    changed: (timecardId) => {
-      if (!initializing) {
-        const timecard = Timecards.findOne({ _id: timecardId })
-        if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
-          currentMonthHours += Number.parseFloat(timecard.hours)
-        }
-        if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
-          previousMonthHours += Number.parseFloat(timecard.hours)
-        }
-        if (dayjs(new Date(timecard.date))
-          .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
-          beforePreviousMonthHours += Number.parseFloat(timecard.hours)
-        }
-        totalHours += Number.parseFloat(timecard.hours)
-        this.changed('projectStats', projectId, {
-          totalHours,
-          currentMonthName,
-          currentMonthHours,
-          previousMonthHours,
-          previousMonthName,
-          beforePreviousMonthName,
-          beforePreviousMonthHours,
-        })
-      }
-    },
-  })
+      },
+    })
   // Instead, we'll send one `self.added()` message right after
   // observeChanges has returned, and mark the subscription as
   // ready.
