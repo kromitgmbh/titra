@@ -11,7 +11,7 @@ import { t } from '../../utils/i18n.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
 import { getGlobalSetting, getUserSetting, showToast } from '../../utils/frontend_helpers.js'
-import { isHoliday }  from '../../utils/holiday.js'
+import { isHoliday } from '../../utils/holiday.js'
 
 import './tracktime.html'
 import '../components/projectselect.js'
@@ -300,7 +300,7 @@ Template.tracktime.events({
       bootstrap.Popover.getInstance(element)?.hide()
     })
     const timecardId = event.currentTarget.href.split('/').pop()
-    Meteor.call('deleteTimeCard', { timecardId }, (error, result) => {
+    Meteor.call('deleteTimeCard', { timecardId }, (error) => {
       if (!error) {
         showToast(t('notifications.time_entry_deleted'))
       } else {
