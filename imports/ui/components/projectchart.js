@@ -127,6 +127,7 @@ Template.projectchart.onRendered(() => {
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && templateInstance.isVisible.get()) {
       const stats = ProjectStats.findOne({ _id: templateInstance.data.projectId })
+      console.log(stats)
       if (stats) {
         import('frappe-charts').then((chartModule) => {
           const { Chart } = chartModule
