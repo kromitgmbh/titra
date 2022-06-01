@@ -38,5 +38,5 @@ rules:
   import/no-unresolved: [2, { ignore: ['^meteor'] }]
   no-console: [2, { allow: ['warn', 'error'] }]
   no-restricted-syntax: [2, 'DebuggerStatement', 'LabeledStatement', 'WithStatement']
-  i18next/no-literal-string: [1, { "ignoreCallee": ["$","get","set","add","added","changed","children","html","prop","call","on","is","tab","addClass","removeClass","toggle","querySelector","querySelectorAll","go","remove","getParam","getQueryParam","moment","format","subscribe","publish","setParams","setQueryParams","startOf","endOf","Collection","subtract","find","data","getGlobalSetting","getUserSetting"] }]
+  i18next/no-literal-string: [1, { "ignoreCallee": ["*.$","$","get","set","add","added","changed","children","html","prop","call","on","is","tab","addClass","removeClass","toggle","querySelector","querySelectorAll","go","remove","getParam","getQueryParam","moment","format","subscribe","publish","setParams","setQueryParams","startOf","endOf","Collection","subtract","find","data","getGlobalSetting","getUserSetting"] }]
   import/extensions: 0

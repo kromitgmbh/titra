@@ -9,34 +9,36 @@ import { getHolidayCountries, getHolidayStates, getHolidayRegions } from '../../
 function updateHolidayStates(templateInstance) {
   const holidayState = templateInstance.$('#holidayState')
   holidayState.empty()
-  const states = getHolidayStates(templateInstance.$('#holidayCountry').val())
-  if (states) {
-    holidayState.prop('disabled', false)
-    holidayState[0].options.add(new Option())
-    Object.keys(states).forEach((key) => {
-      holidayState[0].options.add(new Option(states[key], key))
-    })
-  } else {
-    holidayState.prop('disabled', true)
-  }
+  getHolidayStates(templateInstance.$('#holidayCountry').val()).then((states) => {
+    if (states) {
+      holidayState.prop('disabled', false)
+      holidayState[0].options.add(new Option())
+      Object.keys(states).forEach((key) => {
+        holidayState[0].options.add(new Option(states[key], key))
+      })
+    } else {
+      holidayState.prop('disabled', true)
+    }
+  })
 }
 
 function updateHolidayRegion(templateInstance) {
   const holidayRegion = templateInstance.$('#holidayRegion')
   holidayRegion.empty()
-  const regions = getHolidayRegions(
+  getHolidayRegions(
     templateInstance.$('#holidayCountry').val(),
     templateInstance.$('#holidayState').val(),
-  )
-  if (regions) {
-    holidayRegion.prop('disabled', false)
-    holidayRegion[0].options.add(new Option())
-    Object.keys(regions).forEach((key) => {
-      holidayRegion[0].options.add(new Option(regions[key], key))
-    })
-  } else {
-    holidayRegion.prop('disabled', true)
-  }
+  ).then((regions) => {
+    if (regions) {
+      holidayRegion.prop('disabled', false)
+      holidayRegion[0].options.add(new Option())
+      Object.keys(regions).forEach((key) => {
+        holidayRegion[0].options.add(new Option(regions[key], key))
+      })
+    } else {
+      holidayRegion.prop('disabled', true)
+    }
+  })
 }
 
 Template.settings.onCreated(function settingsCreated() {
@@ -58,12 +60,13 @@ Template.settings.onRendered(function settingsRendered() {
       templateInstance.$('#regularWorkingTime').val(getUserSetting('regularWorkingTime'))
       const country = getUserSetting('holidayCountry')
       const holidayCountry = templateInstance.$('#holidayCountry')
-      const countries = getHolidayCountries()
-      holidayCountry[0].options.add(new Option())
-      Object.keys(countries).forEach((key) => {
-        holidayCountry[0].options.add(new Option(countries[key], key))
+      getHolidayCountries().then((countries) => {
+        holidayCountry[0].options.add(new Option())
+        Object.keys(countries).forEach((key) => {
+          holidayCountry[0].options.add(new Option(countries[key], key))
+        })
+        holidayCountry.val(country)
       })
-      holidayCountry.val(country)
       updateHolidayStates(templateInstance)
       templateInstance.$('#holidayState').val(getUserSetting('holidayState'))
       updateHolidayRegion(templateInstance)
@@ -94,35 +97,38 @@ Template.settings.helpers({
 Template.settings.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
-    Meteor.call('updateSettings', {
-      unit: templateInstance.$('#unit').val(),
-      precision: Number(templateInstance.$('#precision').val()),
-      startOfWeek: Number(templateInstance.$('#startOfWeek').val()),
-      timeunit: templateInstance.$('#timeunit').val(),
-      timetrackview: templateInstance.$('#timetrackview').val(),
-      hoursToDays: Number(templateInstance.$('#hoursToDays').val()),
-      dailyStartTime: templateInstance.$('#dailyStartTime').val(),
-      breakStartTime: templateInstance.$('#breakStartTime').val(),
-      breakDuration: templateInstance.$('#breakDuration').val(),
-      regularWorkingTime: templateInstance.$('#regularWorkingTime').val(),
-      enableWekan: templateInstance.$('#enableWekan').is(':checked'),
-      siwapptoken: templateInstance.$('#siwapptoken').val(),
-      siwappurl: templateInstance.$('#siwappurl').val(),
-      APItoken: templateInstance.$('#titraAPItoken').val(),
-      holidayCountry: templateInstance.$('#holidayCountry').val(),
-      holidayState: templateInstance.$('#holidayState').val(),
-      holidayRegion: templateInstance.$('#holidayRegion').val(),
-      zammadtoken: templateInstance.$('#zammadtoken').val(),
-      zammadurl: templateInstance.$('#zammadurl').val(),
-    },
-    (error) => {
-      if (error) {
-        showToast(t(error.error))
-      } else {
-        showToast(t('notifications.settings_saved_success'))
-        templateInstance.$('#imagePreview').hide()
-      }
-    })
+    Meteor.call(
+      'updateSettings',
+      {
+        unit: templateInstance.$('#unit').val(),
+        precision: Number(templateInstance.$('#precision').val()),
+        startOfWeek: Number(templateInstance.$('#startOfWeek').val()),
+        timeunit: templateInstance.$('#timeunit').val(),
+        timetrackview: templateInstance.$('#timetrackview').val(),
+        hoursToDays: Number(templateInstance.$('#hoursToDays').val()),
+        dailyStartTime: templateInstance.$('#dailyStartTime').val(),
+        breakStartTime: templateInstance.$('#breakStartTime').val(),
+        breakDuration: templateInstance.$('#breakDuration').val(),
+        regularWorkingTime: templateInstance.$('#regularWorkingTime').val(),
+        enableWekan: templateInstance.$('#enableWekan').is(':checked'),
+        siwapptoken: templateInstance.$('#siwapptoken').val(),
+        siwappurl: templateInstance.$('#siwappurl').val(),
+        APItoken: templateInstance.$('#titraAPItoken').val(),
+        holidayCountry: templateInstance.$('#holidayCountry').val(),
+        holidayState: templateInstance.$('#holidayState').val(),
+        holidayRegion: templateInstance.$('#holidayRegion').val(),
+        zammadtoken: templateInstance.$('#zammadtoken').val(),
+        zammadurl: templateInstance.$('#zammadurl').val(),
+      },
+      (error) => {
+        if (error) {
+          showToast(t(error.error))
+        } else {
+          showToast(t('notifications.settings_saved_success'))
+          templateInstance.$('#imagePreview').hide()
+        }
+      },
+    )
   },
   'click #generateToken': (event, templateInstance) => {
     event.preventDefault()

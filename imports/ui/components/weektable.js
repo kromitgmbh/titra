@@ -9,13 +9,23 @@ import Projects from '../../api/projects/projects'
 import {
   clientTimecards, getWeekDays, timeInUserUnit, getGlobalSetting, getUserSetting, showToast,
 } from '../../utils/frontend_helpers'
-import { isHoliday, getHolidayWeekDays } from '../../utils/holiday'
+import { checkHoliday, getHolidays } from '../../utils/holiday'
+
+function isHoliday(date) {
+  const templateInstance = Template.instance()
+  const holidays = templateInstance.holidays.get()
+  return checkHoliday(holidays, date)
+}
 
 Template.weektable.onCreated(function weekTableCreated() {
   dayjs.extend(utc)
   dayjs.extend(customParseFormat)
   this.subscribe('myprojects', {})
 
+  this.holidays = new ReactiveVar([])
+  getHolidays().then((holidays) => {
+    this.holidays.set(holidays)
+  })
   this.startDate = new ReactiveVar(dayjs.utc().startOf('week').add(getUserSetting('startOfWeek'), 'day'))
   this.endDate = new ReactiveVar(dayjs.utc().endOf('week').add(getUserSetting('startOfWeek'), 'day'))
   this.autorun(() => {
@@ -29,9 +39,6 @@ Template.weektable.onCreated(function weekTableCreated() {
 Template.weektable.helpers({
   weekDays() {
     return getWeekDays(Template.instance().startDate.get())
-  },
-  holidayWeekDays() {
-    return getHolidayWeekDays(Template.instance().startDate.get())
   },
   projects() {
     return Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] })
@@ -70,7 +77,7 @@ Template.weektable.helpers({
   isHoliday(weekday) {
     const start = Template.instance().startDate.get()
     const holiday = isHoliday(start.add(weekday, 'd'))
-    if (holiday) {
+    if (holiday && holiday.length) {
       return holiday[0].name
     }
     return false
@@ -145,12 +152,14 @@ Template.weektablerow.onCreated(function weektablerowCreated() {
   this.tempTimeEntries = new ReactiveVar([])
   this.reactiveProjectId = new ReactiveVar()
   this.autorun(() => {
-    this.subscribe('userTimeCardsForPeriodByProjectByTask',
+    this.subscribe(
+      'userTimeCardsForPeriodByProjectByTask',
       {
         projectId: Template.instance().data.projectId,
         startDate: Template.instance().data.startDate.get().toDate(),
         endDate: Template.instance().data.endDate.get().toDate(),
-      })
+      },
+    )
   })
   this.autorun(() => {
     if (this.data.timeEntries) {

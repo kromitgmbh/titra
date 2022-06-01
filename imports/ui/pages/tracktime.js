@@ -11,7 +11,7 @@ import { t } from '../../utils/i18n.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
 import { getGlobalSetting, getUserSetting, showToast } from '../../utils/frontend_helpers.js'
-import { isHoliday } from '../../utils/holiday.js'
+import { getHolidays, checkHoliday } from '../../utils/holiday.js'
 
 import './tracktime.html'
 import '../components/projectselect.js'
@@ -21,6 +21,12 @@ import '../components/weektable.js'
 import '../components/calendar.js'
 import '../components/backbutton.js'
 import CustomFields from '../../api/customfields/customfields.js'
+
+function isHoliday(date) {
+  const templateInstance = Template.instance()
+  const holidays = templateInstance.holidays.get()
+  return checkHoliday(holidays, date)
+}
 
 Template.tracktime.onRendered(() => {
   const templateInstance = Template.instance()
@@ -66,6 +72,10 @@ Template.tracktime.onCreated(function tracktimeCreated() {
   this.totalTime = new ReactiveVar(0)
   this.edittcid = new ReactiveVar()
   this.time_entry = new ReactiveVar()
+  this.holidays = new ReactiveVar([])
+  getHolidays().then((holidays) => {
+    this.holidays.set(holidays)
+  })
   this.subscribe('customfieldsForClass', { classname: 'time_entry' })
   let handle
   this.autorun(() => {

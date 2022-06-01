@@ -68,18 +68,19 @@ Template.calendar.onRendered(() => {
                       hours: it.hours,
                     },
                   }))
-                const holidays = getHolidays(fetchInfo.start, fetchInfo.end)
-                holidays.forEach((holiday) => {
-                  if (holiday.type === 'public') {
-                    events.push({
-                      title: holiday.name,
-                      start: holiday.date,
-                      allDay: true,
-                      display: 'background'
-                    })
-                  }
+                getHolidays().then((holidays) => {
+                  holidays.forEach((holiday) => {
+                    if (holiday.type === 'public') {
+                      events.push({
+                        title: holiday.name,
+                        start: holiday.date,
+                        allDay: true,
+                        display: 'background',
+                      })
+                    }
+                  })
+                  successCallback(events)
                 })
-                successCallback(events)
               },
               eventDidMount: (info) => {
                 if (window.innerWidth >= 768) {
@@ -107,7 +108,7 @@ Template.calendar.onRendered(() => {
               },
               eventClick: (eventClickInfo) => {
                 // $('.tooltip').tooltip('dispose')
-                if (eventClickInfo.event.id !== "") {
+                if (eventClickInfo.event.id !== '') {
                   templateInstance.selectedDate.set(undefined)
                   templateInstance.selectedProjectId.set(undefined)
                   templateInstance.tcid.set(eventClickInfo.event.id)
