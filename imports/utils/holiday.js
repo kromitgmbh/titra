@@ -1,6 +1,9 @@
 async function getHolidayCountries() {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     Meteor.call('getHolidayCountries', undefined, (error, result) => {
+      if (error) {
+        reject(error)
+      }
       resolve(result)
     })
   })
@@ -8,8 +11,11 @@ async function getHolidayCountries() {
 
 async function getHolidayStates(country) {
   const c = country || ''
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     Meteor.call('getHolidayStates', { country: c }, (error, result) => {
+      if (error) {
+        reject(error)
+      }
       resolve(result)
     })
   })
@@ -18,16 +24,22 @@ async function getHolidayStates(country) {
 async function getHolidayRegions(country, state) {
   const c = country || ''
   const s = state || ''
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     Meteor.call('getHolidayRegions', { country: c, state: s }, (error, result) => {
+      if (error) {
+        reject(error)
+      }
       resolve(result)
     })
   })
 }
 
 async function getHolidays() {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     Meteor.call('getHolidays', undefined, (error, result) => {
+      if (error) {
+        reject(error)
+      }
       resolve(result)
     })
   })

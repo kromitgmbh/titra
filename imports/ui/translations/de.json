@@ -167,7 +167,11 @@
     "mail_from_address": "Mail von Adresse",
     "mail_from_name": "E-Mail von Name",
     "show_name_custom_field_in_details": "Namen für benutzerdefinierte Felder in der Detailansicht anzeigen?",
-    "enable_open_id_connect": "OpenID Connect aktivieren?"
+    "enable_open_id_connect": "OpenID Connect aktivieren?",
+    "holiday": "Feiertage",
+    "holiday_country": "Land",
+    "holiday_state": "Bundesland",
+    "holiday_region": "Region/Stadt"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

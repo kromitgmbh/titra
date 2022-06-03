@@ -295,5 +295,12 @@ button.dp-clear {
 }
 
 .holiday {
-  background-color: rgb(143, 223, 130);
+  background-color: $dark;
+  color: $light !important;
+}
+
+.fc-bg-event {
+  background-color: $dark !important;
+  color: $light !important;
+  opacity: 1 !important;
 }

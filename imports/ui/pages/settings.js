@@ -135,15 +135,18 @@ Template.settings.events({
     templateInstance.$('#titraAPItoken').val(Random.id())
   },
   'change #timeunit': (event, templateInstance) => {
+    event.preventDefault()
     Template.instance().displayHoursToDays.set(
       templateInstance.$('#timeunit').val() === 'd',
     )
   },
   'change #holidayCountry': (event, templateInstance) => {
+    event.preventDefault()
     updateHolidayStates(templateInstance)
     updateHolidayRegion(templateInstance)
   },
   'change #holidayState': (event, templateInstance) => {
+    event.preventDefault()
     updateHolidayRegion(templateInstance)
   },
   'click .js-reset': (event) => {
