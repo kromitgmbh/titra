@@ -37,7 +37,7 @@
                                     {{#if isTextArea setting}}
                                         <textarea id="{{setting.name}}" name="{{setting.name}}" value="{{setting.value}}" class="form-control js-setting-input"></textarea>
                                     {{else}}
-                                        <input id="{{setting.name}}" name="{{setting.name}}" type="{{setting.type}}" value="{{stringify setting.value}}" class="form-control js-setting-input"/>
+                                        <input aria-label='{{t setting.description}}' id="{{setting.name}}" name="{{setting.name}}" type="{{setting.type}}" value="{{stringify setting.value}}" class="form-control js-setting-input"/>
                                     {{/if}}
                                 </td>
                                 <td><button type="button" class="btn js-reset" data-setting-name="{{setting.name}}"><i class="fa fa-undo" title='{{t "settings.reset"}}'></i></button></td>
@@ -71,19 +71,19 @@
                         <form class="row">
                             <div class="col-lg-3 mb-3 mb-lg-0">
                                 <div class="form-floating">
-                                    <input class="form-control" placeholder='{{t "globals.name"}}' type="text" name="name" id="name"/>
+                                    <input aria-label='{{t "globals.name"}}' class="form-control" placeholder='{{t "globals.name"}}' type="text" name="name" id="name"/>
                                     <label class="form-label">{{t "globals.name"}}</label>
                                 </div>
                             </div>
                             <div class="col-lg-3 mb-3 mb-lg-0">
                                 <div class="form-floating">
-                                    <input class="form-control" placeholder='{{t "globals.email"}}' type="email" name="email" id="email"/>
+                                    <input aria-label='{{t "globals.email"}}' class="form-control" placeholder='{{t "globals.email"}}' type="email" name="email" id="email"/>
                                     <label class="form-label">{{t "globals.email"}}</label>
                                 </div>
                             </div>
                             <div class="col-lg-3 mb-3 mb-lg-0">
                                 <div class="input-group form-floating">
-                                    <input class="form-control" placeholder='{{t "login.password"}}' type="text" name="password" id="password"/>
+                                    <input aria-label='{{t "login.password"}}' class="form-control" placeholder='{{t "login.password"}}' type="text" name="password" id="password"/>
                                     <button type="button" class="btn btn-outline-dark js-generate-password"><i class="fa fa-random"></i></button>
                                     <label class="form-label">{{t "login.password"}}</label>
                                 </div>
@@ -123,13 +123,13 @@
                                 <td>{{user.emails.[0].address}}</td>
                                 <td class="text-center">
                                     {{#if user.isAdmin}}
-                                        <a href="#" class="js-remove-admin" data-id="{{user._id}}" title="Remove admin"><i class="fa fa-check-square"></i></a>
+                                        <a href="#" class="js-remove-admin" data-id="{{user._id}}" title="Remove admin" aria-label="Remove admin"><i class="fa fa-check-square"></i></a>
                                     {{else}}
-                                        <a href="#" class="js-make-admin" data-id="{{user._id}}" title="Add admin"><i class="far fa-square"></i></a>
+                                        <a href="#" class="js-make-admin" data-id="{{user._id}}" title="Add admin" aria-label="Add admin"><i class="far fa-square"></i></a>
                                     {{/if}}
                                 </td>
                                 <td>{{dayjs(user.createdAt)}}</td>
-                                <td class="text-center"><a href="#" class="js-delete" data-id="{{user._id}}"><i class="fa fa-trash"></i></a></td>
+                                <td class="text-center"><a href="#" class="js-delete" data-id="{{user._id}}" aria-label="Delete"><i class="fa fa-trash"></i></a></td>
                             </tr>
                         {{/each}}
                     </tbody>
@@ -203,8 +203,8 @@
                                         {{/if}}
                                     </td>
                                     <td class="text-center">
-                                        <a href="#" class="js-edit-customfield" data-customfield-id="{{customfield._id}}" data-bs-toggle="modal" data-bs-target=".js-edit-customfield-modal"><i class="fas fa-edit"></i></a>
-                                        <a href="#" class="js-remove-customfield" data-customfield-id="{{customfield._id}}"><i class="fas fa-trash"></i></a>
+                                        <a href="#" aria-label="Edit custom field" class="js-edit-customfield" data-customfield-id="{{customfield._id}}" data-bs-toggle="modal" data-bs-target=".js-edit-customfield-modal"><i class="fas fa-edit"></i></a>
+                                        <a href="#" aria-label="Remove custom field" class="js-remove-customfield" data-customfield-id="{{customfield._id}}"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
                             {{/each}}
@@ -231,7 +231,7 @@
                         <tr>
                             <td>{{setting.label}}</td>
                             <td>
-                                <input id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="text" value="{{oidcValue setting.property}}" class="form-control js-setting-input"/>
+                                <input aria-label='{{setting.label}}' id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="text" value="{{oidcValue setting.property}}" class="form-control js-setting-input"/>
                             </td>
                         </tr>
                         {{/each}}
@@ -274,12 +274,12 @@
                                     <td>{{extension.description}}</td>
                                     <td>
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input js-extension-state" data-extension-id="{{extension._id}}" type="checkbox" checked="{{extension.isActive}}">
+                                            <input aria-label="Extension state" class="form-check-input js-extension-state" data-extension-id="{{extension._id}}" type="checkbox" checked="{{extension.isActive}}">
                                         </div>
                                 </td>
                                     <td class="text-center">
-                                        <a href="#" class="js-remove-extension" data-extension-id="{{extension._id}}"><i class="fas fa-trash"></i></a>
-                                        <a href="#" class="js-launch-extension"><i class="fas fa-play-circle"></i></a>
+                                        <a href="#" aria-label="Remove extension" class="js-remove-extension" data-extension-id="{{extension._id}}"><i class="fas fa-trash"></i></a>
+                                        <a href="#" aria-label="Launch extension" class="js-launch-extension"><i class="fas fa-play-circle"></i></a>
                                     </td>
                                 </tr>
                             {{/each}}

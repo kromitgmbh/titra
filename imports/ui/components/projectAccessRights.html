@@ -18,9 +18,9 @@
         {{#unless disablePublic}}
         <div class="form-check">
             {{#if public}}
-                <input name="public" id="public" type="checkbox" checked class="form-check-input" />
+                <input name="public" aria-label='{{t "project.public_project"}}' id="public" type="checkbox" checked class="form-check-input" />
             {{else}}
-                <input name="public" id="public" type="checkbox" class="form-check-input" />
+                <input name="public" aria-label='{{t "project.public_project"}}' id="public" type="checkbox" class="form-check-input" />
             {{/if}}
             <label class="form-check-label">{{t "project.public_project"}}</label>
         </div>

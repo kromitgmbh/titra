@@ -59,7 +59,7 @@
         </td>
         {{#each weekday in weekDays}}
           <td>
-            <input type="number" value="{{getHoursForDay weekday task}}" data-task="{{task._id}}" data-project-id="{{projectId}}" data-week-day="{{@index}}" class="form-control js-hours" placeholder="0.00"/>
+            <input aria-label="Weekday {{@index}}" type="number" value="{{getHoursForDay weekday task}}" data-task="{{task._id}}" data-project-id="{{projectId}}" data-week-day="{{@index}}" class="form-control js-hours" placeholder="0.00"/>
           </td>
         {{/each}}
         <td class="pt-2">{{getTotalForTask(task)}}</td>

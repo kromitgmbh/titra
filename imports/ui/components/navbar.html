@@ -1,7 +1,7 @@
 <template name="navbar">
   <nav class="navbar navbar-expand bg-dark fixed-top d-print-none">
     <div class="container-fluid">
-      <a class="navbar-brand text-white" href="/"><img src="/favicons/favicon-32x32.png" alt="titra - open source time tracking for small companies" class="d-inline-block" height="25"/>{{#unless currentUser}}&nbsp;&nbsp;titra{{/unless}}</a>
+      <a class="navbar-brand text-white" href="/"><img src="/img/navbar_logo.svg" alt="titra - open source time tracking for small companies" class="d-inline-block" height="24" width="24"/>{{#unless currentUser}}&nbsp;&nbsp;titra{{/unless}}</a>
       {{#if currentUser}}
         <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -21,10 +21,10 @@
           </div>
           <ul class="navbar-nav">
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle {{isRouteActive 'settings'}}" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle {{isRouteActive 'settings'}}" href="#" aria-label="Menu dropdown" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{{avatar}}}
               </a>
-              <div class="dropdown-menu mt-0 bg-dark" aria-labelledby="navbarDropdownMenuLink" style="left:auto;right:-1rem;">
+              <div class="dropdown-menu mt-0 bg-dark" aria-label="navbarDropdownMenuLink" style="left:auto;right:-1rem;">
                 <a class="dropdown-item text-white" href="/profile"><i class="fa fa-user-circle"></i> {{t "navigation.profile"}}</a>
                 <a class="dropdown-item text-white" href="/settings"><i class="fa fa-cogs"></i> {{t "navigation.settings"}}</a>
                 {{#unless currentUser.loggingIn}}

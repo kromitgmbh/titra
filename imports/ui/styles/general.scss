@@ -82,6 +82,9 @@
 
 $btn-link-color: $body-color;
 
+:root {
+  accent-color: $primary;
+}
 .form-label {
   z-index: 3;
 }

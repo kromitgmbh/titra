@@ -2,15 +2,15 @@
   {{#if timerIsRunning}}
     {{#if isWidget}}
       <div class="input-group">
-        <input type="text" class="form-control bg-secondary js-timer px-2" value="00:00:00"/>
-        <button type="button" class="btn btn-outline-secondary js-stop">
+        <input type="text" aria-label="Timer" class="form-control bg-secondary js-timer px-2" value="00:00:00"/>
+        <button type="button" class="btn btn-outline-secondary js-stop" aria-label="Stop timer">
           <i class="fa fa-stopwatch"></i>
         </button>
       </div>
     {{else}}
       <div class="input-group form-floating">
-        <input type="text" class="form-control bg-secondary js-timer" value="00:00:00"/>
-        <button type="button" class="btn btn-outline-secondary js-stop">
+        <input aria-label="Timer" type="text" class="form-control bg-secondary js-timer" value="00:00:00"/>
+        <button type="button" class="btn btn-outline-secondary js-stop" aria-label="Stop timer">
           <i class="fa fa-stop"></i>
         </button>
         <label class="form-label">{{t "tracktime.timer"}}</label>
@@ -19,9 +19,9 @@
   {{else}}
     <div class="input-group form-floating">
       <!-- <button class="btn btn-secondary border js-start form-control"> -->
-      <input type="text" disabled class="bg-secondary form-control" placeholder="test"/>
+      <input aria-label="Timer" type="text" disabled class="bg-secondary form-control" placeholder="00:00:00"/>
     <!-- </button> -->
-      <button type="button" class="btn btn-outline-secondary js-start">
+      <button type="button" class="btn btn-outline-secondary js-start" aria-label="Start timer">
         <i class="fa fa-circle"></i>
       </button>
       <label class="form-label">{{t "tracktime.timer"}}</label>

@@ -3,11 +3,11 @@
     <div class="col-lg-3 col-sm-6">
       <div class="btn-group">
         {{#if dailyTimecards}}
-          <button type="button" class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
-          <button type="button" class="btn btn-secondary border js-export-xlsx"><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
+          <button type="button" class="btn btn-secondary border js-export-csv" aria-label="CSV export"><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
+          <button type="button" class="btn btn-secondary border js-export-xlsx" aria-label="Excel export"><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
         {{else}}
-          <button type="button" class="btn btn-secondary border js-export-csv" disabled><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
-          <button type="button" class="btn btn-secondary border js-export-xlsx" disabled><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
+          <button type="button" class="btn btn-secondary border js-export-csv" aria-label="CSV export" disabled><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
+          <button type="button" class="btn btn-secondary border js-export-xlsx" aria-label="Excel export" disabled><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
         {{/if}}
       </div>
     </div>

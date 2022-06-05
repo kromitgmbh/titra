@@ -1,9 +1,9 @@
 <template name="tasksearch">
   {{#if isComponent}}
-    <input type="text" value="{{task}}" class="js-tasksearch-input form-control" autocomplete="off" placeholder='{{t "tracktime.task_placeholder"}}'/>
+    <input type="text" aria-label='{{t "tracktime.task_placeholder"}}' value="{{task}}" class="js-tasksearch-input form-control" autocomplete="off" placeholder='{{t "tracktime.task_placeholder"}}'/>
   {{else}}
   <div class="input-group form-floating">
-    <input type="text" value="{{task}}" class="js-tasksearch-input form-control" autocomplete="off" placeholder='{{t "tracktime.task_placeholder"}}'/>
+    <input type="text" aria-label='{{t "tracktime.task_placeholder"}}' value="{{task}}" class="js-tasksearch-input form-control" autocomplete="off" placeholder='{{t "tracktime.task_placeholder"}}'/>
     {{#if displayTaskSelectionIcon}}
       <button type="button" class="btn btn-outline-secondary js-show-task-select-popup">
           <i class="fas fa-list-alt"></i>
@@ -20,9 +20,9 @@
         </div>
       {{/unless}}
       {{#each tasks}}
-        <button type="button" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result" tabindex="{{@index}}">
-          {{#if wekan}}<img src="/img/wekan.png"/>{{/if}}
-          {{#if zammad}}<img style="width:15px;" src="/img/zammad.svg"/>{{/if}}
+        <button type="button" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result">
+          {{#if wekan}}<img src="/img/wekan.png" alt="Wekan"/>{{/if}}
+          {{#if zammad}}<img style="width:15px;" src="/img/zammad.svg" alt="Zammad"/>{{/if}}
           &nbsp;<span class="js-tasksearch-task-name">{{emojify (name)}}</span>
         </button>
       {{/each}}

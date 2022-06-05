@@ -33,11 +33,23 @@
             <label class="form-label" for="color">{{t "globals.color"}}</label>
           </div>
         </div>
-        <div class="mb-3 form-floating">
-          <input name="customer" id="customer" type="text" value={{customer}} class="form-control" placeholder="{{t 'project.customer_placeholder'}}"/>
+        <div class="form-floating">
+          <input name="customer" type="text" autocomplete="off" id="customer" class="form-control" placeholder='{{t "globals.customer"}}'/>
           <label class="form-label" for="customer">{{t "globals.customer"}}</label>
         </div>
-        <div class="mb-3 form-floating">
+        <div class="list-group js-customer-results position-absolute d-none" style="z-index:999;">
+          {{#unless Template.subscriptionsReady}}
+            <div class="list-group-item">
+              {{t "task.searching"}}
+            </div>
+          {{/unless}}
+          {{#each cust in customers}}
+            <button type="button" class="list-group-item list-group-item-action js-customer-result">
+              &nbsp;<span class="js-customer-name">{{cust._id}}</span>
+            </button>
+          {{/each}}
+        </div>
+        <div class="mt-3 mb-3 form-floating">
           <input name="defaultTask" id="defaultTask" type="text" value={{defaultTask}} class="form-control" placeholder="{{t 'project.default_task'}}"/>
           <label class="form-label" for="defaultTask">{{t "project.default_task"}}</label>
           <span class="form-text">{{t "project.default_task_help"}}</span>
@@ -48,9 +60,9 @@
             <div class="mb-3 form-floating">
               <div class="form-check">
                 {{#if notbillable}}
-                  <input name="notbillable" id="notbillable" type="checkbox" checked class="form-check-input" />
+                  <input aria-label='{{t "project.not_billable"}}' name="notbillable" id="notbillable" type="checkbox" checked class="form-check-input" />
                 {{else}}
-                  <input name="notbillable" id="notbillable" type="checkbox" class="form-check-input" />
+                  <input aria-label='{{t "project.not_billable"}}' name="notbillable" id="notbillable" type="checkbox" class="form-check-input" />
                 {{/if}}
                 <label class="form-check-label">{{t "project.not_billable"}}</label>
               </div>

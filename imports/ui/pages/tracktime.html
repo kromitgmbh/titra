@@ -3,7 +3,7 @@
     <div class="row pb-3">
       {{#unless isEdit}}
         <div class="col-2 d-grid">
-            <button type="button" class="btn btn-secondary border js-previous"><i class="fa fa-chevron-left"></i></button>
+            <button type="button" class="btn btn-secondary border js-previous" aria-label="Previous day"><i class="fa fa-chevron-left"></i></button>
         </div>
         <div class="col d-none d-lg-block text-end">
           <div class="text-muted pt-2 js-previous" style="cursor:pointer;">
@@ -16,7 +16,7 @@
         <label>{{t "globals.date"}}</label>
         {{/if}}
         <div class="input-group">
-          <input type="text" class="js-date form-control text-center bg-primary text-white" value="{{date}}">
+          <input type="text" class="js-date form-control text-center bg-primary text-white" value="{{date}}" aria-label="Date">
           <span class="input-group-text bg-primary text-white js-open-calendar" style="cursor:pointer"><i class="fa fa-calendar"></i></span>
         </div>
       </div>
@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="col-2 d-grid text-end">
-            <button type="button" class="btn btn-secondary border js-next"><i class="fa fa-chevron-right"></i></button>
+            <button type="button" class="btn btn-secondary border js-next" aria-label="Next day"><i class="fa fa-chevron-right"></i></button>
         </div>
       {{/unless}}
     </div>
@@ -41,8 +41,8 @@
           <div class="card-header js-toggle-timecards">
             {{#if Template.subscriptionsReady}}
               {{#if totalTime}}
-                {{t "tracktime.time_tracked"}} {{timeInUserUnit(totalTime)}} {{timeunit}}
-                <a href="#" class="text-body"><i class="fa fa-chevron-down float-end"></i></a>
+                <span id="tracktime-time_tracked">{{t "tracktime.time_tracked"}}</span> {{timeInUserUnit(totalTime)}} {{timeunit}}
+                <a href="#" class="text-body" aria-label='{{t "tracktime.time_tracked"}}'><i class="fa fa-chevron-down float-end"></i></a>
                 {{else}}
                 {{t "tracktime.no_time"}}
               {{/if}}
@@ -141,14 +141,14 @@
             <button type="button" class="btn btn-secondary border" data-bs-dismiss="modal" aria-label="Close">{{t "navigation.cancel"}}</button>
           </div>
           <div class="col-6 d-grid">
-            <button type="button" class="btn btn-primary js-save">{{t "navigation.save"}}</button>
+            <button type="button" class="btn btn-primary js-save" aria-label='{{t "navigation.save"}}'>{{t "navigation.save"}}</button>
           </div>
         {{else}}
           <div class="col-6 col-md-3 me-auto d-grid">
             {{>backbutton}}
           </div>
           <div class="col-6 col-md-3 d-grid">
-            <button type="button" class="btn btn-primary js-save">{{t "navigation.save"}}</button>
+            <button type="button" class="btn btn-primary js-save" aria-label='{{t "navigation.save"}}'>{{t "navigation.save"}}</button>
           </div>
         {{/if}}
     </div>
@@ -158,13 +158,13 @@
 
 <template name="tracktimemain">
   <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item" role="presentation">
+    <li class="nav-item" role="tab">
       <button class="nav-link {{showDay}} js-day">{{t "globals.day"}}</button>
     </li>
-    <li class="nav-item" role="presentation">
+    <li class="nav-item" role="tab">
       <button class="nav-link {{showWeek}} js-week">{{t "globals.week"}}</button>
     </li>
-    <li class="nav-item" role="presentation">
+    <li class="nav-item" role="tab">
       <button class="nav-link {{showMonth}} js-month">{{t "globals.month"}}</button>
     </li>
   </ul>

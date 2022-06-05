@@ -28,14 +28,14 @@
                         {{#unless currentUser.profile.avatar}}
                         <div class="mb-3">
                             <div class="input-group form-floating" id="colpick">
-                                <input name="avatarColor" id="avatarColor" type="text" value="{{avatarColor}}" data-color="{{avatarColor}}" class="form-control" />
+                                <input aria-label='{{t "globals.color"}}' name="avatarColor" id="avatarColor" type="text" value="{{avatarColor}}" data-color="{{avatarColor}}" class="form-control" />
                                 <button type="button" class="btn" id="avatarColorPickr"></button>
                                 <label class="form-label" for="color">{{t "globals.color"}}</label>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label class="d-block">{{t "settings.custom_avatar"}}</label>
-                            <input class="form-control bg-secondary" type="file" name="avatarImage" id="avatarImage" accept="image/gif,image/jpeg,image/png"/>
+                            <input aria-label='{{t "settings.custom_avatar"}}' class="form-control bg-secondary" type="file" name="avatarImage" id="avatarImage" accept="image/gif,image/jpeg,image/png"/>
                         </div>
                         {{/unless}}
                         <input type="hidden" name="avatarData" id="avatarData" value="{{currentUser.profile.avatarData}}"/>

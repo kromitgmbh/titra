@@ -21,6 +21,15 @@ Template.editproject.onCreated(function editprojectSetup() {
   this.notbillable = new ReactiveVar(false)
   this.activeTab = new ReactiveVar('definition-tab')
   this.quillReady = new ReactiveVar(false)
+  this.customers = new ReactiveVar([])
+  this.filter = new ReactiveVar()
+  Meteor.call('getAllCustomers', (err, res) => {
+    if (err) {
+      console.error(err)
+    } else {
+      this.customers.set(res)
+    }
+  })
   this.subscribe('customfieldsForClass', { classname: 'project' })
   this.autorun(() => {
     this.projectId.set(FlowRouter.getParam('id'))
@@ -59,24 +68,24 @@ Template.editproject.onRendered(() => {
         pickrOptions.default = templateInstance.color
       }
       if (!templateInstance.pickr) {
-        window.requestAnimationFrame(() => {
+        window.setTimeout(() => {
           templateInstance.pickr = Pickr.create(pickrOptions)
           templateInstance.pickr.on('change', (color) => {
             $('#color').val(color.toHEXA().toString())
-          })
+          }, 0)
         })
       }
       if (!templateInstance.quill) {
         import('quill').then((quillImport) => {
           import('quill/dist/quill.snow.css')
-          window.requestAnimationFrame(() => {
+          window.setTimeout(() => {
             if (!templateInstance.quillReady.get()) {
               templateInstance.quill = new quillImport.default('#richDesc', {
                 theme: 'snow',
               })
               templateInstance.quillReady.set(true)
             }
-          })
+          }, 0)
         })
       }
     }
@@ -95,10 +104,13 @@ Template.editproject.onRendered(() => {
           for (const customfield of CustomFields.find({ classname: 'project', possibleValues: { $exists: true } })) {
             templateInstance.$(`#${customfield.name}`).val(project[customfield.name])
           }
+          if (project.customer) {
+            templateInstance.$('#customer').val(project.customer)
+          }
         }, 500)
-      } else if (project.desc instanceof Object && templateInstance.quill) {
+      } else if (project?.desc instanceof Object && templateInstance.quill) {
         templateInstance.quill.setContents(project.desc)
-      } else if (project.desc && templateInstance.quill) {
+      } else if (project?.desc && templateInstance.quill) {
         templateInstance.quill.setText(project.desc)
       }
       if (project?.color || templateInstance.color) {
@@ -125,6 +137,7 @@ Template.editproject.onRendered(() => {
     }
   })
 })
+
 Template.editproject.events({
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
@@ -248,6 +261,58 @@ Template.editproject.events({
   'click .nav-link[data-bs-toggle]': (event, templateInstance) => {
     templateInstance.activeTab.set(templateInstance.$(event.currentTarget)[0].id)
   },
+  'mousedown .js-customer-result': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.$('#customer').val(templateInstance.$(event.currentTarget).children('.js-customer-name').text())
+    templateInstance.$('.js-customter-results').addClass('d-none')
+    templateInstance.$('#customer').removeClass('is-invalid')
+  },
+  'focus #customer': (event, templateInstance) => {
+    templateInstance.$('.js-customer-results').removeClass('d-none')
+    templateInstance.$('#customer').removeClass('is-invalid')
+  },
+  'blur #customer': (event, templateInstance) => {
+    templateInstance.$('.js-customer-results').addClass('d-none')
+  },
+  'keydown #customer': (event, templateInstance) => {
+    if (event.keyCode === 13) {
+      event.preventDefault()
+      event.stopPropagation()
+      if (templateInstance.$('#customer').val()) {
+        templateInstance.$('.js-customer-results').addClass('d-none')
+      }
+    }
+  },
+  'keyup #customer': (event, templateInstance) => {
+    if (event.keyCode === 40) {
+      event.preventDefault()
+      templateInstance.$('.js-customer-results').removeClass('d-none')
+      templateInstance.$(templateInstance.$('.js-customer-result')[0]).focus()
+    } else if (event.keyCode === 27) {
+      templateInstance.$('.js-customer-results').addClass('d-none')
+    } else {
+      templateInstance.filter.set(templateInstance.$(event.currentTarget).val())
+      templateInstance.$('.js-customer-results').removeClass('d-none')
+    }
+    // templateInstance.$('.js-tasksearch-results').show()
+  },
+  'keyup .js-customer-result': (event, templateInstance) => {
+    event.preventDefault()
+    event.stopPropagation()
+    // enter key
+    if (event.keyCode === 13) {
+      templateInstance.$('#customer').val(templateInstance.$(event.currentTarget).children('.js-customer-name').text())
+      templateInstance.$('.js-customer-results').addClass('d-none')
+    } else if ((event.keyCode === 40 || event.keyCode === 9) // tab or down key
+      && event.currentTarget.nextElementSibling) {
+      templateInstance.$(event.currentTarget.nextElementSibling).focus()
+    } else if (event.keyCode === 38 && event.currentTarget.previousElementSibling) { // up key
+      templateInstance.$(event.currentTarget.previousElementSibling).focus()
+    } else if (event.keyCode === 27) { // escape key
+      templateInstance.$('.js-customer-results').addClass('d-none')
+      templateInstance.$('#customer').focus()
+    }
+  },
 })
 Template.editproject.helpers({
   newProject: () => (!FlowRouter.getParam('id')),
@@ -276,6 +341,10 @@ Template.editproject.helpers({
     ? Template.instance().project.get()[fieldId] : false),
   defaultTask: () => (Template.instance().project?.get()?.defaultTask),
   isActiveTab: (tab) => Template.instance().activeTab.get() === tab,
+  customers: () => Template.instance().customers.get()
+    .filter((customer) => (customer._id?.toLowerCase()
+      .search(Template.instance().filter.get()?.toLowerCase()) > -1))
+    .slice(0, 5),
 })
 
 Template.editproject.onDestroyed(function editprojectDestroyed() {
