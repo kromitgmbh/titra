@@ -11,6 +11,7 @@ import {
   numberWithUserPrecision,
   getUserSetting,
   getUserTimeUnitVerbose,
+  addToolTipToTableCell,
 } from '../../utils/frontend_helpers.js'
 import { totalHoursForPeriodMapper } from '../../utils/server_method_helpers.js'
 
@@ -61,8 +62,8 @@ Template.periodtimetable.onRendered(() => {
             .map((key) => key[1]))
       }
       const columns = [
-        { name: t('globals.project'), editable: false },
-        { name: t('globals.resource'), editable: false },
+        { name: t('globals.project'), editable: false, format: addToolTipToTableCell },
+        { name: t('globals.resource'), editable: false, format: addToolTipToTableCell },
         {
           name: getUserTimeUnitVerbose(),
           editable: false,

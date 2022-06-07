@@ -11,6 +11,7 @@ import {
   numberWithUserPrecision,
   getUserSetting,
   getUserTimeUnitVerbose,
+  addToolTipToTableCell,
 } from '../../utils/frontend_helpers'
 import { i18nReady, t } from '../../utils/i18n.js'
 import { dailyTimecardMapper } from '../../utils/server_method_helpers'
@@ -68,8 +69,18 @@ Template.dailytimetable.onRendered(() => {
           width: 1,
           compareValue: (cell, keyword) => [dayjs(cell, getGlobalSetting('dateformat')).toDate(), dayjs(keyword, getGlobalSetting('dateformat')).toDate()],
         },
-        { name: t('globals.project'), editable: false, width: 2 },
-        { name: t('globals.resource'), editable: false, width: 2 },
+        {
+          name: t('globals.project'),
+          editable: false,
+          width: 2,
+          format: addToolTipToTableCell,
+        },
+        {
+          name: t('globals.resource'),
+          editable: false,
+          width: 2,
+          format: addToolTipToTableCell,
+        },
         {
           name: getUserTimeUnitVerbose(),
           editable: false,

@@ -128,7 +128,7 @@ Template.allprojectschart.onRendered(() => {
               colors: ['#009688', '#455A64', '#e4e4e4'],
               height: 230,
               data: {
-                labels: templateInstance.topTasks.get().map((task) => task._id),
+                labels: templateInstance.topTasks.get().map((task) => $('<span>').text(task._id).html()),
                 datasets: [{
                   values: templateInstance.topTasks.get().map((task) => task.count),
                 }],

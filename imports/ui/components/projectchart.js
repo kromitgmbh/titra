@@ -200,7 +200,7 @@ Template.projectchart.onRendered(() => {
                 colors: [Projects.findOne({ _id: templateInstance.data.projectId }).color || '#009688', '#66c0b8', '#e4e4e4'],
                 height: 230,
                 data: {
-                  labels: templateInstance.topTasks.get().map((task) => task._id),
+                  labels: templateInstance.topTasks.get().map((task) => $('<span>').text(task._id).html()),
                   datasets: [{
                     values: templateInstance.topTasks.get().map((task) => task.count),
                   }],

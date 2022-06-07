@@ -2,7 +2,7 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './projectAccessRights.html'
 import { t, i18nReady } from '../../utils/i18n.js'
 import {
-  validateEmail, getGlobalSetting, showToast,
+  validateEmail, getGlobalSetting, showToast, addToolTipToTableCell,
 } from '../../utils/frontend_helpers'
 import Projects from '../../api/projects/projects.js'
 
@@ -28,6 +28,7 @@ Template.projectAccessRights.onRendered(() => {
           name: t('globals.name'),
           editable: false,
           focusable: false,
+          format: addToolTipToTableCell,
         }, {
           name: t('project.access_rights'),
           editable: false,

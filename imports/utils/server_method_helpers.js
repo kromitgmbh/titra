@@ -67,7 +67,8 @@ function totalHoursForPeriodMapper(entry) {
   }
   return {
     projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-    userId: projectUsers.findOne().users.find((elem) => elem._id === entry._id.userId)?.profile?.name,
+    userId: projectUsers
+      .findOne().users.find((elem) => elem._id === entry._id.userId)?.profile?.name,
     totalHours,
   }
 }

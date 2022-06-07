@@ -10,6 +10,7 @@ import {
   getGlobalSetting,
   timeInUserUnit,
   getUserTimeUnitVerbose,
+  addToolTipToTableCell,
 } from '../../utils/frontend_helpers'
 import './dashboard.html'
 import Timecards from '../../api/timecards/timecards'
@@ -126,7 +127,7 @@ Template.dashboard.onRendered(() => {
           const precision = getUserSetting('precision')
           for (const timecard of Timecards.find({}, { sort: { date: 1 } }).fetch()) {
             taskmap.set(
-              timecard.task.replace(/(:\S*:)/g, emojify),
+              $('<span>').text(timecard.task.replace(/(:\S*:)/g, emojify)).html(),
               taskmap.get(timecard.task.replace(/(:\S*:)/g, emojify))
                 ? Number(Number(taskmap.get(timecard.task.replace(/(:\S*:)/g, emojify))) + Number(timeInUnitHelper(timecard.hours)))
                 : Number(timeInUnitHelper(timecard.hours)),
