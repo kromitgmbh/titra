@@ -18,8 +18,12 @@ function getUserSetting(field) {
 
 function addToolTipToTableCell(value) {
   if (value) {
-    const sanitizedValue = $('<div/>').text(value).html()
-    return `<span class="js-tooltip" data-bs-toggle="tooltip" data-bs-placement="left" title='${sanitizedValue}'>${sanitizedValue}</span>`
+    const toolTipElement = $('<span/>').text(value)
+    toolTipElement.addClass('js-tooltip')
+    toolTipElement.attr('data-bs-toggle', 'tooltip')
+    toolTipElement.attr('data-bs-placement', 'left')
+    toolTipElement.attr('title', toolTipElement.text())
+    return toolTipElement.get(0).outerHTML
   }
   return ''
 }
