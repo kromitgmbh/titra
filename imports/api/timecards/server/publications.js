@@ -72,7 +72,7 @@ Meteor.publish('userTimeCardsForPeriodByProjectByTask', function periodTimecards
         entries: { $push: '$$ROOT' },
       },
     },
-  ], { clientCollection: 'clientTimecards' })
+  ], { clientCollection: 'clientTimecards', specificWarnings: { objectId: false } })
 })
 Meteor.publish('myTimecardsForDate', function myTimecardsForDate({ date }) {
   check(date, String)

@@ -172,7 +172,8 @@
     "holiday": "Holiday",
     "holiday_country": "Holiday Country",
     "holiday_state": "Holiday State",
-    "holiday_region": "Holyday Region"
+    "holiday_region": "Holyday Region",
+    "xframe_options_origin": "X-Frame-Options header origin URL"
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -322,7 +323,12 @@
     "permanent_account": "Create permanent account",
     "email_unknown": "Sorry, but we could not find an account with the provided e-mail adress.",
     "anonymous_account_warning": "You are currently logged in using a temporary account which can only be used on this device. If you want to use titra on other devices, please create a regular user with an e-mail address and password below.",
-    "registration_disabled_warning": "New user registration has been disabled on this titra instance."
+    "registration_disabled_warning": "New user registration has been disabled on this titra instance.",
+    "invalid_email": "Invalid e-mail address",
+    "password_insufficient": "The password must be at least 8 characters long.",
+    "password_strong": "Password strength: strong",
+    "password_medium": "Password strength: medium",
+    "password_weak": "Password strength: weak"
   },
   "about": {
     "documentation": "Documentation",

@@ -6,10 +6,10 @@ import './signIn.html'
 
 function handleLoginResult(error, templateInstance) {
   if (error) {
-    if(error.message) {
-      templateInstance.$('.notification').text(error.message)
-    } else {
+    if (error.error === 403 || error.error === 400) {
       templateInstance.$('.notification').text(t(`login.${error.error}`))
+    } else {
+      templateInstance.$('.notification').text(error.message)
     }
     document.querySelector('.notification').classList.remove('d-none')
   } else {
@@ -51,7 +51,7 @@ function signIn(event, templateInstance) {
 
 Template.signIn.helpers({
   isOidcConfigured: () => isOidcConfigured(),
-  disableUserRegistration: () => getGlobalSetting("disableUserRegistration")
+  disableUserRegistration: () => getGlobalSetting('disableUserRegistration'),
 })
 
 Template.signIn.events({
@@ -79,5 +79,9 @@ Template.signIn.events({
     } else {
       templateInstance.$('#at-field-email').addClass('is-invalid')
     }
+  },
+  'click .js-register': (event, templateInstance) => {
+    event.preventDefault()
+    FlowRouter.go('register', {}, { email: templateInstance.$('#at-field-email').val() })
   },
 })

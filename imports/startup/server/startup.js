@@ -1,4 +1,5 @@
 import { AccountsAnonymous } from 'meteor/faburem:accounts-anonymous'
+import { BrowserPolicy } from 'meteor/browser-policy-framing'
 import Extensions from '../../api/extensions/extensions.js'
 import { defaultSettings, Globalsettings } from '../../api/globalsettings/globalsettings.js'
 import { getGlobalSetting } from '../../utils/frontend_helpers'
@@ -21,7 +22,7 @@ Meteor.startup(() => {
   if (getGlobalSetting('enableOpenIDConnect')) {
     import('../../utils/oidc_server').then((Oidc) => {
       Oidc.registerOidc()
-    });
+    })
   }
   for (const extension of Extensions.find({})) {
     if (extension.isActive) {
@@ -34,7 +35,9 @@ Meteor.startup(() => {
       eval(extension.server)
     }
   }
-
+  if (getGlobalSetting('XFrameOptionsOrigin')) {
+    BrowserPolicy.framing.restrictToOrigin(getGlobalSetting('XFrameOptionsOrigin'))
+  }
   if (process.env.NODE_ENV !== 'development') {
     // eslint-disable-next-line no-console
     console.log(`titra started on port ${process.env.PORT}`)

@@ -120,4 +120,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'holidayRegion', description: 'settings.holiday_region', type: 'text', value: '',
 })
+defaultSettings.push({
+  name: 'XFrameOptionsOrigin', description: 'settings.xframe_options_origin', type: 'text', value: '',
+})
 export { defaultSettings, Globalsettings }
