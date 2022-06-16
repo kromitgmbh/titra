@@ -1,3 +1,4 @@
+
 // ++++ [DarkThemeColors] ++++   ///////////////////////////////////////////////////////
 $primary:                               #005a52;       // Color/Background-Color for links, Save-, Selectbuttons 
 $secondary:                             #272727;       // Background-Color for all fields, control buttons, checkboxes
@@ -13,6 +14,7 @@ $grey:                                  #2d2d2d;
 $lightgrey:                             #404040;
 $gray-900:                              #eeeeee;
 $titra-dark:                            #006d62;
+$none:                                  none;
 
 //Tabs/Container
 $tab-background-color:                  $grey;           // Tab/Container-Background-Color
@@ -159,18 +161,27 @@ $modal-content-bg-color:                $grey;
 $modal-content-color:                   #dadada;
 
 
-
-
-
-
-
-
 //++++ [AdvancedCustomization] ++++ ///////////////////////////////////////////////////////
-.internal-autofill-selected {
-    appearance:             menulist-button;
-    background-color:       $success !important;
-    background-image:       none !important;
+
+
+::selection {
+  color:                    $success !important;
+  background:               $lightgrey !important;
 }
+::-moz-selection {
+  color:                    $success !important;
+  background:               $lightgrey !important;
+}
+.nav-tabs {
+    border-bottom:          0px solid #dee2e6 !important;
+}
+.dt-scrollable {
+    border-top:             0px solid var(--dt-border-color) !important;
+}
+.dt-scrollable__no-data {
+    border:                 0px !important;
+}
+
 .d-flex {
     display:                flex !important;
     color:                  $success !important;
@@ -291,10 +302,17 @@ $modal-content-color:                   #dadada;
 }   
 .tab-borders {
   background-color:         $tab-background-color !important;
-  border-left:              1px solid $dark;
-  border-right:             1px solid $dark;
-  border-bottom:            1px solid $dark;
+  border-left:              1px solid $dark !important;
+  border-right:             1px solid $dark !important;
+  border-bottom:            1px solid $dark !important;
+  border-top:               1px solid $dark !important;
+  border-top-right-radius:  0.25rem !important;
+  border-bottom-right-radius:  0.25rem !important;
+  border-bottom-left-radius:  0.25rem !important;
 }
+
+
+
 .tab-content {
     background-color:       $tab-background-color !important;
 }
@@ -336,6 +354,12 @@ $modal-content-color:                   #dadada;
     background-color:       $alert-secondary-bg-color !important;
     border-color:           $alert-secondary-border-color !important;
 }
+
+.fc .fc-scrollgrid-section-header.fc-scrollgrid-section-sticky > * {
+    top: 0;
+    background: none !important;
+}
+
 .fc-button-primary {
     color:                  $fc-color !important;
     background-color:       $fc-bg-color !important;
@@ -441,28 +465,28 @@ a {
     text-decoration:        underline;
 }
 g > text {
-    fill: #FFFFFF;
+    fill:                 #FFFFFF;
 }
 .gantt .grid-header {
-    fill: $grey !important;
-    stroke: $grey !important;
+    fill:                   $grey !important;
+    stroke:                 $grey !important;
 }
 .gantt .grid-row {
-    fill: $grey !important;
+    fill:                   $grey !important;
 }
 .gantt .grid-row:nth-child(even) {
-    fill: $dark-form !important;
+    fill:                   $dark-form !important;
 }
 .gantt .row-line {
-    stroke: $dark !important;
+    stroke:                 $dark !important;
 }
 .gantt .lower-text {
-    fill: $body-color !important;
+    fill:                   $body-color !important;
 }
 .gantt .upper-text {
-    fill: $body-color !important;
+    fill:                   $body-color !important;
 }
 .gantt .bar {
-    fill: $lightgrey !important;
+    fill:                   $lightgrey !important;
 }
 @import "{}/imports/ui/styles/general.scss";

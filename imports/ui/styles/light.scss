@@ -1,136 +1,156 @@
-$primary: #009688;
-$secondary: #f7f7f7;
-$success: #009688;
-$info: #b2dfdb;
-$warning: #ffc107;
-$danger: #ff5722;
-$light: #BDBDBD;
-$dark: #455A64;
+$primary:             #009688;
+$secondary:           #f7f7f7;
+$success:             #009688;
+$info:                #b2dfdb;
+$warning:             #ffc107;
+$danger:              #ff5722;
+$light:               #BDBDBD;
+$dark:                #455A64;
 $dropdown-link-hover-bg: $dark !default;
 
 .btn-primary {
-    color: #fff !important;
+    color:            #fff !important;
     background-color: #009688 !important;
-    border-color: #009688 !important; 
+    border-color:     #009688 !important; 
 }
 .btn-primary:hover {
-    color: #fff!important;
+    color:            #fff!important;
     background-color: #006e63!important;
-    border-color: #006e63!important;
+    border-color:     #006e63!important;
 }
 .btn-secondary {
-    color: #000 !important;
+    color:            #000 !important;
     background-color: #ffffff !important;
 }
 .btn-secondary:hover {
-    color: #fff !important;
+    color:            #fff !important;
     background-color: #009688 !important;
 }
 .list-group-item {
-  color: #495057;
+  color:              #495057;
 }
 .tab-borders {
-  background-color: $secondary;
-  border-left: 1px solid #dee2e6;
-  border-right: 1px solid #dee2e6;
-  border-bottom: 1px solid #dee2e6;
+  background-color:     $secondary;
+  border-left:          1px solid #dee2e6;
+  border-right:         1px solid #dee2e6;
+  border-bottom:        1px solid #dee2e6;
 }
 .form-select {
-  background: $secondary !important;
+  background:           $secondary !important;
 }
 .all-projects-bg {
-  background: rgba(0,112,101,0.05) !important;
+  background:         rgba(0,112,101,0.05) !important;
 }
 .fc-unthemed td.fc-today {
-  background: rgba(0, 150, 136, 0.5) !important;
+  background:         rgba(0, 150, 136, 0.5) !important;
 }
 .alert-secondary {
-    color: #7b7b7b;
-    background-color: #ffffff;
-    border-color: #e8e8e8;
+    color:              #7b7b7b;
+    background-color:   #ffffff;
+    border-color:       #e8e8e8;
 }
 .btn-outline-secondary {
-  border-color: #ced4da !important;
-  color: #212529 !important;
+  border-color:         #ced4da !important;
+  color:                #212529 !important;
 }
 .btn-outline-secondary:hover{
-  background-color: #ececec !important;
+  background-color:     #ececec !important;
 }
 .fc-button-primary {
-    color: #000000 !important;
-    background-color: $secondary !important;
-    border-color: $light !important;
+    color:              #000000 !important;
+    background-color:     $secondary !important;
+    border-color:         $light !important;
 } 
 .fc-button-primary:hover {
-    color: #000000 !important;
-    background-color: #eee !important;
-    border-color: $light !important;
+    color:                #000000 !important;
+    background-color:     #eee !important;
+    border-color:           $light !important;
 }
 .datatable {
-    --dt-border-color: #d1d8dd;
-    --dt-light-bg: #f5f7fa;
-    --dt-text-color: #000000;
-    --dt-text-light: #dfe2e5;
-    --dt-cell-bg: #fff;
+    --dt-border-color:     #d1d8dd;
+    --dt-light-bg:         #f5f7fa;
+    --dt-text-color:       #000000;
+    --dt-text-light:       #dfe2e5;
+    --dt-cell-bg:          #fff;
     --dt-focus-border-width: 1px;
     --dt-selection-highlight-color: var(--dt-light-yellow);
     --dt-toast-message-border: none;
-    --dt-header-cell-bg: var(--dt-cell-bg);
+    --dt-header-cell-bg:     var(--dt-cell-bg);
 }
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
-  color: #495057;
-  background-color: #fff;
-  border-color: #dee2e6 #dee2e6 #fff;
+  color:                    #495057;
+  background-color:         #fff;
+  border-color:             #dee2e6 #dee2e6 #fff;
+  
+}
+.nav-tabs {
+    border-bottom: 0px solid #dee2e6 !important;
+}
+.dt-scrollable {
+    //border-top: 0px solid #d1d8dd;
+    border-top: 0px solid var(--dt-border-color) !important;
+}
+.dt-scrollable__no-data {
+border: 0px !important;
 }
 .nav-tabs .nav-link:hover {
-  color: #495057;
-  background-color: #fff;
-  border-color: #dee2e6 #dee2e6 #fff;
+  color:                    #495057;
+  background-color:         #fff;
+  border-color:             #dee2e6 #dee2e6 #fff;
 }
 .drag.card {
-  background-color: $secondary;  
+  background-color:           $secondary;  
 }
 .card-block .list-group-item {
-  background-color: $secondary;
+  background-color:           $secondary;
 }
 .at-link {
-  color: $dark;
+  color:                      $dark;
 }
 .dp-current {
-  background-color: $primary !important;
+  background-color:           $primary !important;
 }
 .dp-cal-month:hover {
-  background-color: $primary !important;
+  background-color:           $primary !important;
 }
 .dp-cal-year:hover {
-  background-color: $primary !important;
+  background-color:           $primary !important;
 }
 .dp-day:hover {
-  background-color: $primary !important;
+  background-color:           $primary !important;
 }
 .dp-day:hover {
-  background-color: $primary !important;
+  background-color:           $primary !important;
 }
 .dp-prev:hover {
-  background-color: $primary !important;
+  background-color:           $primary !important;
 }
 .dp-next:hover {
-  background-color: $primary !important;
+  background-color:           $primary !important;
 }
 .dp-today:hover {
-  background-color: $primary !important;
+  background-color:           $primary !important;
 }
 .dp-clear:hover {
-  background-color: $primary !important;
+  background-color:           $primary !important;
 }
 .dp-close:hover {
-  background-color: $primary !important;
+  background-color:           $primary !important;
 }
 .dp:before {
-  background: $primary !important;
+  background:                 $primary !important;
 }
 g>text {
-  fill: #212529;
+  fill:                     #212529;
 }
-
+.tab-borders {
+    background-color:       #f7f7f7 !important;
+    border-left:            1px solid #dee2e6 !important;
+    border-right:           1px solid #dee2e6 !important;
+    border-bottom:          1px solid #dee2e6 !important;
+    border-top:             1px solid #dee2e6 !important;
+    border-top-right-radius:            0.25rem !important;
+    border-bottom-right-radius:         0.25rem !important;
+    border-bottom-left-radius:          0.25rem !important;
+}
 @import "{}/imports/ui/styles/general.scss";

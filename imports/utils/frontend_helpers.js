@@ -85,12 +85,18 @@ function validatePassword(pwd) {
   const enoughRegex = /(?=.{8,}).*/g
   if (pwd.length === 0) {
     return { valid: false, message: t('login.password_insufficient') }
-  } if (enoughRegex.test(pwd) === false) {
+  }
+  if (enoughRegex.test(pwd) === false) {
     return { valid: false, message: t('login.password_insufficient') }
-  } if (strongRegex.test(pwd)) {
+  }
+  if (strongRegex.test(pwd)) {
     return { valid: true, message: t('login.password_strong') }
-  } if (mediumRegex.test(pwd)) {
+  }
+  if (mediumRegex.test(pwd)) {
     return { valid: true, message: t('login.password_medium') }
+  }
+  if (pwd.length > 50) {
+    return { valid: false, message: t('login.password_insufficient') }
   }
   return { valid: true, message: t('login.password_weak') }
 }

@@ -1,6 +1,6 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { t } from '../../utils/i18n.js'
-import { validateEmail, validatePassword } from '../../utils/frontend_helpers.js' 
+import { validateEmail, validatePassword } from '../../utils/frontend_helpers.js'
 import './register.html'
 
 Template.register.events({

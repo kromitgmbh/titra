@@ -66,15 +66,10 @@ Template.signIn.events({
     event.preventDefault()
     if (templateInstance.$('#at-field-email').val() && validateEmail(templateInstance.$('#at-field-email').val())) {
       Accounts.forgotPassword({ email: templateInstance.$('#at-field-email').val() }, (error) => {
-        if (error) {
-          templateInstance.$('.notification').text(t('login.email_unknown'))
-          document.querySelector('.notification').classList.remove('d-none')
-        } else {
-          templateInstance.$('.notification').text(t('login.reset_password_mail'))
-          document.querySelector('.notification').classList.remove('d-none')
-          templateInstance.$('#at-field-email').removeClass('is-invalid')
-          templateInstance.$('#at-field-password').removeClass('is-invalid')
-        }
+        templateInstance.$('.notification').text(t('login.reset_password_mail'))
+        document.querySelector('.notification').classList.remove('d-none')
+        templateInstance.$('#at-field-email').removeClass('is-invalid')
+        templateInstance.$('#at-field-password').removeClass('is-invalid')
       })
     } else {
       templateInstance.$('#at-field-email').addClass('is-invalid')
