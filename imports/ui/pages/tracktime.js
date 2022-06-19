@@ -100,7 +100,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
       if (this.subscriptionsReady()) {
         this.time_entry.set(Timecards.findOne(this.tcid.get()))
         this.date.set(Timecards.findOne({ _id: this.tcid.get() })
-          ? dayjs(Timecards.findOne({ _id: this.tcid.get() }).date).toDate()
+          ? dayjs.utc(Timecards.findOne({ _id: this.tcid.get() }).date).toDate()
           : dayjs().toDate())
         this.projectId.set(Timecards.findOne({ _id: this.tcid.get() }) ? Timecards.findOne({ _id: this.tcid.get() }).projectId : '')
       }
@@ -354,15 +354,20 @@ Template.tracktime.events({
     })
   },
 })
+function isEditMode() {
+  return (Template.instance().tcid && Template.instance().tcid.get())
+  || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
+  || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get())
+}
 Template.tracktime.helpers({
-  date: () => dayjs(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose')),
+  date: () => (isEditMode()
+    ? dayjs.utc(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose'))
+    : dayjs(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose'))),
   projectId: () => Template.instance().projectId.get(),
   reactiveProjectId: () => Template.instance().projectId,
   projectName: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).name : false),
   timecards: () => Timecards.find(),
-  isEdit: () => (Template.instance().tcid && Template.instance().tcid.get())
-    || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
-    || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()),
+  isEdit: () => isEditMode(),
   task: () => {
     const project = Projects.findOne({ _id: Template.instance().projectId.get() })
     const timecard = Timecards.findOne({ _id: Template.instance().tcid.get() })

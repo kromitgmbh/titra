@@ -104,7 +104,6 @@ Template.calendar.onRendered(() => {
                 templateInstance.selectedDate.set(dropInfo.date)
                 templateInstance.selectedProjectId.set($(dropInfo.draggedEl).data('project'))
                 new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
-                // FlowRouter.go(`/tracktime/${$(dropInfo.draggedEl).data('project')}?date=${dayjs(dropInfo.date).format()}`)
               },
               eventClick: (eventClickInfo) => {
                 // $('.tooltip').tooltip('dispose')
@@ -114,14 +113,12 @@ Template.calendar.onRendered(() => {
                   templateInstance.tcid.set(eventClickInfo.event.id)
                   new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
                 }
-                // FlowRouter.go(`/edit/timecard/${eventClickInfo.event.id}`)
               },
               dateClick: (dateClickInfo) => {
                 templateInstance.tcid.set(undefined)
                 templateInstance.selectedProjectId.set('all')
                 templateInstance.selectedDate.set(dateClickInfo.date)
                 new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
-                // FlowRouter.go(`/tracktime/?date=${dayjs(dateClickInfo.date).format()}&view=d`)
               },
             })
             templateInstance.calendar.render()

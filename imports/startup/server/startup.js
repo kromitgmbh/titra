@@ -1,5 +1,6 @@
 import { AccountsAnonymous } from 'meteor/faburem:accounts-anonymous'
 import { BrowserPolicy } from 'meteor/browser-policy-framing'
+import { DDPRateLimiter } from 'meteor/ddp-rate-limiter'
 import Extensions from '../../api/extensions/extensions.js'
 import { defaultSettings, Globalsettings } from '../../api/globalsettings/globalsettings.js'
 import { getGlobalSetting } from '../../utils/frontend_helpers'
@@ -41,5 +42,24 @@ Meteor.startup(() => {
   if (process.env.NODE_ENV !== 'development') {
     // eslint-disable-next-line no-console
     console.log(`titra started on port ${process.env.PORT}`)
+  }
+
+  // Rate limiting all methods and subscriptions, defaulting to 100 calls per second
+
+  for (const subscription in Meteor.server.publish_handlers) {
+    if ({}.hasOwnProperty.call(Meteor.server.publish_handlers, subscription)) {
+      DDPRateLimiter.addRule({
+        type: 'subscription',
+        name: subscription,
+      }, 100, 1000)
+    }
+  }
+  for (const method in Meteor.server.method_handlers) {
+    if ({}.hasOwnProperty.call(Meteor.server.method_handlers, method)) {
+      DDPRateLimiter.addRule({
+        type: 'method',
+        name: method,
+      }, 100, 1000)
+    }
   }
 })
