@@ -1,5 +1,5 @@
 import CustomFields from '../customfields.js'
-import { checkAuthentication } from '../../../utils/server_method_helpers'
+import { checkAdminAuthentication } from '../../../utils/server_method_helpers'
 
 Meteor.methods({
   addCustomField: function addCustomField({
@@ -10,7 +10,7 @@ Meteor.methods({
     check(type, String)
     check(desc, String)
     check(possibleValues, Match.Maybe([String]))
-    checkAuthentication(this)
+    checkAdminAuthentication(this)
     if (CustomFields.findOne({ name })) {
       throw new Meteor.Error('error-custom-field-exists', 'Custom field already exists', { method: 'addCustomField' })
     }
@@ -28,7 +28,7 @@ Meteor.methods({
   },
   removeCustomField: function removeCustomField({ _id }) {
     check(_id, String)
-    checkAuthentication(this)
+    checkAdminAuthentication(this)
     if (!CustomFields.findOne({ _id })) {
       throw new Meteor.Error('error-custom-field-not-found', 'Custom field not found', { method: 'removeCustomField' })
     }
@@ -37,7 +37,7 @@ Meteor.methods({
   updateCustomField: function updateCustomField({
     _id, desc, type, possibleValues,
   }) {
-    checkAuthentication(this)
+    checkAdminAuthentication(this)
     check(_id, String)
     check(type, String)
     check(desc, String)

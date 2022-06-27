@@ -1,10 +1,10 @@
 import AdmZip from 'adm-zip'
 import Extensions from './extensions'
-import { checkAuthentication } from '../../utils/server_method_helpers'
+import { checkAdminAuthentication } from '../../utils/server_method_helpers'
 
 Meteor.methods({
   addExtension({ zipFile }) {
-    checkAuthentication(this)
+    checkAdminAuthentication(this)
     const regex = /^data:.+\/(.+);base64,(.*)$/
     const matches = zipFile.match(regex)
     const data = matches[2]
@@ -36,7 +36,7 @@ Meteor.methods({
     return new Meteor.Error('Extension has been added before.')
   },
   removeExtension({ extensionId }) {
-    checkAuthentication(this)
+    checkAdminAuthentication(this)
     const extension = Extensions.findOne({ _id: extensionId })
     if (extension) {
       Extensions.remove({ _id: extension._id })
@@ -45,7 +45,7 @@ Meteor.methods({
     return new Meteor.Error('Extension does not exist.')
   },
   launchExtension({ extensionId }) {
-    checkAuthentication(this)
+    checkAdminAuthentication(this)
     const extension = Extensions.findOne({ _id: extensionId })
     if (extension) {
       eval(extension.server)
@@ -54,7 +54,7 @@ Meteor.methods({
     return new Meteor.Error('Extension does not exist')
   },
   toggleExtensionState({ extensionId, state }) {
-    checkAuthentication(this)
+    checkAdminAuthentication(this)
     const extension = Extensions.findOne({ _id: extensionId })
     if (extension) {
       Extensions.update({ _id: extension._id }, { $set: { isActive: state } })

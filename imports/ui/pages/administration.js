@@ -289,7 +289,7 @@ Template.administration.events({
     }
 
     // Fetch the value of each input field
-    Oidc.fields.forEach((field) => {
+    oidcFields.forEach((field) => {
       configuration[field.property] = document.getElementById(
         `configure-oidc-${field.property}`
       ).value.replace(/^\s*|\s*$/g, '') // trim() doesnt work on IE8

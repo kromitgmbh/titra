@@ -87,7 +87,7 @@ Template.projectTasks.onRendered(() => {
       const ganttTasks = tasks.fetch()?.map((task) => (
         {
           id: task._id,
-          name: task.name,
+          name: $('span').text(task.name).get(0).innerHTML,
           start: dayjs(task.start).format('YYYY-MM-DD'),
           end: dayjs(task.end).format('YYYY-MM-DD'),
           dependencies: task.dependencies,
