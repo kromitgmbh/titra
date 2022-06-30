@@ -1,12 +1,12 @@
 {
   "name": "titra",
-  "version": "0.79.1",
+  "version": "0.79.2",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.18.3",
+    "@babel/runtime": "^7.18.6",
     "@fortawesome/fontawesome-free": "^6.1.1",
     "@fullcalendar/core": "^5.11.0",
     "@fullcalendar/daygrid": "^5.11.0",
@@ -44,7 +44,7 @@
     "vm2": "^3.9.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.5",
+    "@babel/core": "^7.18.6",
     "@babel/eslint-parser": "^7.18.2",
     "eslint": "^8.18.0",
     "eslint-config-airbnb-base": "^15.0.0",

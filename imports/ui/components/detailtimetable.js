@@ -232,7 +232,7 @@ Template.detailtimetable.onRendered(() => {
                         }
                       },
                       setValue(setValue) {
-                        Meteor.call('setTimeEntriesState', { timeEntries: [editorData[6]], state: setValue }, (error) => {
+                        Meteor.call('setTimeEntriesState', { timeEntries: [editorData[editorData.length - 1]], state: setValue }, (error) => {
                           if (error) {
                             console.error(error)
                           } else {
