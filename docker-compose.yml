@@ -19,6 +19,6 @@ services:
     environment:
       - MONGO_DB:titra
     volumes:
-      - titra_mongodb_volume:/data/db
+      - titra_db_volume:/data/db
 volumes:
-  titra_mongodb_volume:
+  titra_db_volume:
