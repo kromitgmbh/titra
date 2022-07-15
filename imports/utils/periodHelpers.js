@@ -8,10 +8,6 @@ function periodToDates(period) {
   let startDate
   let endDate
   switch (period) {
-    default:
-      startDate = dayjs.utc().startOf('month').toDate()
-      endDate = dayjs.utc().endOf('month').toDate()
-      break
     case 'currentWeek':
       startDate = dayjs.utc().startOf('week').toDate()
       endDate = dayjs.utc().endOf('week').toDate()
@@ -39,6 +35,10 @@ function periodToDates(period) {
     case 'all':
       startDate = dayjs.utc().subtract(20, 'year').startOf('month').toDate()
       endDate = dayjs.utc().add(20, 'year').toDate()
+      break
+    default:
+      startDate = dayjs.utc().startOf('month').toDate()
+      endDate = dayjs.utc().endOf('month').toDate()
       break
   }
   return { startDate, endDate }

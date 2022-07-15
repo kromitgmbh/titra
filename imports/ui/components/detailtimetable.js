@@ -35,7 +35,7 @@ if (getGlobalSetting('showNameOfCustomFieldInDetails')) {
 function detailedDataTableMapper(entry) {
   const project = Projects.findOne({ _id: entry.projectId })
   const mapping = [project ? project.name : '',
-    dayjs.utc(entry.date).format(getGlobalSetting('dateformat')),
+    dayjs.utc(entry.date).local().format(getGlobalSetting('dateformat')),
     entry.task.replace(/^=/, '='),
     projectUsers.findOne() ? projectUsers.findOne().users.find((elem) => elem._id === entry.userId)?.profile?.name : '']
   if (getGlobalSetting('showCustomFieldsInDetails')) {

@@ -16,7 +16,13 @@ function getProjectListById(projectId) {
       { $fields: { _id: 1 } },
     ).fetch().map((value) => value._id)
   } else {
-    projectList = [projectId]
+    projectList = Projects.find(
+      {
+        _id: projectId,
+        $or: [{ userId }, { public: true }, { team: userId }],
+      },
+      { $fields: { _id: 1 } },
+    ).fetch().map((value) => value._id)
   }
   return projectList
 }

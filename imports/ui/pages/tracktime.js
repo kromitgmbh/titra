@@ -173,12 +173,12 @@ Template.tracktime.events({
     const projectId = templateInstance.projectId.get()
     const task = templateInstance.$('.js-tasksearch-input').val()
     const localDate = dayjs(templateInstance.$('.js-date').val()).toDate()
-    const date = dayjs.utc(templateInstance.$('.js-date').val(), getGlobalSetting('dateformatVerbose')).isValid()
+    let date = dayjs.utc(templateInstance.$('.js-date').val(), getGlobalSetting('dateformatVerbose')).isValid()
       ? dayjs.utc(templateInstance.$('.js-date').val(), getGlobalSetting('dateformatVerbose')).toDate()
       : dayjs.utc(`${localDate.getFullYear()}-${localDate.getMonth() + 1}-${localDate.getDate()}`).toDate()
     if (getGlobalSetting('useStartTime') && !templateInstance.tcid?.get()) {
       if ($('#startTime').val()) {
-        date.setHours($('#startTime').val().split(':')[0], $('#startTime').val().split(':')[1])
+        date = dayjs.utc(date.setHours($('#startTime').val().split(':')[0], $('#startTime').val().split(':')[1])).toDate()
       } else {
         showToast(t('notifications.check_time_input'))
         return
