@@ -17,12 +17,12 @@
             <hr/>
             <div class="row mt-2" id="{{project._id}}">
               <div class="col-3 d-grid">
-                <a href="/list/timecards/all" class="btn btn-secondary border" title='{{t "navigation.details"}}'><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
+              <a href="{{ prefix }}/list/timecards/all" class="btn btn-secondary border" title='{{t "navigation.details"}}'><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
               </div>
               <div class="col g-drig"></div>
               {{#if moreThanOneProject}}
                 <div class="col-3 d-grid">
-                  <a href="/create/project" class="btn btn-primary" id="next" title='{{t "navigation.new_project"}}'><i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "globals.project"}}</span></a>
+                    <a href="{{ prefix }}/create/project" class="btn btn-primary" id="next" title='{{t "navigation.new_project"}}'><i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "globals.project"}}</span></a>
                 </div>
               {{/if}}
             </div>
@@ -49,11 +49,11 @@
                     </div>
                   {{else}}
                     <div class="col-3 d-grid">
-                      <a href="/tracktime/{{project._id}}" class="btn btn-secondary border"><i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></a>
+                      <a href="{{ prefix }}/tracktime/{{project._id}}" class="btn btn-secondary border"><i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></a>
                     </div>
                   {{/if}}
                   <div class="col-3 d-grid">
-                    <a href="/list/timecards/{{project._id}}" class="btn btn-secondary border"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
+                  <a href="{{ prefix }}/list/timecards/{{project._id}}" class="btn btn-secondary border"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
                   </div>
                   {{#if isProjectOwner (project._id)}}
                     <div class="col-3 d-grid">
@@ -82,7 +82,7 @@
       {{#unless moreThanOneProject}}
         <div class="row">
           <div class="col-md-10 col-6">
-            <a href="/create/project" class="btn btn-primary" id="next">{{t "navigation.new_project"}}</a>
+            <a href="{{ prefix }}/create/project" class="btn btn-primary" id="next">{{t "navigation.new_project"}}</a>
           </div>
           <div class="col-md-2 col-6">
             {{#if hasArchivedProjects}}
