@@ -33,6 +33,7 @@ const loadLanguage = (language, i18nextDebugMode) => {
     import('../ui/translations/en.json')
     import('../ui/translations/de.json')
     import('../ui/translations/fr.json')
+    import('../ui/translations/zh.json')
   }
   import(`/imports/ui/translations/${language}.json`).then((lang) => {
     i18nReady.set(false)
