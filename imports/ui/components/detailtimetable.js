@@ -16,7 +16,7 @@ import {
   getUserTimeUnitVerbose,
   showToast,
 } from '../../utils/frontend_helpers'
-import projectUsers from '../../api/users/users.js'
+import { projectResources } from '../../api/users/users.js'
 import Projects from '../../api/projects/projects'
 import { buildDetailedTimeEntriesForPeriodSelector } from '../../utils/server_method_helpers'
 import './detailtimetable.html'
@@ -27,17 +27,13 @@ const Counts = new Mongo.Collection('counts')
 
 dayjs.extend(utc)
 
-let customFieldType = 'desc'
-if (getGlobalSetting('showNameOfCustomFieldInDetails')) {
-  customFieldType = 'name'
-}
-
+const customFieldType = 'name'
 function detailedDataTableMapper(entry) {
   const project = Projects.findOne({ _id: entry.projectId })
   const mapping = [project ? project.name : '',
     dayjs.utc(entry.date).local().format(getGlobalSetting('dateformat')),
     entry.task.replace(/^=/, '='),
-    projectUsers.findOne() ? projectUsers.findOne().users.find((elem) => elem._id === entry.userId)?.profile?.name : '']
+    projectResources.findOne() ? projectResources.findOne({ _id: entry.userId })?.name : '']
   if (getGlobalSetting('showCustomFieldsInDetails')) {
     if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
       for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
@@ -74,7 +70,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
       && this.data.period.get()
       && this.data.limit.get()) {
       this.myProjectsHandle = this.subscribe('myprojects', {})
-      this.projectUsersHandle = this.subscribe('projectUsers', { projectId: this.data.project.get() })
+      this.projectResourcesHandle = this.subscribe('projectResources', { projectId: this.data.project.get() })
       this.selector = buildDetailedTimeEntriesForPeriodSelector({
         projectId: this.data.project.get(),
         search: this.search.get(),
@@ -115,7 +111,7 @@ Template.detailtimetable.onRendered(() => {
   dayjs.extend(utc)
   templateInstance.autorun(() => {
     if (templateInstance.detailedTimeEntriesForPeriodHandle.ready()
-      && templateInstance.projectUsersHandle.ready() && i18nReady.get()) {
+      && templateInstance.projectResourcesHandle.ready() && i18nReady.get()) {
       const data = Timecards.find(templateInstance.selector[0], templateInstance.selector[1])
         .fetch().map(detailedDataTableMapper)
       if (data.length === 0) {
@@ -132,10 +128,14 @@ Template.detailtimetable.onRendered(() => {
         { name: t('globals.task'), editable: false, format: addToolTipToTableCell },
         { name: t('globals.resource'), editable: false, format: addToolTipToTableCell }]
       if (getGlobalSetting('showCustomFieldsInDetails')) {
+        let customFieldColumnType = 'desc'
+        if (getGlobalSetting('showNameOfCustomFieldInDetails')) {
+          customFieldColumnType = 'name'
+        }
         if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
           for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
             columns.push({
-              name: customfield[customFieldType],
+              name: customfield[customFieldColumnType],
               editable: false,
               format: addToolTipToTableCell,
             })
@@ -144,7 +144,7 @@ Template.detailtimetable.onRendered(() => {
         if (CustomFields.find({ classname: 'project' }).count() > 0) {
           for (const customfield of CustomFields.find({ classname: 'project' }).fetch()) {
             columns.push({
-              name: customfield[customFieldType],
+              name: customfield[customFieldColumnType],
               editable: false,
               format: addToolTipToTableCell,
             })
@@ -264,9 +264,10 @@ Template.detailtimetable.onRendered(() => {
           console.error(`Caught error: ${error}`)
         }
       }
+      const countsId = templateInstance.data.project.get() instanceof Array ? templateInstance.data.project.get().join('') : templateInstance.data.project.get()
       templateInstance.totalDetailTimeEntries
-        .set(Counts.findOne({ _id: templateInstance.data.project.get() })
-          ? Counts.findOne({ _id: templateInstance.data.project.get() }).count : 0)
+        .set(Counts.findOne({ _id: countsId })
+          ? Counts.findOne({ _id: countsId }).count : 0)
       if (window.BootstrapLoaded.get()) {
         if (data.length === 0) {
           $('.dt-scrollable').height('auto')
@@ -389,19 +390,19 @@ Template.detailtimetable.events({
     event.preventDefault()
     templateInstance.tcid.set(undefined)
     new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
-    // FlowRouter.go('tracktime', { projectId: templateInstance.$('.js-target-project').val() })
   },
   'click .js-share': (event, templateInstance) => {
     event.preventDefault()
-    if ($('#period').val() === 'all' || $('.js-target-project').val() === 'all') {
+    const projectId = FlowRouter.getParam('projectId')
+    if ($('#period').val() === 'all' || projectId === 'all' || projectId.split(',').length > 1) {
       showToast(t('notifications.sanity'))
       return
     }
     Meteor.call('addDashboard', {
-      projectId: $('.js-target-project').val(), resourceId: $('#resourceselect').val(), customer: $('#customerselect').val(), timePeriod: $('#period').val(),
+      projectId, resourceId: $('#resourceselect').val()[0], customer: $('#customerselect').val()[0], timePeriod: $('#period').val(),
     }, (error, _id) => {
       if (error) {
-        showToast(t('notifications.dashboard_creation_failed', { error }))
+        showToast(t('notifications.dashboard_creation_failed'))
         // console.error(error)
       } else {
         $('#dashboardURL').val(FlowRouter.url('dashboard', { _id }))
@@ -414,7 +415,7 @@ Template.detailtimetable.events({
     event.preventDefault()
     if (getUserSetting('siwappurl') && getUserSetting('siwapptoken')) {
       Meteor.call('sendToSiwapp', {
-        projectId: $('.js-target-project').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
+        projectId: $('.js-projectselect').get(0).getAttribute('data-value'), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
       }, (error, result) => {
         if (error) {
           showToast(t('notifications.export_failed', { error }))
@@ -454,9 +455,6 @@ Template.detailtimetable.events({
   },
   'change .js-search': (event, templateInstance) => {
     templateInstance.search.set($(event.currentTarget).val())
-  },
-  'change .js-project-filter>.js-target-project': (event, templateInstance) => {
-    templateInstance.data.project.set(templateInstance.$('.js-target-project').val())
   },
 })
 Template.detailtimetable.onDestroyed(() => {

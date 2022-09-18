@@ -151,6 +151,12 @@ Meteor.methods({
     check(isAdmin, Boolean)
     Meteor.users.update({ _id: userId }, { $set: { isAdmin } })
   },
+  adminToggleUserState({ userId, inactive }) {
+    checkAdminAuthentication(this)
+    check(userId, String)
+    check(inactive, Boolean)
+    Meteor.users.update({ _id: userId }, { $set: { inactive } })
+  },
   setCustomPeriodDates({ customStartDate, customEndDate }) {
     checkAuthentication(this)
     check(customStartDate, Date)

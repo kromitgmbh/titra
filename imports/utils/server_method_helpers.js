@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import Projects from '../api/projects/projects.js'
-import projectUsers from '../api/users/users.js'
+import { projectResources } from '../api/users/users.js'
 import { periodToDates } from './periodHelpers.js'
 import { getGlobalSetting, getUserSetting } from './frontend_helpers.js'
 
@@ -16,23 +16,27 @@ function getProjectListById(projectId) {
       { $fields: { _id: 1 } },
     ).fetch().map((value) => value._id)
   } else {
+    const projectSelector = {
+      _id: projectId,
+      $or: [{ userId }, { public: true }, { team: userId }],
+    }
+    if (projectId instanceof Array) {
+      projectSelector._id = { $in: projectId }
+    }
     projectList = Projects.find(
-      {
-        _id: projectId,
-        $or: [{ userId }, { public: true }, { team: userId }],
-      },
+      projectSelector,
       { $fields: { _id: 1 } },
     ).fetch().map((value) => value._id)
   }
   return projectList
 }
 function checkAuthentication(context) {
-  if (!context.userId) {
+  if (!context.userId || Meteor.users.findOne({ _id: context.userId })?.inactive) {
     throw new Meteor.Error('notifications.auth_error_method')
   }
 }
 function checkAdminAuthentication(context) {
-  if (!context.userId) {
+  if (!context.userId || Meteor.users.findOne({ _id: context.userId })?.inactive) {
     throw new Meteor.Error('notifications.auth_error_method')
   } else if (!Meteor.users.findOne({ _id: context.userId }).isAdmin) {
     throw new Meteor.Error('notifications.auth_error_method')
@@ -50,10 +54,14 @@ function getProjectListByCustomer(customer) {
       { _id: 1, name: 1 },
     )
   } else {
+    const selector = {
+      customer, $or: [{ userId }, { public: true }, { team: userId }],
+    }
+    if (customer instanceof Array) {
+      selector.customer = { $in: customer }
+    }
     projects = Projects.find(
-      {
-        customer, $or: [{ userId }, { public: true }, { team: userId }],
-      },
+      selector,
       { _id: 1, name: 1 },
     )
   }
@@ -71,9 +79,8 @@ function totalHoursForPeriodMapper(entry) {
     }
   }
   return {
-    projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-    userId: projectUsers
-      .findOne().users.find((elem) => elem._id === entry._id.userId)?.profile?.name,
+    projectId: Projects.findOne({ _id: entry._id.projectId })?.name,
+    userId: projectResources.findOne({ _id: entry._id.userid })?.name,
     totalHours,
   }
 }
@@ -90,9 +97,8 @@ function dailyTimecardMapper(entry) {
   }
   return {
     date: entry._id.date,
-    projectId: Projects.findOne({ _id: entry._id.projectId }).name,
-    userId: projectUsers.findOne().users
-      .find((elem) => elem._id === entry._id.userId)?.profile?.name,
+    projectId: Projects.findOne({ _id: entry._id.projectId })?.name,
+    userId: projectResources.findOne({ _id: entry._id.userid })?.name,
     totalHours,
   }
 }
@@ -439,7 +445,11 @@ function buildDetailedTimeEntriesForPeriodSelector({
     query.date = { $gte: startDate, $lte: endDate }
   }
   if (userId !== 'all') {
-    query.userId = userId
+    if (userId instanceof Array) {
+      query.userId = { $in: userId }
+    } else {
+      query.userId = userId
+    }
   }
   detailedTimeArray.push(query)
   detailedTimeArray.push(options)

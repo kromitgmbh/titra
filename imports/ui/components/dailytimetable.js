@@ -26,7 +26,7 @@ Template.dailytimetable.onCreated(function dailytimetablecreated() {
       && this.data.period.get()
       && this.data.limit.get()
       && this.data.customer.get()) {
-      this.projectUsersHandle = this.subscribe('projectUsers', { projectId: this.data.project.get() })
+      this.projectUsersHandle = this.subscribe('projectResources', { projectId: this.data.project.get() })
       const methodParameters = {
         projectId: this.data.project.get(),
         userId: this.data.resource.get(),

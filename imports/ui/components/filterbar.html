@@ -1,0 +1,21 @@
+<template name="filterbar">
+    <div class="card mb-2 d-print-none">
+        <div class="card-header">Filter</div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-3">
+                {{>multiselectfilter items=projects name="projectselect" all="overview.all_projects" label="globals.project"}}
+            </div>
+            <div class="col-sm-3">
+                {{>periodpicker}}
+            </div>
+            <div class="col-sm-3">      
+                {{>multiselectfilter items=resources name="resourceselect" all="resource.all" label="globals.resource"}}
+            </div>
+            <div class="col-sm-3">
+                {{>multiselectfilter items=customers name="customerselect" all="customer.all" label="globals.customer"}}
+            </div>
+          </div>
+        </div>
+      </div>
+</template>

@@ -1,14 +1,11 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './timecardlist.html'
-import '../components/periodpicker.js'
-import '../components/resourceselect.js'
-import '../components/customerselect.js'
-import '../components/projectselect.js'
 import '../components/dailytimetable.js'
 import '../components/periodtimetable.js'
 import '../components/workingtimetable.js'
 import '../components/detailtimetable'
 import '../components/weektable.js'
+import '../components/filterbar.js'
 import './dashboard.js'
 
 Template.timecardlist.onCreated(function createTimeCardList() {
@@ -38,12 +35,16 @@ Template.timecardlist.onRendered(() => {
       })
     }
     if (FlowRouter.getParam('projectId')) {
-      templateInstance.project.set(FlowRouter.getParam('projectId'))
+      const projectIdParam = FlowRouter.getParam('projectId')
+      const projectIdArray = projectIdParam.split(',')
+      templateInstance.project.set(projectIdArray.length > 1 ? projectIdArray : projectIdParam)
     } else {
       templateInstance.project.set('all')
     }
     if (FlowRouter.getQueryParam('resource')) {
-      templateInstance.resource.set(FlowRouter.getQueryParam('resource'))
+      const resourceIdParam = FlowRouter.getQueryParam('resource')
+      const resourceIdArray = resourceIdParam.split(',')
+      templateInstance.resource.set(resourceIdArray.length > 1 ? resourceIdArray : resourceIdParam)
     } else {
       templateInstance.resource.set('all')
     }
@@ -53,7 +54,9 @@ Template.timecardlist.onRendered(() => {
       templateInstance.period.set('currentMonth')
     }
     if (FlowRouter.getQueryParam('customer')) {
-      templateInstance.customer.set(FlowRouter.getQueryParam('customer'))
+      const customerIdParam = FlowRouter.getQueryParam('customer')
+      const customerIdArray = customerIdParam.split(',')
+      templateInstance.customer.set(customerIdArray.length > 1 ? customerIdArray : customerIdParam)
     } else {
       templateInstance.customer.set('all')
     }
@@ -91,15 +94,15 @@ Template.timecardlist.helpers({
 })
 
 Template.timecardlist.events({
-  'change #period': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ period: templateInstance.$(event.currentTarget).val() })
-  },
-  'change #resourceselect': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ resource: templateInstance.$(event.currentTarget).val() })
-  },
-  'change #customerselect': (event, templateInstance) => {
-    FlowRouter.setQueryParams({ customer: templateInstance.$(event.currentTarget).val() })
-  },
+  // 'change #period': (event, templateInstance) => {
+  //   FlowRouter.setQueryParams({ period: templateInstance.$(event.currentTarget).val() })
+  // },
+  // 'change #resourceselect': (event, templateInstance) => {
+  //   FlowRouter.setQueryParams({ resource: templateInstance.$(event.currentTarget).val() })
+  // },
+  // 'change #customerselect': (event, templateInstance) => {
+  //   FlowRouter.setQueryParams({ customer: templateInstance.$(event.currentTarget).val() })
+  // },
   'click .nav-link[data-bs-toggle]': (event, templateInstance) => {
     FlowRouter.setQueryParams({ activeTab: templateInstance.$(event.currentTarget)[0].id })
   },

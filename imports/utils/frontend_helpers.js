@@ -141,6 +141,27 @@ function showToast(message) {
     new bs.Toast($('.toast').get(0)).show()
   })
 }
+function waitForElement(templateInstance, selector) {
+  const targetElement = templateInstance?.view.firstNode().parentElement
+  return new Promise((resolve) => {
+    let element = targetElement?.querySelector(selector)
+    if (element) {
+      resolve(element)
+    } else if (targetElement) {
+      const observer = new MutationObserver((mutations, obs) => {
+        element = mutations.addedNodes?.find((node) => node.matchesSelector(selector))
+        if (element) {
+          obs.disconnect()
+          resolve(element)
+        }
+      })
+      observer.observe(targetElement, {
+        childList: true,
+        subtree: true,
+      })
+    }
+  })
+}
 export {
   addToolTipToTableCell,
   getWeekDays,
@@ -156,4 +177,5 @@ export {
   getUserTimeUnitVerbose,
   getUserTimeUnitAbbreviated,
   showToast,
+  waitForElement,
 }

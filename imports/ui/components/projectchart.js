@@ -2,7 +2,7 @@ import namedavatar from 'namedavatar'
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 import './projectchart.html'
 import Projects, { ProjectStats } from '../../api/projects/projects.js'
-import projectUsers from '../../api/users/users.js'
+import { projectUsers } from '../../api/users/users.js'
 import { getUserSetting, getUserTimeUnitVerbose } from '../../utils/frontend_helpers'
 
 Template.projectchart.onCreated(function projectchartCreated() {

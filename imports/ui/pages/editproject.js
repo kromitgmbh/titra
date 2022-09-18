@@ -9,7 +9,9 @@ import Projects from '../../api/projects/projects.js'
 import '../components/backbutton.js'
 import '../components/wekanInterfaceSettings.js'
 import '../components/projectAccessRights.js'
-import { getUserSetting, getGlobalSetting, showToast } from '../../utils/frontend_helpers.js'
+import {
+  getUserSetting, getGlobalSetting, showToast, waitForElement,
+} from '../../utils/frontend_helpers.js'
 import CustomFields from '../../api/customfields/customfields.js'
 import BsDialogs from '../components/bootstrapDialogs.js'
 import '../components/projectTasks.js'
@@ -100,14 +102,18 @@ Template.editproject.onRendered(() => {
         } else if (project.desc && templateInstance.quillReady.get()) {
           templateInstance.quill.setText(project.desc)
         }
-        Meteor.setTimeout(() => {
-          for (const customfield of CustomFields.find({ classname: 'project', possibleValues: { $exists: true } })) {
-            templateInstance.$(`#${customfield.name}`).val(project[customfield.name])
-          }
-          if (project.customer) {
-            templateInstance.$('#customer').val(project.customer)
-          }
-        }, 500)
+        // Meteor.setTimeout(() => {
+        for (const customfield of CustomFields.find({ classname: 'project', possibleValues: { $exists: true } })) {
+          waitForElement(templateInstance, `#${customfield.name}`).then((element) => {
+            element.value = project[customfield.name]
+          })
+        }
+        if (project.customer) {
+          waitForElement(templateInstance, '#customer').then((element) => {
+            element.value = project.customer
+          })
+        }
+        // }, 500)
       } else if (project?.desc instanceof Object && templateInstance.quill) {
         templateInstance.quill.setContents(project.desc)
       } else if (project?.desc && templateInstance.quill) {
@@ -345,6 +351,7 @@ Template.editproject.helpers({
     .filter((customer) => (customer._id?.toLowerCase()
       .search(Template.instance().filter.get()?.toLowerCase()) > -1))
     .slice(0, 5),
+  replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
 })
 
 Template.editproject.onDestroyed(function editprojectDestroyed() {

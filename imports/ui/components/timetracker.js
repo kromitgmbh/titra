@@ -113,7 +113,7 @@ Template.timetracker.events({
     templateInstance.customFields?.set(customFieldsToSave)
     Meteor.call('setTimer', {
       timestamp: new Date(),
-      project: $('.js-target-project').val(),
+      project: $('.js-target-project').get(0).getAttribute('data-value'),
       task: $('.js-tasksearch-input').val(),
       startTime: $('#startTime').val(),
       customFields: customFieldsToSave,

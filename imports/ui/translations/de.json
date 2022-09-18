@@ -273,8 +273,8 @@
   },
   "notifications": {
     "sanity": "Zu Ihrer Sicherheit ist es nicht möglich alle Daten über den gesamten Zeitraum zu teilen. Bitte wählen Sie ein Projekt aus.",
-    "dashboard_creation_failed": "Die Erstellung des Dashboards ist fehlgeschlagen (Fehlermeldung: {{error}}).",
-    "export_failed": "Der Export ist fehlgeschlagen (Fehlermeldung: {{error}}).",
+    "dashboard_creation_failed": "Die Erstellung des Dashboards ist fehlgeschlagen.",
+    "export_failed": "Der Export ist fehlgeschlagen.",
     "siwapp_configuration": "Sie müssen zunächst die Siwapp Schnittstelle konfigurieren um diese Funktion zu verwenden.",
     "time_entry_deleted": "Eintrag gelöscht",
     "time_entry_updated": "Eintrag aktualisiert",
@@ -305,7 +305,8 @@
     "access_rights_updated": "Die Projekt Zugriffsrechte wurden aktualisiert.",
     "success": "Die Verarbeitung wurde erfolgreich durchgeführt.",
     "wekan_error": "Die Wekan Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!",
-    "zammad_error": "Die Zammad Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!"
+    "zammad_error": "Die Zammad Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!",
+    "user_inactive": "Dieser Benutzer wurde deaktiviert, der Benutzer muss aktiviert werden um fortzufahren."
   },
   "login": {
     "password": "Passwort",
@@ -357,6 +358,7 @@
     "user_created": "Der Benutzer wurde erstellt.",
     "user_updated": "Die Benutzerinformationen wurden aktualisiert.",
     "user_deleted": "Der Benutzer wurde gelöscht.",
+    "user_inactive": "Inaktiv?",
     "user_deletion_confirmation": "Möchten Sie diesen Benutzer wirklich löschen (dies kann nicht rückgängig gemacht werden)?",
     "value": "Wert",
     "global_defaults": "Voreinstellungen:",
@@ -375,7 +377,8 @@
     "extension_removed": "Die Erweiterung wurde erfolgreich entfernt",
     "edit_custom_field": "Benutzerdefiniertes Attribut bearbeiten",
     "oidc": "OpenID Connect",
-    "oidc_configure": "Sie müssen bei Ihrem Anbieter eine OpenID Connect-Clientkonfiguration erstellen. Legen Sie App-Callback-URLs fest auf"
+    "oidc_configure": "Sie müssen bei Ihrem Anbieter eine OpenID Connect-Clientkonfiguration erstellen. Legen Sie App-Callback-URLs fest auf",
+    "custom_field_name_hint": "Leerzeichen und Sonderzeichen sind nicht erlaubt."
   },
   "wekan": {
     "list": "Wekan Liste",

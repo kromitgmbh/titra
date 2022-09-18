@@ -9,7 +9,7 @@ const DailyMailLimit = new Mongo.Collection('dailymaillimit')
 function addNotification(message, userId) {
   dayjs.extend(utc)
   const id = Random.id()
-  const meteorUser = Meteor.users.findOne({ _id: userId })
+  const meteorUser = Meteor.users.findOne({ _id: userId, inactive: { $ne: true } })
   const start = dayjs.utc().startOf('day').toDate()
   const end = dayjs.utc().endOf('day').toDate()
   const mailFrom = getGlobalSetting('fromAddress')

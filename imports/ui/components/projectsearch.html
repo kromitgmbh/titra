@@ -1,0 +1,14 @@
+<template name ="projectsearch">
+  <div class="input-group">
+    <div class="form-floating">
+      <input type="text" placeholder="{{t 'project.project_placeholder'}}" class="form-control js-target-project" autocomplete="off" style="border-left-color: {{projectColor (selectedId)}}; border-left-width:thick;"/>
+      <label class="form-label">{{t "globals.project"}}</label>
+    </div>
+    {{#if displayProjectInfo}}
+      <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#projectInfoPopup"><i class="fa fa-info-circle text-body"></i></button>
+    {{/if}}
+  </div>
+  {{#if displayProjectInfo}}
+    {{>projectInfoPopup projectId=selectedId}}
+  {{/if}}
+</template>

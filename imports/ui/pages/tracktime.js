@@ -10,11 +10,13 @@ import 'tiny-date-picker/tiny-date-picker.css'
 import { t } from '../../utils/i18n.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Projects from '../../api/projects/projects.js'
-import { getGlobalSetting, getUserSetting, showToast } from '../../utils/frontend_helpers.js'
+import {
+  getGlobalSetting, getUserSetting, showToast, waitForElement,
+} from '../../utils/frontend_helpers.js'
 import { getHolidays, checkHoliday } from '../../utils/holiday.js'
 
 import './tracktime.html'
-import '../components/projectselect.js'
+import '../components/projectsearch.js'
 import '../components/tasksearch.js'
 import '../components/timetracker.js'
 import '../components/weektable.js'
@@ -50,13 +52,13 @@ Template.tracktime.onRendered(() => {
   templateInstance.autorun(() => {
     const timeEntry = templateInstance.time_entry.get()
     if (timeEntry) {
-      Meteor.setTimeout(() => {
-        for (const customfield of CustomFields.find({ classname: 'time_entry', possibleValues: { $exists: true } })) {
-          if (templateInstance.firstNode) {
-            templateInstance.$(`#${customfield.name}`).val(timeEntry[customfield.name])
-          }
-        }
-      }, 500)
+      // Meteor.setTimeout(() => {
+      for (const customfield of CustomFields.find({ classname: 'time_entry', possibleValues: { $exists: true } })) {
+        waitForElement(templateInstance, `#${customfield.name}`).then((element) => {
+          element.value = timeEntry[customfield.name]
+        })
+      }
+      // }, 500)
     }
   })
 })
@@ -145,8 +147,8 @@ Template.tracktime.events({
     const customfields = {}
     templateInstance.$('.js-customfield').each((i, el) => { customfields[$(el).attr('id')] = $(el).val() })
     const buttonLabel = $('.js-save').first().text()
-    const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > div > .js-target-project')
-    templateInstance.projectId.set(selectedProjectElement.val())
+    const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > div > div > .js-target-project')
+    templateInstance.projectId.set(selectedProjectElement.get(0).getAttribute('data-value'))
     let hours = templateInstance.$('#hours').val()
     if (!templateInstance.projectId.get()) {
       selectedProjectElement.addClass('is-invalid')
@@ -257,14 +259,14 @@ Template.tracktime.events({
     templateInstance.$('#hours').val('')
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
-  'change .js-target-project': (event, templateInstance) => {
-    event.preventDefault()
-    templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
-    const project = Projects.findOne({ _id: templateInstance.projectId.get() })
-    if (!project?.defaultTask) {
-      templateInstance.$('.js-tasksearch').first().focus()
-    }
-  },
+  // 'change .js-target-project': (event, templateInstance) => {
+  //   event.preventDefault()
+  //   templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
+  //   const project = Projects.findOne({ _id: templateInstance.projectId.get() })
+  //   if (!project?.defaultTask) {
+  //     templateInstance.$('.js-tasksearch').first().focus()
+  //   }
+  // },
   'change .js-date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
       let date = dayjs(templateInstance.$(event.currentTarget).val(), [getGlobalSetting('dateformatVerbose'), undefined])
@@ -393,6 +395,7 @@ Template.tracktime.helpers({
     ? Template.instance().time_entry.get()[fieldId] : false),
   holidayToday: () => (isHoliday(Template.instance().date.get())
     ? isHoliday(Template.instance().date.get())[0].name : false),
+  replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

@@ -324,7 +324,7 @@ Meteor.methods({
     limit,
     page,
   }) {
-    check(projectId, String)
+    check(projectId, Match.OneOf(String, Array))
     check(period, String)
     check(userId, String)
     if (period === 'custom') {
@@ -356,7 +356,7 @@ Meteor.methods({
     limit,
     page,
   }) {
-    check(projectId, String)
+    check(projectId, Match.OneOf(String, Array))
     check(period, String)
     if (period === 'custom') {
       check(dates, Object)
@@ -391,7 +391,7 @@ Meteor.methods({
     page,
   }) {
     checkAuthentication(this)
-    check(projectId, String)
+    check(projectId, Match.OneOf(String, Array))
     check(period, String)
     if (period === 'custom') {
       check(dates, Object)

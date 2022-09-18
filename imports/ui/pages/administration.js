@@ -200,7 +200,7 @@ Template.administration.events({
   },
   'click .js-create-customfield': (event, templateInstance) => {
     event.preventDefault()
-    const name = templateInstance.$('#customfieldName').val()
+    const name = templateInstance.$('#customfieldName').val().replace(/[^A-Z0-9]/ig, '_')
     const desc = templateInstance.$('#customfieldDesc').val()
     const type = templateInstance.$('#customfieldType').val()
     const classname = templateInstance.$('#customfieldClassname').val()
@@ -304,6 +304,26 @@ Template.administration.events({
         Meteor._debug('Error configuring login service oidc', error)
       } else {
         showToast(t('notifications.success'))
+      }
+    })
+  },
+  'click .js-activate-user': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('adminToggleUserState', { userId: templateInstance.$(event.currentTarget).data('id'), inactive: true }, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        showToast(t('administration.user_updated'))
+      }
+    })
+  },
+  'click .js-deactivate-user': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('adminToggleUserState', { userId: templateInstance.$(event.currentTarget).data('id'), inactive: false }, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        showToast(t('administration.user_updated'))
       }
     })
   },

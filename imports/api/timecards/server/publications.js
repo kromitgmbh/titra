@@ -1,35 +1,35 @@
 import { ReactiveAggregate } from 'meteor/tunguska:reactive-aggregate'
+import { Match } from 'meteor/check'
 import Timecards from '../timecards.js'
 import Projects from '../../projects/projects.js'
-import { periodToDates } from '../../../utils/periodHelpers.js'
-import { checkAuthentication, getProjectListById, buildDetailedTimeEntriesForPeriodSelector } from '../../../utils/server_method_helpers.js'
+import { checkAuthentication, buildDetailedTimeEntriesForPeriodSelector } from '../../../utils/server_method_helpers.js'
 
-Meteor.publish('projectTimecards', function projectTimecards({ projectId, period, userId }) {
-  check(projectId, String)
-  check(period, String)
-  check(userId, String)
-  checkAuthentication(this)
-  const projectList = getProjectListById(projectId)
+// Meteor.publish('projectTimecards', function projectTimecards({ projectId, period, userId }) {
+//   check(projectId, String)
+//   check(period, String)
+//   check(userId, String)
+//   checkAuthentication(this)
+//   const projectList = getProjectListById(projectId)
 
-  if (period && period !== 'all') {
-    const { startDate, endDate } = periodToDates(period)
-    if (userId === 'all') {
-      return Timecards.find({
-        projectId: { $in: projectList },
-        date: { $gte: startDate, $lte: endDate },
-      })
-    }
-    return Timecards.find({
-      projectId: { $in: projectList },
-      userId,
-      date: { $gte: startDate, $lte: endDate },
-    })
-  }
-  if (userId === 'all') {
-    return Timecards.find({ projectId: { $in: projectList } })
-  }
-  return Timecards.find({ projectId: { $in: projectList }, userId })
-})
+//   if (period && period !== 'all') {
+//     const { startDate, endDate } = periodToDates(period)
+//     if (userId === 'all') {
+//       return Timecards.find({
+//         projectId: { $in: projectList },
+//         date: { $gte: startDate, $lte: endDate },
+//       })
+//     }
+//     return Timecards.find({
+//       projectId: { $in: projectList },
+//       userId,
+//       date: { $gte: startDate, $lte: endDate },
+//     })
+//   }
+//   if (userId === 'all') {
+//     return Timecards.find({ projectId: { $in: projectList } })
+//   }
+//   return Timecards.find({ projectId: { $in: projectList }, userId })
+// })
 
 Meteor.publish('periodTimecards', function periodTimecards({ startDate, endDate, userId }) {
   check(startDate, Date)
@@ -94,9 +94,9 @@ Meteor.publish('getDetailedTimeEntriesForPeriodCount', function getDetailedTimeE
   dates,
   search,
 }) {
-  check(projectId, String)
-  check(userId, String)
-  check(customer, String)
+  check(projectId, Match.OneOf(String, Array))
+  check(userId, Match.OneOf(String, Array))
+  check(customer, Match.OneOf(String, Array))
   check(period, String)
   if (period === 'custom') {
     check(dates, Object)
@@ -109,22 +109,23 @@ Meteor.publish('getDetailedTimeEntriesForPeriodCount', function getDetailedTimeE
   const selector = buildDetailedTimeEntriesForPeriodSelector({
     projectId, search, customer, period, dates, userId,
   })
+  const countsId = projectId instanceof Array ? projectId.join('') : projectId
   const handle = Timecards.find(selector[0], selector[1]).observeChanges({
     added: () => {
       count += 1
 
       if (!initializing) {
-        this.changed('counts', projectId, { count })
+        this.changed('counts', countsId, { count })
       }
     },
     removed: () => {
       count -= 1
-      this.changed('counts', projectId, { count })
+      this.changed('counts', countsId, { count })
     },
   })
 
   initializing = false
-  this.added('counts', projectId, { count })
+  this.added('counts', countsId, { count })
   this.ready()
 
   this.onStop(() => handle.stop())
@@ -141,9 +142,9 @@ Meteor.publish('getDetailedTimeEntriesForPeriod', function getDetailedTimeEntrie
   limit,
   page,
 }) {
-  check(projectId, String)
-  check(userId, String)
-  check(customer, String)
+  check(projectId, Match.OneOf(String, Array))
+  check(userId, Match.OneOf(String, Array))
+  check(customer, Match.OneOf(String, Array))
   check(period, String)
   check(search, Match.Maybe(String))
   check(sort, Match.Maybe(Object))
@@ -164,6 +165,7 @@ Meteor.publish('getDetailedTimeEntriesForPeriod', function getDetailedTimeEntrie
   })
   return Timecards.find(selector[0], selector[1])
 })
+
 Meteor.publish('singleTimecard', function singleTimecard(_id) {
   check(_id, String)
   checkAuthentication(this)

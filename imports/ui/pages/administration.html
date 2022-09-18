@@ -111,6 +111,7 @@
                             <th>{{t "globals.name"}}</th>
                             <th>{{t "globals.email"}}</th>
                             <th>{{t "administration.admin"}}</th>
+                            <th>{{t "administration.user_inactive"}}</th>
                             <th>{{t "administration.creation_date"}}</th>
                             <th>{{t "tracktime.actions"}}</th>
                         </tr>
@@ -126,6 +127,13 @@
                                         <a href="#" class="js-remove-admin" data-id="{{user._id}}" title="Remove admin" aria-label="Remove admin"><i class="fa fa-check-square"></i></a>
                                     {{else}}
                                         <a href="#" class="js-make-admin" data-id="{{user._id}}" title="Add admin" aria-label="Add admin"><i class="far fa-square"></i></a>
+                                    {{/if}}
+                                </td>
+                                <td class="text-center">
+                                    {{#if user.inactive}}
+                                        <a href="#" class="js-deactivate-user" data-id="{{user._id}}" title="{{t 'administration.user_inactive'}}" aria-label="{{t 'administration.user_inactive'}}"><i class="fa fa-check-square"></i></a>
+                                    {{else}}
+                                        <a href="#" class="js-activate-user" data-id="{{user._id}}" title="{{t 'administration.user_inactive'}}" aria-label="{{t 'administration.user_inactive'}}"><i class="far fa-square"></i></a>
                                     {{/if}}
                                 </td>
                                 <td>{{dayjs(user.createdAt)}}</td>
@@ -152,6 +160,7 @@
                     <div class="mb-3 form-floating">
                         <input class="form-control" type="text" id="customfieldName" required placeholder="{{t 'globals.name'}}">
                         <label for="customfieldName" class="form-label">{{t "globals.name"}}</label>
+                        <div class="form-text">{{t "administration.custom_field_name_hint"}}</div>
                     </div>
                     <div class="mb-3 form-floating">
                         <input class="form-control" type="text" id="customfieldDesc" placeholder="{{t 'globals.description'}}">

@@ -98,17 +98,19 @@ Meteor.publish('projectStats', function projectStats(projectId) {
       removed: (timecardId) => {
         if (!initializing) {
           const timecard = Timecards.findOne({ _id: timecardId })
-          if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
-            currentMonthHours += Number.parseFloat(timecard.hours)
+          if (timecard) {
+            if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+              currentMonthHours += Number.parseFloat(timecard.hours)
+            }
+            if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+              previousMonthHours += Number.parseFloat(timecard.hours)
+            }
+            if (dayjs(new Date(timecard.date))
+              .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
+              beforePreviousMonthHours += Number.parseFloat(timecard.hours)
+            }
+            totalHours += Number.parseFloat(timecard.hours)
           }
-          if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
-            previousMonthHours += Number.parseFloat(timecard.hours)
-          }
-          if (dayjs(new Date(timecard.date))
-            .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
-            beforePreviousMonthHours += Number.parseFloat(timecard.hours)
-          }
-          totalHours += Number.parseFloat(timecard.hours)
           this.changed(
             'projectStats',
             projectId,

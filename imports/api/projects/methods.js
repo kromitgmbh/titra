@@ -167,7 +167,7 @@ Meteor.methods({
         || targetProject.admins.indexOf(this.userId) >= 0)) {
       throw new Meteor.Error('notifications.only_owner_can_add_team_members')
     }
-    const targetUser = Meteor.users.findOne({ 'emails.0.address': eMail })
+    const targetUser = Meteor.users.findOne({ 'emails.0.address': eMail, inactive: { $ne: true } })
     if (targetUser) {
       Projects.update({ _id: targetProject._id }, { $addToSet: { team: targetUser._id } })
       addNotification(`You have been invited to collaborate on the titra project '${targetProject.name}'`, targetUser._id)

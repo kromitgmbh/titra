@@ -10,7 +10,7 @@ import {
   getGlobalSetting,
   timeInUserUnit,
   getUserTimeUnitVerbose,
-  addToolTipToTableCell,
+  waitForElement,
 } from '../../utils/frontend_helpers'
 import './dashboard.html'
 import Timecards from '../../api/timecards/timecards'
@@ -118,12 +118,6 @@ Template.dashboard.onRendered(() => {
       window.requestAnimationFrame(() => {
         import('frappe-charts').then((chartModule) => {
           const { Chart } = chartModule
-          if (templateInstance.linechart) {
-            templateInstance.linechart.destroy()
-          }
-          if (templateInstance.piechart) {
-            templateInstance.piechart.destroy()
-          }
           let temphours = 0
           templateInstance.totalHours.set(0)
           const taskmap = new Map()
@@ -145,48 +139,62 @@ Template.dashboard.onRendered(() => {
             temphours += timecard.hours
           }
           templateInstance.totalHours.set(temphours)
-          if (templateInstance.$('.js-linechart-container')[0] && templateInstance.$('.js-piechart-container')[0]) {
-            templateInstance.linechart = new Chart(templateInstance.$('.js-linechart-container')[0], {
-              type: 'bar',
-              colors: ['#009688'],
-              data: {
-                labels: [...datemap.keys()].map((value) => dayjs.utc(value, 'DDMMYYYY').local().format(getGlobalSetting('dateformat'))),
-                datasets: [{
-                  values: [...datemap.values()],
-                }],
-              },
-              barOptions: {
-                spaceRatio: 0.2, // default: 1
-              },
-              tooltipOptions: {
-                formatTooltipY: (value) => `${Number(value).toFixed(precision)} ${getUserTimeUnitVerbose()}`,
-              },
+          if (!templateInstance.view.isDestroyed) {
+            waitForElement(templateInstance, '.js-linechart-container').then((linechartContainer) => {
+              if (templateInstance.linechart) {
+                templateInstance.linechart.destroy()
+              }
+              templateInstance.linechart = new Chart(linechartContainer, {
+                type: 'bar',
+                colors: ['#009688'],
+                data: {
+                  labels: [...datemap.keys()].map((value) => dayjs.utc(value, 'DDMMYYYY').local().format(getGlobalSetting('dateformat'))),
+                  datasets: [{
+                    values: [...datemap.values()],
+                  }],
+                },
+                barOptions: {
+                  spaceRatio: 0.2, // default: 1
+                },
+                tooltipOptions: {
+                  formatTooltipY: (value) => `${Number(value).toFixed(precision)} ${getUserTimeUnitVerbose()}`,
+                },
+              })
             })
-            templateInstance.piechart = new Chart(templateInstance.$('.js-piechart-container')[0], {
-              type: 'pie',
-              colors: randomColor({ hue: '#455A64', luminosity: 'dark', count: taskmap.size }),
-              maxSlices: 6,
-              data: {
-                labels: [...taskmap.keys()],
-                datasets: [{
-                  values: [...taskmap.values()],
-                }],
-              },
-              tooltipOptions: {
-                formatTooltipY: (value) => `${value} ${getUserSetting('timeunit') === 'd' ? t('globals.day_plural') : t('globals.hour_plural')}`,
-              },
+            waitForElement(templateInstance, '.js-piechart-container').then((piechartContainer) => {
+              if (templateInstance.piechart) {
+                templateInstance.piechart.destroy()
+              }
+              templateInstance.piechart = new Chart(piechartContainer, {
+                type: 'pie',
+                colors: randomColor({ hue: '#455A64', luminosity: 'dark', count: taskmap.size }),
+                maxSlices: 6,
+                data: {
+                  labels: [...taskmap.keys()],
+                  datasets: [{
+                    values: [...taskmap.values()],
+                  }],
+                },
+                tooltipOptions: {
+                  formatTooltipY: (value) => `${value} ${getUserSetting('timeunit') === 'd' ? t('globals.day_plural') : t('globals.hour_plural')}`,
+                },
+              })
             })
           }
         })
       })
     } else {
       if (templateInstance.linechart) {
-        templateInstance.linechart.destroy()
-        templateInstance.$('.js-linechart-container')[0].innerHTML = ''
+        waitForElement(templateInstance, '.js-linechart-container').then((linechartContainer) => {
+          templateInstance.linechart.destroy()
+          linechartContainer.innerHTML = ''
+        })
       }
       if (templateInstance.piechart) {
-        templateInstance.piechart.destroy()
-        templateInstance.$('.js-piechart-container')[0].innerHTML = ''
+        waitForElement(templateInstance, '.js-piechart-container').then((piechartContainer) => {
+          templateInstance.piechart.destroy()
+          piechartContainer.innerHTML = ''
+        })
       }
     }
   })
@@ -228,9 +236,13 @@ Template.dashboard.helpers({
 Template.dashboard.onDestroyed(() => {
   const templateInstance = Template.instance()
   if (templateInstance.linechart) {
-    templateInstance.linechart.destroy()
+    waitForElement(templateInstance, '.js-linechart-container').then(() => {
+      templateInstance.linechart.destroy()
+    })
   }
   if (templateInstance.piechart) {
-    templateInstance.piechart.destroy()
+    waitForElement(templateInstance, '.js-piechart-container').then(() => {
+      templateInstance.piechart.destroy()
+    })
   }
 })

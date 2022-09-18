@@ -1,27 +1,5 @@
 <template name="timecardlist">
-  <div class="card mb-2 d-print-none">
-    <div class="card-header">{{t "details.filter"}}</div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-sm-3 js-project-filter">
-          {{>projectselect allProjects = true}}
-        </div>
-        <div class="col-sm-3">
-          {{>periodpicker}}
-        </div>
-        <div class="col-sm-3">
-          {{#with project}}
-            {{>resourceselect}}
-          {{/with}}
-        </div>
-        <div class="col-sm-3">
-          {{#with project}}
-            {{>customerselect}}
-          {{/with}}
-        </div>
-      </div>
-    </div>
-  </div>
+  {{>filterbar}}
   <ul class="nav nav-tabs d-print-none" id="tracked-time-display" role="tablist">
     <li class="nav-item">
       <a class="nav-link active" id="detailed-tab" data-bs-toggle="tab" href="#detailed" role="tab" aria-controls="detailed" aria-selected="true">{{t "details.detailed"}}</a>

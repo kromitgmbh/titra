@@ -84,7 +84,7 @@
         </div>
     {{/unless}}
     <div class="mb-3 js-tracktime-projectselect mb-3">
-      {{>projectselect tcid=tcid projectId=reactiveProjectId displayProjectInfo=true}}
+      {{>projectsearch tcid=tcid projectId=reactiveProjectId displayProjectInfo=true}}
     </div>
     <div class="mb-3 mb-3">
       {{>tasksearch tcid=tcid projectId=reactiveProjectId task=task}}
@@ -93,17 +93,17 @@
       {{#each customfield in customfields}}
         {{#if customfield.possibleValues}}
           <div class="mb-3 form-floating">
-            <select name="{{customfield.name}}" id="{{customfield.name}}" class="form-control js-customfield">
+            <select name="{{replaceSpecialChars customfield.name}}" id="{{replaceSpecialChars customfield.name}}" class="form-control js-customfield">
               {{#each pv in customfield.possibleValues}}
                 <option value="{{pv}}">{{pv}}</option>
               {{/each}}
             </select>
-            <label class="form-label" for="{{customfield.name}}">{{customfield.desc}}</label>
+            <label class="form-label" for="{{replaceSpecialChars customfield.name}}">{{customfield.desc}}</label>
           </div>
         {{else}}
           <div class="mb-3 form-floating">
-            <input class="form-control js-customfield" name="{{customfield.name}}" id="{{customfield.name}}" type="{{customfield.type}}" value="{{getCustomFieldValue customfield.name}}" placeholder="{{customfield.desc}}"/>
-            <label class="form-label" for="{{customfield.name}}">{{customfield.desc}}</label>
+            <input class="form-control js-customfield" name="{{replaceSpecialChars customfield.name}}" id="{{replaceSpecialChars customfield.name}}" type="{{customfield.type}}" value="{{getCustomFieldValue customfield.name}}" placeholder="{{customfield.desc}}"/>
+            <label class="form-label" for="{{replaceSpecialChars customfield.name}}">{{customfield.desc}}</label>
           </div>
         {{/if}}
       {{/each}}
