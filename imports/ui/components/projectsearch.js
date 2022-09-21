@@ -1,5 +1,4 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import bootstrap from 'bootstrap'
 import { t } from '../../utils/i18n'
 import Projects from '../../api/projects/projects.js'
 import Timecards from '../../api/timecards/timecards.js'
@@ -66,8 +65,7 @@ Template.projectsearch.onRendered(() => {
         FlowRouter.setParams({ projectId: value })
       }
       if (!Projects.findOne({ _id: templateInstance.selectedId.get() })?.defaultTask) {
-        templateInstance.$('.js-tasksearch-input').first().trigger('focus')
-        // $('.js-tasksearch-input').first().trigger('click')
+        $('.js-tasksearch-input').trigger('focus')
       } else {
         $('#hours').first().trigger('focus')
       }

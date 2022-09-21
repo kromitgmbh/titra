@@ -15,6 +15,10 @@ Template.tasksearch.events({
     event.preventDefault()
     $('#taskSelectPopup').modal('show')
   },
+  'keyup .js-tasksearch-input': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.filter.set(templateInstance.$(event.currentTarget).val())
+  },
 })
 
 Template.tasksearch.onCreated(function tasksearchcreated() {
@@ -107,7 +111,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
     if (this.subscriptionsReady()) {
       let data = []
       if (!Template.instance().filter.get() || Template.instance().filter.get() === '') {
-        data = Tasks.find({}, { sort: { projectId: -1, lastUsed: -1 }, limit: 3 })
+        data = Tasks.find({}, { sort: { projectId: -1, lastUsed: -1 }, limit: 5 })
           .fetch().map((task) => ({ label: task.name, value: task._id }))
         // return Template.instance().lastTimecards.get()
       } else {
@@ -132,15 +136,19 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
         finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { projectId: -1, lastUsed: -1 }, limit: 5 }).fetch().map((task) => ({ label: task.name, value: task._id })))
         data = finalArray
       }
-      this.targetProject = new Autocomplete(this.$('.js-tasksearch-input').get(0), {
-        data,
-        maximumItems: 5,
-        threshold: 0,
-        onSelectItem: ({ label, value }) => {
-          this.$('.js-tasksearch-input').removeClass('is-invalid')
-          $('#hours').first().trigger('focus')
-        },
-      })
+      if (this.targetTask) {
+        this.targetTask.setData(data)
+      } else {
+        this.targetTask = new Autocomplete(this.$('.js-tasksearch-input').get(0), {
+          data,
+          maximumItems: 5,
+          threshold: 0,
+          onSelectItem: ({ label, value }) => {
+            this.$('.js-tasksearch-input').removeClass('is-invalid')
+            $('#hours').first().trigger('focus')
+          },
+        })
+      }
     }
   })
 })

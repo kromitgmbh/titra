@@ -27,7 +27,6 @@ class Autocomplete {
     insertAfter(dropdown, field)
 
     this.dropdown = new bootstrap.Dropdown(field, this.options.dropdownOptions)
-
     field.addEventListener('click', (e) => {
       if (this.createItems() === 0) {
         e.stopPropagation()
@@ -42,7 +41,7 @@ class Autocomplete {
     })
     field.addEventListener('focus', (e) => {
       if (this.field.value === '') {
-        this.renderIfNeeded()
+        this.field.click()
       }
     })
     field.addEventListener('keydown', (e) => {
@@ -51,9 +50,13 @@ class Autocomplete {
         return
       }
       if (e.keyCode === 40) {
+        this.renderIfNeeded()
         this.dropdown._menu.children[0]?.focus()
       }
     })
+    // field.addEventListener('focusout', (e) => {
+    //   this.dropdown.hide()
+    // })
   }
 
   setData(data) {
@@ -134,6 +137,23 @@ class Autocomplete {
         }
 
         this.dropdown.hide()
+      })
+      item.addEventListener('keydown', (e) => {
+        if (e.keyCode === 13) {
+          const dataLabel = e.currentTarget.getAttribute('data-label')
+          const dataValue = e.currentTarget.getAttribute('data-value')
+
+          this.field.value = dataLabel
+          this.field.setAttribute('data-value', dataValue)
+          if (this.options.onSelectItem) {
+            this.options.onSelectItem({
+              value: dataValue,
+              label: dataLabel,
+            })
+          }
+
+          this.dropdown.hide()
+        }
       })
     })
 
