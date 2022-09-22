@@ -172,7 +172,9 @@
     "holiday_country": "Land",
     "holiday_state": "Bundesland",
     "holiday_region": "Region/Stadt",
-    "xframe_options_origin": "X-Frame-Options header origin URL"
+    "xframe_options_origin": "X-Frame-Options header origin URL",
+    "project_search_num_results": "Die Anzahl der Projekt in der Projektsuche (Standard 5)",
+    "task_search_num_results": "Die Anzahl der Tätigkeiten in der Tätigkeitensuche (Standard 5)"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

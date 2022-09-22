@@ -123,4 +123,10 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'XFrameOptionsOrigin', description: 'settings.xframe_options_origin', type: 'text', value: '',
 })
+defaultSettings.push({
+  name: 'projectSearchNumResults', description: 'settings.project_search_num_results', type: 'number', value: 5,
+})
+defaultSettings.push({
+  name: 'taskSearchNumResults', description: 'settings.task_search_num_results', type: 'number', value: 5,
+})
 export { defaultSettings, Globalsettings }

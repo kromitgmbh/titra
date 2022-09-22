@@ -91,7 +91,11 @@ class Autocomplete {
         label += ` ${item.value}`
       }
     }
-    return ce(`<button type="button" class="dropdown-item" data-label="${sanitizedLabel}" data-value="${item.value}">${label}</button>`)
+    const button = ce('<button type="button" class="dropdown-item"></button>')
+    button.setAttribute('data-label', item.label)
+    button.setAttribute('data-value', item.value)
+    button.textContent = item.label
+    return button
   }
 
   createItems() {

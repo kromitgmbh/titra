@@ -3,6 +3,7 @@ import { t } from '../../utils/i18n'
 import Projects from '../../api/projects/projects.js'
 import Timecards from '../../api/timecards/timecards.js'
 import Autocomplete from '../../utils/autocomplete'
+import { getGlobalSetting } from '../../utils/frontend_helpers'
 import './projectInfoPopup.js'
 import './projectsearch.html'
 
@@ -56,7 +57,7 @@ Template.projectsearch.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.targetProject = new Autocomplete(templateInstance.$('.js-target-project').get(0), {
     data: [],
-    maximumItems: 5,
+    maximumItems: getGlobalSetting('project_search_num_results'),
     threshold: 0,
     onSelectItem: ({ label, value }) => {
       templateInstance.$('.js-target-project').removeClass('is-invalid')

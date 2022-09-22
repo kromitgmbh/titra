@@ -111,7 +111,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
     if (this.subscriptionsReady()) {
       let data = []
       if (!Template.instance().filter.get() || Template.instance().filter.get() === '') {
-        data = Tasks.find({}, { sort: { projectId: -1, lastUsed: -1 }, limit: 5 })
+        data = Tasks.find({}, { sort: { projectId: -1, lastUsed: -1 }, limit: getGlobalSetting('taskSearchNumResults') })
           .fetch().map((task) => ({ label: task.name, value: task._id }))
         // return Template.instance().lastTimecards.get()
       } else {
@@ -120,7 +120,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
         const zammadAPITasks = Template.instance().zammadAPITasks.get()
         const regex = `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`
         if (Template.instance().wekanTasks) {
-          const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: regex, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: 5 })
+          const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: regex, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: getGlobalSetting('taskSearchNumResults') })
           if (wekanResult.count() > 0) {
             finalArray.push(...wekanResult
               .map((elem) => ({ label: elem.title, value: elem.title, wekan: true })))
@@ -133,7 +133,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
         if (zammadAPITasks && zammadAPITasks.length > 0) {
           finalArray.push(...zammadAPITasks.map((elem) => ({ label: elem.title, value: elem.title, zammad: true })).filter((element) => new RegExp(regex, 'i').exec(element.name)))
         }
-        finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { projectId: -1, lastUsed: -1 }, limit: 5 }).fetch().map((task) => ({ label: task.name, value: task._id })))
+        finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { projectId: -1, lastUsed: -1 }, limit: getGlobalSetting('taskSearchNumResults') }).fetch().map((task) => ({ label: task.name, value: task._id })))
         data = finalArray
       }
       if (this.targetTask) {
@@ -141,7 +141,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
       } else {
         this.targetTask = new Autocomplete(this.$('.js-tasksearch-input').get(0), {
           data,
-          maximumItems: 5,
+          maximumItems: getGlobalSetting('taskSearchNumResults'),
           threshold: 0,
           onSelectItem: ({ label, value }) => {
             this.$('.js-tasksearch-input').removeClass('is-invalid')

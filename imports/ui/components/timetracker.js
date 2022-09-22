@@ -7,6 +7,7 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './timetracker.html'
 import { getGlobalSetting, getUserSetting } from '../../utils/frontend_helpers'
 import CustomFields from '../../api/customfields/customfields'
+import Projects from '../../api/projects/projects'
 
 function pad(num, size) {
   const s = `0000${num}`
@@ -75,7 +76,8 @@ Template.timetracker.events({
     }
     $('#hours').val(Number(hours).toFixed(getUserSetting('precision'))).trigger('change')
     if (project) {
-      $('.js-target-project').val(project).trigger('change')
+      $('.js-target-project').get(0).setAttribute('data-value', project)
+      $('.js-target-project').val(Projects.findOne({ _id: project })?.name).trigger('change')
     }
     if (task) {
       $('.js-tasksearch-input').val(task)

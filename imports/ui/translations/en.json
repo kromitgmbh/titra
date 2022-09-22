@@ -173,7 +173,9 @@
     "holiday_country": "Holiday Country",
     "holiday_state": "Holiday State",
     "holiday_region": "Holyday Region",
-    "xframe_options_origin": "X-Frame-Options header origin URL"
+    "xframe_options_origin": "X-Frame-Options header origin URL",
+    "project_search_num_results": "Number of projects displayed in the project search (default 5)",
+    "task_search_num_results": "Number of tasks displayed in the task search (default 5)"
   },
   "customer": {
     "select_customer": "Select a customer",
