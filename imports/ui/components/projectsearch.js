@@ -55,23 +55,6 @@ Template.projectsearch.helpers({
 
 Template.projectsearch.onRendered(() => {
   const templateInstance = Template.instance()
-  templateInstance.targetProject = new Autocomplete(templateInstance.$('.js-target-project').get(0), {
-    data: [],
-    maximumItems: getGlobalSetting('project_search_num_results'),
-    threshold: 0,
-    onSelectItem: ({ label, value }) => {
-      templateInstance.$('.js-target-project').removeClass('is-invalid')
-      templateInstance.selectedId.set(value)
-      if (!(templateInstance.data.tcid && templateInstance.data.tcid.get())) {
-        FlowRouter.setParams({ projectId: value })
-      }
-      if (!Projects.findOne({ _id: templateInstance.selectedId.get() })?.defaultTask) {
-        $('.js-tasksearch-input').trigger('focus')
-      } else {
-        $('#hours').first().trigger('focus')
-      }
-    },
-  })
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
       let projectlist = Projects.find(
@@ -90,7 +73,25 @@ Template.projectsearch.onRendered(() => {
       if (templateInstance.data.allProjects) {
         projectlist.push({ label: t('overview.all_projects'), value: 'all' })
       }
-      if (projectlist.length > 0) {
+      if (!templateInstance.targetProject) {
+        templateInstance.targetProject = new Autocomplete(templateInstance.$('.js-target-project').get(0), {
+          data: projectlist,
+          maximumItems: getGlobalSetting('projectSearchNumResults'),
+          threshold: 0,
+          onSelectItem: ({ label, value }) => {
+            templateInstance.$('.js-target-project').removeClass('is-invalid')
+            templateInstance.selectedId.set(value)
+            if (!(templateInstance.data.tcid && templateInstance.data.tcid.get())) {
+              FlowRouter.setParams({ projectId: value })
+            }
+            if (!Projects.findOne({ _id: templateInstance.selectedId.get() })?.defaultTask) {
+              $('.js-tasksearch-input').trigger('focus')
+            } else {
+              $('#hours').first().trigger('focus')
+            }
+          },
+        })
+      } else if (projectlist.length > 0) {
         templateInstance.targetProject?.setData(projectlist)
       }
     }
