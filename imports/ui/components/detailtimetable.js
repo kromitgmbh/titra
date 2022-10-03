@@ -415,7 +415,7 @@ Template.detailtimetable.events({
     event.preventDefault()
     if (getUserSetting('siwappurl') && getUserSetting('siwapptoken')) {
       Meteor.call('sendToSiwapp', {
-        projectId: $('.js-projectselect').get(0).getAttribute('data-value'), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
+        projectId: $('.js-projectselect').val(), timePeriod: $('#period').val(), userId: $('#resourceselect').val(), customer: $('#customerselect').val(),
       }, (error, result) => {
         if (error) {
           showToast(t('notifications.export_failed', { error }))
