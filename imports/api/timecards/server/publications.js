@@ -4,33 +4,6 @@ import Timecards from '../timecards.js'
 import Projects from '../../projects/projects.js'
 import { checkAuthentication, buildDetailedTimeEntriesForPeriodSelector } from '../../../utils/server_method_helpers.js'
 
-// Meteor.publish('projectTimecards', function projectTimecards({ projectId, period, userId }) {
-//   check(projectId, String)
-//   check(period, String)
-//   check(userId, String)
-//   checkAuthentication(this)
-//   const projectList = getProjectListById(projectId)
-
-//   if (period && period !== 'all') {
-//     const { startDate, endDate } = periodToDates(period)
-//     if (userId === 'all') {
-//       return Timecards.find({
-//         projectId: { $in: projectList },
-//         date: { $gte: startDate, $lte: endDate },
-//       })
-//     }
-//     return Timecards.find({
-//       projectId: { $in: projectList },
-//       userId,
-//       date: { $gte: startDate, $lte: endDate },
-//     })
-//   }
-//   if (userId === 'all') {
-//     return Timecards.find({ projectId: { $in: projectList } })
-//   }
-//   return Timecards.find({ projectId: { $in: projectList }, userId })
-// })
-
 Meteor.publish('periodTimecards', function periodTimecards({ startDate, endDate, userId }) {
   check(startDate, Date)
   check(endDate, Date)
