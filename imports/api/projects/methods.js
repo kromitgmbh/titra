@@ -7,7 +7,7 @@ import Projects from './projects.js'
 import Tasks from '../tasks/tasks.js'
 import { checkAuthentication } from '../../utils/server_method_helpers.js'
 import { addNotification } from '../notifications/notifications.js'
-import { emojify, getGlobalSetting } from '../../utils/frontend_helpers'
+import { emojify } from '../../utils/frontend_helpers'
 
 Meteor.methods({
   getAllProjectStats({ includeNotBillableTime, showArchived }) {
@@ -26,7 +26,8 @@ Meteor.methods({
     if (!notbillable) {
       andCondition.push({ $or: [{ notbillable }, { notbillable: { $exists: false } }] })
     }
-    const projectList = Projects.find({ $and: andCondition }, { _id: 1 }).fetch().map((value) => value._id)
+    const projectList = Projects.find({ $and: andCondition }, { _id: 1 })
+      .fetch().map((value) => value._id)
     let totalHours = 0
     let currentMonthHours = 0
     let previousMonthHours = 0
@@ -40,9 +41,12 @@ Meteor.methods({
     const previousMonthEnd = dayjs.utc().subtract('1', 'month').endOf('month')
     const beforePreviousMonthStart = dayjs.utc().subtract('2', 'month').startOf('month')
     const beforePreviousMonthEnd = dayjs.utc().subtract('2', 'month').endOf('month')
-    totalHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{$match: { projectId: { $in: projectList } }}, {$group:{_id: null, totalHours:{$sum: "$hours"}}}]).toArray())[0]?.totalHours)
+    totalHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: null, totalHours: { $sum: '$hours' } } }]).toArray())[0]?.totalHours)
     for (const timecard of
-      Timecards.find({ projectId: { $in: projectList }, date: { $gte: beforePreviousMonthStart.toDate()} }).fetch()) {
+      Timecards.find({
+        projectId: { $in: projectList },
+        date: { $gte: beforePreviousMonthStart.toDate() },
+      }).fetch()) {
       if (dayjs.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
         currentMonthHours += Number.parseFloat(timecard.hours)
       } else if (dayjs.utc(new Date(timecard.date))
@@ -117,21 +121,25 @@ Meteor.methods({
   archiveProject({ projectId }) {
     check(projectId, String)
     checkAuthentication(this)
-    Projects.update({
-      _id: projectId,
-      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
-    },
-    { $set: { archived: true } })
+    Projects.update(
+      {
+        _id: projectId,
+        $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+      },
+      { $set: { archived: true } },
+    )
     return true
   },
   restoreProject({ projectId }) {
     check(projectId, String)
     checkAuthentication(this)
-    Projects.update({
-      _id: projectId,
-      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
-    },
-    { $set: { archived: false } })
+    Projects.update(
+      {
+        _id: projectId,
+        $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+      },
+      { $set: { archived: false } },
+    )
     return true
   },
   getTopTasks({ projectId, includeNotBillableTime, showArchived }) {
@@ -152,7 +160,8 @@ Meteor.methods({
       if (!notbillable) {
         andCondition.push({ $or: [{ notbillable }, { notbillable: { $exists: false } }] })
       }
-      const projectList = Projects.find({ $and: andCondition }, { _id: 1 }).fetch().map((value) => value._id)
+      const projectList = Projects.find({ $and: andCondition }, { _id: 1 })
+        .fetch().map((value) => value._id)
       return rawCollection.aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: '$task', count: { $sum: '$hours' } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()
     }
     return rawCollection.aggregate([{ $match: { projectId } }, { $group: { _id: '$task', count: { $sum: '$hours' } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()

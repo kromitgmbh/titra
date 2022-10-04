@@ -15,7 +15,7 @@ Meteor.publish('dashboardById', function dashboardById(_id) {
       },
       { $fields: { _id: 1 } },
     ).fetch().map((value) => value._id)
-    if (dashboard.resourceId === 'all') {
+    if (dashboard.resourceId.includes('all')) {
       return Timecards.find({
         projectId: { $in: projectList },
         date: { $gte: dashboard.startDate, $lte: dashboard.endDate },
@@ -27,7 +27,7 @@ Meteor.publish('dashboardById', function dashboardById(_id) {
       date: { $gte: dashboard.startDate, $lte: dashboard.endDate },
     }, { sort: { date: 1 } })
   }
-  if (dashboard.resourceId === 'all') {
+  if (dashboard.resourceId.includes('all')) {
     return Timecards.find({
       projectId: dashboard.projectId,
       date: { $gte: dashboard.startDate, $lte: dashboard.endDate },

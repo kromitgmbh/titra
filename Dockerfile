@@ -25,7 +25,7 @@ RUN apk --no-cache add \
 COPY --from=0 /build/*.tar.gz /app/bundle.tar.gz
 WORKDIR /app/
 RUN tar xvzf bundle.tar.gz
-RUN cd /app/bundle/programs/server; npm ci; npm prune --production;
+RUN cd /app/bundle/programs/server; npm ci --silent --prefer-offline --no-audit; npm prune --production;
 RUN curl -sfL https://gobinaries.com/tj/node-prune -o /tmp/node-prune.sh
 RUN chmod +x /tmp/node-prune.sh
 RUN /tmp/node-prune.sh

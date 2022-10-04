@@ -118,7 +118,7 @@ Meteor.publish('projectResources', function projectResources({ projectId }) {
   let handle
   let initializing = true
   let uniqueUsers
-  if (projectId === 'all') {
+  if (projectId.includes('all')) {
     const projectList = Projects.find(
       { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },

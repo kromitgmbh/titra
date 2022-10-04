@@ -6,7 +6,7 @@ Meteor.publish('projectCustomers', function projectCustomers({ projectId }) {
   check(projectId, Match.OneOf(String, Array))
   checkAuthentication(this)
   const customers = []
-  if (projectId === 'all') {
+  if (projectId.includes('all')) {
     Projects.find(
       { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },

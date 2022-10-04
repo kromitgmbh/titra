@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.80.5",
+  "version": "0.80.6",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -17,7 +17,7 @@
     "@simonwep/pickr": "^1.8.2",
     "adm-zip": "^0.5.9",
     "bcrypt": "^5.0.1",
-    "bootstrap": "^5.2.1",
+    "bootstrap": "^5.2.2",
     "content-type": "^1.0.4",
     "date-holidays": "^3.16.7",
     "dayjs": "^1.11.5",
