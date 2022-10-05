@@ -1,8 +1,9 @@
 <template name="allprojectschart">
   <div class="row">
     <div class="col-12 col-md-4">
-      {{t "overview.total_time_tracked"}} <br/>
-      {{timeInUserUnit(totalHours)}} ({{timeunitVerbose}})
+      <h6 class="card-title">{{t "overview.summary"}}</h6>
+      <i class="fa fa-hashtag" style="width:18px;"></i> {{t 'overview.number_projects'}}: {{projectCount}}<br/>
+      <i class="fa fa-clock" style="width:18px;"></i> {{t "overview.total_time"}} {{timeInUserUnit(totalHours)}} ({{timeunitVerbose}})
       <div class="my-2"></div>
       <button type="button" class="btn btn-secondary border" data-bs-toggle="collapse" data-bs-target=".js-allproject-filter" aria-label='{{t "details.filter"}}'><i class="fa fa-funnel-dollar"></i>&nbsp; {{t "details.filter"}}</button>
       <div class="collapse card js-allproject-filter all-projects-bg">
@@ -36,19 +37,15 @@
       </div>
     </div>
     <div class="d-none d-md-block col-md-3 text-center">
-      {{#if topTasks}}
-        <span>{{t "overview.top_tasks"}}</span>
-      {{else}}
-        <span>&nbsp;</span>
-      {{/if}}
-      <div class="js-pie-chart-container" style="max-height: 160px;">
-        <div class="my-2" style="margin:auto; width:120px; height:120px; border-radius:50%; background-color: rgba(0,0,0,0.1);"></div>
+      <h6 class="card-title">{{t "overview.top_tasks"}}</h6>
+      <div class="js-pie-chart-container" style="max-height: 160px; overflow:hidden;">
+        <div style="margin:auto; margin-top:1.5rem; width:130px; height:130px; border-radius:50%; background-color: rgba(0,0,0,0.1);"></div>
       </div>
     </div>
     <div class="d-none d-md-block col-md-5 text-center">
-      <span>{{t "overview.three_month_history"}}</span>
-      <div class="js-chart-container" style="max-height: 160px;">
-        <div class="my-2" style="margin:auto; width:250px; height:120px; background-color:rgba(0,0,0,0.1);"></div>
+      <h6 class="card-title">{{t "overview.three_month_history"}}</h6>
+      <div class="js-chart-container" style="max-height: 160px;overflow:hidden;">
+        <div class="my-2" style="margin:auto; width:250px; height:130px; background-color:rgba(0,0,0,0.1);"></div>
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <template name="projectProgress">
   <!-- {{#if Template.subscriptionsReady}} -->
     {{#if percentage}}
-      <div class="progress w-100" style="border-radius:0;">
+      <div class="progress w-100" style="border-radius: 0 0 var(--bs-progress-border-radius) var(--bs-progress-border-radius);">
         <div class="progress-bar text-center" role="progressbar" style="background-color:{{colorOpacity color 50}};width:{{percentage}}%;max-width:100%;" aria-valuenow="{{totalHours}}" aria-valuemin="0" aria-valuemax="{{target}}"><small class="text-nowrap">{{percentage}} %</small></div>
       </div>
     {{/if}}

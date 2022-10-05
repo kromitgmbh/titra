@@ -1,5 +1,6 @@
 import './allprojectschart.html'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import Projects from '../../api/projects/projects.js'
 import { getUserSetting, getUserTimeUnitVerbose } from '../../utils/frontend_helpers'
 
 Template.allprojectschart.onCreated(function allprojectschartCreated() {
@@ -32,6 +33,9 @@ Template.allprojectschart.helpers({
       ? Template.instance().projectStats.get().totalHours : false
   },
   showNotBillableTime: () => Template.instance().includeNotBillableTime.get(),
+  projectCount: () => (Template.instance().data?.showArchived?.get()
+    ? Projects.find({}).count()
+    : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count()),
 })
 Template.allprojectschart.events({
   'change #showNotBillableTime': (event, templateInstance) => {
@@ -116,7 +120,7 @@ Template.allprojectschart.onRendered(() => {
           }
         })
       }
-      if (templateInstance.topTasks.get() && templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
+      if (templateInstance.topTasks.get()?.length > 0 && templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
         import('frappe-charts').then((chartModule) => {
           window.requestAnimationFrame(() => {
             const { Chart } = chartModule

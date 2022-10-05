@@ -87,7 +87,8 @@
     "total_time": "Gesamte Zeit: ",
     "target": "Ziel: ",
     "turnover": "Umsatz: ",
-    "number_projects": "Anzahl Projekte"
+    "number_projects": "Anzahl Projekte",
+    "summary": "Zusammenfassung"
   },
   "project": {
     "title": "Projekt Bearbeiten",

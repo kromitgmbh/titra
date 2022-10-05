@@ -58,12 +58,18 @@ Template.projectchart.helpers({
   turnOver() {
     const precision = getUserSetting('precision')
     const project = Projects.findOne({ _id: Template.instance().data.projectId })
-    return project && project.rate && project.totalHours
-      ? Number(project.rate * project.totalHours).toFixed(precision) : false
+    const totalHours = Number(ProjectStats.findOne({
+      _id: Template.instance().data.projectId,
+    })?.totalHours)
+    return project && project.rate && totalHours
+      ? (Number(project.rate) * totalHours).toFixed(precision) : false
   },
   target() {
     return Number(Projects.findOne({ _id: Template.instance().data.projectId }).target) > 0
       ? Projects.findOne({ _id: Template.instance().data.projectId }).target : false
+  },
+  customer() {
+    return Projects.findOne({ _id: Template.instance().data.projectId })?.customer
   },
   projectDescAsHtml: () => encodeURI(Template.instance().projectDescAsHtml.get()),
   truncatedProjectDescAsHtml: () => (Template.instance().projectDescAsHtml.get()
@@ -90,7 +96,8 @@ Template.projectchart.onRendered(() => {
         const tooltip = new bs.Tooltip(templateInstance.$('.js-tooltip').get(0), {
           title: templateInstance.projectDescAsHtml.get(),
           html: true,
-          placement: 'right',
+          placement: 'auto',
+          boundary: templateInstance.$('.js-tooltip').parent().get(0),
           trigger: 'hover focus',
         })
       })
@@ -118,9 +125,10 @@ Template.projectchart.onRendered(() => {
   })
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
-      const converter = new QuillDeltaToHtmlConverter(Projects
-        .findOne({ _id: Template.instance().data.projectId })?.desc?.ops,
-      { multiLineParagraph: true })
+      const converter = new QuillDeltaToHtmlConverter(
+        Projects.findOne({ _id: Template.instance().data.projectId })?.desc?.ops,
+        { multiLineParagraph: true, paragraphTag: 'span' },
+      )
       templateInstance.projectDescAsHtml.set(converter.convert())
     }
   })
@@ -187,7 +195,7 @@ Template.projectchart.onRendered(() => {
   })
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && templateInstance.isVisible.get()) {
-      if (templateInstance.topTasks.get()) {
+      if (templateInstance.topTasks.get()?.length > 0) {
         import('frappe-charts').then((chartModule) => {
           window.requestAnimationFrame(() => {
             const { Chart } = chartModule

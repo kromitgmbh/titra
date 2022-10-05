@@ -1,16 +1,20 @@
 <template name="projectchart">
   <div class="row">
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-4 text-truncate">
+      <h6 class="card-title mb-2">{{t "overview.summary"}}</h6>
       {{#if projectDescAsHtml}}
-        <div class="text-truncate js-tooltip" style="max-height:1.8em;cursor:pointer;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;">
-          {{{truncatedProjectDescAsHtml}}}
-        </div>
+        <div class="d-inline js-tooltip" style="max-height:1.8em;cursor:pointer;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;">
+          <i class="d-inline fa fa-book" style="width:18px;"></i> {{{truncatedProjectDescAsHtml}}}
+        </div><br/>
       {{/if}}
       {{#if componentIsReady}}
         {{#if allTeamMembers}}
-          <i class="fa fa-users" style="width:18px;"></i> {{t "overview.team"}} {{#each teamMember in allTeamMembers}}
+          <i class="fa fa-users" style="width:18px;"></i> {{t "overview.team"}}: {{#each teamMember in allTeamMembers}}
           {{{avatarImg teamMember.profile.avatar teamMember.profile.name teamMember.profile.avatarColor}}}
           {{/each}}<br/>
+        {{/if}}
+        {{#if customer}}
+          <i class="fa fa-address-card" style="width:18px;"></i> {{t "globals.customer"}}: <span class="text-truncate">{{customer}}</span><br/>
         {{/if}}
         {{#if totalHours}}
           <i class="fa fa-clock" style="width:18px;"></i> {{t "overview.total_time"}} {{timeInUserUnit(totalHours)}} ({{timeunitVerbose}}) {{{hourIndicator}}}<br/>
@@ -26,17 +30,13 @@
       {{/if}}
     </div>
     <div class="d-none d-md-block col-md-3 text-center">
-      {{#if topTasks}}
-        <p>{{t "overview.top_tasks"}}</p>
-      {{else}}
-        <p>&nbsp;</p>
-      {{/if}}
+      <h6 class="card-title">{{t "overview.top_tasks"}}</h6>
       <div class="js-pie-chart-container" style="max-height: 160px; overflow:hidden;">
-        <div style="margin:auto; width:130px; height:130px; border-radius:50%; background-color: rgba(0,0,0,0.1);"></div>
+        <div style="margin:auto; margin-top:1.5rem; width:130px; height:130px; border-radius:50%; background-color: rgba(0,0,0,0.1);"></div>
       </div>
     </div>
     <div class="d-none d-md-block col-md-5 text-center">
-      <p>{{t "overview.three_month_history"}}</p>
+      <h6 class="card-title">{{t "overview.three_month_history"}}</h6>
       <div class="js-hours-chart-container p-3" style="max-height: 160px;">
         <div style="margin:auto; width:240px; height:130px; background-color:rgba(0,0,0,0.1);"></div>
       </div>

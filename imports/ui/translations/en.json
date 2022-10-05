@@ -87,7 +87,8 @@
     "total_time": "Total time: ",
     "target": "Target: ",
     "turnover": "Turnover: ",
-    "number_projects": "Number of projects"
+    "number_projects": "Number of projects",
+    "summary": "Summary"
   },
   "project": {
     "title": "Edit project",
