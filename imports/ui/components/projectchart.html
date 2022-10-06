@@ -1,11 +1,11 @@
 <template name="projectchart">
   <div class="row">
-    <div class="col-12 col-md-4 text-truncate">
+    <div class="col-12 col-md-4">
       <h6 class="card-title mb-2">{{t "overview.summary"}}</h6>
       {{#if projectDescAsHtml}}
-        <div class="d-inline js-tooltip" style="max-height:1.8em;cursor:pointer;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;">
+        <div class="js-tooltip mb-1 text-truncate" style="max-height:1.8em;cursor:pointer;overflow:hidden;">
           <i class="d-inline fa fa-book" style="width:18px;"></i> {{{truncatedProjectDescAsHtml}}}
-        </div><br/>
+        </div>
       {{/if}}
       {{#if componentIsReady}}
         {{#if allTeamMembers}}
