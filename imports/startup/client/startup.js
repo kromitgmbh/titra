@@ -20,6 +20,7 @@ import {
 const i18nextDebugMode = window.location.href.indexOf('localhost') > 0
 
 Template.registerHelper('t', (param) => (i18nReady.get() ? t(param) : 'Loading ...'))
+Template.registerHelper('prefix', () => window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || '')
 
 Meteor.startup(() => {
   window.BootstrapLoaded = new ReactiveVar(false)
@@ -114,8 +115,8 @@ Meteor.startup(() => {
     }
   })
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-      .register('/sw.js')
+    var prefix = window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || ''
+    navigator.serviceWorker.register(prefix + '/sw.js')
   }
   Tracker.autorun(() => {
     if (extensionHandle.ready()) {

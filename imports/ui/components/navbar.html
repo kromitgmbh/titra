@@ -1,16 +1,16 @@
 <template name="navbar">
   <nav class="navbar navbar-expand bg-dark fixed-top d-print-none">
     <div class="container-fluid">
-      <a class="navbar-brand text-white" href="/"><img src="/img/navbar_logo.svg" alt="titra - open source time tracking for small companies" class="d-inline-block" height="24" width="24"/>{{#unless currentUser}}&nbsp;&nbsp;titra{{/unless}}</a>
+        <a class="navbar-brand text-white" href="{{ prefix }}/"><img src="{{ prefix }}/img/navbar_logo.svg" alt="titra - open source time tracking for small companies" class="d-inline-block" height="24" width="24"/>{{#unless currentUser}}&nbsp;&nbsp;titra{{/unless}}</a>
       {{#if currentUser}}
         <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav me-auto">
-            <li class="nav-item"><a class="nav-link {{isRouteActive 'tracktime'}}" href="/tracktime"><i class="fa fa-plus"></i> {{#if displayLinkText 'tracktime'}}<span>{{t "navigation.track"}}</span>{{else}}<span class="d-none d-md-inline">{{t "navigation.track"}}</span>{{/if}}</a></li>
-            <li class="nav-item"><a class="nav-link {{isRouteActive 'projectlist'}}" href="/list/projects"><i class="fa fa-chart-pie"></i> {{#if displayLinkText 'projectlist'}}<span>{{t "navigation.overview"}}</span>{{else}}<span class="d-none d-md-inline">{{t "navigation.overview"}}</span>{{/if}}</a></li>
-            <li class="nav-item"><a class="nav-link {{isRouteActive 'timecards'}}" href="/list/timecards/all"><i class="fa fa-list"></i> {{#if displayLinkText 'timecards'}}<span>{{t "navigation.details"}}</span>{{else}}<span class="d-none d-md-inline">{{t "navigation.details"}}</span>{{/if}}</a></li>
+              <li class="nav-item"><a class="nav-link {{isRouteActive 'tracktime'}}" href="{{ prefix }}/tracktime"><i class="fa fa-plus"></i> {{#if displayLinkText 'tracktime'}}<span>{{t "navigation.track"}}</span>{{else}}<span class="d-none d-md-inline">{{t "navigation.track"}}</span>{{/if}}</a></li>
+              <li class="nav-item"><a class="nav-link {{isRouteActive 'projectlist'}}" href="{{ prefix }}/list/projects"><i class="fa fa-chart-pie"></i> {{#if displayLinkText 'projectlist'}}<span>{{t "navigation.overview"}}</span>{{else}}<span class="d-none d-md-inline">{{t "navigation.overview"}}</span>{{/if}}</a></li>
+              <li class="nav-item"><a class="nav-link {{isRouteActive 'timecards'}}" href="{{ prefix }}/list/timecards/all"><i class="fa fa-list"></i> {{#if displayLinkText 'timecards'}}<span>{{t "navigation.details"}}</span>{{else}}<span class="d-none d-md-inline">{{t "navigation.details"}}</span>{{/if}}</a></li>
           </ul>
           <div class="nav-item me-2 d-none d-md-inline-block" style="width:130px;">
             {{#unless isRouteActive 'tracktime'}}
@@ -25,17 +25,17 @@
                 {{{avatar}}}
               </a>
               <div class="dropdown-menu mt-0 bg-dark" aria-label="navbarDropdownMenuLink" style="left:auto;right:-1rem;">
-                <a class="dropdown-item text-white" href="/profile"><i class="fa fa-user-circle"></i> {{t "navigation.profile"}}</a>
-                <a class="dropdown-item text-white" href="/settings"><i class="fa fa-cogs"></i> {{t "navigation.settings"}}</a>
+                  <a class="dropdown-item text-white" href="{{ prefix }}/profile"><i class="fa fa-user-circle"></i> {{t "navigation.profile"}}</a>
+                  <a class="dropdown-item text-white" href="{{ prefix }}/settings"><i class="fa fa-cogs"></i> {{t "navigation.settings"}}</a>
                 {{#unless currentUser.loggingIn}}
                   {{#if Template.subscriptionsReady}}
                     {{#if currentUser.isAdmin}}
-                      <a class="dropdown-item text-white" href="/admin"><i class="fa fa-lock"></i> {{t "navigation.administration"}}</a>
+                    <a class="dropdown-item text-white" href="{{ prefix }}/admin"><i class="fa fa-lock"></i> {{t "navigation.administration"}}</a>
                     {{/if}}
                   {{/if}}
                 {{/unless}}
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-white" href="/about"><i class="fa fa-info-circle"></i> {{t "navigation.about"}}</a>
+                <a class="dropdown-item text-white" href="{{ prefix }}/about"><i class="fa fa-info-circle"></i> {{t "navigation.about"}}</a>
               </div>
             </li>
           </ul>
