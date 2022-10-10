@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import bootstrap from 'bootstrap'
 import { Random } from 'meteor/random'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { t } from '../../utils/i18n.js'
@@ -13,6 +14,8 @@ import { oidcFields, getOidcConfiguration } from '../../utils/oidc_helper'
 Template.administration.onCreated(function administrationCreated() {
   this.limit = new ReactiveVar(25)
   this.editCustomFieldId = new ReactiveVar()
+  this.globalsettingCategories = new ReactiveVar()
+  this.filter = new ReactiveVar()
   this.subscribe('extensions')
   this.subscribe('customfields')
   this.autorun(() => {
@@ -21,6 +24,13 @@ Template.administration.onCreated(function administrationCreated() {
       this.$('#limitpicker').val(FlowRouter.getQueryParam('limit'))
     }
     this.subscribe('adminUserList', { limit: this.limit.get() })
+  })
+  Meteor.call('getGlobalsettingCategories', (error, result) => {
+    if (!error) {
+      this.globalsettingCategories.set(result.map((entry) => entry._id))
+    } else {
+      console.error(error)
+    }
   })
 })
 
@@ -31,12 +41,24 @@ Template.administration.helpers({
   globalsettings: () => Globalsettings.find(),
   stringify: (string) => string.toString(),
   isTextArea: (setting) => setting.type === 'textarea',
+  isCheckbox: (setting) => setting.type === 'checkbox',
+  isChecked: (setting) => (setting.value.toString() === 'true' ? 'checked' : ''),
   extensions: () => (Extensions.find({}).fetch().length > 0 ? Extensions.find({}) : false),
   customfields: () => (CustomFields.find({}).fetch().length > 0 ? CustomFields.find({}) : false),
   getClassName: (name) => t(`globals.${name}`),
   oidcSettings: () => oidcFields,
   oidcValue: (name) => getOidcConfiguration(name),
   siteUrl: () => Meteor.absoluteUrl({ replaceLocalhost: true }),
+  globalsettingCategories: () => Template.instance().globalsettingCategories.get()?.map((entry) => entry || 'settings.categories.no_category'),
+  getGlobalsettingsForCategory: (category) => Globalsettings
+    .find().fetch().sort((a, b) => {
+      if (t(a.description) < t(b.description)) {
+        return -1
+      } if (t(a.description) > t(b.description)) {
+        return 1
+      }
+      return 0
+    }).filter((entry) => (category === 'settings.categories.no_category' ? entry.category === undefined : entry.category === category) && (Template.instance().filter.get() ? t(entry.description).match(new RegExp(`.*${Template.instance().filter.get()}.*`, 'gi')) : true)),
 })
 
 Template.administration.events({
@@ -125,6 +147,8 @@ Template.administration.events({
       let value = templateInstance.$(element).val()
       if (element.type === 'number') {
         value = Number(value)
+      } else if (element.type === 'checkbox') {
+        value = templateInstance.$(element).is(':checked')
       } else if (value === 'true') {
         value = true
       } else if (value === 'false') {
@@ -146,6 +170,13 @@ Template.administration.events({
       if (error) {
         console.error(error)
       } else {
+        Meteor.call('getGlobalsettingCategories', (innerError, result) => {
+          if (!innerError) {
+            templateInstance.globalsettingCategories.set(result.map((entry) => entry._id))
+          } else {
+            console.error(error)
+          }
+        })
         showToast(t('notifications.settings_saved_success'))
       }
     })
@@ -282,21 +313,17 @@ Template.administration.events({
   },
   'click .js-update-oidc': (event) => {
     event.preventDefault()
-
     const configuration = {
       service: 'oidc',
       loginStyle: 'popup',
     }
-
     // Fetch the value of each input field
     oidcFields.forEach((field) => {
       configuration[field.property] = document.getElementById(
         `configure-oidc-${field.property}`
       ).value.replace(/^\s*|\s*$/g, '') // trim() doesnt work on IE8
     })
-
     configuration.idTokenWhitelistFields = configuration.idTokenWhitelistFields.split(' ')
-
     // Configure this login service
     Meteor.call('updateOidcSettings', configuration, (error) => {
       if (error) {
@@ -326,5 +353,14 @@ Template.administration.events({
         showToast(t('administration.user_updated'))
       }
     })
+  },
+  'click .accordion-button': (event) => {
+    event.preventDefault()
+    bootstrap.Collapse
+      .getOrCreateInstance(event.currentTarget.parentNode.nextElementSibling).toggle()
+  },
+  'change .js-globalsetting-search': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.filter.set(templateInstance.$(event.currentTarget).val())
   },
 })

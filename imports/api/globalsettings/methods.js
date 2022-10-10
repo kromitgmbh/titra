@@ -37,4 +37,8 @@ Meteor.methods({
     })
     ServiceConfiguration.configurations.insert(configuration)
   },
+  getGlobalsettingCategories() {
+    checkAdminAuthentication(this)
+    return Globalsettings.rawCollection().aggregate([{ $group: { _id: '$category' } }, { $sort: { _id: 1 } }]).toArray()
+  },
 })

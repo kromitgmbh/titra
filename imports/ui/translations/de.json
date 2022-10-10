@@ -176,7 +176,21 @@
     "holiday_region": "Region/Stadt",
     "xframe_options_origin": "X-Frame-Options header origin URL",
     "project_search_num_results": "Die Anzahl der Projekt in der Projektsuche (Standard 5)",
-    "task_search_num_results": "Die Anzahl der Tätigkeiten in der Tätigkeitensuche (Standard 5)"
+    "task_search_num_results": "Die Anzahl der Tätigkeiten in der Tätigkeitensuche (Standard 5)",
+    "categories": {
+      "global": "Globale Einstellungen",
+      "interfaces": "Schnittstellen",
+      "customization": "Benutzerdefinierte Anpassungen",
+      "login": "Anmeldung",
+      "holidays": "Feiertage",
+      "security": "Sicherheit",
+      "workingtime_defaults": "Vorbelegungen für die Arbeitszeitansicht",
+      "email": "E-mail",
+      "user_defaults": "Benutzer Vorbelegungen",
+      "time_tracking": "Zeiterfassung",
+      "date_settings": "Formatierung und Berechnung von Terminen",
+      "no_category": "Nicht kategorisiert"
+    }
   },
   "customer": {
     "select_customer": "Kunde auswählen",

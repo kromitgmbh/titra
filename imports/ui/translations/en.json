@@ -177,7 +177,21 @@
     "holiday_region": "Holyday Region",
     "xframe_options_origin": "X-Frame-Options header origin URL",
     "project_search_num_results": "Number of projects displayed in the project search (default 5)",
-    "task_search_num_results": "Number of tasks displayed in the task search (default 5)"
+    "task_search_num_results": "Number of tasks displayed in the task search (default 5)",
+    "categories": {
+      "global": "Globals",
+      "interfaces": "Interfaces",
+      "customization": "Customization",
+      "login": "Login",
+      "holidays": "Holidays",
+      "security": "Security",
+      "workingtime_defaults": "Workingtime view defaults",
+      "email": "E-mail",
+      "user_defaults": "User defaults",
+      "time_tracking": "Time tracking",
+      "date_settings": "Date settings",
+      "no_category": "No category"
+    }
   },
   "customer": {
     "select_customer": "Select a customer",

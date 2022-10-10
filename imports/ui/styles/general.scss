@@ -61,7 +61,7 @@
 @import "{}/node_modules/bootstrap/scss/nav";
 @import "{}/node_modules/bootstrap/scss/navbar";
 @import "{}/node_modules/bootstrap/scss/card";
-// @import "accordion";
+@import "{}/node_modules/bootstrap/scss/accordion";
 // @import "breadcrumb";
 @import "{}/node_modules/bootstrap/scss/pagination";
 @import "{}/node_modules/bootstrap/scss/badge";
@@ -303,4 +303,10 @@ button.dp-clear {
   background-color: $dark !important;
   color: $light !important;
   opacity: 1 !important;
+}
+
+.js-setting-input.form-checkbox {
+  transform: scale(1.5);
+  vertical-align: middle;
+  margin-left: 10px !important;
 }

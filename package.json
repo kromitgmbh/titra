@@ -1,12 +1,12 @@
 {
   "name": "titra",
-  "version": "0.80.8",
+  "version": "0.81.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.19.0",
+    "@babel/runtime": "^7.19.4",
     "@dashboardcode/bsmultiselect": "^1.1.18",
     "@fortawesome/fontawesome-free": "^6.2.0",
     "@fullcalendar/core": "^5.11.3",
@@ -16,7 +16,7 @@
     "@popperjs/core": "^2.11.6",
     "@simonwep/pickr": "^1.8.2",
     "adm-zip": "^0.5.9",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^5.1.0",
     "bootstrap": "^5.2.2",
     "content-type": "^1.0.4",
     "date-holidays": "^3.16.7",
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/eslint-parser": "^7.19.1",
-    "eslint": "^8.24.0",
+    "eslint": "^8.25.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^5.2.1",
