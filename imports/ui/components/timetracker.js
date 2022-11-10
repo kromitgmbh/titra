@@ -45,6 +45,9 @@ Template.timetracker.onCreated(function createTimeTracker() {
         this.intervalHandle = Meteor.setInterval(() => {
           const duration = dayjs.preciseDiff(dayjs(), storedTimer, true)
           $('.js-timer').val(`${pad(duration.hours, 2)}:${pad(duration.minutes, 2)}:${pad(duration.seconds, 2)}`)
+          if (document.title.codePointAt(0) !== '🔴'.codePointAt(0)) {
+            document.title = `🔴 ${document.title}`
+          }
         }, 1000)
       }
     }
@@ -87,6 +90,8 @@ Template.timetracker.events({
     Meteor.call('setTimer', {}, (error) => {
       if (error) {
         console.error(error)
+      } else if (document.title.codePointAt(0) === '🔴'.codePointAt(0)) {
+        document.title = document.title.replace('🔴 ', '')
       }
     })
     templateInstance.timer.set(null)
@@ -122,6 +127,8 @@ Template.timetracker.events({
     }, (error) => {
       if (error) {
         console.error(error)
+      } else if (document.title.codePointAt(0) !== '🔴'.codePointAt(0)) {
+        document.title = `🔴 ${document.title}`
       }
     })
   },
