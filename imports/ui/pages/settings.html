@@ -118,20 +118,35 @@
               </div>
             </div>
         </div>
-        <div class="card">
+        <div class="card mb-3">
           <div class="card-header">Zammad</div>
           <div class="card-block">
             <div class="mb-3 form-floating">
               <input type="text" class="form-control" id="zammadurl" value="{{zammadurl}}" placeholder="https://zammad.url/" />
-              <label class="form-label" for="zammadurl"><strong>{{t "settings.zammad_url"}}</strong></label>
+              <label class="form-label" for="zammadurl">{{t "settings.zammad_url"}}</label>
             </div>
             <div class="form-floating">
               <input type="text" class="form-control" id="zammadtoken" value="{{zammadtoken}}" placeholder="abcdefghijklmnopq-rstuvwxyz123456789" />
-              <label class="form-label" for="zammadtoken"><strong>{{t "settings.zammad_api_token"}}</strong></label>
+              <label class="form-label" for="zammadtoken">{{t "settings.zammad_api_token"}}</label>
             </div>
             <small class="form-text text-muted">{{t "project.wekan_help"}} <a href="https://wiki.titra.io/books/deployment/page/zammad-interface" target="_blank">wiki</a>.</small>
           </div>
         </div>
+        {{#if getGlobalSetting "enableGitlab"}}
+          <div class="card">
+            <div class="card-header">GitLab</div>
+            <div class="card-block">
+              <div class="mb-3 form-floating">
+                <input type="text" class="form-control" id="gitlaburl" value="{{gitlaburl}}" placeholder="https://gitlab.url/" />
+                <label class="form-label" for="gitlaburl">{{t "settings.gitlab_url"}}</label>
+              </div>
+              <div class="form-floating">
+                <input type="text" class="form-control" id="gitlabtoken" value="{{gitlabtoken}}" placeholder="abcdefghijklmnopq-rstuvwxyz123456789" />
+                <label class="form-label" for="gitlabtoken">{{t "settings.gitlab_api_token"}}</label>
+              </div>
+            </div>
+          </div>
+        {{/if}}
       </div>
     </div>
   </form>

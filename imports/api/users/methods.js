@@ -23,6 +23,8 @@ Meteor.methods({
     holidayRegion,
     zammadtoken,
     zammadurl,
+    gitlabtoken,
+    gitlaburl,
   }) {
     check(unit, String)
     check(startOfWeek, Number)
@@ -43,6 +45,8 @@ Meteor.methods({
     check(holidayRegion, Match.Maybe(String))
     check(zammadtoken, String)
     check(zammadurl, String)
+    check(gitlabtoken, String)
+    check(gitlaburl, String)
     checkAuthentication(this)
     Meteor.users.update({ _id: this.userId }, {
       $set: {
@@ -65,6 +69,8 @@ Meteor.methods({
         'profile.regularWorkingTime': regularWorkingTime,
         'profile.zammadtoken': zammadtoken,
         'profile.zammadurl': zammadurl,
+        'profile.gitlabtoken': gitlabtoken,
+        'profile.gitlaburl': gitlaburl,
       },
     })
   },
@@ -86,6 +92,10 @@ Meteor.methods({
         'profile.holidayCountry': '',
         'profile.holidayState': '',
         'profile.holidayRegion': '',
+        'profile.zammadtoken': '',
+        'profile.zammadurl': '',
+        'profile.gitlabtoken': '',
+        'profile.gitlaburl': '',
       },
     })
   },

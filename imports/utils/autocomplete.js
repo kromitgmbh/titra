@@ -1,4 +1,5 @@
 import * as bootstrap from 'bootstrap'
+import { emojify } from './frontend_helpers'
 
 const DEFAULTS = {
   threshold: 2,
@@ -92,9 +93,22 @@ class Autocomplete {
       }
     }
     const button = ce('<button type="button" class="dropdown-item"></button>')
+    const span = ce('<span></span>')
+    let icon
+    if (item.wekan) {
+      icon = ce(`<img style="width:15px;" class="me-1" src="${window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || ''}/img/wekan.png" alt="Wekan"/>`)
+    } else if (item.zammad) {
+      icon = ce(`<img style="width:15px;" class="me-1" src="${window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || ''}/img/zammad.svg" alt="Zammad"/>`)
+    } else if (item.gitlab) {
+      icon = ce(`<img style="width:15px;" class="me-1" src="${window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || ''}/img/gitlab.svg" alt="GitLab"/>`)
+    }
     button.setAttribute('data-label', item.label)
     button.setAttribute('data-value', item.value)
-    button.textContent = item.label
+    emojify(sanitizedLabel).then((finalLabel) => { span.textContent = finalLabel })
+    if (icon) {
+      button.appendChild(icon)
+    }
+    button.appendChild(span)
     return button
   }
 
@@ -117,6 +131,9 @@ class Autocomplete {
       const item = {
         label: this.options.label ? entry[this.options.label] : key,
         value: this.options.value ? entry[this.options.value] : entry,
+        wekan: entry.wekan,
+        zammad: entry.zammad,
+        gitlab: entry.gitlab,
       }
 
       if (removeDiacritics(item.label).toLowerCase()

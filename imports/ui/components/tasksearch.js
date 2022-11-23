@@ -25,6 +25,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
   this.filter = new ReactiveVar()
   this.wekanAPITasks = new ReactiveVar()
   this.zammadAPITasks = new ReactiveVar()
+  this.gitlabAPITasks = new ReactiveVar()
   this.project = new ReactiveVar()
   // this.lastTimecards = new ReactiveVar()
   this.autorun(() => {
@@ -96,6 +97,28 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
     }
   })
   this.autorun(() => {
+    if (!this.gitlabAPITasks.get() && getGlobalSetting('enableGitlab') && getUserSetting('gitlaburl') && getUserSetting('gitlabtoken')) {
+      const query = this.project.get()?.gitlabquery ? this.project.get()?.gitlabquery : 'issues'
+      const headers = new Headers({
+        'PRIVATE-TOKEN': getUserSetting('gitlabtoken'),
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT',
+        'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization',
+
+      })
+      window.fetch(
+        `${getUserSetting('gitlaburl')}api/v4/${query}`,
+        {
+          headers,
+        },
+      ).then((response) => response.json()).then((result) => {
+        this.gitlabAPITasks.set(result)
+      }).catch((error) => {
+        showToast(t('notifications.gitlab_error'))
+      })
+    }
+  })
+  this.autorun(() => {
     this.subscribe('mytasks', { filter: this.filter.get(), projectId: this.data.projectId.get() ? this.data.projectId.get() : FlowRouter.getParam('projectId') })
   })
   this.autorun(() => {
@@ -113,11 +136,11 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
       if (!Template.instance().filter.get() || Template.instance().filter.get() === '') {
         data = Tasks.find({}, { sort: { projectId: -1, lastUsed: -1 }, limit: getGlobalSetting('taskSearchNumResults') })
           .fetch().map((task) => ({ label: task.name, value: task._id }))
-        // return Template.instance().lastTimecards.get()
       } else {
         const finalArray = []
         const wekanAPITasks = Template.instance().wekanAPITasks.get()
         const zammadAPITasks = Template.instance().zammadAPITasks.get()
+        const gitlabAPITasks = Template.instance().gitlabAPITasks.get()
         const regex = `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`
         if (Template.instance().wekanTasks) {
           const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: regex, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: getGlobalSetting('taskSearchNumResults') })
@@ -127,11 +150,14 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
           }
         } else if (wekanAPITasks) {
           if (wekanAPITasks.length > 0) {
-            finalArray.push(...Template.instance().wekanAPITasks.get().map((elem) => ({ label: elem.title, value: elem.title, wekan: true })).filter((element) => new RegExp(regex, 'i').exec(element.name)))
+            finalArray.push(...Template.instance().wekanAPITasks.get().map((elem) => ({ label: elem.title, value: elem.title, wekan: true })).filter((element) => new RegExp(regex, 'i').exec(element.label)))
           }
         }
         if (zammadAPITasks && zammadAPITasks.length > 0) {
-          finalArray.push(...zammadAPITasks.map((elem) => ({ label: elem.title, value: elem.title, zammad: true })).filter((element) => new RegExp(regex, 'i').exec(element.name)))
+          finalArray.push(...zammadAPITasks.map((elem) => ({ label: elem.title, value: elem.title, zammad: true })).filter((element) => new RegExp(regex, 'i').exec(element.label)))
+        }
+        if (gitlabAPITasks && gitlabAPITasks.length > 0) {
+          finalArray.push(...gitlabAPITasks.map((elem) => ({ label: elem.title, value: elem.title, gitlab: true })).filter((element) => new RegExp(regex, 'i').exec(element.label)))
         }
         finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { projectId: -1, lastUsed: -1 }, limit: getGlobalSetting('taskSearchNumResults') }).fetch().map((task) => ({ label: task.name, value: task._id })))
         data = finalArray

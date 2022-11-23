@@ -14,20 +14,21 @@
     {{/if}}
   </div>
   {{/if}}
-  {{#if tasks}}
+  <!-- {{#if tasks}}
     <div class="list-group js-tasksearch-results position-absolute d-none" style="z-index:999;">
       {{#unless Template.subscriptionsReady}}
         <div class="list-group-item">
           {{t "task.searching"}}
         </div>
       {{/unless}}
-      {{#each tasks}}
+      {{#each task in tasks}}
         <button type="button" id="{{id}}" class="list-group-item list-group-item-action js-tasksearch-result">
-            {{#if wekan}}<img src="{{ prefix }}/img/wekan.png" alt="Wekan"/>{{/if}}
-            {{#if zammad}}<img style="width:15px;" src="{{ prefix }}/img/zammad.svg" alt="Zammad"/>{{/if}}
+            {{#if task.wekan}}<img src="{{ prefix }}/img/wekan.png" alt="Wekan"/>{{/if}}
+            {{#if task.zammad}}<img style="width:15px;" src="{{ prefix }}/img/zammad.svg" alt="Zammad"/>{{/if}}
+            {{#if task.gitlab}}<img style="width:15px;" src="{{ prefix }}/img/gitlab.svg" alt="GitLab"/>{{/if}}
           &nbsp;<span class="js-tasksearch-task-name">{{emojify (name)}}</span>
         </button>
       {{/each}}
     </div>
-  {{/if}}
+  {{/if}} -->
 </template>

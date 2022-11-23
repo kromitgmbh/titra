@@ -130,4 +130,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'taskSearchNumResults', description: 'settings.task_search_num_results', type: 'number', value: 5, category: 'settings.categories.time_tracking',
 })
+defaultSettings.push({
+  name: 'enableGitlab', description: 'settings.enable_gitlab', type: 'checkbox', value: true, category: 'settings.categories.interfaces',
+})
 export { defaultSettings, Globalsettings }

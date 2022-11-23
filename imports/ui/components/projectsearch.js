@@ -97,3 +97,9 @@ Template.projectsearch.onRendered(() => {
     }
   })
 })
+Template.projectsearch.events({
+  'click .js-display-project-info': (event, templateInstance) => {
+    event.preventDefault()
+    $('#projectInfoPopup').modal('show')
+  },
+})

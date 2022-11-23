@@ -115,7 +115,7 @@ Meteor.startup(() => {
     }
   })
   if ('serviceWorker' in navigator) {
-    var prefix = window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || ''
+    const prefix = window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || ''
     navigator.serviceWorker.register(prefix + '/sw.js')
   }
   Tracker.autorun(() => {

@@ -16,7 +16,7 @@ Template.datatable.onRendered(() => {
               data,
               serialNoColumn: false,
               clusterize: false,
-              layout: 'fluid',
+              layout: 'ratio',
               noDataMessage: t('tabular.sZeroRecords'),
             }
             try {

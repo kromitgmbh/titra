@@ -111,7 +111,10 @@
     "not_billable": "Nicht verrechenbar",
     "billing_budget": "Verrechnung & Budget",
     "default_task": "Standard Tätigkeit",
-    "default_task_help": "Der Wert in diesem Feld wird bei der Erfassung eines neuen Zeiteintrags in das Tätigkeitsfeld bei der Auswahl dieses Projektes automatisch eingetragen."
+    "default_task_help": "Der Wert in diesem Feld wird bei der Erfassung eines neuen Zeiteintrags in das Tätigkeitsfeld bei der Auswahl dieses Projektes automatisch eingetragen.",
+    "gitlab_integration": "GitLab Integration",
+    "gitlab_query": "Such Parameter",
+    "gitlab_help": "Sie können hier alle Parameter der GitLab Issues API verwenden wie z.B."
   },
   "settings": {
     "user_profile": "Benutzer Profil",
@@ -190,7 +193,9 @@
       "time_tracking": "Zeiterfassung",
       "date_settings": "Formatierung und Berechnung von Terminen",
       "no_category": "Nicht kategorisiert"
-    }
+    },
+    "gitlab_url": "URL der GitLab Instanz",
+    "gitlab_api_token": "GitLab API Token"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

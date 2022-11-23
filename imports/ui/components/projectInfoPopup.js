@@ -45,3 +45,9 @@ Template.projectInfoPopup.helpers({
   notbillable: () => Template.instance().project.get()?.notbillable,
   project: () => Template.instance().project.get(),
 })
+Template.projectInfoPopup.events({
+  'click .js-close-projectinfo-popup': (event, templateInstance) => {
+    event.preventDefault()
+    $('#projectInfoPopup').modal('hide')
+  },
+})

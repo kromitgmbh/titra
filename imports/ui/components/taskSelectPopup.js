@@ -20,6 +20,7 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
   templateInstance.localTasksData = new ReactiveVar([])
   templateInstance.wekanTasksData = new ReactiveVar([])
   templateInstance.zammadTicketsData = new ReactiveVar()
+  templateInstance.gitlabIssuesData = new ReactiveVar()
   templateInstance.autorun(() => {
     if (templateInstance.modalDisplayed.get()) {
       templateInstance.subscribe('allmytasks', { limit: this.limit.get(), filter: templateInstance.taskSelectSearchValue.get() })
@@ -56,7 +57,7 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
             const ddpcon = DDP.connect(project.wekanurl.replace('#', '/.sandstorm-token/'))
             this.wekanTasks = new Mongo.Collection('cards', { connection: ddpcon })
             ddpcon.subscribe('board', 'sandstorm')
-          } else if (project.selectedWekanSwimlanes.length > 0) {
+          } else if (project?.selectedWekanSwimlanes?.length > 0) {
             const authToken = project?.wekanurl?.match(/authToken=(.*)/)[1]
             const url = project.wekanurl.substring(0, project.wekanurl.indexOf('export?'))
             const wekanAPITasks = []
@@ -140,6 +141,34 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
             templateInstance.zammadTicketsData.set(result)
           })
         }
+        templateInstance.gitlabIssuesColumns = new ReactiveVar([
+          {
+            name: t('globals.task'),
+            format: (value) => `<button type="button" class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
+          },
+          {
+            name: t('globals.description'),
+            format: addToolTipToTableCell,
+          }])
+        if (!templateInstance.gitlabIssuesData.get() && getGlobalSetting('enableGitlab') && getUserSetting('gitlaburl') && getUserSetting('gitlabtoken')) {
+          const project = Projects.findOne({ _id: templateInstance.data?.projectId?.get() })
+          const query = project?.gitlabquery ? project?.gitlabquery : 'issues'
+          const headers = new Headers({
+            'PRIVATE-TOKEN': getUserSetting('gitlabtoken'),
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization',
+
+          })
+          window.fetch(
+            `${getUserSetting('gitlaburl')}api/v4/${query}`,
+            {
+              headers,
+            },
+          ).then((response) => response.json()).then((result) => {
+            templateInstance.gitlabIssuesData.set(result)
+          })
+        }
       }
     }
   })
@@ -156,7 +185,7 @@ Template.taskSelectPopup.helpers({
   wekanTasksDataContent: () => Template.instance().wekanTasksData.get(),
   zammadTicketsColumns: () => Template.instance().zammadTicketsColumns,
   zammadTicketsData: () => new ReactiveVar(Template.instance().zammadTicketsData.get()
-    .slice(0, Template.instance().limit.get())
+    ?.slice(0, Template.instance().limit.get())
     .filter((item) => {
       if (Template.instance().taskSelectSearchValue.get()) {
         return item.title.indexOf(Template.instance().taskSelectSearchValue.get()) >= 0
@@ -164,7 +193,18 @@ Template.taskSelectPopup.helpers({
       return true
     }).sort((a, b) => (a.title > b.title ? 1 : -1))
     .map((element) => [element.title, element.note])),
+  gitlabIssuesColumns: () => Template.instance().gitlabIssuesColumns,
+  gitlabIssuesData: () => new ReactiveVar(Template.instance().gitlabIssuesData.get()
+    ?.slice(0, Template.instance().limit.get())
+    .filter((item) => {
+      if (Template.instance().taskSelectSearchValue.get()) {
+        return item.title.indexOf(Template.instance().taskSelectSearchValue.get()) >= 0
+      }
+      return true
+    }).sort((a, b) => (a.title > b.title ? 1 : -1))
+    .map((element) => [element.title, element.description])),
   zammadEnabled: () => getGlobalSetting('enableZammad'),
+  gitlabEnabled: () => getGlobalSetting('enableGitlab'),
   modalDisplayed: () => Template.instance().modalDisplayed.get(),
   isActive: (tab) => Template.instance().activeTab.get() === tab,
 })

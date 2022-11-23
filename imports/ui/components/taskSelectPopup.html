@@ -42,6 +42,11 @@
                       <a class="nav-link" id="zammad-tab" data-bs-toggle="tab" href="#zammad" role="tab" aria-controls="zammad" aria-selected="false">Zammad</a>
                     </li>
                   {{/if}}
+                  {{#if gitlabEnabled}}
+                  <li class="nav-item">
+                    <a class="nav-link" id="gitlab-tab" data-bs-toggle="tab" href="#gitlab" role="tab" aria-controls="gitlab" aria-selected="false">GitLab</a>
+                  </li>
+                {{/if}}
               </ul>
               <div class="tab-content" id="taskSourceContent">
                 <div class="tab-pane fade show active" id="local" role="tabpanel" aria-labelledby="local-tab">
@@ -61,6 +66,11 @@
                 <div class="tab-pane fade" id="zammad" role="tabpanel" aria-labelledby="zammad-tab">
                   {{#if isActive "zammad-tab"}}
                     {{> datatable columns=zammadTicketsColumns data=zammadTicketsData}}
+                  {{/if}}
+                </div>
+                <div class="tab-pane fade" id="gitlab" role="tabpanel" aria-labelledby="gitlab-tab">
+                  {{#if isActive "gitlab-tab"}}
+                    {{> datatable columns=gitlabIssuesColumns data=gitlabIssuesData}}
                   {{/if}}
                 </div>
               </div>

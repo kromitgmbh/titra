@@ -352,6 +352,7 @@ Template.editproject.helpers({
       .search(Template.instance().filter.get()?.toLowerCase()) > -1))
     .slice(0, 5),
   replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
+  gitlabquery: () => Template.instance()?.project?.get()?.gitlabquery,
 })
 
 Template.editproject.onDestroyed(function editprojectDestroyed() {

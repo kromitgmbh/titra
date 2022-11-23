@@ -72,4 +72,7 @@ const removeProjectTask = new ValidatedMethod({
     Tasks.remove({ _id: taskId })
   },
 })
-export { insertProjectTask, updateTask, removeProjectTask }
+
+export {
+  insertProjectTask, updateTask, removeProjectTask,
+}

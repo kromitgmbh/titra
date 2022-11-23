@@ -113,6 +113,20 @@
         </div>
       </div>
       {{/if}}
+      {{#if getGlobalSetting "enableGitlab"}}
+        <div class="mb-3">
+          <div class="card">
+            <div class="card-header">{{t "project.gitlab_integration"}}</div>
+            <div class="card-block">
+              <div class="form-floating">
+                <input class="form-control" name="gitlabquery" id="gitlabquery" type="text" value="{{gitlabquery}}" placeholder="projects/:id/issues?confidential=true"/>
+                <label class="form-label" for="gitlabquery">{{t "project.gitlab_query"}}</label>
+                <small class="form-text text-muted">{{t "project.gitlab_help"}} <i>projects/:id/issues?confidential=true</i> (<a href="https://docs.gitlab.com/ee/api/issues.html" target="_blank">GitLab API</a>).</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{/if}}
       {{#unless newProject}}
         <div>
           <div class="card">

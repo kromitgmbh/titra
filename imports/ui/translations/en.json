@@ -111,7 +111,10 @@
     "not_billable": "Not billable",
     "billing_budget": "Billing & Budget",
     "default_task": "Default task",
-    "default_task_help": "This value will be used as the default task when tracking time on this project."
+    "default_task_help": "This value will be used as the default task when tracking time on this project.",
+    "gitlab_integration": "GitLab integration",
+    "gitlab_query": "Query parameter",
+    "gitlab_help": "You can use all query parameters available in the GitLab Issues API e.g."
   },
   "settings": {
     "user_profile": "User profile",
@@ -191,7 +194,9 @@
       "time_tracking": "Time tracking",
       "date_settings": "Date settings",
       "no_category": "No category"
-    }
+    },
+    "gitlab_url": "GitLab Instance URL",
+    "gitlab_api_token": "GitLab API Token"
   },
   "customer": {
     "select_customer": "Select a customer",
