@@ -195,7 +195,8 @@
       "no_category": "Nicht kategorisiert"
     },
     "gitlab_url": "URL der GitLab Instanz",
-    "gitlab_api_token": "GitLab API Token"
+    "gitlab_api_token": "GitLab API Token",
+    "enable_gitlab": "Gitlab Schnittstelle aktivieren?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

@@ -64,7 +64,7 @@ Template.tracktime.onRendered(() => {
 })
 Template.tracktime.onCreated(function tracktimeCreated() {
   import('math-expression-evaluator').then((mathexp) => {
-    this.math = mathexp
+    this.math = new mathexp.default()
   })
   dayjs.extend(utc)
   dayjs.extend(customParseFormat)

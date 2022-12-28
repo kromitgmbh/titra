@@ -196,7 +196,8 @@
       "no_category": "No category"
     },
     "gitlab_url": "GitLab Instance URL",
-    "gitlab_api_token": "GitLab API Token"
+    "gitlab_api_token": "GitLab API Token",
+    "enable_gitlab": "Enable Gitlab Interface?"
   },
   "customer": {
     "select_customer": "Select a customer",

@@ -32,7 +32,7 @@ Template.calendar.onRendered(() => {
           import('@fullcalendar/interaction').then((interaction) => {
             const interactionPlugin = interaction.default
             const { Draggable } = interaction
-            Draggable(document.querySelector('.js-project-container'), {
+            const draggable = new Draggable(document.querySelector('.js-project-container'), {
               itemSelector: '.drag',
             })
             const calendarEl = document.getElementById('cal')

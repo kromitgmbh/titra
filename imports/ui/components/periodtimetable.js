@@ -79,7 +79,7 @@ Template.periodtimetable.onRendered(() => {
                 columns,
                 serialNoColumn: false,
                 clusterize: false,
-                layout: 'ratio',
+                layout: 'fluid',
                 showTotalRow: true,
                 data,
                 noDataMessage: t('tabular.sZeroRecords'),

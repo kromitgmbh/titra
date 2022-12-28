@@ -198,7 +198,7 @@ Template.detailtimetable.onRendered(() => {
               data,
               serialNoColumn: false,
               clusterize: false,
-              layout: 'ratio',
+              layout: 'fluid',
               showTotalRow: true,
               noDataMessage: t('tabular.sZeroRecords'),
               events: {
