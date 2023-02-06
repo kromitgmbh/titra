@@ -29,7 +29,7 @@
         <div class="mb-3">
           <div class="input-group form-floating" id="colpick">
             <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
-            <button type="button" class="btn" id="pickr"></button>
+            <button type="button" class="btn rounded-end" id="pickr"></button>
             <label class="form-label" for="color">{{t "globals.color"}}</label>
           </div>
         </div>
@@ -137,34 +137,34 @@
           </div>
         </div>
       {{/unless}}
+        <div class="row pt-3">
+          <div class="col-3 d-grid gap-2">
+            <button type="button" class="btn btn-secondary border js-backbutton">{{t "navigation.back"}}</button>
+          </div>
+          {{#unless newProject}} {{#if archived (projectId)}}
+          <div class="col-3 d-grid gap-2">
+            <button type="button" class="btn btn-secondary border js-restore-project"><i class="fa fa-undo"></i> <span class="d-none d-md-inline">{{t "navigation.restore"}}</span></button>
+          </div>
+          <div class="col-3 d-grid gap-2">
+            <button type="button" class="btn btn-secondary border js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">{{t "navigation.delete"}}</span></button>
+          </div>
+          {{else}}
+          <div class="col-3 d-grid gap-2">
+              <a href="{{ prefix }}/list/timecards/{{projectId}}" class="btn btn-secondary border"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
+          </div>
+          <div class="col-3 d-grid gap-2">
+            <button type="button" class="btn btn-secondary border js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">{{t "navigation.archive"}}</span></button>
+          </div>
+          {{/if}} {{/unless}}
+          <div class="col-3 d-grid gap-2">
+            <button type="button" class="btn btn-primary js-save" id="save">{{t "navigation.save"}}</button>
+          </div>
+        </div>
       </div>
       <div class="tab-pane fade hide table-responsive p-3 tab-borders" id="tasks">
         {{#if isActiveTab "tasks-tab"}}
           {{>projectTasks}}
         {{/if}}
-      </div>
-      <div class="row p-3">
-        <div class="col-3 d-grid gap-2">
-          <button type="button" class="btn btn-secondary border js-backbutton">{{t "navigation.back"}}</button>
-        </div>
-        {{#unless newProject}} {{#if archived (projectId)}}
-        <div class="col-3 d-grid gap-2">
-          <button type="button" class="btn btn-secondary border js-restore-project"><i class="fa fa-undo"></i> <span class="d-none d-md-inline">{{t "navigation.restore"}}</span></button>
-        </div>
-        <div class="col-3 d-grid gap-2">
-          <button type="button" class="btn btn-secondary border js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">{{t "navigation.delete"}}</span></button>
-        </div>
-        {{else}}
-        <div class="col-3 d-grid gap-2">
-            <a href="{{ prefix }}/list/timecards/{{projectId}}" class="btn btn-secondary border"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
-        </div>
-        <div class="col-3 d-grid gap-2">
-          <button type="button" class="btn btn-secondary border js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">{{t "navigation.archive"}}</span></button>
-        </div>
-        {{/if}} {{/unless}}
-        <div class="col-3 d-grid gap-2">
-          <button type="button" class="btn btn-primary js-save" id="save">{{t "navigation.save"}}</button>
-        </div>
       </div>
     </div>
   </form>

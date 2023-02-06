@@ -4,9 +4,9 @@ import Projects from '../../projects/projects.js'
 import { Dashboards } from '../../dashboards/dashboards'
 import { checkAuthentication, checkAdminAuthentication } from '../../../utils/server_method_helpers.js'
 
-Meteor.publish('projectUsers', function projectUsers({ projectId }) {
+Meteor.publish('projectUsers', async function projectUsers({ projectId }) {
   check(projectId, String)
-  checkAuthentication(this)
+  await checkAuthentication(this)
   let userIds = []
   let handle
   let initializing = true
@@ -74,9 +74,9 @@ Meteor.publish('projectUsers', function projectUsers({ projectId }) {
   })
 })
 
-Meteor.publish('projectTeam', function projectTeam({ userIds }) {
+Meteor.publish('projectTeam', async function projectTeam({ userIds }) {
   check(userIds, Array)
-  checkAuthentication(this)
+  await checkAuthentication(this)
   return Meteor.users.find(
     { _id: { $in: userIds }, inactive: { $ne: true } },
     {
@@ -85,20 +85,20 @@ Meteor.publish('projectTeam', function projectTeam({ userIds }) {
   )
 })
 
-Meteor.publish('dashboardUser', function dashboardUser({ _id }) {
+Meteor.publish('dashboardUser', async function dashboardUser({ _id }) {
   check(_id, String)
-  checkAuthentication(this)
-  const dashboard = Dashboards.findOne({ _id })
+  await checkAuthentication(this)
+  const dashboard = await Dashboards.findOneAsync({ _id })
   return Meteor.users.find({ _id: dashboard.resourceId }, { fields: { 'profile.name': 1 } })
 })
 
-Meteor.publish('userRoles', function userRoles() {
-  checkAuthentication(this)
+Meteor.publish('userRoles', async function userRoles() {
+  await checkAuthentication(this)
   return Meteor.users.find({ _id: this.userId }, { fields: { profile: 1, isAdmin: 1 } })
 })
 
-Meteor.publish('adminUserList', function adminUserList({ limit }) {
-  checkAdminAuthentication(this)
+Meteor.publish('adminUserList', async function adminUserList({ limit }) {
+  await checkAdminAuthentication(this)
   check(limit, Match.Maybe(Number))
   const options = {}
   options.fields = {
@@ -111,39 +111,41 @@ Meteor.publish('adminUserList', function adminUserList({ limit }) {
   return Meteor.users.find({}, options)
 })
 
-Meteor.publish('projectResources', function projectResources({ projectId }) {
+Meteor.publish('projectResources', async function projectResources({ projectId }) {
   check(projectId, Match.OneOf(String, Array))
-  checkAuthentication(this)
+  await checkAuthentication(this)
   let userIds = []
   let handle
   let initializing = true
   let uniqueUsers
   if (projectId.includes('all')) {
-    const projectList = Projects.find(
+    let projectList = await Projects.find(
       { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
-    ).fetch().map((value) => value._id)
-    if (Timecards.find({ projectId: { $in: projectList } }).count() <= 0) {
+    ).fetchAsync()
+    projectList = projectList.map((value) => value._id)
+    if (await Timecards.find({ projectId: { $in: projectList } }).countAsync() <= 0) {
       return this.ready()
     }
     Timecards.find({ projectId: { $in: projectList } }).forEach((timecard) => {
       userIds.push(timecard.userId)
     })
     handle = Timecards.find({ projectId: { $in: projectList } }).observeChanges({
-      added: (_id) => {
+      added: async (_id) => {
         if (!initializing) {
-          const newUserId = Timecards.findOne(_id).userId
+          const newUserId = await Timecards.findOneAsync(_id).userId
           if (!userIds.includes(newUserId)) {
             userIds.push(newUserId)
-            const meteorUser = Meteor.users
-              .findOne({ _id: newUserId, inactive: { $ne: true } }, { profile: 1 })?.profile
+            let meteorUser = await Meteor.users
+              .findOneAsync({ _id: newUserId, inactive: { $ne: true } }, { profile: 1 })
+            meteorUser = meteorUser?.profile
             if (meteorUser) {
               this.added('projectResources', newUserId, meteorUser)
             }
           }
         }
       },
-      removed: () => {
+      removed: async () => {
         if (!initializing) {
           userIds = []
           Timecards.find({ projectId: { $in: projectList } }).forEach((timecard) => {
@@ -151,8 +153,10 @@ Meteor.publish('projectResources', function projectResources({ projectId }) {
           })
           uniqueUsers = [...new Set(userIds)]
           for (const userId of uniqueUsers) {
-            const meteorUser = Meteor.users
-              .findOne({ _id: userId, inactive: { $ne: true } }, { profile: 1 })?.profile
+            // eslint-disable-next-line no-await-in-loop
+            let meteorUser = await Meteor.users
+              .findOneAsync({ _id: userId, inactive: { $ne: true } }, { profile: 1 })
+            meteorUser = meteorUser?.profile
             if (meteorUser) {
               this.changed('projectResources', userId, meteorUser)
             }
@@ -168,11 +172,13 @@ Meteor.publish('projectResources', function projectResources({ projectId }) {
       userIds.push(timecard.userId)
     })
     handle = Timecards.find(selector).observeChanges({
-      added: (_id) => {
-        const newUserId = Timecards.findOne(_id).userId
+      added: async (_id) => {
+        let newUserId = await Timecards.findOneAsync(_id)
+        newUserId = newUserId?.userId
         if (!userIds.includes(newUserId)) {
-          const meteorUser = Meteor.users
-            .findOne({ _id: newUserId, inactive: { $ne: true } }, { profile: 1 })?.profile
+          let meteorUser = await Meteor.users
+            .findOneAsync({ _id: newUserId, inactive: { $ne: true } }, { profile: 1 })
+          meteorUser = meteorUser?.profile
           if (meteorUser) {
             userIds.push(newUserId)
             this.added('projectResources', newUserId)
@@ -186,9 +192,10 @@ Meteor.publish('projectResources', function projectResources({ projectId }) {
             userIds.push(timecard.userId)
           })
           uniqueUsers = [...new Set(userIds)]
-          uniqueUsers.forEach((userId) => {
-            const meteorUser = Meteor.users
-              .findOne({ _id: userId, inactive: { $ne: true } }, { profile: 1 })?.profile
+          uniqueUsers.forEach(async (userId) => {
+            let meteorUser = await Meteor.users
+              .findOneAsync({ _id: userId, inactive: { $ne: true } }, { profile: 1 })
+            meteorUser = meteorUser?.profile
             if (meteorUser) {
               this.changed('projectResources', userId, meteorUser)
             }
@@ -200,8 +207,10 @@ Meteor.publish('projectResources', function projectResources({ projectId }) {
   uniqueUsers = [...new Set(userIds)]
   initializing = false
   for (const userId of uniqueUsers) {
-    const meteorUser = Meteor.users
-      .findOne({ _id: userId, inactive: { $ne: true } }, { profile: 1 })?.profile
+    // eslint-disable-next-line no-await-in-loop
+    let meteorUser = await Meteor.users
+      .findOneAsync({ _id: userId, inactive: { $ne: true } }, { profile: 1 })
+    meteorUser = meteorUser?.profile
     if (meteorUser) {
       this.added('projectResources', userId, meteorUser)
     }

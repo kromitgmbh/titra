@@ -30,15 +30,17 @@ function getProjectListById(projectId) {
   }
   return projectList
 }
-function checkAuthentication(context) {
-  if (!context.userId || Meteor.users.findOne({ _id: context.userId })?.inactive) {
+async function checkAuthentication(context) {
+  const meteorUser = await Meteor.users.findOneAsync({ _id: context.userId })
+  if (!context.userId || meteorUser?.inactive) {
     throw new Meteor.Error('notifications.auth_error_method')
   }
 }
-function checkAdminAuthentication(context) {
-  if (!context.userId || Meteor.users.findOne({ _id: context.userId })?.inactive) {
+async function checkAdminAuthentication(context) {
+  const meteorUser = await Meteor.users.findOneAsync({ _id: context.userId })
+  if (!context.userId || meteorUser?.inactive) {
     throw new Meteor.Error('notifications.auth_error_method')
-  } else if (!Meteor.users.findOne({ _id: context.userId }).isAdmin) {
+  } else if (!meteorUser.isAdmin) {
     throw new Meteor.Error('notifications.auth_error_method')
   }
 }

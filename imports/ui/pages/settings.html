@@ -7,15 +7,15 @@
       <div class="card-block">
         <div class="mb-3 form-floating">
           <input type="text" class="form-control" id="unit" value="{{unit}}" />
-          <label class="form-label" for="unit"><strong>{{t "settings.cost_unit"}}</strong></label>
+          <label class="form-label" for="unit">{{t "settings.cost_unit"}}</label>
         </div>
         <div class="mb-3 form-floating">
           <input type="number" class="form-control" id="precision" value="{{precision}}" />
-          <label class="form-label" for="precision"><strong>{{t "settings.decimal_precision"}}</strong></label>
+          <label class="form-label" for="precision">{{t "settings.decimal_precision"}}</label>
         </div>
         <div class="form-floating">
           <input type="number" class="form-control" id="startOfWeek" value="{{startOfWeek}}" />
-          <label class="form-label" for="startOfWeek"><strong>{{t "settings.startof_week"}}</strong></label>
+          <label class="form-label" for="startOfWeek">{{t "settings.startof_week"}}</label>
         </div>
       </div>
     </div>
@@ -30,7 +30,7 @@
                 <option value="w">{{t "globals.week"}}</option>
                 <option value="M">{{t "globals.month"}}</option>
             </select>
-            <label class="form-label" for="tracktimeview"><strong>{{t "settings.track_time_view"}}</strong></label>
+            <label class="form-label" for="tracktimeview">{{t "settings.track_time_view"}}</label>
           </div>
           <div class="mb-3 form-floating">
             <select class="form-select form-control" id="timeunit">
@@ -38,44 +38,44 @@
                 <option value="h">{{t "globals.hour"}}</option>
                 <option value="d">{{t "globals.day"}}</option>
             </select>
-            <label class="form-label" for="timeunit"><strong>{{t "settings.time_unit"}}</strong></label>
+            <label class="form-label" for="timeunit">{{t "settings.time_unit"}}</label>
           </div>
           {{#if displayHoursToDays}}
           <div class="mb-3 form-floating">
             <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" step="any" />
-            <label class="form-label" for="hoursToDays"><strong>{{t "settings.hours_per_day"}}</strong></label>
+            <label class="form-label" for="hoursToDays">{{t "settings.hours_per_day"}}</label>
           </div>
           {{/if}}
           <div class="mb-3 form-floating">
             <input type="time" class="form-control" id="dailyStartTime" value="{{dailyStartTime}}" />
-            <label class="form-label" for="dailyStartTime"><strong>{{t "settings.daily_start_time"}}</strong></label>
+            <label class="form-label" for="dailyStartTime">{{t "settings.daily_start_time"}}</label>
           </div>
           <div class="mb-3 form-floating">
             <input type="time" class="form-control" id="breakStartTime" value="{{breakStartTime}}" />
-            <label class="form-label" for="breakStartTime"><strong>{{t "settings.break_start_time"}}</strong></label>
+            <label class="form-label" for="breakStartTime">{{t "settings.break_start_time"}}</label>
           </div>
           <div class="mb-3 form-floating">
             <input type="number" class="form-control" id="breakDuration" value="{{breakDuration}}" step="any" />
-            <label class="form-label" for="breakDuration"><strong>{{t "settings.break_duration"}}</strong></label>
+            <label class="form-label" for="breakDuration">{{t "settings.break_duration"}}</label>
           </div>
           <div class="mb-3 form-floating">
             <input type="number" class="form-control" id="regularWorkingTime" value="{{regularWorkingTime}}" step="any" />
-            <label class="form-label" for="regularWorkingTime"><strong>{{t "details.regularWorkingTime"}}</strong></label>
+            <label class="form-label" for="regularWorkingTime">{{t "details.regularWorkingTime"}}</label>
           </div>
           <div class="card">
             <div class="card-header">{{t "settings.holiday"}}</div>
             <div class="card-block">
               <div class="mb-3 form-floating">
                 <select class="form-select form-control" id="holidayCountry"></select>
-                <label class="form-label" for="holidayCountry"><strong>{{t "settings.holiday_country"}}</strong></label>
+                <label class="form-label" for="holidayCountry">{{t "settings.holiday_country"}}</label>
               </div>
               <div class="mb-3 form-floating">
                 <select class="form-select form-control" id="holidayState"></select>
-                <label class="form-label" for="holidayState"><strong>{{t "settings.holiday_state"}}</strong></label>
+                <label class="form-label" for="holidayState">{{t "settings.holiday_state"}}</label>
               </div>
               <div class="form-floating">
                 <select class="form-select form-control" id="holidayRegion"></select>
-                <label class="form-label" for="holidayRegion"><strong>{{t "settings.holiday_region"}}</strong></label>
+                <label class="form-label" for="holidayRegion">{{t "settings.holiday_region"}}</label>
               </div>
             </div>
           </div>
@@ -91,14 +91,14 @@
             <div class="card-block">
                 <div class="input-group form-floating">
                   <input type="text" class="form-control" id="titraAPItoken" value="{{titraAPItoken}}" />
-                  <button type="button" class="btn btn-outline-primary" id="generateToken">Generate</button>
-                  <label class="form-label" for="titraAPItoken"><strong>titra API token</strong></label>
+                  <button type="button" class="btn btn-outline-secondary rounded-end" id="generateToken"><i class="fa fa-shuffle"></i> Generate</button>
+                  <label class="form-label" for="titraAPItoken">titra API token</label>
               </div>
           </div>
         </div>
         <!-- <div class="card mb-3">
             <div class="card-block">
-              <label class="form-label" for="titraAPItoken"><strong>Wekan</strong></label>
+              <label class="form-label" for="titraAPItoken">Wekan</label>
               <div class="mb-3 form-check">
                 <input id="enableWekan" type="checkbox" class="form-check-input" checked={{enableWekan}} />
                 <label class="form-check-label">{{t "settings.enable_wekan_integration"}}</label>
@@ -110,11 +110,11 @@
             <div class="card-block">
               <div class="mb-3 form-floating">
                 <input type="text" class="form-control" id="siwappurl" value="{{siwappurl}}" />
-                <label class="form-label" for="siwappurl"><strong>{{t "settings.siwapp_url"}}</strong></label>
+                <label class="form-label" for="siwappurl">{{t "settings.siwapp_url"}}</label>
               </div>
               <div class="form-floating">
                 <input type="text" class="form-control" id="siwapptoken" value="{{siwapptoken}}" />
-                <label class="form-label" for="siwapptoken"><strong>{{t "settings.siwapp_api_token"}}</strong></label>
+                <label class="form-label" for="siwapptoken">{{t "settings.siwapp_api_token"}}</label>
               </div>
             </div>
         </div>

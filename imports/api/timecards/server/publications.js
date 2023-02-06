@@ -4,15 +4,16 @@ import Timecards from '../timecards.js'
 import Projects from '../../projects/projects.js'
 import { checkAuthentication, buildDetailedTimeEntriesForPeriodSelector } from '../../../utils/server_method_helpers.js'
 
-Meteor.publish('periodTimecards', function periodTimecards({ startDate, endDate, userId }) {
+Meteor.publish('periodTimecards', async function periodTimecards({ startDate, endDate, userId }) {
   check(startDate, Date)
   check(endDate, Date)
   check(userId, String)
-  checkAuthentication(this)
-  const projectList = Projects.find(
+  await checkAuthentication(this)
+  let projectList = await Projects.find(
     { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
     { $fields: { _id: 1 } },
-  ).fetch().map((value) => value._id)
+  ).fetchAsync()
+  projectList = projectList.map((value) => value._id)
 
   if (userId === 'all') {
     return Timecards.find({
@@ -26,11 +27,11 @@ Meteor.publish('periodTimecards', function periodTimecards({ startDate, endDate,
     date: { $gte: startDate, $lte: endDate },
   })
 })
-Meteor.publish('userTimeCardsForPeriodByProjectByTask', function periodTimecards({ projectId, startDate, endDate }) {
+Meteor.publish('userTimeCardsForPeriodByProjectByTask', async function periodTimecards({ projectId, startDate, endDate }) {
   check(startDate, Date)
   check(endDate, Date)
   check(projectId, String)
-  checkAuthentication(this)
+  await checkAuthentication(this)
   return ReactiveAggregate(this, Timecards, [
     {
       $match: {
@@ -47,9 +48,9 @@ Meteor.publish('userTimeCardsForPeriodByProjectByTask', function periodTimecards
     },
   ], { clientCollection: 'clientTimecards', specificWarnings: { objectId: false } })
 })
-Meteor.publish('myTimecardsForDate', function myTimecardsForDate({ date }) {
+Meteor.publish('myTimecardsForDate', async function myTimecardsForDate({ date }) {
   check(date, String)
-  checkAuthentication(this)
+  await checkAuthentication(this)
   const startDate = new Date(date)
   const endDate = new Date(date)
   startDate.setHours(0)
@@ -104,7 +105,7 @@ Meteor.publish('getDetailedTimeEntriesForPeriodCount', function getDetailedTimeE
   this.onStop(() => handle.stop())
 })
 
-Meteor.publish('getDetailedTimeEntriesForPeriod', function getDetailedTimeEntriesForPeriod({
+Meteor.publish('getDetailedTimeEntriesForPeriod', async function getDetailedTimeEntriesForPeriod({
   projectId,
   userId,
   customer,
@@ -132,19 +133,19 @@ Meteor.publish('getDetailedTimeEntriesForPeriod', function getDetailedTimeEntrie
   }
   check(limit, Number)
   check(page, Match.Maybe(Number))
-  checkAuthentication(this)
+  await checkAuthentication(this)
   const selector = buildDetailedTimeEntriesForPeriodSelector({
     projectId, search, customer, period, dates, userId, limit, page, sort,
   })
   return Timecards.find(selector[0], selector[1])
 })
 
-Meteor.publish('singleTimecard', function singleTimecard(_id) {
+Meteor.publish('singleTimecard', async function singleTimecard(_id) {
   check(_id, String)
-  checkAuthentication(this)
-  const timecard = Timecards.findOne({ _id })
-  const project = Projects.findOne({ _id: timecard.projectId })
-  if (!this.userId || (!Timecards.findOne({ userId: this.userId }) && !project.public)) {
+  await checkAuthentication(this)
+  const timecard = await Timecards.findOneAsync({ _id })
+  const project = await Projects.findOneAsync({ _id: timecard.projectId })
+  if (!this.userId || (!await Timecards.findOneAsync({ userId: this.userId }) && !project.public)) {
     return this.ready()
   }
   return Timecards.find({ _id })

@@ -5,10 +5,10 @@ import Extensions from '../../api/extensions/extensions.js'
 import { defaultSettings, Globalsettings } from '../../api/globalsettings/globalsettings.js'
 import { getGlobalSetting } from '../../utils/frontend_helpers'
 
-Meteor.startup(() => {
+Meteor.startup(async () => {
   AccountsAnonymous.init()
-  for (const setting of defaultSettings) {
-    if (!Globalsettings.findOne({ name: setting.name })) {
+  for await (const setting of defaultSettings) {
+    if (!await Globalsettings.findOneAsync({ name: setting.name })) {
       Globalsettings.insert(setting)
     }
   }

@@ -15,7 +15,7 @@ if (!Meteor.settings.public.sandstorm) {
   }], { except: ['dashboard', 'signIn', 'changePassword', 'register', 'reset-password', 'try'] })
   FlowRouter.triggers.exit([() => {
     $("[data-toggle='popover']").popover('hide')
-  }])
+  }], { except: ['claimAdmin'] })
 }
 FlowRouter.route('*', {
   action: () => {
@@ -110,7 +110,7 @@ FlowRouter.route('/profile', {
     document.title = 'titra - profile'
     this.render('appLayout', 'profile')
   },
-  name: 'settings',
+  name: 'profile',
 })
 FlowRouter.route('/about', {
   waitOn() {
@@ -120,7 +120,7 @@ FlowRouter.route('/about', {
     document.title = 'titra - about'
     this.render('appLayout', 'about')
   },
-  name: 'settings',
+  name: 'about',
 })
 FlowRouter.route('/admin', {
   waitOn() {
@@ -130,7 +130,7 @@ FlowRouter.route('/admin', {
     document.title = 'titra - administration'
     this.render('appLayout', 'administration')
   },
-  name: 'settings',
+  name: 'administration',
 })
 FlowRouter.route('/dashboard/:_id', {
   waitOn() {
@@ -191,9 +191,11 @@ FlowRouter.route('/claim/admin', {
         } else {
           alert(result)
         }
+        FlowRouter.go('administration')
       })
     }
   },
+  name: 'claimAdmin',
 })
 
 FlowRouter.route('/404', {

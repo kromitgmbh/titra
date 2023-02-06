@@ -52,6 +52,10 @@ function detailedDataTableMapper(entry) {
   if (getGlobalSetting('useState')) {
     mapping.push(entry.state)
   }
+  if (getGlobalSetting('useStartTime')) {
+    mapping.push(dayjs.utc(entry.date).local().format('HH:mm'))
+    mapping.push(dayjs.utc(entry.date).add(entry.hours, 'hour').local().format('HH:mm'))
+  }
   mapping.push(Number(timeInUserUnit(entry.hours)))
   mapping.push(entry._id)
   return mapping
@@ -167,6 +171,22 @@ Template.detailtimetable.onRendered(() => {
               }
               return value ? addToolTipToTableCell(t(`details.${value}`)) : addToolTipToTableCell(t('details.new'))
             },
+          },
+        )
+      }
+      if (getGlobalSetting('useStartTime')) {
+        columns.push(
+          {
+            name: t('details.startTime'),
+            editable: false,
+            format: addToolTipToTableCell,
+          },
+        )
+        columns.push(
+          {
+            name: t('details.endTime'),
+            editable: false,
+            format: addToolTipToTableCell,
           },
         )
       }
@@ -314,6 +334,10 @@ Template.detailtimetable.events({
     if (getGlobalSetting('useState')) {
       csvArray[0] = `${csvArray[0]},${t('details.state')}`
     }
+    if (getGlobalSetting('useStartTime')) {
+      csvArray[0] = `${csvArray[0]},${t('details.startTime')}`
+      csvArray[0] = `${csvArray[0]},${t('details.endTime')}`
+    }
     csvArray[0] = `${csvArray[0]},${getUserTimeUnitVerbose()}\r\n`
     for (const timeEntry of Timecards
       .find(templateInstance.selector[0], templateInstance.selector[1])
@@ -359,6 +383,10 @@ Template.detailtimetable.events({
     if (getGlobalSetting('useState')) {
       data[0].push(t('details.state'))
     }
+    if (getGlobalSetting('useStartTime')) {
+      data[0].push(t('details.startTime'))
+      data[0].push(t('details.endTime'))
+    }
     data[0].push(getUserTimeUnitVerbose())
     for (const timeEntry of Timecards
       .find(templateInstance.selector[0], templateInstance.selector[1]).fetch()
@@ -367,7 +395,9 @@ Template.detailtimetable.events({
       let index = 0
       timeEntry.splice(timeEntry.length - 1, 1)
       for (const attribute of timeEntry) {
-        if (index === timeEntry.length - 2 && getGlobalSetting('useState')) {
+        if (index === timeEntry.length - 2 && getGlobalSetting('useState') && !getGlobalSetting('useStartTime')) {
+          row.push(t(`details.${attribute !== undefined ? attribute : 'new'}`))
+        } else if (index === timeEntry.length - 4 && getGlobalSetting('useState') && getGlobalSetting('useStartTime')) {
           row.push(t(`details.${attribute !== undefined ? attribute : 'new'}`))
         } else {
           row.push(attribute || '')

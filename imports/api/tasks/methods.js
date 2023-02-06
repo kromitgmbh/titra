@@ -2,6 +2,15 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import Tasks from './tasks.js'
 import { checkAuthentication } from '../../utils/server_method_helpers.js'
 
+/**
+Inserts a new project task into the Tasks collection.
+@param {Object} args - The arguments object containing the task information.
+@param {string} args.projectId - The ID of the project for the task.
+@param {string} args.name - The name of the task.
+@param {Date} args.start - The start date of the task.
+@param {Date} args.end - The end date of the task.
+@param {string[]} [args.dependencies] - An array of task IDs that this task depends on.
+*/
 const insertProjectTask = new ValidatedMethod({
   name: 'insertProjectTask',
   validate(args) {
@@ -13,11 +22,11 @@ const insertProjectTask = new ValidatedMethod({
       dependencies: Match.Optional([String]),
     })
   },
-  run({
+  async run({
     projectId, name, start, end, dependencies,
   }) {
-    checkAuthentication(this)
-    Tasks.insert({
+    await checkAuthentication(this)
+    await Tasks.insertAsync({
       projectId,
       name,
       start,
@@ -38,10 +47,10 @@ const updateTask = new ValidatedMethod({
       dependencies: Match.Optional([String]),
     })
   },
-  run({
+  async run({
     taskId, name, start, end, dependencies,
   }) {
-    checkAuthentication(this)
+    await checkAuthentication(this)
     const updatedTask = {
     }
     if (name) updatedTask.name = name
@@ -49,7 +58,7 @@ const updateTask = new ValidatedMethod({
     if (end) updatedTask.end = end
     if (dependencies) updatedTask.dependencies = dependencies
     if (updatedTask) {
-      Tasks.update(taskId, {
+      await Tasks.updateAsync(taskId, {
         $set: {
           name,
           start,
@@ -67,9 +76,9 @@ const removeProjectTask = new ValidatedMethod({
       taskId: String,
     })
   },
-  run({ taskId }) {
-    checkAuthentication(this)
-    Tasks.remove({ _id: taskId })
+  async run({ taskId }) {
+    await checkAuthentication(this)
+    await Tasks.removeAsync({ _id: taskId })
   },
 })
 

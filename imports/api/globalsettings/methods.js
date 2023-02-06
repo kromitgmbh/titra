@@ -2,43 +2,47 @@ import { defaultSettings, Globalsettings } from './globalsettings.js'
 import { checkAdminAuthentication } from '../../utils/server_method_helpers.js'
 
 Meteor.methods({
-  updateGlobalSettings(settingsArray) {
-    checkAdminAuthentication(this)
+  async updateGlobalSettings(settingsArray) {
+    await checkAdminAuthentication(this)
     check(settingsArray, Array)
     for (const setting of settingsArray) {
       check(setting, Object)
       check(setting.name, String)
       check(setting.value, Match.OneOf(String, Number, Boolean))
-      Globalsettings.update({ name: setting.name }, { $set: { value: setting.value } })
+      // eslint-disable-next-line no-await-in-loop
+      await Globalsettings.updateAsync({ name: setting.name }, { $set: { value: setting.value } })
     }
   },
-  resetSettings() {
-    checkAdminAuthentication(this)
+  async resetSettings() {
+    await checkAdminAuthentication(this)
     for (const setting of defaultSettings) {
-      Globalsettings.remove({ name: setting.name })
-      Globalsettings.insert(setting)
+      // eslint-disable-next-line no-await-in-loop
+      await Globalsettings.removeAsync({ name: setting.name })
+      // eslint-disable-next-line no-await-in-loop
+      await Globalsettings.insertAsync(setting)
     }
   },
-  resetGlobalsetting({ name }) {
-    checkAdminAuthentication(this)
+  async resetGlobalsetting({ name }) {
+    await checkAdminAuthentication(this)
     Globalsettings.remove({ name })
     for (const setting of defaultSettings) {
       if (setting.name === name) {
-        Globalsettings.insert(setting)
+        // eslint-disable-next-line no-await-in-loop
+        await Globalsettings.insertAsync(setting)
         break
       }
     }
   },
-  updateOidcSettings(configuration) {
+  async updateOidcSettings(configuration) {
     check(configuration, Object)
-    checkAdminAuthentication(this)
-    ServiceConfiguration.configurations.remove({
+    await checkAdminAuthentication(this)
+    await ServiceConfiguration.configurations.removeAsync({
       service: 'oidc',
     })
-    ServiceConfiguration.configurations.insert(configuration)
+    await ServiceConfiguration.configurations.insertAsync(configuration)
   },
-  getGlobalsettingCategories() {
-    checkAdminAuthentication(this)
+  async getGlobalsettingCategories() {
+    await checkAdminAuthentication(this)
     return Globalsettings.rawCollection().aggregate([{ $group: { _id: '$category' } }, { $sort: { _id: 1 } }]).toArray()
   },
 })

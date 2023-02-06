@@ -108,32 +108,31 @@
         {{/if}}
       {{/each}}
     {{/if}}
-    <div class="mb-3">
-      <div class="row">
-          {{#if showStartTime}}
-            <div class="col">
-              <div class="mb-3 form-floating mb-3">
-                <input id="startTime" type="time" class="form-control" value="{{startTime}}"/>
-                <label class="form-label" for="startTime">{{t "tracktime.start_time"}}</label>
-              </div>
+    <div class="row">
+        {{#if showStartTime}}
+          <div class="col">
+            <div class="mb-3 form-floating">
+              <input id="startTime" type="time" class="form-control" value="{{startTime}}"/>
+              <label class="form-label" for="startTime">{{t "tracktime.start_time"}}</label>
             </div>
-          {{/if}}
-        <div class="col">
-          <div class="mb-3 form-floating mb-3">
-            <input id="hours" type="string" class="form-control" value="{{timeInUserUnit (hours)}}" placeholder="0.00"/>
-            <label class="form-label" for="hours">{{t "tracktime.working_time"}} ({{timeunit}})</label>
           </div>
+          <div class="w-100 d-md-none d-block"></div>
+        {{/if}}
+      <div class="col">
+        <div class="mb-3 form-floating">
+          <input id="hours" type="string" class="form-control" value="{{timeInUserUnit (hours)}}" placeholder="0.00"/>
+          <label class="form-label" for="hours">{{t "tracktime.working_time"}} ({{timeunit}})</label>
         </div>
-        {{#unless isEdit}}
-          {{#if showTracker}}
-            <div class="col-6 col-md-3 text-end">
-              <div class="mb-3 mb-3">
-                  {{>timetracker}}
-              </div>
-            </div>
-          {{/if}}
-        {{/unless}}
       </div>
+      {{#unless isEdit}}
+        {{#if showTracker}}
+          <div class="col text-end">
+            <div class="mb-3">
+                {{>timetracker}}
+            </div>
+          </div>
+        {{/if}}
+      {{/unless}}
     </div>
     <div class="row">
         {{#if isEdit}}
@@ -144,10 +143,10 @@
             <button type="button" class="btn btn-primary js-save" aria-label='{{t "navigation.save"}}'>{{t "navigation.save"}}</button>
           </div>
         {{else}}
-          <div class="col-6 col-md-3 me-auto d-grid">
+          <div class="col-6 col-md-4 me-auto d-grid">
             {{>backbutton}}
           </div>
-          <div class="col-6 col-md-3 d-grid">
+          <div class="col-6 col-md-4 d-grid">
             <button type="button" class="btn btn-primary js-save" aria-label='{{t "navigation.save"}}'>{{t "navigation.save"}}</button>
           </div>
         {{/if}}

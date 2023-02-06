@@ -3,7 +3,7 @@ import { Accounts } from 'meteor/accounts-base'
 import { checkAuthentication, checkAdminAuthentication } from '../../utils/server_method_helpers.js'
 
 Meteor.methods({
-  updateSettings({
+  async updateSettings({
     unit,
     startOfWeek,
     timeunit,
@@ -47,8 +47,8 @@ Meteor.methods({
     check(zammadurl, String)
     check(gitlabtoken, String)
     check(gitlaburl, String)
-    checkAuthentication(this)
-    Meteor.users.update({ _id: this.userId }, {
+    await checkAuthentication(this)
+    await Meteor.users.updateAsync({ _id: this.userId }, {
       $set: {
         'profile.unit': unit,
         'profile.startOfWeek': startOfWeek,
@@ -74,9 +74,9 @@ Meteor.methods({
       },
     })
   },
-  resetUserSettings() {
-    checkAuthentication(this)
-    Meteor.users.update({ _id: this.userId }, {
+  async resetUserSettings() {
+    await checkAuthentication(this)
+    await Meteor.users.updateAsync({ _id: this.userId }, {
       $unset: {
         'profile.unit': '',
         'profile.startOfWeek': '',
@@ -99,7 +99,7 @@ Meteor.methods({
       },
     })
   },
-  updateProfile({
+  async updateProfile({
     name,
     theme,
     language,
@@ -112,10 +112,10 @@ Meteor.methods({
     check(avatar, Match.Maybe(String))
     check(avatarColor, Match.Maybe(String))
     if (!avatar) {
-      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.avatar': '' } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.avatar': '' } })
     }
-    checkAuthentication(this)
-    Meteor.users.update({ _id: this.userId }, {
+    await checkAuthentication(this)
+    await Meteor.users.updateAsync({ _id: this.userId }, {
       $set: {
         'profile.name': name,
         'profile.theme': theme,
@@ -125,18 +125,19 @@ Meteor.methods({
       },
     })
   },
-  claimAdmin() {
-    checkAuthentication(this)
-    if (Meteor.users.find({ isAdmin: true }).count() === 0) {
-      Meteor.users.update({ _id: this.userId }, { $set: { isAdmin: true } })
-      return `Congratulations ${Meteor.users.findOne({ _id: this.userId }).profile.name}, you are now admin.`
+  async claimAdmin() {
+    await checkAuthentication(this)
+    const meteorUser = await Meteor.users.findOneAsync({ _id: this.userId })
+    if (await Meteor.users.find({ isAdmin: true }).countAsync() === 0) {
+      await Meteor.users.updateAsync({ _id: this.userId }, { $set: { isAdmin: true } })
+      return `Congratulations ${meteorUser.profile.name}, you are now admin.`
     }
     throw new Meteor.Error('Unable to claim admin rights, only the first user on a server is allowed to do this.')
   },
-  adminCreateUser({
+  async adminCreateUser({
     name, email, password, isAdmin, currentLanguageProject, currentLanguageProjectDesc,
   }) {
-    checkAdminAuthentication(this)
+    await checkAdminAuthentication(this)
     check(name, String)
     check(email, String)
     check(password, String)
@@ -144,73 +145,73 @@ Meteor.methods({
     check(currentLanguageProject, String)
     check(currentLanguageProjectDesc, String)
     const profile = { currentLanguageProject, currentLanguageProjectDesc, name }
-    const userId = Accounts.createUser({
+    const userId = await Accounts.createUserAsync({
       email, password, profile,
     })
-    Meteor.users.update({ _id: userId }, { $set: { isAdmin } })
+    await Meteor.users.updateAsync({ _id: userId }, { $set: { isAdmin } })
     return userId
   },
-  adminDeleteUser({ userId }) {
-    checkAdminAuthentication(this)
+  async adminDeleteUser({ userId }) {
+    await checkAdminAuthentication(this)
     check(userId, String)
-    Meteor.users.remove({ _id: userId })
+    await Meteor.users.removeAsync({ _id: userId })
   },
-  adminToggleUserAdmin({ userId, isAdmin }) {
-    checkAdminAuthentication(this)
+  async adminToggleUserAdmin({ userId, isAdmin }) {
+    await checkAdminAuthentication(this)
     check(userId, String)
     check(isAdmin, Boolean)
-    Meteor.users.update({ _id: userId }, { $set: { isAdmin } })
+    await Meteor.users.updateAsync({ _id: userId }, { $set: { isAdmin } })
   },
-  adminToggleUserState({ userId, inactive }) {
-    checkAdminAuthentication(this)
+  async adminToggleUserState({ userId, inactive }) {
+    await checkAdminAuthentication(this)
     check(userId, String)
     check(inactive, Boolean)
-    Meteor.users.update({ _id: userId }, { $set: { inactive } })
+    await Meteor.users.updateAsync({ _id: userId }, { $set: { inactive } })
   },
-  setCustomPeriodDates({ customStartDate, customEndDate }) {
-    checkAuthentication(this)
+  async setCustomPeriodDates({ customStartDate, customEndDate }) {
+    await checkAuthentication(this)
     check(customStartDate, Date)
     check(customEndDate, Date)
-    Meteor.users.update({ _id: this.userId }, {
+    await Meteor.users.updateAsync({ _id: this.userId }, {
       $set: {
         'profile.customStartDate': customStartDate,
         'profile.customEndDate': customEndDate,
       },
     })
   },
-  setTimer({
+  async setTimer({
     timestamp, project, task, startTime, customFields,
   }) {
-    checkAuthentication(this)
+    await checkAuthentication(this)
     check(timestamp, Match.Maybe(Date))
     check(project, Match.Maybe(String))
     check(task, Match.Maybe(String))
     check(startTime, Match.Maybe(String))
     check(customFields, Match.Maybe(Array))
     if (!timestamp) {
-      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer': '' } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.timer': '' } })
     } else {
-      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer': timestamp } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $set: { 'profile.timer': timestamp } })
     }
     if (!project) {
-      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer_project': '' } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.timer_project': '' } })
     } else {
-      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer_project': project } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $set: { 'profile.timer_project': project } })
     }
     if (!task) {
-      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer_task': '' } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.timer_task': '' } })
     } else {
-      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer_task': task } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $set: { 'profile.timer_task': task } })
     }
     if (!customFields) {
-      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer_custom_fields': '' } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.timer_custom_fields': '' } })
     } else {
-      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer_custom_fields': customFields } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $set: { 'profile.timer_custom_fields': customFields } })
     }
     if (!startTime) {
-      Meteor.users.update({ _id: this.userId }, { $unset: { 'profile.timer_start_time': '' } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.timer_start_time': '' } })
     } else {
-      Meteor.users.update({ _id: this.userId }, { $set: { 'profile.timer_start_time': startTime } })
+      await Meteor.users.updateAsync({ _id: this.userId }, { $set: { 'profile.timer_start_time': startTime } })
     }
   },
 })

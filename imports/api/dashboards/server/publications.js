@@ -2,19 +2,20 @@ import { Dashboards } from '../dashboards.js'
 import Timecards from '../../timecards/timecards'
 import Projects from '../../projects/projects'
 
-Meteor.publish('dashboardById', function dashboardById(_id) {
+Meteor.publish('dashboardById', async function dashboardById(_id) {
   check(_id, String)
-  if (!Dashboards.findOne({ _id })) {
+  if (!await Dashboards.findOneAsync({ _id })) {
     return this.ready()
   }
-  const dashboard = Dashboards.findOne({ _id })
+  const dashboard = await Dashboards.findOneAsync({ _id })
   if (dashboard.customer !== 'all') {
-    const projectList = Projects.find(
+    let projectList = await Projects.find(
       {
         customer: dashboard.customer,
       },
       { $fields: { _id: 1 } },
-    ).fetch().map((value) => value._id)
+    ).fetchAsync()
+    projectList = projectList.map((value) => value._id)
     if (dashboard.resourceId.includes('all')) {
       return Timecards.find({
         projectId: { $in: projectList },

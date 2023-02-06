@@ -4,16 +4,16 @@ import { checkAuthentication } from '../../utils/server_method_helpers.js'
 import { getGlobalSetting } from '../../utils/frontend_helpers'
 
 Meteor.methods({
-  addDashboard({
+  async addDashboard({
     projectId, resourceId, customer, timePeriod,
   }) {
     check(projectId, String)
     check(timePeriod, String)
     check(resourceId, String)
     check(customer, String)
-    checkAuthentication(this)
+    await checkAuthentication(this)
     const { startDate, endDate } = periodToDates(timePeriod)
-    const meteorUser = Meteor.users.findOne({ _id: this.userId })
+    const meteorUser = await Meteor.users.findOneAsync({ _id: this.userId })
     let timeunit = getGlobalSetting('timeunit')
     let hoursToDays = getGlobalSetting('hoursToDays')
     if (meteorUser.profile.timeunit) {
@@ -23,7 +23,7 @@ Meteor.methods({
       hoursToDays = meteorUser.profile.hoursToDays
     }
     const _id = Random.id()
-    Dashboards.insert({
+    await Dashboards.insertAsync({
       _id, projectId, customer, startDate, endDate, resourceId, timeunit, hoursToDays,
     })
     return _id

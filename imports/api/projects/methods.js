@@ -10,11 +10,11 @@ import { addNotification } from '../notifications/notifications.js'
 import { emojify } from '../../utils/frontend_helpers'
 
 Meteor.methods({
-  getAllProjectStats({ includeNotBillableTime, showArchived }) {
+  async getAllProjectStats({ includeNotBillableTime, showArchived }) {
     check(includeNotBillableTime, Match.Maybe(Boolean))
     check(showArchived, Match.Maybe(Boolean))
     const notbillable = includeNotBillableTime
-    checkAuthentication(this)
+    await checkAuthentication(this)
     dayjs.extend(utc)
     dayjs.extend(isBetween)
     const andCondition = [{
@@ -26,8 +26,9 @@ Meteor.methods({
     if (!notbillable) {
       andCondition.push({ $or: [{ notbillable }, { notbillable: { $exists: false } }] })
     }
-    const projectList = Projects.find({ $and: andCondition }, { _id: 1 })
-      .fetch().map((value) => value._id)
+    let projectList = await Projects.find({ $and: andCondition }, { _id: 1 })
+      .fetchAsync()
+    projectList = projectList.map((value) => value._id)
     let totalHours = 0
     let currentMonthHours = 0
     let previousMonthHours = 0
@@ -35,18 +36,19 @@ Meteor.methods({
     const currentMonthName = dayjs.utc().format('MMM')
     const currentMonthStart = dayjs.utc().startOf('month')
     const currentMonthEnd = dayjs.utc().endOf('month')
-    const previousMonthName = dayjs.utc().subtract('1', 'month').format('MMM')
-    const beforePreviousMonthName = dayjs.utc().subtract('2', 'month').format('MMM')
-    const previousMonthStart = dayjs.utc().subtract('1', 'month').startOf('month')
-    const previousMonthEnd = dayjs.utc().subtract('1', 'month').endOf('month')
-    const beforePreviousMonthStart = dayjs.utc().subtract('2', 'month').startOf('month')
-    const beforePreviousMonthEnd = dayjs.utc().subtract('2', 'month').endOf('month')
-    totalHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: null, totalHours: { $sum: '$hours' } } }]).toArray())[0]?.totalHours)
-    for (const timecard of
+    const previousMonthName = dayjs.utc().subtract(1, 'month').format('MMM')
+    const beforePreviousMonthName = dayjs.utc().subtract(2, 'month').format('MMM')
+    const previousMonthStart = dayjs.utc().subtract(1, 'month').startOf('month')
+    const previousMonthEnd = dayjs.utc().subtract(1, 'month').endOf('month')
+    const beforePreviousMonthStart = dayjs.utc().subtract(2, 'month').startOf('month')
+    const beforePreviousMonthEnd = dayjs.utc().subtract(2, 'month').endOf('month')
+    const timecardAggregation = await Timecards.rawCollection().aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: null, totalHours: { $sum: '$hours' } } }]).toArray()
+    totalHours = Number.parseFloat(timecardAggregation[0]?.totalHours)
+    for await (const timecard of
       Timecards.find({
         projectId: { $in: projectList },
         date: { $gte: beforePreviousMonthStart.toDate() },
-      }).fetch()) {
+      })) {
       if (dayjs.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
         currentMonthHours += Number.parseFloat(timecard.hours)
       } else if (dayjs.utc(new Date(timecard.date))
@@ -67,15 +69,15 @@ Meteor.methods({
       beforePreviousMonthHours,
     }
   },
-  updateProject({ projectId, projectArray }) {
+  async updateProject({ projectId, projectArray }) {
     check(projectId, String)
     check(projectArray, Array)
-    checkAuthentication(this)
+    await checkAuthentication(this)
     const updateJSON = {}
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
     }
-    updateJSON.name = updateJSON.name.replace(/(:\S*:)/g, emojify)
+    updateJSON.name = await emojify(updateJSON.name)
     if (!updateJSON.public) {
       updateJSON.public = false
     } else {
@@ -86,14 +88,14 @@ Meteor.methods({
     } else {
       updateJSON.notbillable = true
     }
-    Projects.update({
+    await Projects.updateAsync({
       $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
       _id: projectId,
     }, { $set: updateJSON })
   },
-  createProject({ projectArray }) {
+  async createProject({ projectArray }) {
     check(projectArray, Array)
-    checkAuthentication(this)
+    await checkAuthentication(this)
     const updateJSON = {}
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
@@ -103,25 +105,25 @@ Meteor.methods({
     } else {
       updateJSON.public = true
     }
-    updateJSON.name = updateJSON.name.replace(/(:\S*:)/g, emojify)
+    updateJSON.name = await emojify(updateJSON.name, emojify)
     updateJSON._id = Random.id()
     updateJSON.userId = this.userId
-    Projects.insert(updateJSON)
+    await Projects.insertAsync(updateJSON)
     return updateJSON._id
   },
-  deleteProject({ projectId }) {
+  async deleteProject({ projectId }) {
     check(projectId, String)
-    checkAuthentication(this)
-    Projects.remove({
+    await checkAuthentication(this)
+    await Projects.removeAsync({
       $or: [{ userId: this.userId }, { public: true }],
       _id: projectId,
     })
     return true
   },
-  archiveProject({ projectId }) {
+  async archiveProject({ projectId }) {
     check(projectId, String)
-    checkAuthentication(this)
-    Projects.update(
+    await checkAuthentication(this)
+    await Projects.updateAsync(
       {
         _id: projectId,
         $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
@@ -130,10 +132,10 @@ Meteor.methods({
     )
     return true
   },
-  restoreProject({ projectId }) {
+  async restoreProject({ projectId }) {
     check(projectId, String)
-    checkAuthentication(this)
-    Projects.update(
+    await checkAuthentication(this)
+    await Projects.updateAsync(
       {
         _id: projectId,
         $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
@@ -142,11 +144,10 @@ Meteor.methods({
     )
     return true
   },
-  getTopTasks({ projectId, includeNotBillableTime, showArchived }) {
+  async getTopTasks({ projectId, includeNotBillableTime, showArchived }) {
     check(projectId, String)
-    checkAuthentication(this)
+    await checkAuthentication(this)
     const rawCollection = Timecards.rawCollection()
-    // const aggregate = Meteor.wrapAsync(rawCollection.aggregate, rawCollection)
     if (projectId === 'all') {
       check(showArchived, Match.Maybe(Boolean))
       check(includeNotBillableTime, Match.Maybe(Boolean))
@@ -160,82 +161,84 @@ Meteor.methods({
       if (!notbillable) {
         andCondition.push({ $or: [{ notbillable }, { notbillable: { $exists: false } }] })
       }
-      const projectList = Projects.find({ $and: andCondition }, { _id: 1 })
-        .fetch().map((value) => value._id)
+      let projectList = await Projects.find({ $and: andCondition }, { _id: 1 })
+        .fetchAsync()
+      projectList = projectList.map((value) => value._id)
       return rawCollection.aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: '$task', count: { $sum: '$hours' } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()
     }
     return rawCollection.aggregate([{ $match: { projectId } }, { $group: { _id: '$task', count: { $sum: '$hours' } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()
   },
-  addTeamMember({ projectId, eMail }) {
+  async addTeamMember({ projectId, eMail }) {
     check(projectId, String)
     check(eMail, String)
-    checkAuthentication(this)
-    const targetProject = Projects.findOne({ _id: projectId })
+    await checkAuthentication(this)
+    const targetProject = await Projects.findOneAsync({ _id: projectId })
     if (!targetProject
       || !(targetProject.userId === this.userId
         || targetProject.admins.indexOf(this.userId) >= 0)) {
       throw new Meteor.Error('notifications.only_owner_can_add_team_members')
     }
-    const targetUser = Meteor.users.findOne({ 'emails.0.address': eMail, inactive: { $ne: true } })
+    const targetUser = await Meteor.users.findOneAsync({ 'emails.0.address': eMail, inactive: { $ne: true } })
     if (targetUser) {
-      Projects.update({ _id: targetProject._id }, { $addToSet: { team: targetUser._id } })
-      addNotification(`You have been invited to collaborate on the titra project '${targetProject.name}'`, targetUser._id)
+      await Projects
+        .updateAsync({ _id: targetProject._id }, { $addToSet: { team: targetUser._id } })
+      await addNotification(`You have been invited to collaborate on the titra project '${targetProject.name}'`, targetUser._id)
       return 'notifications.team_member_added_success'
     }
     throw new Meteor.Error('notifications.user_not_found')
   },
-  removeTeamMember({ projectId, userId }) {
+  async removeTeamMember({ projectId, userId }) {
     check(projectId, String)
     check(userId, String)
-    checkAuthentication(this)
-    const targetProject = Projects.findOne({ _id: projectId })
+    await checkAuthentication(this)
+    const targetProject = await Projects.findOneAsync({ _id: projectId })
     if (!targetProject
       || !(targetProject.userId === this.userId
         || targetProject.admins.indexOf(this.userId) >= 0)) {
       throw new Meteor.Error('notifications.only_owner_can_remove_team_members')
     }
-    Projects.update({ _id: targetProject._id }, { $pull: { team: userId } })
-    Projects.update({ _id: targetProject._id }, { $pull: { admins: userId } })
+    await Projects.updateAsync({ _id: targetProject._id }, { $pull: { team: userId } })
+    await Projects.updateAsync({ _id: targetProject._id }, { $pull: { admins: userId } })
     return 'notifications.team_member_removed_success'
   },
-  changeProjectRole({ projectId, userId, administrator }) {
+  async changeProjectRole({ projectId, userId, administrator }) {
     check(projectId, String)
     check(userId, String)
     check(administrator, Boolean)
-    checkAuthentication(this)
-    const targetProject = Projects.findOne({ _id: projectId })
+    await checkAuthentication(this)
+    const targetProject = await Projects.findOneAsync({ _id: projectId })
     if (!targetProject
       || !(targetProject.userId === this.userId
         || targetProject.admins.indexOf(this.userId) >= 0)) {
       throw new Meteor.Error('notifications.only_owner_can_remove_team_members')
     }
     if (administrator) {
-      Projects.update({ _id: targetProject._id }, { $push: { admins: userId } })
+      await Projects.updateAsync({ _id: targetProject._id }, { $push: { admins: userId } })
     } else {
-      Projects.update({ _id: targetProject._id }, { $pull: { admins: userId } })
+      await Projects.updateAsync({ _id: targetProject._id }, { $pull: { admins: userId } })
     }
     return 'notifications.access_rights_updated'
   },
-  updatePriority({ projectId, priority }) {
+  async updatePriority({ projectId, priority }) {
     check(projectId, String)
     check(priority, Number)
-    checkAuthentication(this)
-    Projects.update({ _id: projectId }, { $set: { priority } })
+    await checkAuthentication(this)
+    await Projects.updateAsync({ _id: projectId }, { $set: { priority } })
     return 'notifications.project_priority_success'
   },
-  setDefaultTaskForProject({ projectId, taskId }) {
+  async setDefaultTaskForProject({ projectId, taskId }) {
     check(projectId, String)
     check(taskId, String)
-    checkAuthentication(this)
-    const task = Tasks.findOne({ _id: taskId })
+    await checkAuthentication(this)
+    const task = await Tasks.findOneAsync({ _id: taskId })
     if (task.isDefaultTask) {
-      Projects.update({ _id: projectId }, { $unset: { defaultTask: 1 } })
-      Tasks.update({ _id: taskId }, { $set: { isDefaultTask: false } })
+      await Projects.updateAsync({ _id: projectId }, { $unset: { defaultTask: 1 } })
+      await Tasks.updateAsync({ _id: taskId }, { $set: { isDefaultTask: false } })
       return 'notifications.default_task_success'
     }
-    Projects.update({ _id: projectId }, { $set: { defaultTask: task.name } })
-    Tasks.update({ projectId }, { $set: { isDefaultTask: false } }, { multi: true })
-    Tasks.update({ _id: taskId }, { $set: { isDefaultTask: true } })
+    await Projects.updateAsync({ _id: projectId }, { $set: { defaultTask: task.name } })
+    await Tasks.updateAsync({ projectId }, { $set: { isDefaultTask: false } }, { multi: true })
+    await Tasks.updateAsync({ _id: taskId }, { $set: { isDefaultTask: true } })
     return 'notifications.default_task_success'
   },
 })

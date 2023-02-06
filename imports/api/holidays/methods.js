@@ -5,29 +5,30 @@ import { Globalsettings } from '../globalsettings/globalsettings.js'
 
 const hd = new Holidays()
 
-function getGlobalSetting(name) {
-  return Globalsettings.findOne({ name }) ? Globalsettings.findOne({ name }).value : false
+async function getGlobalSetting(name) {
+  const globalsetting = await Globalsettings.findOneAsync({ name })
+  return globalsetting ? globalsetting.value : false
 }
-
-function getUserSetting(field) {
-  if (Meteor.user() && Meteor.user().profile) {
-    return typeof Meteor.user().profile[field] !== 'undefined' ? Meteor.user().profile[field] : getGlobalSetting(field)
+// TODO: this should import the getUserSetting from frontend_helpers instead!
+async function getUserSetting(field) {
+  const meteorUser = await Meteor.userAsync()
+  if (meteorUser?.profile) {
+    return typeof meteorUser.profile[field] !== 'undefined' ? meteorUser.profile[field] : getGlobalSetting(field)
   }
   return false
 }
 
-function getCurrentHoliday() {
-  const country = getUserSetting('holidayCountry')
-  const state = getUserSetting('holidayState')
-  const region = getUserSetting('holidayRegion')
-
+async function getCurrentHoliday() {
+  const country = await getUserSetting('holidayCountry')
+  const state = await getUserSetting('holidayState')
+  const region = await getUserSetting('holidayRegion')
   return new Holidays(country, state, region)
 }
 
 Meteor.methods({
-  getHolidays() {
-    checkAuthentication(this)
-    const h = getCurrentHoliday()
+  async getHolidays() {
+    await checkAuthentication(this)
+    const h = await getCurrentHoliday()
     if (h) {
       return h.getHolidays()
     }

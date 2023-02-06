@@ -6,8 +6,8 @@ import Projects from '../projects'
 import Timecards from '../../timecards/timecards.js'
 import { checkAuthentication } from '../../../utils/server_method_helpers.js'
 
-Meteor.publish('myprojects', function myProjects({ projectLimit }) {
-  checkAuthentication(this)
+Meteor.publish('myprojects', async function myProjects({ projectLimit }) {
+  await checkAuthentication(this)
   check(projectLimit, Match.Maybe(Number))
   return projectLimit ? Projects.find({
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
@@ -15,9 +15,9 @@ Meteor.publish('myprojects', function myProjects({ projectLimit }) {
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
   })
 })
-Meteor.publish('singleProject', function singleProject(projectId) {
+Meteor.publish('singleProject', async function singleProject(projectId) {
   check(projectId, String)
-  checkAuthentication(this)
+  await checkAuthentication(this)
   return Projects.find({
     $or: [{ userId: this.userId },
       { public: true },
@@ -26,12 +26,12 @@ Meteor.publish('singleProject', function singleProject(projectId) {
   })
 })
 
-Meteor.publish('projectStats', function projectStats(projectId) {
+Meteor.publish('projectStats', async function projectStats(projectId) {
   check(projectId, String)
-  checkAuthentication(this)
+  await checkAuthentication(this)
   dayjs.extend(utc)
   dayjs.extend(isBetween)
-  if (!this.userId || !Projects.findOne({
+  if (!this.userId || !await Projects.findOneAsync({
     _id: projectId,
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
   })) {
@@ -41,25 +41,30 @@ Meteor.publish('projectStats', function projectStats(projectId) {
   const currentMonthName = dayjs.utc().format('MMM')
   const currentMonthStart = dayjs.utc().startOf('month').toDate()
   const currentMonthEnd = dayjs.utc().endOf('month').toDate()
-  const previousMonthName = dayjs.utc().subtract('1', 'month').format('MMM')
-  const previousMonthStart = dayjs.utc().subtract('1', 'month').startOf('month').toDate()
-  const previousMonthEnd = dayjs.utc().subtract('1', 'month').endOf('month').toDate()
-  const beforePreviousMonthStart = dayjs.utc().subtract('2', 'month').startOf('month').toDate()
-  const beforePreviousMonthEnd = dayjs.utc().subtract('2', 'month').endOf('month')
-  const beforePreviousMonthName = dayjs.utc().subtract('2', 'month').format('MMM')
+  const previousMonthName = dayjs.utc().subtract(1, 'month').format('MMM')
+  const previousMonthStart = dayjs.utc().subtract(1, 'month').startOf('month').toDate()
+  const previousMonthEnd = dayjs.utc().subtract(1, 'month').endOf('month').toDate()
+  const beforePreviousMonthStart = dayjs.utc().subtract(2, 'month').startOf('month').toDate()
+  const beforePreviousMonthEnd = dayjs.utc().subtract(2, 'month').endOf('month')
+  const beforePreviousMonthName = dayjs.utc().subtract(2, 'month').format('MMM')
 
   let totalHours = 0
   let currentMonthHours = 0
   let previousMonthHours = 0
   let beforePreviousMonthHours = 0
-  totalHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{
+  const totalTimecardsRaw = await Timecards.rawCollection().aggregate([{
     $match: { projectId },
   }, {
     $group: { _id: null, totalHours: { $sum: '$hours' } },
-  }]).toArray())[0]?.totalHours)
-  currentMonthHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: currentMonthStart, $lte: currentMonthEnd } } }, { $group: { _id: null, currentMonthHours: { $sum: '$hours' } } }]).toArray())[0]?.currentMonthHours)
-  previousMonthHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: previousMonthStart, $lte: previousMonthEnd } } }, { $group: { _id: null, previousMonthHours: { $sum: '$hours' } } }]).toArray())[0]?.previousMonthHours)
-  beforePreviousMonthHours = Number.parseFloat(Promise.await(Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: beforePreviousMonthStart, $lte: beforePreviousMonthStart } } }, { $group: { _id: null, beforePreviousMonthHours: { $sum: '$hours' } } }]).toArray())[0]?.beforePreviousMonthHours)
+  }]).toArray()
+  totalHours = Number.parseFloat(totalTimecardsRaw[0]?.totalHours)
+  const currentMonthTimeCardsRaw = await Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: currentMonthStart, $lte: currentMonthEnd } } }, { $group: { _id: null, currentMonthHours: { $sum: '$hours' } } }]).toArray()
+  currentMonthHours = Number.parseFloat(currentMonthTimeCardsRaw[0]?.currentMonthHours)
+  const previousMonthTimeCardsRaw = await Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: previousMonthStart, $lte: previousMonthEnd } } }, { $group: { _id: null, previousMonthHours: { $sum: '$hours' } } }]).toArray()
+  previousMonthHours = Number.parseFloat(previousMonthTimeCardsRaw[0]?.previousMonthHours)
+  const beforePreviousMonthTimeCardsRaw = await Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: beforePreviousMonthStart, $lte: beforePreviousMonthStart } } }, { $group: { _id: null, beforePreviousMonthHours: { $sum: '$hours' } } }]).toArray()
+  beforePreviousMonthHours = Number
+    .parseFloat(beforePreviousMonthTimeCardsRaw[0]?.beforePreviousMonthHours)
   // observeChanges only returns after the initial `added` callbacks
   // have run. Until then, we don't want to send a lot of
   // `self.changed()` messages - hence tracking the

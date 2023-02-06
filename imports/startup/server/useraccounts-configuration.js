@@ -3,9 +3,9 @@ import dockerNames from 'docker-names'
 import { getGlobalSetting } from '../../utils/frontend_helpers'
 import initNewUser from '../../api/projects/setup.js'
 
-Accounts.setAdditionalFindUserOnExternalLogin((user) => {
+Accounts.setAdditionalFindUserOnExternalLogin(async (user) => {
   if (user.serviceName === 'oidc' && user?.options?.emails?.[0]) {
-    return Meteor.users.findOne({ 'emails.0.address': user.options.emails[0].address })
+    return Meteor.users.findOneAsync({ 'emails.0.address': user.options.emails[0].address })
   }
   return undefined
 })
@@ -36,7 +36,7 @@ Accounts.onCreateUser((options, user) => {
   }
 
   // the first user registered on a server will automatically receive the isAdmin flag
-  if (Meteor.users.find().count === 0) {
+  if (Meteor.users.find().count() === 0) {
     localUser.isAdmin = true
   }
   return localUser

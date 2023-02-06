@@ -2,7 +2,6 @@ import dayjs from 'dayjs'
 import { NodeVM } from 'vm2'
 import { fetch } from 'meteor/fetch'
 import { check, Match } from 'meteor/check'
-import { Promise } from 'meteor/promise'
 import Timecards from './timecards.js'
 import Tasks from '../tasks/tasks.js'
 import Projects from '../projects/projects.js'
@@ -18,15 +17,16 @@ import {
   buildDetailedTimeEntriesForPeriodSelector,
 } from '../../utils/server_method_helpers.js'
 
-function checkTimeEntryRule({
+async function checkTimeEntryRule({
   userId, projectId, task, state, date, hours,
 }) {
+  const meteorUser = await Meteor.users.findOneAsync({ _id: userId })
   const vm = new NodeVM({
     wrapper: 'none',
     timeout: 1000,
     sandbox: {
-      user: Meteor.users.findOne({ _id: userId }).profile,
-      project: Projects.findOne({ _id: projectId }),
+      user: meteorUser.profile,
+      project: await Projects.findOneAsync({ _id: projectId }),
       dayjs,
       timecard: {
         projectId,
@@ -45,7 +45,7 @@ function checkTimeEntryRule({
     throw new Meteor.Error(error.message)
   }
 }
-function insertTimeCard(projectId, task, date, hours, userId, customfields) {
+async function insertTimeCard(projectId, task, date, hours, userId, customfields) {
   const newTimeCard = {
     userId,
     projectId,
@@ -54,56 +54,60 @@ function insertTimeCard(projectId, task, date, hours, userId, customfields) {
     task: task.replace(/(:\S*:)/g, emojify),
     ...customfields,
   }
-  if (!Tasks.findOne({ userId, name: task.replace(/(:\S*:)/g, emojify) })) {
-    Tasks.insert({
-      userId, lastUsed: new Date(), name: task.replace(/(:\S*:)/g, emojify), ...customfields,
+  if (!await Tasks.findOneAsync({ userId, name: await emojify(task) })) {
+    await Tasks.insertAsync({
+      userId, lastUsed: new Date(), name: await emojify(task), ...customfields,
     })
   } else {
-    Tasks.update({ userId, name: task.replace(/(:\S*:)/g, emojify) }, { $set: { lastUsed: new Date(), ...customfields } })
+    await Tasks.updateAsync({ userId, name: await emojify(task) },
+      { $set: { lastUsed: new Date(), ...customfields } },
+    )
   }
-  return Timecards.insert(newTimeCard)
+  return Timecards.insertAsync(newTimeCard)
 }
-function upsertTimecard(projectId, task, date, hours, userId) {
-  if (!Tasks.findOne({ userId, name: task.replace(/(:\S*:)/g, emojify) })) {
-    Tasks.insert({ userId, lastUsed: new Date(), name: task.replace(/(:\S*:)/g, emojify) })
+async function upsertTimecard(projectId, task, date, hours, userId) {
+  if (!await Tasks.findOneAsync({ userId, name: await emojify(task) })) {
+    await Tasks.insertAsync({ userId, lastUsed: new Date(), name: await emojify(task) })
   } else {
-    Tasks.update({ userId, name: task.replace(/(:\S*:)/g, emojify) }, { $set: { lastUsed: new Date() } })
+    await Tasks.updateAsync({ userId, name: await emojify(task) },
+      { $set: { lastUsed: new Date() } },
+    )
   }
   if (hours === 0) {
-    Timecards.remove({
+    await Timecards.removeAsync({
       userId,
       projectId,
       date,
-      task: task.replace(/(:\S*:)/g, emojify),
+      task: await emojify(task),
     })
-  } else if (Timecards.find({
+  } else if (await Timecards.find({
     userId,
     projectId,
     date,
-    task: task.replace(/(:\S*:)/g, emojify),
-  }).count() > 1) {
+    task: await emojify(task),
+  }).countAsync() > 1) {
     // if there are more time entries with the same task description for one day,
     // we remove all of them and create a new entry for the total sum
-    Timecards.remove({
+    await Timecards.removeAsync({
       userId,
       projectId,
       date,
-      task: task.replace(/(:\S*:)/g, emojify),
+      task: await emojify(task),
     })
   }
-  return Timecards.update(
+  return Timecards.updateAsync(
     {
       userId,
       projectId,
       date,
-      task: task.replace(/(:\S*:)/g, emojify),
+      task: await emojify(task),
     },
     {
       userId,
       projectId,
       date,
       hours,
-      task: task.replace(/(:\S*:)/g, emojify),
+      task: await emojify(task),
     },
 
     { upsert: true },
@@ -111,7 +115,7 @@ function upsertTimecard(projectId, task, date, hours, userId) {
 }
 
 Meteor.methods({
-  insertTimeCard({
+  async insertTimeCard({
     projectId,
     task,
     date,
@@ -123,21 +127,21 @@ Meteor.methods({
     check(date, Date)
     check(hours, Number)
     check(customfields, Match.Maybe(Object))
-    checkAuthentication(this)
-    checkTimeEntryRule({
+    await checkAuthentication(this)
+    await checkTimeEntryRule({
       userId: this.userId, projectId, task, state: 'new', date, hours,
     })
-    insertTimeCard(projectId, task, date, hours, this.userId, customfields)
+    await insertTimeCard(projectId, task, date, hours, this.userId, customfields)
   },
-  upsertWeek(weekArray) {
-    checkAuthentication(this)
+  async upsertWeek(weekArray) {
+    await checkAuthentication(this)
     check(weekArray, Array)
-    weekArray.forEach((element) => {
+    weekArray.forEach(async (element) => {
       check(element.projectId, String)
       check(element.task, String)
       check(element.date, Date)
       check(element.hours, Number)
-      checkTimeEntryRule({
+      await checkTimeEntryRule({
         userId: this.userId,
         projectId: element.projectId,
         task: element.task,
@@ -145,10 +149,16 @@ Meteor.methods({
         date: element.date,
         hours: element.hours,
       })
-      upsertTimecard(element.projectId, element.task, element.date, element.hours, this.userId)
+      await upsertTimecard(
+        element.projectId,
+        element.task,
+        element.date,
+        element.hours,
+        this.userId,
+      )
     })
   },
-  updateTimeCard({
+  async updateTimeCard({
     projectId,
     _id,
     task,
@@ -162,28 +172,28 @@ Meteor.methods({
     check(date, Date)
     check(hours, Number)
     check(customfields, Match.Maybe(Object))
-    checkAuthentication(this)
-    const timecard = Timecards.findOne({ _id })
-    checkTimeEntryRule({
+    await checkAuthentication(this)
+    const timecard = await Timecards.findOneAsync({ _id })
+    await checkTimeEntryRule({
       userId: this.userId, projectId, task, state: timecard.state, date, hours,
     })
-    if (!Tasks.findOne({ userId: this.userId, name: task.replace(/(:\S*:)/g, emojify) })) {
-      Tasks.insert({ userId: this.userId, name: task.replace(/(:\S*:)/g, emojify), ...customfields })
+    if (!await Tasks.findOneAsync({ userId: this.userId, name: await emojify(task) })) {
+      await Tasks.insertAsync({ userId: this.userId, name: await emojify(task), ...customfields })
     }
-    Timecards.update({ _id }, {
+    await Timecards.updateAsync({ _id }, {
       $set: {
         projectId,
         date,
         hours,
-        task: task.replace(/(:\S*:)/g, emojify),
+        task: await emojify(task),
         ...customfields,
       },
     })
   },
-  deleteTimeCard({ timecardId }) {
-    checkAuthentication(this)
-    const timecard = Timecards.findOne({ _id: timecardId })
-    checkTimeEntryRule({
+  async deleteTimeCard({ timecardId }) {
+    await checkAuthentication(this)
+    const timecard = await Timecards.findOneAsync({ _id: timecardId })
+    await checkTimeEntryRule({
       userId: this.userId,
       projectId: timecard.projectId,
       task: timecard.task,
@@ -191,17 +201,17 @@ Meteor.methods({
       date: timecard.date,
       hours: timecard.hours,
     })
-    return Timecards.remove({ userId: this.userId, _id: timecardId })
+    return Timecards.removeAsync({ userId: this.userId, _id: timecardId })
   },
-  sendToSiwapp({
+  async sendToSiwapp({
     projectId, timePeriod, userId, customer, dates,
   }) {
     check(projectId, Match.OneOf(String, Array))
     check(timePeriod, String)
     check(userId, Match.OneOf(String, Array))
     check(customer, Match.OneOf(String, Array))
-    checkAuthentication(this)
-    const meteorUser = Meteor.users.findOne({ _id: this.userId })
+    await checkAuthentication(this)
+    const meteorUser = await Meteor.users.findOneAsync({ _id: this.userId })
     if (!meteorUser.profile.siwappurl || !meteorUser.profile.siwapptoken) {
       throw new Meteor.Error(t('notifications.siwapp_configuration'))
     }
@@ -210,7 +220,7 @@ Meteor.methods({
       check(dates.startDate, Date)
       check(dates.endDate, Date)
     }
-    checkAuthentication(this)
+    await checkAuthentication(this)
     const timeEntries = []
     const selector = buildDetailedTimeEntriesForPeriodSelector({
       projectId,
@@ -224,9 +234,9 @@ Meteor.methods({
       sort: undefined,
     })
     const projectMap = new Map()
-    for (const timecard of Timecards.find(selector[0]).fetch()) {
+    for (const timecard of await Timecards.find(selector[0]).fetchAsync()) {
       timeEntries.push(timecard._id)
-      const resource = Meteor.users.findOne({ _id: timecard.userId }).profile.name
+      const resource = meteorUser.profile.name
       const projectEntry = projectMap.get(timecard.projectId)
       if (projectEntry) {
         projectEntry.set(
@@ -251,12 +261,13 @@ Meteor.methods({
         },
       },
     }
-    projectMap.forEach((resources, project) => {
+    projectMap.forEach(async (resources, project) => {
+      const projectElement = await Projects.findOneAsync({ _id: project })
       if (resources.size > 0) {
         resources.forEach((hours, resource) => {
           invoiceJSON.data.relationships.items.data.push({
             attributes: {
-              description: `${Projects.findOne({ _id: project }).name} (${resource})`,
+              description: `${projectElement.name} (${resource})`,
               quantity: timeInUserUnit(hours, meteorUser),
               unitary_cost: 0,
             },
@@ -282,7 +293,7 @@ Meteor.methods({
       throw new Meteor.Error(error)
     })
   },
-  getDailyTimecards({
+  async getDailyTimecards({
     projectId,
     userId,
     period,
@@ -302,7 +313,7 @@ Meteor.methods({
     check(customer, String)
     check(limit, Number)
     check(page, Match.Maybe(Number))
-    checkAuthentication(this)
+    await checkAuthentication(this)
     const aggregationSelector = buildDailyHoursSelector(
       projectId,
       period,
@@ -313,16 +324,17 @@ Meteor.methods({
       page,
     )
     const dailyHoursObject = {}
-    const totalEntries = Promise.await(Timecards.rawCollection()
+    const totalTimeCardsRawCollection = await Timecards.rawCollection()
       .aggregate(buildDailyHoursSelector(projectId, period, dates, userId, customer, 0))
-      .toArray()).length
-    const dailyHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
-      .toArray())
+      .toArray()
+    const totalEntries = totalTimeCardsRawCollection.length
+    const dailyHours = await Timecards.rawCollection().aggregate(aggregationSelector)
+      .toArray()
     dailyHoursObject.dailyHours = dailyHours
     dailyHoursObject.totalEntries = totalEntries
     return dailyHoursObject
   },
-  getTotalHoursForPeriod({
+  async getTotalHoursForPeriod({
     projectId,
     userId,
     period,
@@ -342,7 +354,7 @@ Meteor.methods({
     check(customer, String)
     check(limit, Number)
     check(page, Match.Maybe(Number))
-    checkAuthentication(this)
+    await checkAuthentication(this)
     const aggregationSelector = buildTotalHoursForPeriodSelector(
       projectId,
       period,
@@ -353,11 +365,12 @@ Meteor.methods({
       page,
     )
     const totalHoursObject = {}
-    const totalEntries = Promise.await(Timecards.rawCollection()
+    const totalEntriesTimecardsRaw = await Timecards.rawCollection()
       .aggregate(buildTotalHoursForPeriodSelector(projectId, period, dates, userId, customer, 0))
-      .toArray()).length
-    const totalHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
-      .toArray())
+      .toArray()
+    const totalEntries = totalEntriesTimecardsRaw.length
+    const totalHours = await Timecards.rawCollection().aggregate(aggregationSelector)
+      .toArray()
     for (const entry of totalHours) {
       entry.totalHours = Number(JSON.parse(JSON.stringify(entry)).totalHours.$numberDecimal)
     }
@@ -365,7 +378,7 @@ Meteor.methods({
     totalHoursObject.totalEntries = totalEntries
     return totalHoursObject
   },
-  getWorkingHoursForPeriod({
+  async getWorkingHoursForPeriod({
     projectId,
     userId,
     period,
@@ -373,7 +386,7 @@ Meteor.methods({
     limit,
     page,
   }) {
-    checkAuthentication(this)
+    await checkAuthentication(this)
     check(projectId, Match.OneOf(String, Array))
     check(period, String)
     if (period === 'custom') {
@@ -392,32 +405,35 @@ Meteor.methods({
       limit,
       page,
     )
-    const totalEntries = Promise.await(
-      Timecards.rawCollection()
-        .aggregate(buildworkingTimeSelector(projectId, period, dates, userId, 0)).toArray(),
-    ).length
+    const totalEntriesTimecardsRaw = await Timecards.rawCollection()
+      .aggregate(buildworkingTimeSelector(projectId, period, dates, userId, 0)).toArray()
+    const totalEntries = totalEntriesTimecardsRaw.length
     const workingHoursObject = {}
     workingHoursObject.totalEntries = totalEntries
-    const workingHours = Promise.await(Timecards.rawCollection().aggregate(aggregationSelector)
-      .toArray()).map(workingTimeEntriesMapper)
+    const workingHoursTimeCardsRaw = await Timecards.rawCollection().aggregate(aggregationSelector)
+      .toArray()
+    const workingHours = workingHoursTimeCardsRaw.map(workingTimeEntriesMapper)
     workingHoursObject.workingHours = workingHours
     return workingHoursObject
   },
-  setTimeEntriesState({ timeEntries, state }) {
-    checkAuthentication(this)
+  async setTimeEntriesState({ timeEntries, state }) {
+    await checkAuthentication(this)
     check(state, String)
     check(timeEntries, Array)
     for (const timeEntryId of timeEntries) {
       check(timeEntryId, String)
     }
     if (state === 'exported') {
-      Timecards.update({ _id: { $in: timeEntries }, state: { $in: ['new', undefined] } }, { $set: { state } }, { multi: true })
+      await Timecards.updateAsync({ _id: { $in: timeEntries }, state: { $in: ['new', undefined] } }, { $set: { state } }, { multi: true })
     } else if (state === 'billed') {
-      Timecards.update({ _id: { $in: timeEntries }, state: { $ne: 'notBillable' } }, { $set: { state } }, { multi: true })
+      await Timecards.updateAsync({ _id: { $in: timeEntries }, state: { $ne: 'notBillable' } }, { $set: { state } }, { multi: true })
     } else {
-      Timecards.update({ _id: { $in: timeEntries } }, { $set: { state } }, { multi: true })
+      await Timecards.updateAsync({ _id: { $in: timeEntries } },
+        { $set: { state } },
+        { multi: true },
+      )
     }
   },
 })
 
-export { insertTimeCard }
+export { insertTimeCard, upsertTimecard }

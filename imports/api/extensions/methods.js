@@ -3,8 +3,8 @@ import Extensions from './extensions'
 import { checkAdminAuthentication } from '../../utils/server_method_helpers'
 
 Meteor.methods({
-  addExtension({ zipFile }) {
-    checkAdminAuthentication(this)
+  async addExtension({ zipFile }) {
+    await checkAdminAuthentication(this)
     const regex = /^data:.+\/(.+);base64,(.*)$/
     const matches = zipFile.match(regex)
     const data = matches[2]
@@ -29,35 +29,35 @@ Meteor.methods({
         newExtension.server = zipEntry.getData().toString('utf-8')
       }
     }
-    if (!Extensions.findOne({ name: newExtension.name })) {
+    if (!await Extensions.findOneAsync({ name: newExtension.name })) {
       Extensions.insert(newExtension)
       return 'notifications.success'
     }
     return new Meteor.Error('Extension has been added before.')
   },
-  removeExtension({ extensionId }) {
-    checkAdminAuthentication(this)
-    const extension = Extensions.findOne({ _id: extensionId })
+  async removeExtension({ extensionId }) {
+    await checkAdminAuthentication(this)
+    const extension = await Extensions.findOneAsync({ _id: extensionId })
     if (extension) {
       Extensions.remove({ _id: extension._id })
       return 'notifications.success'
     }
     return new Meteor.Error('Extension does not exist.')
   },
-  launchExtension({ extensionId }) {
-    checkAdminAuthentication(this)
-    const extension = Extensions.findOne({ _id: extensionId })
+  async launchExtension({ extensionId }) {
+    await checkAdminAuthentication(this)
+    const extension = await Extensions.findOneAsync({ _id: extensionId })
     if (extension) {
       eval(extension.server)
       return 'notifications.success'
     }
     return new Meteor.Error('Extension does not exist')
   },
-  toggleExtensionState({ extensionId, state }) {
-    checkAdminAuthentication(this)
-    const extension = Extensions.findOne({ _id: extensionId })
+  async toggleExtensionState({ extensionId, state }) {
+    await checkAdminAuthentication(this)
+    const extension = await Extensions.findOneAsync({ _id: extensionId })
     if (extension) {
-      Extensions.update({ _id: extension._id }, { $set: { isActive: state } })
+      await Extensions.updateAsync({ _id: extension._id }, { $set: { isActive: state } })
       return 'notifications.success'
     }
     return new Meteor.Error('Extension does not exist.')

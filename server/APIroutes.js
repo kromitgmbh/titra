@@ -21,10 +21,10 @@ function sendResponse(res, statusCode, message, payload) {
   })
   res.end(JSON.stringify(response))
 }
-function checkAuthorization(req, res) {
+async function checkAuthorization(req, res) {
   const authHeader = req.headers.authorization
   if (authHeader) {
-    const meteorUser = Meteor.users.findOne({ 'profile.APItoken': authHeader.split(' ')[1] })
+    const meteorUser = await Meteor.users.findOneAsync({ 'profile.APItoken': authHeader.split(' ')[1] })
     if (authHeader && authHeader.split(' ')[1] && meteorUser) {
       return meteorUser
     }
@@ -49,10 +49,10 @@ function checkAuthorization(req, res) {
  * @apiGroup TimeEntry
  *
  * @apiHeader {String} Token The authorization header Bearer API token.
- * @apiParam {String} projectId The project ID.
- * @apiParam {String} task The task description of the new time entry.
- * @apiParam {Date} date The date for the new time entry in format YYYY-MM-DD.
- * @apiParam {Number} hours The number of hours to track.
+ * @apiBody {String} projectId The project ID.
+ * @apiBody {String} task The task description of the new time entry.
+ * @apiBody {Date} date The date for the new time entry in format YYYY-MM-DD.
+ * @apiBody {Number} hours The number of hours to track.
  * @apiParamExample {json} Request-Example:
  *                  {
  *                    "projectId": "123456",
@@ -60,7 +60,7 @@ function checkAuthorization(req, res) {
  *                    "date": "2019-11-10",
  *                    "hours": 8
  *                  }
- * @apiSuccess {json} The id of the new time entry.
+ * @apiSuccess {json} response The id of the new time entry.
  * @apiSuccessExample {json} Success response:
  * {
  *  message: "time entry created."
@@ -71,13 +71,16 @@ function checkAuthorization(req, res) {
  * @apiUse AuthError
  */
 WebApp.connectHandlers.use('/timeentry/create/', async (req, res, next) => {
-  const meteorUser = checkAuthorization(req, res)
+  const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
-  const json = await getJson(req).catch((e) => {
+  let json
+  try {
+    json = await getJson(req)
+  } catch (e) {
     sendResponse(res, 400, `Invalid JSON received. ${e}`)
-  })
+  }
   if (json) {
     try {
       check(json.projectId, String)
@@ -88,7 +91,7 @@ WebApp.connectHandlers.use('/timeentry/create/', async (req, res, next) => {
       sendResponse(res, 500, `Invalid parameters received.${error}`)
       return
     }
-    const timecardId = insertTimeCard(json.projectId, json.task, new Date(json.date), json.hours, meteorUser._id)
+    const timecardId = await insertTimeCard(json.projectId, json.task, new Date(json.date), json.hours, meteorUser._id)
     const payload = {}
     payload.timecardId = timecardId
     sendResponse(res, 200, 'Time entry created.', payload)
@@ -111,7 +114,7 @@ WebApp.connectHandlers.use('/timeentry/create/', async (req, res, next) => {
   * @apiUse AuthError
   */
 WebApp.connectHandlers.use('/timeentry/list/', async (req, res, next) => {
-  const meteorUser = checkAuthorization(req, res)
+  const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
@@ -141,13 +144,13 @@ WebApp.connectHandlers.use('/timeentry/list/', async (req, res, next) => {
    * @apiUse AuthError
    */
 WebApp.connectHandlers.use('/project/list/', async (req, res, next) => {
-  const meteorUser = checkAuthorization(req, res)
+  const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
-  const payload = Projects.find({
+  const payload = await Projects.find({
     $or: [{ userId: meteorUser._id }, { public: true }, { team: meteorUser._id }],
-  }).fetch()
+  }).fetchAsync()
   sendResponse(res, 200, 'Returning projects', payload)
 })
 
@@ -158,12 +161,12 @@ WebApp.connectHandlers.use('/project/list/', async (req, res, next) => {
    * @apiGroup Project
    *
    * @apiHeader {String} Token The authorization header Bearer API token.
-   * @apiParam {String} name The project name.
-   * @apiParam {String} [description] The description of the project.
-   * @apiParam {String} [color] The project color in HEX color code.
-   * @apiParam {String} [customer] The customer of the project.
-   * @apiParam {Number} [rate] The hourly rate of the project.
-   * @apiParam {Number} [budget] The budget for this project in hours.
+   * @apiBody {String} name The project name.
+   * @apiBody {String} [description] The description of the project.
+   * @apiBody {String} [color] The project color in HEX color code.
+   * @apiBody {String} [customer] The customer of the project.
+   * @apiBody {Number} [rate] The hourly rate of the project.
+   * @apiBody {Number} [budget] The budget for this project in hours.
 
    * @apiParamExample {json} Request-Example:
    *                  {
@@ -177,21 +180,26 @@ WebApp.connectHandlers.use('/project/list/', async (req, res, next) => {
    * @apiSuccess {json} response The id of the new project.
    *  * @apiSuccessExample {json} Success response:
     * {
-    *  message: "time entry created."
-    *  payload: {
-    *    projectId: "123456"
-    *  }
+    *    message: "time entry created.",
+    *    payload: {
+    *      projectId: "123456"
+    *    }
     *  }
    * @apiUse AuthError
+   * @apiExample {curl} Example usage:
+ *     curl -d '{"name":"api-test-project", "description":"fabians api project"}' -H "Content-Type: application/json" -H "Authorization: Token abcdefgHIJKLMNOP" -X POST http://localhost:3000/project/create
    */
 WebApp.connectHandlers.use('/project/create/', async (req, res, next) => {
-  const meteorUser = checkAuthorization(req, res)
+  const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
-  const json = await getJson(req).catch((e) => {
+  let json
+  try {
+    json = await getJson(req)
+  } catch (e) {
     sendResponse(res, 400, `Invalid JSON received. ${e}`)
-  })
+  }
   if (json) {
     try {
       check(json.name, String)
@@ -205,7 +213,7 @@ WebApp.connectHandlers.use('/project/create/', async (req, res, next) => {
       return
     }
     json.userId = meteorUser._id
-    const projectId = Projects.insert(json)
+    const projectId = await Projects.insertAsync(json)
     const payload = {}
     payload.projectId = projectId
     sendResponse(res, 200, 'Project created.', payload)
@@ -235,14 +243,14 @@ WebApp.connectHandlers.use('/project/create/', async (req, res, next) => {
    * @apiUse AuthError
    */
 WebApp.connectHandlers.use('/timer/start/', async (req, res, next) => {
-  const meteorUser = checkAuthorization(req, res)
+  const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
   const payload = {}
   if (!meteorUser.profile.timer) {
     payload.startTime = meteorUser.profile.timer
-    Meteor.users.update({ _id: meteorUser._id }, { $set: { 'profile.timer': new Date() } })
+    await Meteor.users.updateAsync({ _id: meteorUser._id }, { $set: { 'profile.timer': new Date() } })
     sendResponse(res, 200, 'New timer started.', payload)
   } else {
     sendResponse(res, 500, 'There is already another running timer.')
@@ -274,7 +282,7 @@ WebApp.connectHandlers.use('/timer/start/', async (req, res, next) => {
    * @apiUse AuthError
    */
 WebApp.connectHandlers.use('/timer/get/', async (req, res, next) => {
-  const meteorUser = checkAuthorization(req, res)
+  const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
@@ -314,7 +322,7 @@ WebApp.connectHandlers.use('/timer/get/', async (req, res, next) => {
    * @apiUse AuthError
    */
 WebApp.connectHandlers.use('/timer/stop/', async (req, res, next) => {
-  const meteorUser = checkAuthorization(req, res)
+  const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
@@ -324,7 +332,7 @@ WebApp.connectHandlers.use('/timer/stop/', async (req, res, next) => {
     const currentTime = new Date()
     const timerTime = new Date(meteorUser.profile.timer)
     payload.duration = currentTime.getTime() - timerTime.getTime()
-    Meteor.users.update({ _id: meteorUser._id }, { $unset: { 'profile.timer': '' } })
+    await Meteor.users.updateAsync({ _id: meteorUser._id }, { $unset: { 'profile.timer': '' } })
     sendResponse(res, 200, 'Running timer stopped.', payload)
   } else {
     sendResponse(res, 500, 'No running timer found.')

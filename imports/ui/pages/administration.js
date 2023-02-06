@@ -18,6 +18,7 @@ Template.administration.onCreated(function administrationCreated() {
   this.filter = new ReactiveVar()
   this.subscribe('extensions')
   this.subscribe('customfields')
+  this.subscribe('userRoles')
   this.autorun(() => {
     if (FlowRouter.getQueryParam('limit')) {
       this.limit.set(Number(FlowRouter.getQueryParam('limit')))
@@ -33,7 +34,15 @@ Template.administration.onCreated(function administrationCreated() {
     }
   })
 })
-
+Template.administration.onRendered(() => {
+  Template.instance().autorun(() => {
+    if (Template.instance().subscriptionsReady()) {
+      if (!Meteor.user().isAdmin) {
+        FlowRouter.go('/')
+      }
+    }
+  })
+})
 Template.administration.helpers({
   users: () => Meteor.users.find({}, { sort: { createdAt: -1 } }),
   avatar: (meteorUser) => displayUserAvatar(meteorUser),

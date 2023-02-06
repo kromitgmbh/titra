@@ -1,5 +1,5 @@
 <template name="navbar">
-  <nav class="navbar navbar-expand bg-dark fixed-top d-print-none">
+  <nav class="navbar shadow navbar-expand bg-dark sticky-top d-print-none" style="position: sticky !important;">
     <div class="container">
         <a class="navbar-brand text-white" href="{{ prefix }}/"><img src="{{ prefix }}/img/navbar_logo.svg" alt="titra - open source time tracking for small companies" class="d-inline-block" height="24" width="24"/>{{#unless currentUser}}&nbsp;&nbsp;titra{{/unless}}</a>
       {{#if currentUser}}

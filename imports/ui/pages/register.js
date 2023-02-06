@@ -37,8 +37,8 @@ Template.register.events({
           currentLanguageProjectDesc: t('project.first_project_desc'),
         },
       }, (error) => {
-        console.error(error)
         if (error && error.error !== 145546287) {
+          console.error(error)
           templateInstance.$('.notification').text(`${t(`login.${error.error}`)} (${error.reason})`)
           document.querySelector('.notification').classList.toggle('d-none')
         } else {
@@ -68,4 +68,5 @@ Template.register.events({
 })
 Template.register.helpers({
   email: () => FlowRouter.getQueryParam('email'),
+  name: () => FlowRouter.getQueryParam('name'),
 })

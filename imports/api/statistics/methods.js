@@ -1,13 +1,13 @@
 import { MongoInternals } from 'meteor/mongo'
+import os from 'os'
 
 Meteor.methods({
-  getStatistics() {
+  async getStatistics() {
     // this is completely based on WeKans implementation
     // https://github.com/wekan/wekan/blob/master/server/statistics.js
-    const os = require('os')
     const pjson = require('/package.json')
     const statistics = {}
-    const { isAdmin } = Meteor.users.findOne({ _id: this.userId })
+    const { isAdmin } = await Meteor.userAsync()
     statistics.version = pjson.version
     if (isAdmin) {
       statistics.os = {
@@ -51,15 +51,14 @@ Meteor.methods({
         const oplogEnabled = Boolean(
           mongo._oplogHandle && mongo._oplogHandle.onOplogEntry,
         )
-        const { version, storageEngine } = Promise.await(
-          mongo.db.command({ serverStatus: 1 }),
-        )
+        const { version, storageEngine } = await mongo.db.command({ serverStatus: 1 })
         mongoVersion = version
         mongoStorageEngine = storageEngine.name
         mongoOplogEnabled = oplogEnabled
       } catch (e) {
         try {
-          const { version } = Promise.await(mongo.db.command({ buildinfo: 1 }))
+          const { mongo } = MongoInternals.defaultRemoteCollectionDriver()
+          const { version } = await mongo.db.command({ buildinfo: 1 })
           mongoVersion = version
           mongoStorageEngine = 'unknown'
         } catch (error) {
