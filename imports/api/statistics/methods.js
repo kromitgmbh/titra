@@ -1,8 +1,11 @@
+import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { MongoInternals } from 'meteor/mongo'
 import os from 'os'
 
-Meteor.methods({
-  async getStatistics() {
+const getStatistics = new ValidatedMethod({
+  name: 'getStatistics',
+  validate: null,
+  async run() {
     // this is completely based on WeKans implementation
     // https://github.com/wekan/wekan/blob/master/server/statistics.js
     const pjson = require('/package.json')
@@ -75,3 +78,5 @@ Meteor.methods({
     return statistics
   },
 })
+
+export { getStatistics }

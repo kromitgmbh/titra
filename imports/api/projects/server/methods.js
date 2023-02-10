@@ -2,17 +2,29 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import isBetween from 'dayjs/plugin/isBetween'
 import { check, Match } from 'meteor/check'
-import Timecards from '../timecards/timecards'
-import Projects from './projects.js'
-import Tasks from '../tasks/tasks.js'
-import { checkAuthentication } from '../../utils/server_method_helpers.js'
-import { addNotification } from '../notifications/notifications.js'
-import { emojify } from '../../utils/frontend_helpers'
+import { ValidatedMethod } from 'meteor/mdg:validated-method'
+import Timecards from '../../timecards/timecards'
+import Projects from '../projects.js'
+import Tasks from '../../tasks/tasks.js'
+import { checkAuthentication } from '../../../utils/server_method_helpers.js'
+import { addNotification } from '../../notifications/notifications.js'
+import { emojify } from '../../../utils/frontend_helpers'
 
-Meteor.methods({
-  async getAllProjectStats({ includeNotBillableTime, showArchived }) {
-    check(includeNotBillableTime, Match.Maybe(Boolean))
-    check(showArchived, Match.Maybe(Boolean))
+/**
+Get the statistics of all projects based on the timecards.
+@param {Object} params - The parameters for the method
+@param {Boolean} [params.includeNotBillableTime] - Whether to include not billable
+time in the statistics
+@param {Boolean} [params.showArchived] - Whether to show archived projects in the statistics
+@returns {Object} - An object that contains the statistics of all projects
+*/
+const getAllProjectStats = new ValidatedMethod({
+  name: 'getAllProjectStats',
+  validate(args) {
+    check(args.includeNotBillableTime, Match.Maybe(Boolean))
+    check(args.showArchived, Match.Maybe(Boolean))
+  },
+  async run({ includeNotBillableTime, showArchived }) {
     const notbillable = includeNotBillableTime
     await checkAuthentication(this)
     dayjs.extend(utc)
@@ -69,9 +81,27 @@ Meteor.methods({
       beforePreviousMonthHours,
     }
   },
-  async updateProject({ projectId, projectArray }) {
-    check(projectId, String)
-    check(projectArray, Array)
+})
+/**
+ * Update a project by ID
+ *
+ * @param {Object} options
+ * @param {String} options.projectId - The ID of the project to update
+ * @param {Array} options.projectArray - An array of attributes and their values
+ * to update for the project
+ * @throws {Meteor.Error} If the project is not found or the user does not have
+ * permission to update the project
+ * @return {undefined}
+ */
+const updateProject = new ValidatedMethod({
+  name: 'updateProject',
+  validate(args) {
+    check(args, {
+      projectId: String,
+      projectArray: Array,
+    })
+  },
+  async run({ projectId, projectArray }) {
     await checkAuthentication(this)
     const updateJSON = {}
     for (const projectAttribute of projectArray) {
@@ -93,8 +123,23 @@ Meteor.methods({
       _id: projectId,
     }, { $set: updateJSON })
   },
-  async createProject({ projectArray }) {
-    check(projectArray, Array)
+})
+/**
+ * Create a new project
+ * @param {Object} options
+ * @param {Array} options.projectArray - An array of attributes and their values
+ * to create for the project
+ * @throws {Meteor.Error} If the user is not authenticated
+ * @return {String} The ID of the newly created project
+*/
+const createProject = new ValidatedMethod({
+  name: 'createProject',
+  validate(args) {
+    check(args, {
+      projectArray: Array,
+    })
+  },
+  async run({ projectArray }) {
     await checkAuthentication(this)
     const updateJSON = {}
     for (const projectAttribute of projectArray) {
@@ -105,23 +150,53 @@ Meteor.methods({
     } else {
       updateJSON.public = true
     }
-    updateJSON.name = await emojify(updateJSON.name, emojify)
+    updateJSON.name = await emojify(updateJSON.name)
     updateJSON._id = Random.id()
     updateJSON.userId = this.userId
     await Projects.insertAsync(updateJSON)
     return updateJSON._id
   },
-  async deleteProject({ projectId }) {
-    check(projectId, String)
+})
+/**
+ * Delete a project by ID
+ * @param {Object} options
+ * @param {String} options.projectId - The ID of the project to delete
+ * @throws {Meteor.Error} If the project is not found or the user does not have
+ * permission to delete the project
+ * @return {undefined}
+ */
+const deleteProject = new ValidatedMethod({
+  name: 'deleteProject',
+  validate(args) {
+    check(args, {
+      projectId: String,
+    })
+  },
+  async run({ projectId }) {
     await checkAuthentication(this)
     await Projects.removeAsync({
-      $or: [{ userId: this.userId }, { public: true }],
+      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
       _id: projectId,
     })
     return true
   },
-  async archiveProject({ projectId }) {
-    check(projectId, String)
+})
+/**
+ * Archive a project by ID
+ * @param {Object} options
+ * @param {String} options.projectId - The ID of the project to archive
+ * @throws {Meteor.Error} If the project is not found or the user does not have
+ * permission to archive the project
+ * @return {undefined}
+ */
+const archiveProject = new ValidatedMethod({
+  name: 'archiveProject',
+  validate(args) {
+    check(args, {
+      projectId: String,
+    })
+  },
+  async run({ projectId }) {
     await checkAuthentication(this)
     await Projects.updateAsync(
       {
@@ -132,8 +207,23 @@ Meteor.methods({
     )
     return true
   },
-  async restoreProject({ projectId }) {
-    check(projectId, String)
+})
+/**
+ * Restore a project by ID
+ * @param {Object} options
+ * @param {String} options.projectId - The ID of the project to restore
+ * @throws {Meteor.Error} If the project is not found or the user does not have
+ * permission to restore the project
+ * @return {undefined}
+ */
+const restoreProject = new ValidatedMethod({
+  name: 'restoreProject',
+  validate(args) {
+    check(args, {
+      projectId: String,
+    })
+  },
+  async run({ projectId }) {
     await checkAuthentication(this)
     await Projects.updateAsync(
       {
@@ -144,13 +234,20 @@ Meteor.methods({
     )
     return true
   },
-  async getTopTasks({ projectId, includeNotBillableTime, showArchived }) {
-    check(projectId, String)
+})
+const getTopTasks = new ValidatedMethod({
+  name: 'getTopTasks',
+  validate(args) {
+    check(args, {
+      projectId: String,
+      includeNotBillableTime: Match.Maybe(Boolean),
+      showArchived: Match.Maybe(Boolean),
+    })
+  },
+  async run({ projectId, includeNotBillableTime, showArchived }) {
     await checkAuthentication(this)
     const rawCollection = Timecards.rawCollection()
     if (projectId === 'all') {
-      check(showArchived, Match.Maybe(Boolean))
-      check(includeNotBillableTime, Match.Maybe(Boolean))
       const notbillable = includeNotBillableTime
       const andCondition = [{
         $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
@@ -168,9 +265,25 @@ Meteor.methods({
     }
     return rawCollection.aggregate([{ $match: { projectId } }, { $group: { _id: '$task', count: { $sum: '$hours' } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()
   },
-  async addTeamMember({ projectId, eMail }) {
-    check(projectId, String)
-    check(eMail, String)
+})
+/**
+ * Add a team member to a project
+ * @param {Object} options
+ * @param {String} options.projectId - The ID of the project to add the team member to
+ * @param {String} options.eMail - The eMail of the user to add to the project
+ * @throws {Meteor.Error} If the project is not found or the user does not have
+ * permission to add a team member to the project
+ * @return {undefined}
+ */
+const addTeamMember = new ValidatedMethod({
+  name: 'addTeamMember',
+  validate(args) {
+    check(args, {
+      projectId: String,
+      eMail: String,
+    })
+  },
+  async run({ projectId, eMail }) {
     await checkAuthentication(this)
     const targetProject = await Projects.findOneAsync({ _id: projectId })
     if (!targetProject
@@ -187,9 +300,25 @@ Meteor.methods({
     }
     throw new Meteor.Error('notifications.user_not_found')
   },
-  async removeTeamMember({ projectId, userId }) {
-    check(projectId, String)
-    check(userId, String)
+})
+/**
+ * Remove a team member from a project
+ * @param {Object} options
+ * @param {String} options.projectId - The ID of the project to remove the team member from
+ * @param {String} options.userId - The ID of the user to remove from the project
+ * @throws {Meteor.Error} If the project is not found or the user does not have
+ * permission to remove a team member from the project
+ * @return {undefined}
+ */
+const removeTeamMember = new ValidatedMethod({
+  name: 'removeTeamMember',
+  validate(args) {
+    check(args, {
+      projectId: String,
+      userId: String,
+    })
+  },
+  async run({ projectId, userId }) {
     await checkAuthentication(this)
     const targetProject = await Projects.findOneAsync({ _id: projectId })
     if (!targetProject
@@ -201,10 +330,27 @@ Meteor.methods({
     await Projects.updateAsync({ _id: targetProject._id }, { $pull: { admins: userId } })
     return 'notifications.team_member_removed_success'
   },
-  async changeProjectRole({ projectId, userId, administrator }) {
-    check(projectId, String)
-    check(userId, String)
-    check(administrator, Boolean)
+})
+/**
+ * Change the role of a team member
+ * @param {Object} options
+ * @param {String} options.projectId - The ID of the project to change the team member's role in
+ * @param {String} options.userId - The ID of the user to change the role of
+ * @param {Boolean} options.administrator - Whether the user should be an administrator
+ * @throws {Meteor.Error} If the project is not found or the user does not have
+ * permission to change the role of a team member
+ * @return {undefined}
+ */
+const changeProjectRole = new ValidatedMethod({
+  name: 'changeProjectRole',
+  validate(args) {
+    check(args, {
+      projectId: String,
+      userId: String,
+      administrator: Boolean,
+    })
+  },
+  async run({ projectId, userId, administrator }) {
     await checkAuthentication(this)
     const targetProject = await Projects.findOneAsync({ _id: projectId })
     if (!targetProject
@@ -219,16 +365,48 @@ Meteor.methods({
     }
     return 'notifications.access_rights_updated'
   },
-  async updatePriority({ projectId, priority }) {
-    check(projectId, String)
-    check(priority, Number)
+})
+/**
+ * Update the priority of a project
+ * @param {Object} options
+ * @param {String} options.projectId - The ID of the project to update the priority of
+ * @param {Number} options.priority - The new priority of the project
+ * @throws {Meteor.Error} If the project is not found or the user does not have
+ * permission to update the priority of the project
+ * @return {undefined}
+ */
+const updatePriority = new ValidatedMethod({
+  name: 'updatePriority',
+  validate(args) {
+    check(args, {
+      projectId: String,
+      priority: Number,
+    })
+  },
+  async run({ projectId, priority }) {
     await checkAuthentication(this)
     await Projects.updateAsync({ _id: projectId }, { $set: { priority } })
     return 'notifications.project_priority_success'
   },
-  async setDefaultTaskForProject({ projectId, taskId }) {
-    check(projectId, String)
-    check(taskId, String)
+})
+/**
+ * Update the default task of a project
+ * @param {Object} options
+ * @param {String} options.projectId - The ID of the project to update the default task of
+ * @param {String} options.taskId - The ID of the task to set as the default task
+ * @throws {Meteor.Error} If the project is not found or the user does not have
+ * permission to update the default task of the project
+ * @return {undefined}
+ */
+const setDefaultTaskForProject = new ValidatedMethod({
+  name: 'setDefaultTaskForProject',
+  validate(args) {
+    check(args, {
+      projectId: String,
+      taskId: String,
+    })
+  },
+  async run({ projectId, taskId }) {
     await checkAuthentication(this)
     const task = await Tasks.findOneAsync({ _id: taskId })
     if (task.isDefaultTask) {
@@ -242,3 +420,17 @@ Meteor.methods({
     return 'notifications.default_task_success'
   },
 })
+export {
+  getAllProjectStats,
+  createProject,
+  updateProject,
+  deleteProject,
+  archiveProject,
+  restoreProject,
+  getTopTasks,
+  addTeamMember,
+  removeTeamMember,
+  changeProjectRole,
+  updatePriority,
+  setDefaultTaskForProject,
+}

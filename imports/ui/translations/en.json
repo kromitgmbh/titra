@@ -197,7 +197,9 @@
     },
     "gitlab_url": "GitLab Instance URL",
     "gitlab_api_token": "GitLab API Token",
-    "enable_gitlab": "Enable Gitlab Interface?"
+    "enable_gitlab": "Enable Gitlab Interface?",
+    "rounding": "Rounding",
+    "rounding_tooltip": "Tracked time will be rounded up according to the selected time unit and the specified rounding value e.g. time unit minutes and round value 15 will round up to the next 15 minutes (input 5 minutes > result after rounding 15 minutes)."
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -324,7 +326,8 @@
     "success": "The changes have been processed successfully.",
     "wekan_error": "Could not retrieve Wekan cards, please check your project settings!",
     "zammad_error": "Could not retrieve Zammad tickets, please check your project settings!",
-    "user_inactive": "This user has been de-activated, please activate it to continue."
+    "user_inactive": "This user has been de-activated, please activate it to continue.",
+    "extensionAlreadyLaunched": "The extension is already running."
   },
   "login": {
     "password": "Password",

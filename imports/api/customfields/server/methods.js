@@ -1,8 +1,8 @@
+import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import CustomFields from '../customfields.js'
 import { checkAdminAuthentication } from '../../../utils/server_method_helpers'
 
-Meteor.methods({
-  /**
+/**
   Adds a new custom field to the CustomFields collection.
   @param {Object} options - The options object containing the custom field information.
   @param {string} options.classname - The classname of the custom field.
@@ -12,15 +12,21 @@ Meteor.methods({
   @param {string[]} [options.possibleValues] - An array of possible values for the custom field.
   @throws {Meteor.Error} If the custom field already exists or the user is not an admin.
   @return {Object} The custom field object that was added to the collection.
-  */
-  addCustomField: async function addCustomField({
+*/
+const addCustomField = new ValidatedMethod({
+  name: 'addCustomField',
+  validate(args) {
+    check(args, {
+      classname: String,
+      name: String,
+      type: String,
+      desc: String,
+      possibleValues: Match.Maybe([String]),
+    })
+  },
+  async run({
     classname, name, desc, type, possibleValues,
   }) {
-    check(classname, String)
-    check(name, String)
-    check(type, String)
-    check(desc, String)
-    check(possibleValues, Match.Maybe([String]))
     await checkAdminAuthentication(this)
     if (await CustomFields.findOneAsync({ name })) {
       throw new Meteor.Error('error-custom-field-exists', 'Custom field already exists', { method: 'addCustomField' })
@@ -37,7 +43,8 @@ Meteor.methods({
     await CustomFields.insertAsync(customField)
     return customField
   },
-  /**
+})
+/**
   @function removeCustomField
   @async
   @param {Object} options - An object containing the id of the custom field to remove
@@ -45,8 +52,14 @@ Meteor.methods({
   @throws {Error} If the user is not an admin or if the custom field is not found
   @returns {boolean} - returns true if the custom field is removed successfully
   */
-  removeCustomField: async function removeCustomField({ _id }) {
-    check(_id, String)
+const removeCustomField = new ValidatedMethod({
+  name: 'removeCustomField',
+  validate(args) {
+    check(args, {
+      _id: String,
+    })
+  },
+  async run({ _id }) {
     await checkAdminAuthentication(this)
     if (!await CustomFields.findOneAsync({ _id })) {
       throw new Meteor.Error('error-custom-field-not-found', 'Custom field not found', { method: 'removeCustomField' })
@@ -54,7 +67,8 @@ Meteor.methods({
     await CustomFields.removeAsync({ _id })
     return true
   },
-  /**
+})
+/**
   @function updateCustomField
   @async
   @param {Object} options - An object containing the details of the custom field to update
@@ -65,14 +79,20 @@ Meteor.methods({
   @throws {Error} If the user is not an admin or if the custom field is not found
   @returns {boolean} - returns true if the custom field is updated successfully
   */
-  updateCustomField: async function updateCustomField({
+const updateCustomField = new ValidatedMethod({
+  name: 'updateCustomField',
+  validate(args) {
+    check(args, {
+      _id: String,
+      type: String,
+      desc: String,
+      possibleValues: Match.Maybe([String]),
+    })
+  },
+  async run({
     _id, desc, type, possibleValues,
   }) {
     await checkAdminAuthentication(this)
-    check(_id, String)
-    check(type, String)
-    check(desc, String)
-    check(possibleValues, Match.Maybe([String]))
     if (!await CustomFields.findOneAsync({ _id })) {
       throw new Meteor.Error('error-custom-field-not-found', 'Custom field not found', { method: 'removeCustomField' })
     }

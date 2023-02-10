@@ -48,7 +48,7 @@ Template.administration.helpers({
   avatar: (meteorUser) => displayUserAvatar(meteorUser),
   dayjs: (date) => dayjs(date).format('DD.MM.YYYY (HH:mm)'),
   globalsettings: () => Globalsettings.find(),
-  stringify: (string) => string.toString(),
+  stringify: (string) => string?.toString(),
   isTextArea: (setting) => setting.type === 'textarea',
   isCheckbox: (setting) => setting.type === 'checkbox',
   isChecked: (setting) => (setting.value.toString() === 'true' ? 'checked' : ''),
@@ -220,11 +220,11 @@ Template.administration.events({
   },
   'click .js-launch-extension': (event, templateInstance) => {
     event.preventDefault()
-    Meteor.call('launchExtension', { extensionId: templateInstance.$(event.currentTarget).data('extension-id') }, (error) => {
+    Meteor.call('launchExtension', { extensionId: templateInstance.$(event.currentTarget).data('extension-id') }, (error, result) => {
       if (error) {
         console.error(error)
       } else {
-        showToast(t('administration.extension_launched'))
+        showToast(t(result))
       }
     })
   },

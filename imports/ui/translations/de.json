@@ -196,7 +196,9 @@
     },
     "gitlab_url": "URL der GitLab Instanz",
     "gitlab_api_token": "GitLab API Token",
-    "enable_gitlab": "Gitlab Schnittstelle aktivieren?"
+    "enable_gitlab": "Gitlab Schnittstelle aktivieren?",
+    "rounding": "Rundung",
+    "rounding_tooltip": "Erfasste Zeiten werden auf Basis der gewählten Zeiteinheit automatisch auf die nächste spezifizierte Einheit aufgerundet z.B. bei Zeiteinheit Minuten und Rundungswert 15 wird immer auf die nächsten 15 Minuten aufgerundet (Eingabe 5 Minuten > Ergebnis nach Rundung 15 Minuten)."
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -330,7 +332,8 @@
     "success": "Die Verarbeitung wurde erfolgreich durchgeführt.",
     "wekan_error": "Die Wekan Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!",
     "zammad_error": "Die Zammad Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!",
-    "user_inactive": "Dieser Benutzer wurde deaktiviert, der Benutzer muss aktiviert werden um fortzufahren."
+    "user_inactive": "Dieser Benutzer wurde deaktiviert, der Benutzer muss aktiviert werden um fortzufahren.",
+    "extensionAlreadyLaunched": "Die Erweiterung wurde bereits gestartet."
   },
   "login": {
     "password": "Passwort",

@@ -133,4 +133,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableGitlab', description: 'settings.enable_gitlab', type: 'checkbox', value: true, category: 'settings.categories.interfaces',
 })
+defaultSettings.push({
+  name: 'rounding', description: 'settings.rounding', type: 'number', value: undefined, category: 'settings.categories.time_tracking',
+})
 export { defaultSettings, Globalsettings }

@@ -18,7 +18,8 @@ import {
 } from '../../utils/i18n.js'
 
 const i18nextDebugMode = window.location.href.indexOf('localhost') > 0
-
+let lightThemeCSS
+let darkThemeCSS
 Template.registerHelper('t', (param) => (i18nReady.get() ? t(param) : 'Loading ...'))
 Template.registerHelper('prefix', () => window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || '')
 
@@ -30,30 +31,65 @@ Meteor.startup(() => {
   import('@fortawesome/fontawesome-free/js/all.js')
   import('bootstrap').then((bs) => {
     window.BootstrapLoaded.set(true)
-    new bs.Tooltip(document.body, {
+    const bsTooltips = new bs.Tooltip(document.body, {
       selector: '[data-bs-toggle="tooltip"]',
       trigger: 'hover focus',
     })
-    new bs.Tooltip(document.body, {
+    const avatarTooltip = new bs.Tooltip(document.body, {
       selector: '.js-avatar-tooltip',
       trigger: 'hover focus',
     })
   })
+  function cleanupStyles(theme) {
+    let darkTheme
+    let lightTheme
+    document
+      .querySelectorAll('style').forEach((style) => {
+        if (style.textContent.indexOf('::selection') === 1) {
+          darkTheme = style
+          darkThemeCSS = style.cloneNode(true)
+        } else if (style.textContent.indexOf('.btn') === 0) {
+          lightThemeCSS = style.cloneNode(true)
+          lightTheme = style
+        }
+      })
+    if (theme === 'light') {
+      if (darkTheme && lightTheme) {
+        darkTheme.remove()
+      } else if (darkTheme && !lightTheme && lightThemeCSS) {
+        darkTheme.remove()
+        document.head.append(lightThemeCSS)
+      }
+    } else if (theme === 'dark') {
+      if (lightTheme && darkTheme) {
+        lightTheme.remove()
+      } else if (lightTheme && !darkTheme && darkThemeCSS) {
+        lightTheme.remove()
+        document.head.append(darkThemeCSS)
+      }
+    }
+  }
   Tracker.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
       && Meteor.user().profile) {
       if (getUserSetting('theme') === 'dark') {
+        cleanupStyles('dark')
         import('../../ui/styles/dark.scss')
       } else if (getUserSetting('theme') === 'light') {
+        cleanupStyles('light')
         import('../../ui/styles/light.scss')
       } else if (isDarkMode()) {
+        cleanupStyles('dark')
         import('../../ui/styles/dark.scss')
       } else {
+        cleanupStyles('light')
         import('../../ui/styles/light.scss')
       }
     } else if (!Meteor.loggingIn() && isDarkMode()) {
+      cleanupStyles('dark')
       import('../../ui/styles/dark.scss')
     } else {
+      cleanupStyles('light')
       import('../../ui/styles/light.scss')
     }
   })
@@ -116,7 +152,7 @@ Meteor.startup(() => {
   })
   if ('serviceWorker' in navigator) {
     const prefix = window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || ''
-    navigator.serviceWorker.register(prefix + '/sw.js')
+    navigator.serviceWorker.register(`${prefix}/sw.js`)
   }
   Tracker.autorun(() => {
     if (extensionHandle.ready()) {

@@ -32,7 +32,7 @@ function detailedDataTableMapper(entry) {
   const project = Projects.findOne({ _id: entry.projectId })
   const mapping = [project ? project.name : '',
     dayjs.utc(entry.date).local().format(getGlobalSetting('dateformat')),
-    entry.task.replace(/^=/, '='),
+    entry.task.replace(/^=/, '\\='),
     projectResources.findOne() ? projectResources.findOne({ _id: entry.userId })?.name : '']
   if (getGlobalSetting('showCustomFieldsInDetails')) {
     if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
@@ -347,8 +347,10 @@ Template.detailtimetable.events({
         row.push(attribute)
       }
       row.splice(row.length - 1, 1)
-      if (getGlobalSetting('useState')) {
+      if (getGlobalSetting('useState') && !getGlobalSetting('useStartTime')) {
         row[row.length - 2] = t(`details.${timeEntry[timeEntry.length - 3] ? timeEntry[timeEntry.length - 3] : 'new'}`)
+      } else if (getGlobalSetting('useState') && getGlobalSetting('useStartTime')) {
+        row[row.length - 4] = t(`details.${timeEntry[timeEntry.length - 5] ? timeEntry[timeEntry.length - 5] : 'new'}`)
       }
       csvArray.push(`${row.join(',')}\r\n`)
     }

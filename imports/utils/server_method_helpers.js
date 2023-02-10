@@ -5,6 +5,12 @@ import { projectResources } from '../api/users/users.js'
 import { periodToDates } from './periodHelpers.js'
 import { getGlobalSetting, getUserSetting } from './frontend_helpers.js'
 
+/**
+ * Gets the list of projects for the current user.
+ * @param {string[]} projectId - The list of project IDs to get.
+ * @returns {string[]} The list of project IDs.
+ * @throws {Meteor.Error} If user is not authenticated.
+ */
 function getProjectListById(projectId) {
   let projectList = []
   const userId = Meteor.userId()
@@ -30,12 +36,22 @@ function getProjectListById(projectId) {
   }
   return projectList
 }
+/**
+ * Checks if the current user is authenticated.
+ * @param {Object} context - The Meteor.js context object.
+ * @throws {Meteor.Error} If user is not authenticated.
+ */
 async function checkAuthentication(context) {
   const meteorUser = await Meteor.users.findOneAsync({ _id: context.userId })
   if (!context.userId || meteorUser?.inactive) {
     throw new Meteor.Error('notifications.auth_error_method')
   }
 }
+/**
+ * Checks if the current user is authenticated and an admin.
+ * @param {Object} context - The Meteor.js context object.
+ * @throws {Meteor.Error} If user is not authenticated or not an admin.
+ */
 async function checkAdminAuthentication(context) {
   const meteorUser = await Meteor.users.findOneAsync({ _id: context.userId })
   if (!context.userId || meteorUser?.inactive) {
@@ -44,6 +60,12 @@ async function checkAdminAuthentication(context) {
     throw new Meteor.Error('notifications.auth_error_method')
   }
 }
+/**
+ * Get the project list based on the provided customer(s)
+ * @param {string[]} customer - The list of customer IDs to get.
+ * @returns {string[]} The list of project IDs.
+ * @throws {Meteor.Error} If user is not authenticated.
+ */
 function getProjectListByCustomer(customer) {
   let projects = []
   const userId = Meteor.userId()
@@ -69,7 +91,11 @@ function getProjectListByCustomer(customer) {
   }
   return projects
 }
-
+/**
+ * Mapper function for the totalHoursForPeriod publication.
+ * @param {Object} entry - The entry to map.
+ * @returns {Object} The mapped entry.
+ */
 function totalHoursForPeriodMapper(entry) {
   let { totalHours } = entry
   if (Meteor.user()) {
@@ -87,6 +113,11 @@ function totalHoursForPeriodMapper(entry) {
   }
 }
 
+/**
+ * Mapper function for the dailyTimecard method.
+ * @param {Object} entry - The entry to map.
+ * @returns {Object} The mapped entry.
+ */
 function dailyTimecardMapper(entry) {
   let { totalHours } = entry
   if (Meteor.user()) {
@@ -104,6 +135,17 @@ function dailyTimecardMapper(entry) {
     totalHours,
   }
 }
+/**
+ * Builds the selector for the totalHoursForPeriod publication.
+ * @param {string[]} projectId - The list of project IDs to get.
+ * @param {string} period - The period to get.
+ * @param {string[]} dates - The list of dates to get.
+ * @param {string[]} userId - The list of user IDs to get.
+ * @param {string[]} customer - The list of customer IDs to get.
+ * @param {number} limit - The limit of entries to get.
+ * @param {number} page - The page of entries to get.
+ * @returns {Object} The selector.
+ */
 function buildTotalHoursForPeriodSelector(projectId, period, dates, userId, customer, limit, page) {
   let projectList = []
   const periodArray = []
@@ -188,6 +230,17 @@ function buildTotalHoursForPeriodSelector(projectId, period, dates, userId, cust
   }
   return periodArray
 }
+/**
+ * Builds the selector for the dailyHours publication.
+ * @param {string[]} projectId - The list of project IDs to get.
+ * @param {string} period - The period to get.
+ * @param {string[]} dates - The list of dates to get.
+ * @param {string[]} userId - The list of user IDs to get.
+ * @param {string[]} customer - The list of customer IDs to get.
+ * @param {number} limit - The limit of entries to get.
+ * @param {number} page - The page of entries to get.
+ * @returns {Object} The selector.
+ */
 function buildDailyHoursSelector(projectId, period, dates, userId, customer, limit, page) {
   let projectList = []
   if (!customer.includes('all')) {
@@ -275,6 +328,16 @@ function buildDailyHoursSelector(projectId, period, dates, userId, customer, lim
   }
   return dailyArray
 }
+/**
+ * Builds the selector for the workingTime publication.
+ * @param {string[]} projectId - The list of project IDs to get.
+ * @param {string} period - The period to get.
+ * @param {string[]} dates - The list of dates to get.
+ * @param {string[]} userId - The list of user IDs to get.
+ * @param {number} limit - The limit of entries to get.
+ * @param {number} page - The page of entries to get.
+ * @returns {Object} The selector.
+ */
 function buildworkingTimeSelector(projectId, period, dates, userId, limit, page) {
   let projectList = []
   projectList = getProjectListById(projectId)
@@ -358,6 +421,11 @@ function buildworkingTimeSelector(projectId, period, dates, userId, limit, page)
   }
   return workingTimeArray
 }
+/**
+ * Mapper function for the working time entries publication
+ * @param {Object} entry - The entry to map.
+ * @returns {Object} The mapped entry.
+ */
 function workingTimeEntriesMapper(entry) {
   dayjs.extend(customParseFormat)
   const meteorUser = Meteor.users.findOne({ _id: entry._id.userId })
@@ -382,7 +450,19 @@ function workingTimeEntriesMapper(entry) {
     regularWorkingTimeDifference: entry.totalTime - userRegularWorkingTime,
   }
 }
-
+/**
+ * Builds the selector for the detailedTimeEntries publication.
+ * @param {string[]} projectId - The list of project IDs to get.
+ * @param {string} search - The search string to get.
+ * @param {string[]} customer - The list of customer IDs to get.
+ * @param {string} period - The period to get.
+ * @param {Object} dates - The dates to get.
+ * @param {string[]} userId - The list of user IDs to get.
+ * @param {number} limit - The limit to get.
+ * @param {number} page - The page to get.
+ * @param {Object} sort - The sort to get.
+ * @returns {Object} The selector for the detailedTimeEntries method.
+ */
 function buildDetailedTimeEntriesForPeriodSelector({
   projectId, search, customer, period, dates, userId, limit, page, sort,
 }) {

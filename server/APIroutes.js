@@ -1,6 +1,6 @@
 import { Match, check } from 'meteor/check'
 import { getJson } from './bodyparser'
-import { insertTimeCard } from '../imports/api/timecards/methods'
+import { insertTimeCard } from '../imports/api/timecards/server/methods'
 import Timecards from '../imports/api/timecards/timecards'
 import Projects from '../imports/api/projects/projects'
 

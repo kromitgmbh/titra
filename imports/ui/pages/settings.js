@@ -77,6 +77,7 @@ Template.settings.onRendered(function settingsRendered() {
 
 Template.settings.helpers({
   unit: () => getUserSetting('unit'),
+  rounding: () => getUserSetting('rounding'),
   startOfWeek: () => getUserSetting('startOfWeek'),
   dailyStartTime: () => getUserSetting('dailyStartTime'),
   breakStartTime: () => getUserSetting('breakStartTime'),
@@ -123,6 +124,7 @@ Template.settings.events({
         zammadurl: templateInstance.$('#zammadurl').val(),
         gitlabtoken: templateInstance.$('#gitlabtoken').val(),
         gitlaburl: templateInstance.$('#gitlaburl').val(),
+        rounding: Number(templateInstance.$('#rounding').val()),
       },
       (error) => {
         if (error) {

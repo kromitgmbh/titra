@@ -40,6 +40,15 @@
             </select>
             <label class="form-label" for="timeunit">{{t "settings.time_unit"}}</label>
           </div>
+          <div class="mb-1 form-floating">
+            <input type="number" class="form-control" id="rounding" value="{{rounding}}" step="any" />
+            <label class="form-label" for="rounding">{{t "settings.rounding"}}</label>
+          </div>
+          <div class="card bg-secondary mb-3">
+            <div class="card-body">
+              <small class="card-text">{{t "settings.rounding_tooltip"}}</small>
+            </div>
+          </div>
           {{#if displayHoursToDays}}
           <div class="mb-3 form-floating">
             <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" step="any" />
@@ -125,11 +134,15 @@
               <input type="text" class="form-control" id="zammadurl" value="{{zammadurl}}" placeholder="https://zammad.url/" />
               <label class="form-label" for="zammadurl">{{t "settings.zammad_url"}}</label>
             </div>
-            <div class="form-floating">
+            <div class="form-floating mb-1">
               <input type="text" class="form-control" id="zammadtoken" value="{{zammadtoken}}" placeholder="abcdefghijklmnopq-rstuvwxyz123456789" />
               <label class="form-label" for="zammadtoken">{{t "settings.zammad_api_token"}}</label>
             </div>
-            <small class="form-text text-muted">{{t "project.wekan_help"}} <a href="https://wiki.titra.io/books/deployment/page/zammad-interface" target="_blank">wiki</a>.</small>
+            <div class="card bg-secondary mb-3">
+              <div class="card-body">
+                <small class="card-text">{{t "project.wekan_help"}} <a href="https://wiki.titra.io/books/deployment/page/zammad-interface" target="_blank">wiki</a>.</small>
+              </div>
+            </div>
           </div>
         </div>
         {{#if getGlobalSetting "enableGitlab"}}
