@@ -3,9 +3,9 @@ import { Template } from 'meteor/templating'
 import Notifications from '../../api/notifications/notifications.js'
 import { showToast } from '../../utils/frontend_helpers.js'
 import './appLayout.html'
-import '../components/navbar.js'
-import '../components/connectioncheck.js'
-import '../components/toast.html'
+import '../shared components/navbar.js'
+import '../shared components/connectioncheck.js'
+import '../shared components/toast.html'
 
 Template.appLayout.events({
   'click #logout': (event) => {

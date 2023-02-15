@@ -41,30 +41,30 @@ Meteor.startup(() => {
     })
   })
   function cleanupStyles(theme) {
-    let darkTheme
-    let lightTheme
+    const darkTheme = []
+    const lightTheme = []
     document
       .querySelectorAll('style').forEach((style) => {
-        if (style.textContent.indexOf('::selection') === 1) {
-          darkTheme = style
+        if (style.textContent.indexOf('.is-dark') === 0 || style.textContent.indexOf('.is-dark') === 1) {
+          darkTheme.push(style)
           darkThemeCSS = style.cloneNode(true)
-        } else if (style.textContent.indexOf('.btn') === 0) {
+        } else if (style.textContent.indexOf('.is-light') === 0) {
           lightThemeCSS = style.cloneNode(true)
-          lightTheme = style
+          lightTheme.push(style)
         }
       })
     if (theme === 'light') {
-      if (darkTheme && lightTheme) {
-        darkTheme.remove()
-      } else if (darkTheme && !lightTheme && lightThemeCSS) {
-        darkTheme.remove()
+      if (darkTheme.length > 0 && lightTheme.length > 0) {
+        darkTheme.forEach((element) => element.remove())
+      } else if (darkTheme.length > 0 && lightTheme.length <= 0 && lightThemeCSS) {
+        darkTheme.forEach((element) => element.remove())
         document.head.append(lightThemeCSS)
       }
     } else if (theme === 'dark') {
-      if (lightTheme && darkTheme) {
-        lightTheme.remove()
-      } else if (lightTheme && !darkTheme && darkThemeCSS) {
-        lightTheme.remove()
+      if (lightTheme.length > 0 && darkTheme.length > 0) {
+        lightTheme.forEach((element) => element.remove())
+      } else if (lightTheme.length > 0 && darkTheme.length <= 0 && darkThemeCSS) {
+        lightTheme.forEach((element) => element.remove())
         document.head.append(darkThemeCSS)
       }
     }

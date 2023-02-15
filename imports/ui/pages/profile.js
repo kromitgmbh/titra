@@ -2,7 +2,7 @@ import namedavatar from 'namedavatar'
 import '@simonwep/pickr/dist/themes/monolith.min.css'
 import Pickr from '@simonwep/pickr/dist/pickr.min'
 import { t } from '../../utils/i18n.js'
-import '../components/backbutton.js'
+import '../shared components/backbutton.js'
 import './profile.html'
 import { getUserSetting, showToast } from '../../utils/frontend_helpers.js'
 

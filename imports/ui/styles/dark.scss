@@ -1,4 +1,3 @@
-
 // ++++ [DarkThemeColors] ++++   ///////////////////////////////////////////////////////
 $primary:                               #005a52;       // Color/Background-Color for links, Save-, Selectbuttons 
 $secondary:                             #272727;       // Background-Color for all fields, control buttons, checkboxes
@@ -170,9 +169,11 @@ $dropdown-border-color:                 $dark-border;
 $accordion-button-active-bg:            $lightgrey;
 $accordion-button-active-color:         $body-color;
 $accordion-bg:                          $grey;
+
 //++++ [AdvancedCustomization] ++++ ///////////////////////////////////////////////////////
-
-
+.is-dark-theme {
+    color: black;
+}
 ::selection {
   color:                    $success !important;
   background:               $lightgrey !important;
@@ -498,4 +499,5 @@ g > text {
 .gantt .bar {
     fill:                   $lightgrey !important;
 }
+
 @import "{}/imports/ui/styles/general.scss";

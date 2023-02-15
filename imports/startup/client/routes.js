@@ -24,7 +24,7 @@ FlowRouter.route('*', {
 })
 FlowRouter.route('/', {
   waitOn() {
-    return import('../../ui/pages/projectlist.js')
+    return import('../../ui/pages/overview/projectlist.js')
   },
   action() {
     document.title = 'titra - overview'
@@ -34,7 +34,7 @@ FlowRouter.route('/', {
 })
 FlowRouter.route('/tracktime/:projectId?', {
   waitOn() {
-    return import('../../ui/pages/tracktime.js')
+    return import('../../ui/pages/track/tracktime.js')
   },
   action() {
     document.title = 'titra - track time'
@@ -44,7 +44,7 @@ FlowRouter.route('/tracktime/:projectId?', {
 })
 FlowRouter.route('/edit/timecard/:tcid', {
   waitOn() {
-    return import('../../ui/pages/tracktime.js')
+    return import('../../ui/pages/track/tracktime.js')
   },
   action() {
     document.title = 'titra - edit time'
@@ -54,7 +54,7 @@ FlowRouter.route('/edit/timecard/:tcid', {
 })
 FlowRouter.route('/list/projects', {
   waitOn() {
-    return import('../../ui/pages/projectlist.js')
+    return import('../../ui/pages/overview/projectlist.js')
   },
   action() {
     document.title = 'titra - overview'
@@ -64,7 +64,7 @@ FlowRouter.route('/list/projects', {
 })
 FlowRouter.route('/edit/project/:id', {
   waitOn() {
-    return import('../../ui/pages/editproject.js')
+    return import('../../ui/pages/overview/editproject/editproject.js')
   },
   action() {
     document.title = 'titra - edit project'
@@ -74,7 +74,7 @@ FlowRouter.route('/edit/project/:id', {
 })
 FlowRouter.route('/create/project/', {
   waitOn() {
-    return import('../../ui/pages/editproject.js')
+    return import('../../ui/pages/overview/editproject/editproject.js')
   },
   action() {
     document.title = 'titra - create project'
@@ -84,7 +84,7 @@ FlowRouter.route('/create/project/', {
 })
 FlowRouter.route('/list/timecards/:projectId', {
   waitOn() {
-    return [import('../../ui/pages/timecardlist.js'), import('../../ui/pages/tracktime.js')]
+    return [import('../../ui/pages/details/details.js'), import('../../ui/pages/track/tracktime.js')]
   },
   action() {
     document.title = 'titra - details'
@@ -134,7 +134,7 @@ FlowRouter.route('/admin', {
 })
 FlowRouter.route('/dashboard/:_id', {
   waitOn() {
-    return import('../../ui/pages/dashboard.js')
+    return import('../../ui/pages/details/dashboard.js')
   },
   action() {
     document.title = 'titra - dashboard'

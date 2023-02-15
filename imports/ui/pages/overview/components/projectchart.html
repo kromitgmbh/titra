@@ -1,0 +1,46 @@
+<template name="projectchart">
+  <div class="row">
+    <div class="col-12 col-md-4">
+      <h6 class="card-title mb-2">{{t "overview.summary"}}</h6>
+      {{#if projectDescAsHtml}}
+        <div class="js-tooltip mb-1 text-truncate d-flex" style="max-height:1.8em;cursor:pointer;overflow:hidden;">
+          <i class="fa fa-book my-auto" style="width:18px;"></i> {{{truncatedProjectDescAsHtml}}}
+        </div>
+      {{/if}}
+      {{#if componentIsReady}}
+        {{#if allTeamMembers}}
+          <i class="fa fa-users" style="width:18px;"></i> {{t "overview.team"}}: {{#each teamMember in allTeamMembers}}
+          {{{avatarImg teamMember.profile.avatar teamMember.profile.name teamMember.profile.avatarColor}}}
+          {{/each}}<br/>
+        {{/if}}
+        {{#if customer}}
+          <i class="fa fa-address-card" style="width:18px;"></i> {{t "globals.customer"}}: <span class="text-truncate">{{customer}}</span><br/>
+        {{/if}}
+        {{#if totalHours}}
+          <i class="fa fa-clock" style="width:18px;"></i> {{t "overview.total_time"}} {{timeInUserUnit(totalHours)}} ({{timeunitVerbose}}) {{{hourIndicator}}}<br/>
+        {{/if}}
+        {{#if target}}
+          <i class="fa fa-bullseye" style="width:18px;"></i> {{t "overview.target"}}: {{timeInUserUnit(target)}} ({{timeunitVerbose}})<br/>
+        {{/if}}
+        {{#if turnOver}}
+          <i class="fa fa-money-bill-alt" style="width:18px;"></i> {{t "overview.turnover"}}: {{turnOver}} {{unit}}
+        {{/if}}
+      {{else}}
+        {{t "globals.loading"}}  
+      {{/if}}
+    </div>
+    <div class="d-none d-md-block col-md-3 text-center">
+      <h6 class="card-title">{{t "overview.top_tasks"}}</h6>
+      <div class="js-pie-chart-container" style="max-height: 160px; overflow:hidden;">
+        <div style="margin:auto; margin-top:1.5rem; width:130px; height:130px; border-radius:50%; background-color: rgba(0,0,0,0.1);"></div>
+      </div>
+    </div>
+    <div class="d-none d-md-block col-md-5 text-center">
+      <h6 class="card-title">{{t "overview.three_month_history"}}</h6>
+      <div class="js-hours-chart-container p-3" style="max-height: 160px;">
+        <div style="margin:auto; width:240px; height:130px; background-color:rgba(0,0,0,0.1);"></div>
+      </div>
+    </div>
+  </div>
+  <hr/>
+</template>

@@ -310,3 +310,16 @@ button.dp-clear {
   vertical-align: middle;
   margin-left: 10px !important;
 }
+
+.cl {
+  box-shadow: none !important;
+}
+.cl-actionbar {
+  background-color: var(--bs-card-cap-bg) !important;
+}
+.cl-button:hover {
+  background-color: $light !important;
+}
+.cl-content {
+  background-color: transparent !important;
+}

@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 import { t } from '../../utils/i18n.js'
 import './settings.html'
-import '../components/backbutton.js'
+import '../shared components/backbutton.js'
 import { getUserSetting, showToast } from '../../utils/frontend_helpers'
 import { getHolidayCountries, getHolidayStates, getHolidayRegions } from '../../utils/holiday'
 

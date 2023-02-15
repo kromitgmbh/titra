@@ -1,0 +1,171 @@
+<template name="editproject">
+  <form id="editProjectForm">
+    {{#unless newProject}}
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" id="definition-tab" data-bs-toggle="tab" href="#definition" role="tab" aria-controls="definition" aria-selected="true">{{t "globals.definition"}}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="tasks-tab" data-bs-toggle="tab" href="#tasks" role="tab" aria-controls="tasks">{{t "globals.task_plural"}}</a>
+      </li>
+    </ul>
+    {{/unless}}
+    <div class="tab-content" id="project-tab-content">
+      <div class="tab-pane fade show active table-responsive p-3 tab-borders" id="definition">
+        <div class="mb-3">
+          <h5>{{#if newProject}}{{t "navigation.new_project"}}{{/if}}</h5>
+        </div>
+        <div class="mb-3 form-floating">
+          <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="{{t 'project.my_project_placeholder'}}" />
+          <label class="form-label" for="name">{{t "globals.prj_name"}}</label>
+        </div>
+        <div class="card mb-3">
+          <div class="card-header">{{t "globals.description"}}</div>
+          <div class="card-block p-0">
+            <div id="richDesc" style="padding-bottom:2px;">
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group form-floating" id="colpick">
+            <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
+            <button type="button" class="btn rounded-end" id="pickr"></button>
+            <label class="form-label" for="color">{{t "globals.color"}}</label>
+          </div>
+        </div>
+        <div class="form-floating">
+          <input name="customer" type="text" autocomplete="off" id="customer" class="form-control" placeholder='{{t "globals.customer"}}'/>
+          <label class="form-label" for="customer">{{t "globals.customer"}}</label>
+        </div>
+        <div class="list-group js-customer-results position-absolute d-none" style="z-index:999;">
+          {{#unless Template.subscriptionsReady}}
+            <div class="list-group-item">
+              {{t "task.searching"}}
+            </div>
+          {{/unless}}
+          {{#each cust in customers}}
+            <button type="button" class="list-group-item list-group-item-action js-customer-result">
+              &nbsp;<span class="js-customer-name">{{cust._id}}</span>
+            </button>
+          {{/each}}
+        </div>
+        <div class="mt-3 mb-3 form-floating">
+          <input name="defaultTask" id="defaultTask" type="text" value={{defaultTask}} class="form-control" placeholder="{{t 'project.default_task'}}"/>
+          <label class="form-label" for="defaultTask">{{t "project.default_task"}}</label>
+          <span class="form-text">{{t "project.default_task_help"}}</span>
+        </div>
+        <div class="card mb-3">
+          <div class="card-header">{{t "project.billing_budget"}}</div>
+          <div class="card-block">
+            <div class="mb-3 form-floating">
+              <div class="form-check">
+                {{#if notbillable}}
+                  <input aria-label='{{t "project.not_billable"}}' name="notbillable" id="notbillable" type="checkbox" checked class="form-check-input" />
+                {{else}}
+                  <input aria-label='{{t "project.not_billable"}}' name="notbillable" id="notbillable" type="checkbox" class="form-check-input" />
+                {{/if}}
+                <label class="form-check-label">{{t "project.not_billable"}}</label>
+              </div>
+            </div>
+            {{#unless notbillable}}
+              <div class="mb-3 form-floating">
+                <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100" step="any" />
+                <label class="form-label" for="rate">{{t "project.rate"}} ({{unit}}/h)</label>
+              </div>
+              <div class="form-floating">
+                <input name="target" id="target" type="number" value="{{timeInUserUnit (target)}}" class="form-control" placeholder="1000" step="any"/>
+                <label class="form-label" for="target">{{t "project.target"}} ({{timeunit}})</label>
+              </div>
+            {{/unless}}
+          </div>
+        </div>
+        {{#if customfields }}
+          <div class="card mb-3">
+            <div class="card-header">{{t "administration.customfields"}}</div>
+            <div class="card-block">
+              {{#each customfield in customfields}}
+                {{#if customfield.possibleValues}}
+                  <div class="mb-3 form-floating">
+                    <select name="{{replaceSpecialChars customfield.name}}" id="{{replaceSpecialChars customfield.name}}" class="form-control">
+                      {{#each pv in customfield.possibleValues}}
+                        <option value="{{pv}}">{{pv}}</option>
+                      {{/each}}
+                    </select>
+                    <label class="form-label" for="{{replaceSpecialChars customfield.name}}">{{customfield.desc}}</label>
+                  </div>
+                {{else}}
+                <div class="mb-3 form-floating">
+                  <input class="form-control" name="{{replaceSpecialChars customfield.name}}" id="{{replaceSpecialChars customfield.name}}" type="{{customfield.type}}" value="{{getCustomFieldValue customfield.name}}" placeholder="{{customfield.desc}}"/>
+                  <label class="form-label" for="{{replaceSpecialChars customfield.name}}">{{customfield.desc}}</label>
+                </div>
+                {{/if}}
+              {{/each}}
+            </div>
+          </div>
+        {{/if}}
+      {{#if getGlobalSetting "enableWekan"}}
+      <div class="mb-3">
+        <div class="card">
+          <div class="card-header">{{t "project.wekan_integration"}}</div>
+          <div class="card-block">
+          {{> wekanInterfaceSettings projectId=projectId}}
+          </div>
+        </div>
+      </div>
+      {{/if}}
+      {{#if getGlobalSetting "enableGitlab"}}
+        <div class="mb-3">
+          <div class="card">
+            <div class="card-header">{{t "project.gitlab_integration"}}</div>
+            <div class="card-block">
+              <div class="form-floating">
+                <input class="form-control" name="gitlabquery" id="gitlabquery" type="text" value="{{gitlabquery}}" placeholder="projects/:id/issues?confidential=true"/>
+                <label class="form-label" for="gitlabquery">{{t "project.gitlab_query"}}</label>
+                <small class="form-text text-muted">{{t "project.gitlab_help"}} <i>projects/:id/issues?confidential=true</i> (<a href="https://docs.gitlab.com/ee/api/issues.html" target="_blank">GitLab API</a>).</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{/if}}
+      {{#unless newProject}}
+        <div>
+          <div class="card">
+            <div class="card-header">{{t "project.access_rights"}}</div>
+            <div class="card-block">
+              {{> projectAccessRights projectId=projectId}}
+            </div>
+          </div>
+        </div>
+      {{/unless}}
+        <div class="row pt-3">
+          <div class="col-3 d-grid gap-2">
+            <button type="button" class="btn btn-secondary border js-backbutton">{{t "navigation.back"}}</button>
+          </div>
+          {{#unless newProject}} {{#if archived (projectId)}}
+          <div class="col-3 d-grid gap-2">
+            <button type="button" class="btn btn-secondary border js-restore-project"><i class="fa fa-undo"></i> <span class="d-none d-md-inline">{{t "navigation.restore"}}</span></button>
+          </div>
+          <div class="col-3 d-grid gap-2">
+            <button type="button" class="btn btn-secondary border js-delete-project"><i class="fa fa-trash"></i> <span class="d-none d-md-inline">{{t "navigation.delete"}}</span></button>
+          </div>
+          {{else}}
+          <div class="col-3 d-grid gap-2">
+              <a href="{{ prefix }}/list/timecards/{{projectId}}" class="btn btn-secondary border"><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
+          </div>
+          <div class="col-3 d-grid gap-2">
+            <button type="button" class="btn btn-secondary border js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">{{t "navigation.archive"}}</span></button>
+          </div>
+          {{/if}} {{/unless}}
+          <div class="col-3 d-grid gap-2">
+            <button type="button" class="btn btn-primary js-save" id="save">{{t "navigation.save"}}</button>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade hide table-responsive p-3 tab-borders" id="tasks">
+        {{#if isActiveTab "tasks-tab"}}
+          {{>projectTasks}}
+        {{/if}}
+      </div>
+    </div>
+  </form>
+</template>
