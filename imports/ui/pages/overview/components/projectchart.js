@@ -12,7 +12,7 @@ Template.projectchart.onCreated(function projectchartCreated() {
 Template.projectchart.helpers({
   totalHours() {
     const precision = getUserSetting('precision')
-    return ProjectStats.findOne({ _id: Template.instance().data.projectId })
+    return ProjectStats.findOne({ _id: Template.instance().data.projectId })?.totalHours
       ? Number(ProjectStats.findOne({
         _id: Template.instance().data.projectId,
       }).totalHours ? ProjectStats.findOne({

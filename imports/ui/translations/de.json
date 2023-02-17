@@ -198,7 +198,8 @@
     "gitlab_api_token": "GitLab API Token",
     "enable_gitlab": "Gitlab Schnittstelle aktivieren?",
     "rounding": "Rundung",
-    "rounding_tooltip": "Erfasste Zeiten werden auf Basis der gewählten Zeiteinheit automatisch auf die nächste spezifizierte Einheit aufgerundet z.B. bei Zeiteinheit Minuten und Rundungswert 15 wird immer auf die nächsten 15 Minuten aufgerundet (Eingabe 5 Minuten > Ergebnis nach Rundung 15 Minuten)."
+    "rounding_tooltip": "Erfasste Zeiten werden auf Basis der gewählten Zeiteinheit automatisch auf die nächste spezifizierte Einheit aufgerundet z.B. bei Zeiteinheit Minuten und Rundungswert 15 wird immer auf die nächsten 15 Minuten aufgerundet (Eingabe 5 Minuten > Ergebnis nach Rundung 15 Minuten).",
+    "enable_siwapp": "Siwapp Schnittstelle aktivieren?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -257,7 +258,8 @@
     "exported": "Exportiert",
     "billed": "Verrechnet",
     "notBillable": "Nicht Verrechenbar",
-    "charts": "Diagramme"
+    "charts": "Diagramme",
+    "markAsBilled": "Alles verrechnet"
   },
   "dashboard": {
     "share": "Projekt Dashboard teilen",

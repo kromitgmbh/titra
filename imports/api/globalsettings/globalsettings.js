@@ -136,4 +136,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'rounding', description: 'settings.rounding', type: 'number', value: undefined, category: 'settings.categories.time_tracking',
 })
+defaultSettings.push({
+  name: 'enableSiwapp', description: 'settings.enable_siwapp', type: 'checkbox', value: true, category: 'settings.categories.interfaces',
+})
 export { defaultSettings, Globalsettings }

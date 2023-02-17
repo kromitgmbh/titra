@@ -199,7 +199,8 @@
     "gitlab_api_token": "GitLab API Token",
     "enable_gitlab": "Enable Gitlab Interface?",
     "rounding": "Rounding",
-    "rounding_tooltip": "Tracked time will be rounded up according to the selected time unit and the specified rounding value e.g. time unit minutes and round value 15 will round up to the next 15 minutes (input 5 minutes > result after rounding 15 minutes)."
+    "rounding_tooltip": "Tracked time will be rounded up according to the selected time unit and the specified rounding value e.g. time unit minutes and round value 15 will round up to the next 15 minutes (input 5 minutes > result after rounding 15 minutes).",
+    "enable_siwapp": "Enable Siwapp integration?"
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -258,7 +259,8 @@
     "exported": "Exported",
     "billed": "Billed",
     "notBillable": "Not Billable",
-    "charts": "Charts"
+    "charts": "Charts",
+    "markAsBilled": "All billed"
   },
   "dashboard": {
     "share": "Share project dashboard",

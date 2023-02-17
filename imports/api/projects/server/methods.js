@@ -56,11 +56,11 @@ const getAllProjectStats = new ValidatedMethod({
     const beforePreviousMonthEnd = dayjs.utc().subtract(2, 'month').endOf('month')
     const timecardAggregation = await Timecards.rawCollection().aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: null, totalHours: { $sum: '$hours' } } }]).toArray()
     totalHours = Number.parseFloat(timecardAggregation[0]?.totalHours)
-    for await (const timecard of
-      Timecards.find({
+    for (const timecard of
+      await Timecards.find({
         projectId: { $in: projectList },
         date: { $gte: beforePreviousMonthStart.toDate() },
-      })) {
+      }).fetchAsync()) {
       if (dayjs.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
         currentMonthHours += Number.parseFloat(timecard.hours)
       } else if (dayjs.utc(new Date(timecard.date))

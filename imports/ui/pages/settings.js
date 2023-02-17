@@ -85,7 +85,7 @@ Template.settings.helpers({
   regularWorkingTime: () => getUserSetting('regularWorkingTime'),
   precision: () => getUserSetting('precision'),
   timetrackview: () => getUserSetting('timetrackview'),
-  hoursToDays: () => getUserSetting('hoursToDays'),
+  hoursToDays: () => (getUserSetting('hoursToDays') ? getUserSetting('hoursToDays') : 8),
   displayHoursToDays: () => Template.instance().displayHoursToDays.get(),
   enableWekan: () => getUserSetting('enableWekan'),
   siwappurl: () => getUserSetting('siwappurl'),

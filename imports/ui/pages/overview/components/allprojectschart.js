@@ -8,11 +8,29 @@ Template.allprojectschart.onCreated(function allprojectschartCreated() {
   this.projectStats = new ReactiveVar()
   this.includeNotBillableTime = new ReactiveVar(false)
   this.autorun(() => {
+    const precision = getUserSetting('precision')
+    const timeUnit = getUserSetting('timeunit')
     Meteor.call('getAllProjectStats', { includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived.get() }, (error, result) => {
       if (error) {
         console.error(error)
-      } else {
-        this.projectStats.set(result)
+      } else if (result instanceof Object) {
+        const stats = result
+        if (timeUnit === 'd') {
+          stats.beforePreviousMonthHours = (Number(stats.beforePreviousMonthHours) / Number(getUserSetting('hoursToDays'))).toFixed(precision)
+          stats.previousMonthHours = (Number(stats.previousMonthHours) / Number(getUserSetting('hoursToDays'))).toFixed(precision)
+          stats.currentMonthHours = (Number(stats.currentMonthHours) / Number(getUserSetting('hoursToDays'))).toFixed(precision)
+        }
+        if (timeUnit === 'm') {
+          stats.beforePreviousMonthHours *= 60
+          stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
+            .toFixed(precision)
+          stats.previousMonthHours *= 60
+          stats.previousMonthHours = Number(stats.previousMonthHours)
+            .toFixed(precision)
+          stats.currentMonthHours *= 60
+          stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
+        }
+        this.projectStats.set(stats)
       }
     })
     Meteor.call('getTopTasks', { projectId: 'all', includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived.get() }, (error, result) => {
@@ -53,7 +71,6 @@ Template.allprojectschart.events({
 })
 Template.allprojectschart.onRendered(() => {
   const templateInstance = Template.instance()
-  const precision = getUserSetting('precision')
   templateInstance.autorun(() => {
     templateInstance.$('#limit').val(FlowRouter.getQueryParam('limit') ? FlowRouter.getQueryParam('limit') : 25)
   })
@@ -64,29 +81,6 @@ Template.allprojectschart.onRendered(() => {
           const { Chart } = chartModule
           const stats = templateInstance.projectStats.get()
           if (stats) {
-            if (getUserSetting('timeunit') === 'd') {
-              stats.beforePreviousMonthHours
-                  /= getUserSetting('hoursToDays')
-              stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-                .toFixed(precision)
-              stats.previousMonthHours
-                  /= getUserSetting('hoursToDays')
-              stats.previousMonthHours = Number(stats.previousMonthHours)
-                .toFixed(precision)
-              stats.currentMonthHours
-                  /= getUserSetting('hoursToDays')
-              stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-            }
-            if (getUserSetting('timeunit') === 'm') {
-              stats.beforePreviousMonthHours *= 60
-              stats.beforePreviousMonthHours = Number(stats.beforePreviousMonthHours)
-                .toFixed(precision)
-              stats.previousMonthHours *= 60
-              stats.previousMonthHours = Number(stats.previousMonthHours)
-                .toFixed(precision)
-              stats.currentMonthHours *= 60
-              stats.currentMonthHours = Number(stats.currentMonthHours).toFixed(precision)
-            }
             if (templateInstance.chart) {
               templateInstance.chart.destroy()
             }
@@ -101,9 +95,7 @@ Template.allprojectschart.onRendered(() => {
                   },
                   data: {
                     labels:
-                  [stats.beforePreviousMonthName,
-                    stats.previousMonthName,
-                    stats.currentMonthName],
+                  [stats.beforePreviousMonthName, stats.previousMonthName, stats.currentMonthName],
                     datasets: [{
                       values:
                     [stats.beforePreviousMonthHours,

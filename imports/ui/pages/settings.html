@@ -40,6 +40,12 @@
             </select>
             <label class="form-label" for="timeunit">{{t "settings.time_unit"}}</label>
           </div>
+          {{#if displayHoursToDays}}
+            <div class="mb-3 form-floating">
+              <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" step="any" />
+              <label class="form-label" for="hoursToDays">{{t "settings.hours_per_day"}}</label>
+            </div>
+          {{/if}}
           <div class="mb-1 form-floating">
             <input type="number" class="form-control" id="rounding" value="{{rounding}}" step="any" />
             <label class="form-label" for="rounding">{{t "settings.rounding"}}</label>
@@ -49,12 +55,6 @@
               <small class="card-text">{{t "settings.rounding_tooltip"}}</small>
             </div>
           </div>
-          {{#if displayHoursToDays}}
-          <div class="mb-3 form-floating">
-            <input type="number" class="form-control" id="hoursToDays" value="{{hoursToDays}}" step="any" />
-            <label class="form-label" for="hoursToDays">{{t "settings.hours_per_day"}}</label>
-          </div>
-          {{/if}}
           <div class="mb-3 form-floating">
             <input type="time" class="form-control" id="dailyStartTime" value="{{dailyStartTime}}" />
             <label class="form-label" for="dailyStartTime">{{t "settings.daily_start_time"}}</label>
@@ -105,46 +105,41 @@
               </div>
           </div>
         </div>
-        <!-- <div class="card mb-3">
-            <div class="card-block">
-              <label class="form-label" for="titraAPItoken">Wekan</label>
-              <div class="mb-3 form-check">
-                <input id="enableWekan" type="checkbox" class="form-check-input" checked={{enableWekan}} />
-                <label class="form-check-label">{{t "settings.enable_wekan_integration"}}</label>
+        {{#if getGlobalSetting "enableGitlab"}}
+          <div class="card mb-3">
+            <div class="card-header">Siwapp</div>
+              <div class="card-block">
+                <div class="mb-3 form-floating">
+                  <input type="text" class="form-control" id="siwappurl" value="{{siwappurl}}" />
+                  <label class="form-label" for="siwappurl">{{t "settings.siwapp_url"}}</label>
+                </div>
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="siwapptoken" value="{{siwapptoken}}" />
+                  <label class="form-label" for="siwapptoken">{{t "settings.siwapp_api_token"}}</label>
+                </div>
               </div>
           </div>
-        </div> -->
-        <div class="card mb-3">
-          <div class="card-header">Siwapp</div>
+        {{/if}}
+        {{#if getGlobalSetting "enableGitlab"}}
+          <div class="card mb-3">
+            <div class="card-header">Zammad</div>
             <div class="card-block">
               <div class="mb-3 form-floating">
-                <input type="text" class="form-control" id="siwappurl" value="{{siwappurl}}" />
-                <label class="form-label" for="siwappurl">{{t "settings.siwapp_url"}}</label>
+                <input type="text" class="form-control" id="zammadurl" value="{{zammadurl}}" placeholder="https://zammad.url/" />
+                <label class="form-label" for="zammadurl">{{t "settings.zammad_url"}}</label>
               </div>
-              <div class="form-floating">
-                <input type="text" class="form-control" id="siwapptoken" value="{{siwapptoken}}" />
-                <label class="form-label" for="siwapptoken">{{t "settings.siwapp_api_token"}}</label>
+              <div class="form-floating mb-1">
+                <input type="text" class="form-control" id="zammadtoken" value="{{zammadtoken}}" placeholder="abcdefghijklmnopq-rstuvwxyz123456789" />
+                <label class="form-label" for="zammadtoken">{{t "settings.zammad_api_token"}}</label>
               </div>
-            </div>
-        </div>
-        <div class="card mb-3">
-          <div class="card-header">Zammad</div>
-          <div class="card-block">
-            <div class="mb-3 form-floating">
-              <input type="text" class="form-control" id="zammadurl" value="{{zammadurl}}" placeholder="https://zammad.url/" />
-              <label class="form-label" for="zammadurl">{{t "settings.zammad_url"}}</label>
-            </div>
-            <div class="form-floating mb-1">
-              <input type="text" class="form-control" id="zammadtoken" value="{{zammadtoken}}" placeholder="abcdefghijklmnopq-rstuvwxyz123456789" />
-              <label class="form-label" for="zammadtoken">{{t "settings.zammad_api_token"}}</label>
-            </div>
-            <div class="card bg-secondary mb-3">
-              <div class="card-body">
-                <small class="card-text">{{t "project.wekan_help"}} <a href="https://wiki.titra.io/books/deployment/page/zammad-interface" target="_blank">wiki</a>.</small>
+              <div class="card bg-secondary mb-3">
+                <div class="card-body">
+                  <small class="card-text">{{t "project.wekan_help"}} <a href="https://wiki.titra.io/books/deployment/page/zammad-interface" target="_blank">wiki</a>.</small>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        {{/if}}
         {{#if getGlobalSetting "enableGitlab"}}
           <div class="card">
             <div class="card-header">GitLab</div>

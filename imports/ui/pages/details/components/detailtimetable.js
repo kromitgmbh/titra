@@ -302,7 +302,9 @@ Template.detailtimetable.onRendered(() => {
 })
 Template.detailtimetable.helpers({
   detailTimeEntries() {
-    return Timecards.find(Template.instance().selector[0], Template.instance().selector[1])
+    return Timecards
+      .find(Template.instance().selector[0], Template.instance().selector[1]).count() > 0
+      ? Timecards.find(Template.instance().selector[0], Template.instance().selector[1]) : false
   },
   detailTimeSum() {
     return timeInUserUnit(Timecards
@@ -313,7 +315,8 @@ Template.detailtimetable.helpers({
     return Template.instance().totalDetailTimeEntries
   },
   tcid() { return Template.instance().tcid },
-  showInvoiceButton: () => (getUserSetting('siwappurl')) || getGlobalSetting('useState'),
+  showInvoiceButton: () => (getGlobalSetting('enableSiwapp') && getUserSetting('siwappurl')),
+  showMarkAsBilledButton: () => (getGlobalSetting('useState') && (!getGlobalSetting('enableSiwapp') || !getUserSetting('siwappurl'))),
 })
 Template.detailtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
@@ -462,15 +465,17 @@ Template.detailtimetable.events({
           showToast(t(result))
         }
       })
-    } else {
-      Meteor.call('setTimeEntriesState', { timeEntries: Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch().map((entry) => entry._id), state: 'billed' }, (error) => {
-        if (error) {
-          console.error(error)
-        } else {
-          showToast(t('notifications.time_entry_updated'))
-        }
-      })
     }
+  },
+  'click .js-mark-billed': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('setTimeEntriesState', { timeEntries: Timecards.find(templateInstance.selector[0], templateInstance.selector[1]).fetch().map((entry) => entry._id), state: 'billed' }, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        showToast(t('notifications.time_entry_updated'))
+      }
+    })
   },
   'click .js-delete': (event, templateInstance) => {
     event.preventDefault()

@@ -34,30 +34,28 @@ import { checkAuthentication, checkAdminAuthentication } from '../../../utils/se
 const updateSettings = new ValidatedMethod({
   name: 'updateSettings',
   validate(args) {
-    check(args, {
-      unit: String,
-      startOfWeek: Number,
-      timeunit: String,
-      timetrackview: String,
-      enableWekan: Boolean,
-      hoursToDays: Number,
-      precision: Number,
-      siwapptoken: String,
-      siwappurl: String,
-      dailyStartTime: String,
-      breakStartTime: String,
-      breakDuration: String,
-      regularWorkingTime: String,
-      APItoken: String,
-      zammadtoken: String,
-      zammadurl: String,
-      gitlabtoken: String,
-      gitlaburl: String,
-      holidayCountry: Match.OneOf(Match.Maybe(String), null),
-      holidayState: Match.OneOf(Match.Maybe(String), null),
-      holidayRegion: Match.OneOf(Match.Maybe(String), null),
-      rounding: Match.Maybe(Number),
-    })
+    check(args.unit, String)
+    check(args.startOfWeek, Number)
+    check(args.timeunit, String)
+    check(args.timetrackview, String)
+    check(args.enableWekan, Boolean)
+    check(args.hoursToDays, Number)
+    check(args.precision, Number)
+    check(args.siwapptoken, Match.Maybe(String))
+    check(args.siwappurl, Match.Maybe(String))
+    check(args.dailyStartTime, String)
+    check(args.breakStartTime, String)
+    check(args.breakDuration, String)
+    check(args.regularWorkingTime, String)
+    check(args.APItoken, Match.Maybe(String))
+    check(args.holidayCountry, Match.Maybe(String))
+    check(args.holidayState, Match.Maybe(String))
+    check(args.holidayRegion, Match.Maybe(String))
+    check(args.zammadtoken, Match.Maybe(String))
+    check(args.zammadurl, Match.Maybe(String))
+    check(args.gitlabtoken, Match.Maybe(String))
+    check(args.gitlaburl, Match.Maybe(String))
+    check(args.rounding, Match.Maybe(Number))
   },
   async run({
     unit,
