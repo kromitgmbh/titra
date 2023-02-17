@@ -182,6 +182,7 @@ $accordion-bg:                          $grey;
   color:                    $success !important;
   background:               $lightgrey !important;
 }
+
 .nav-tabs {
     border-bottom:          0px solid #dee2e6 !important;
 }
@@ -190,6 +191,10 @@ $accordion-bg:                          $grey;
 }
 .dt-scrollable__no-data {
     border:                 0px !important;
+}
+.d-flex {
+    display:                flex !important;
+    color:                  $success !important;
 }
 .table-responsive {
     background-color:       $secondary !important;
@@ -331,7 +336,7 @@ $accordion-bg:                          $grey;
     color:                  $wv-table-header-font-color !important;
 }
 .all-projects-bg {
-  background-image:         linear-gradient(to bottom right, $ap-card-bg-color-left-top, $ap-card-bg-color-center, $ap-card-bg-color-bottom-right) !important;
+  background-image:         linear-gradient(to right bottom, $ap-card-bg-color-left-top, $ap-card-bg-color-center, $ap-card-bg-color-bottom-right) !important;
 }
 .p-2 {
     padding:                0.5rem !important;
@@ -359,12 +364,18 @@ $accordion-bg:                          $grey;
     background-color:       $alert-secondary-bg-color !important;
     border-color:           $alert-secondary-border-color !important;
 }
-
 .fc .fc-scrollgrid-section-header.fc-scrollgrid-section-sticky > * {
-    top: 0;
-    background: none !important;
+    top:                    0;
+    background:             none !important;
 }
-
+.fc-bg-event {
+    background-color:       #636363 !important;
+    color:                  #d1d1d1 !important;
+    opacity:                1 !important;
+}
+.fc-daygrid-day-frame:hover {
+    background-color:       #494949 !important;
+}
 .fc-button-primary {
     color:                  $fc-color !important;
     background-color:       $fc-bg-color !important;
@@ -377,13 +388,11 @@ $accordion-bg:                          $grey;
 }
 .fc-theme-standard td, .fc-theme-standard th {
     border:                 $fc-cell-border-color-width !important;
+    background-color:       $fc-cell-bg-color  !important;
 }
 .fc a {
     color:                  $fc-cell-font-color !important;
     text-decoration:        underline;
-}
-.fc table {
-    background-color:       $fc-cell-bg-color !important;
 }
 .fc-theme-standard .fc-scrollgrid {
     border:                 0px solid transparent !important;

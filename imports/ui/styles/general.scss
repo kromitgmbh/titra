@@ -88,6 +88,9 @@ $btn-link-color: $body-color;
 #cal a {
   text-decoration: none;
 }
+.navbar .d-inline-block {
+    display: grid !important;
+}
 .custom-control-input {
   &:active {
    background-color: #009688;
@@ -123,8 +126,9 @@ $btn-link-color: $body-color;
   background-repeat: repeat-x;
   background-size: 1px 5px;
 }
-
-
+.table-responsive .form-control {
+  color: #00b9a6  !important;
+}
 // draggable
 .drag {
   z-index: 1000;
