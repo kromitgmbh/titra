@@ -17,8 +17,6 @@ import {
   workingTimeEntriesMapper,
   buildDetailedTimeEntriesForPeriodSelector,
 } from '../../../utils/server_method_helpers.js'
-import { C } from '@fullcalendar/core/internal-common.js'
-
 /**
  * Inserts a new timecard into the Timecards collection.
  * @param {Object} args - The arguments object containing the timecard information.
@@ -350,7 +348,6 @@ const sendToSiwapp = new ValidatedMethod({
     if (!meteorUser.profile.siwappurl || !meteorUser.profile.siwapptoken) {
       throw new Meteor.Error(t('notifications.siwapp_configuration'))
     }
-    await checkAuthentication(this)
     const timeEntries = []
     const selector = buildDetailedTimeEntriesForPeriodSelector({
       projectId,
@@ -607,6 +604,7 @@ const setTimeEntriesState = new ValidatedMethod({
     }
   },
   async run({ timeEntries, state }) {
+    await checkAuthentication(this)
     if (state === 'exported') {
       await Timecards.updateAsync({ _id: { $in: timeEntries }, state: { $in: ['new', undefined] } }, { $set: { state } }, { multi: true })
     } else if (state === 'billed') {

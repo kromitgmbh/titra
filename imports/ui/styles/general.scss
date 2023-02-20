@@ -198,7 +198,16 @@ $btn-link-color: $body-color;
   }
 }
 .dt-scrollable {
-   width: 100% !important;
+  width: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+}
+@include media-breakpoint-up(lg) {
+  .dt-scrollable {
+    width: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
 }
 .week-row:hover {
   text-decoration: none;

@@ -291,10 +291,6 @@ Template.detailtimetable.onRendered(() => {
       if (window.BootstrapLoaded.get()) {
         if (data.length === 0) {
           $('.dt-scrollable').height('auto')
-        } else {
-          // window.requestAnimationFrame(() => {
-
-          // })
         }
       }
     }

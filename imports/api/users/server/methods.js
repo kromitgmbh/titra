@@ -161,10 +161,10 @@ const updateProfile = new ValidatedMethod({
   async run({
     name, theme, language, avatar, avatarColor,
   }) {
+    await checkAuthentication(this)
     if (!avatar) {
       await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.avatar': '' } })
     }
-    await checkAuthentication(this)
     await Meteor.users.updateAsync({ _id: this.userId }, {
       $set: {
         'profile.name': name,
@@ -222,6 +222,7 @@ const adminCreateUser = new ValidatedMethod({
   async run({
     name, email, password, isAdmin, currentLanguageProject, currentLanguageProjectDesc,
   }) {
+    await checkAdminAuthentication(this)
     const profile = { currentLanguageProject, currentLanguageProjectDesc, name }
     const userId = await Accounts.createUserAsync({
       email, password, profile,

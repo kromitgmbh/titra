@@ -1,6 +1,6 @@
 <template name ="dailytimetable">
   <div class="row d-print-none">
-    <div class="col-lg-3 col-sm-6">
+    <div class="col-lg-3 col-4">
       <div class="btn-group">
         {{#if dailyTimecards}}
           <button type="button" class="btn btn-secondary border js-export-csv" aria-label="CSV export"><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
@@ -11,7 +11,7 @@
         {{/if}}
       </div>
     </div>
-    <div class="offset-lg-6 col-lg-3 col-sm-6">
+    <div class="offset-lg-5 col-lg-4 col-8">
       {{>limitpicker}}
     </div>
   </div>

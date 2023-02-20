@@ -1,6 +1,6 @@
 <template name="detailtimetable">
     <div class="row d-print-none">
-        <div class="col-xl-6 mt-2">
+        <div class="col-xl-6 col-lg-7 col-6 col-sm-12 mt-2">
             <div class="btn-group">
                 <button type="button"  class="btn btn-secondary border js-track-time"> <i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></button>
                 {{#if detailTimeEntries}}
@@ -26,10 +26,10 @@
                 {{/if}}
             </div>
         </div>
-        <div class="col-xl-3 col-md-5 mt-2">
+        <div class="col-xl-3 col-lg-3 col-6 mt-2">
             {{>limitpicker}}
         </div>
-        <div class="col-xl-3 col-md-7 mt-2">
+        <div class="col-xl-3 col-lg-2 offset-lg-0 col-12 mt-2">
             <div class="input-group">
                 <input type="search" class="js-search form-control float-end" placeholder='{{t "details.search"}}' aria-label='{{t "details.search"}}'/>
                 <button type="button"  class="btn btn-secondary border"><i class="fa fa-search"></i></button>

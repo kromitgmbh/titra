@@ -11,25 +11,28 @@
         <div class="card mb-3">
             <div class="card-header">{{t "about.runtime"}}</div>
             <div class="card-block">
-                <label>{{t "about.versions"}}:</label>
-                <ul class="list-group">
-                    <li class="list-group-item"><strong>titra:</strong> {{statistics.version}}</li>
-                    {{#if statistics.process.nodeVersion}}
-                        <li class="list-group-item"><strong>Node.js:</strong> {{statistics.process.nodeVersion}}</li>
-                        <li class="list-group-item"><strong>Meteor.js:</strong> {{statistics.meteor.meteorVersion}}</li>
-                        <li class="list-group-item"><strong>MongoDB:</strong> {{statistics.mongo.mongoVersion}} {{#if statistics.mongo.mongoOplogEnabled}}(OpLog enabled){{/if}}</li>
-                    {{/if}}
-                </ul>
-                <br/>
-                <label>{{t "about.environment"}}:</label>
-                <ul class="list-group">
-                    <li class="list-group-item"><strong>{{t "about.os"}}:</strong> {{statistics.os.type}} ({{statistics.os.arch}})</li>
-                    {{#if statistics.process.uptime}}
-                        <li class="list-group-item"><strong>{{t "about.uptime"}}:</strong> {{humanReadableTime(statistics.process.uptime)}}</li>
-                        <li class="list-group-item"><strong>{{t "about.total_memory"}}:</strong> {{bytesToSize(statistics.os.totalmem)}}</li>
-                        <li class="list-group-item"><strong>{{t "about.free_memory"}}:</strong> {{bytesToSize(statistics.os.freemem)}}</li>
-                    {{/if}}
-                </ul>
+                <div class="card mb-3">
+                    <div class="card-header">{{t "about.versions"}}</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>titra:</strong> {{statistics.version}}</li>
+                        {{#if statistics.process.nodeVersion}}
+                            <li class="list-group-item"><strong>Node.js:</strong> {{statistics.process.nodeVersion}}</li>
+                            <li class="list-group-item"><strong>Meteor.js:</strong> {{statistics.meteor.meteorVersion}}</li>
+                            <li class="list-group-item"><strong>MongoDB:</strong> {{statistics.mongo.mongoVersion}} {{#if statistics.mongo.mongoOplogEnabled}}(OpLog enabled){{/if}}</li>
+                        {{/if}}
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-header">{{t "about.environment"}}</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>{{t "about.os"}}:</strong> {{statistics.os.type}} ({{statistics.os.arch}})</li>
+                        {{#if statistics.process.uptime}}
+                            <li class="list-group-item"><strong>{{t "about.uptime"}}:</strong> {{humanReadableTime(statistics.process.uptime)}}</li>
+                            <li class="list-group-item"><strong>{{t "about.total_memory"}}:</strong> {{bytesToSize(statistics.os.totalmem)}}</li>
+                            <li class="list-group-item"><strong>{{t "about.free_memory"}}:</strong> {{bytesToSize(statistics.os.freemem)}}</li>
+                        {{/if}}
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="card mb-3">

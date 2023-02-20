@@ -3,13 +3,13 @@
         <div class="card-header">Filter</div>
         <div class="card-body">
           <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-3 mb-2 mb-md-0">
                 {{>multiselectfilter items=projects name="projectselect" all="overview.all_projects" label="globals.project"}}
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3 mb-2 mb-md-0">
                 {{>periodpicker}}
             </div>
-            <div class="col-sm-3">      
+            <div class="col-sm-3 mb-2 mb-md-0">      
                 {{>multiselectfilter items=resources name="resourceselect" all="resource.all" label="globals.resource"}}
             </div>
             <div class="col-sm-3">
