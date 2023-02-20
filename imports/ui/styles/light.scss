@@ -49,6 +49,11 @@ $progress-bg: $secondary;
 .fc-unthemed td.fc-today {
   background:         rgba(0, 150, 136, 0.5) !important;
 }
+.fc-bg-event {
+  background-color: #d1d1d1 !important;
+  color: #636363 !important;
+  opacity: 1 !important;
+}
 .alert-secondary {
     color:              #7b7b7b;
     background-color:   #ffffff;
@@ -87,6 +92,12 @@ $progress-bg: $secondary;
   background-color:         #fff;
   border-color:             #dee2e6 #dee2e6 #fff;
   
+}
+.fc-theme-standard td, .fc-theme-standard th {
+  background-color:         #ffffff !important;
+}
+.fc-daygrid-day-frame:hover {
+  background-color:         #f8f8f8 !important;
 }
 .nav-tabs {
     border-bottom: 0px solid #dee2e6 !important;
