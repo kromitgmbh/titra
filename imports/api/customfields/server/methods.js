@@ -1,6 +1,6 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import CustomFields from '../customfields.js'
-import { checkAdminAuthentication } from '../../../utils/server_method_helpers'
+import { adminAuthenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers'
 
 /**
   Adds a new custom field to the CustomFields collection.
@@ -24,10 +24,10 @@ const addCustomField = new ValidatedMethod({
       possibleValues: Match.Maybe([String]),
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({
     classname, name, desc, type, possibleValues,
   }) {
-    await checkAdminAuthentication(this)
     if (await CustomFields.findOneAsync({ name })) {
       throw new Meteor.Error('error-custom-field-exists', 'Custom field already exists', { method: 'addCustomField' })
     }
@@ -59,8 +59,8 @@ const removeCustomField = new ValidatedMethod({
       _id: String,
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ _id }) {
-    await checkAdminAuthentication(this)
     if (!await CustomFields.findOneAsync({ _id })) {
       throw new Meteor.Error('error-custom-field-not-found', 'Custom field not found', { method: 'removeCustomField' })
     }
@@ -89,10 +89,10 @@ const updateCustomField = new ValidatedMethod({
       possibleValues: Match.Maybe([String]),
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({
     _id, desc, type, possibleValues,
   }) {
-    await checkAdminAuthentication(this)
     if (!await CustomFields.findOneAsync({ _id })) {
       throw new Meteor.Error('error-custom-field-not-found', 'Custom field not found', { method: 'removeCustomField' })
     }
@@ -107,3 +107,5 @@ const updateCustomField = new ValidatedMethod({
     return true
   },
 })
+
+export { addCustomField, removeCustomField, updateCustomField }

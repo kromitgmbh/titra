@@ -1,0 +1,83 @@
+<template name="userscomponent">
+    <div class="card mb-3">
+        <div class="card-header">
+            <a href="#" class="text-reset text-decoration-none week-row" data-bs-toggle="collapse" data-bs-target="#createUser"> {{t "administration.create_user"}} <i class="float-end fa fa-chevron-right"></i></a>
+        </div>
+        <div class="card-block collapse" id="createUser">
+            <div class="container">
+                <form class="row">
+                    <div class="col-lg-3 mb-3 mb-lg-0">
+                        <div class="form-floating">
+                            <input aria-label='{{t "globals.name"}}' class="form-control" placeholder='{{t "globals.name"}}' type="text" name="name" id="name"/>
+                            <label class="form-label">{{t "globals.name"}}</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-3 mb-lg-0">
+                        <div class="form-floating">
+                            <input aria-label='{{t "globals.email"}}' class="form-control" placeholder='{{t "globals.email"}}' type="email" name="email" id="email"/>
+                            <label class="form-label">{{t "globals.email"}}</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-3 mb-lg-0">
+                        <div class="input-group form-floating">
+                            <input aria-label='{{t "login.password"}}' class="form-control" placeholder='{{t "login.password"}}' type="text" name="password" id="password"/>
+                            <button type="button" class="btn btn-outline-secondary js-generate-password rounded-end"><i class="fa fa-random"></i></button>
+                            <label class="form-label">{{t "login.password"}}</label>
+                        </div>
+                    </div>
+                    <div class="col-auto mb-3 mb-lg-0">
+                        <div class="form-check mt-lg-3">
+                            <input class="form-check-input" type="checkbox" id="isAdmin">
+                            <label class="form-check-label" for="isAdmin">{{t "administration.admin"}}</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 d-flex align-items-center">
+                        <button type="button" class="btn btn-secondary border" id="js-create-user">{{t "administration.create"}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{>limitpicker}}
+    <br/>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{{t "settings.avatar"}}</th>
+                    <th>{{t "globals.name"}}</th>
+                    <th>{{t "globals.email"}}</th>
+                    <th>{{t "administration.admin"}}</th>
+                    <th>{{t "administration.user_inactive"}}</th>
+                    <th>{{t "administration.creation_date"}}</th>
+                    <th>{{t "tracktime.actions"}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each user in users}}
+                    <tr>
+                        <td>{{{avatar(user)}}}</td>
+                        <td>{{user.profile.name}}</td>
+                        <td>{{user.emails.[0].address}}</td>
+                        <td class="text-center">
+                            {{#if user.isAdmin}}
+                                <a href="#" class="js-remove-admin" data-id="{{user._id}}" title="Remove admin" aria-label="Remove admin"><i class="fa fa-check-square"></i></a>
+                            {{else}}
+                                <a href="#" class="js-make-admin" data-id="{{user._id}}" title="Add admin" aria-label="Add admin"><i class="far fa-square"></i></a>
+                            {{/if}}
+                        </td>
+                        <td class="text-center">
+                            {{#if user.inactive}}
+                                <a href="#" class="js-deactivate-user" data-id="{{user._id}}" title="{{t 'administration.user_inactive'}}" aria-label="{{t 'administration.user_inactive'}}"><i class="fa fa-check-square"></i></a>
+                            {{else}}
+                                <a href="#" class="js-activate-user" data-id="{{user._id}}" title="{{t 'administration.user_inactive'}}" aria-label="{{t 'administration.user_inactive'}}"><i class="far fa-square"></i></a>
+                            {{/if}}
+                        </td>
+                        <td>{{dayjs(user.createdAt)}}</td>
+                        <td class="text-center"><a href="#" class="js-delete" data-id="{{user._id}}" aria-label="Delete"><i class="fa fa-trash"></i></a></td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</template>

@@ -1,10 +1,12 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { MongoInternals } from 'meteor/mongo'
 import os from 'os'
+import { authenticationMixin } from '/imports/utils/server_method_helpers'
 
 const getStatistics = new ValidatedMethod({
   name: 'getStatistics',
   validate: null,
+  mixins: [authenticationMixin],
   async run() {
     // this is completely based on WeKans implementation
     // https://github.com/wekan/wekan/blob/master/server/statistics.js

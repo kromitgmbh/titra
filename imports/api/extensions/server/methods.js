@@ -1,7 +1,7 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import AdmZip from 'adm-zip'
 import Extensions from '../extensions'
-import { checkAdminAuthentication } from '../../../utils/server_method_helpers'
+import { adminAuthenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers'
 
 /**
  * Adds an extension.
@@ -15,8 +15,8 @@ import { checkAdminAuthentication } from '../../../utils/server_method_helpers'
 const addExtension = new ValidatedMethod({
   name: 'addExtension',
   validate: null,
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ zipFile }) {
-    checkAdminAuthentication(this)
     const regex = /^data:.+\/(.+)base64,(.*)$/
     const matches = zipFile.match(regex)
     const data = matches[2]
@@ -64,8 +64,8 @@ const removeExtension = new ValidatedMethod({
       extensionId: String,
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ extensionId }) {
-    await checkAdminAuthentication(this)
     const extension = await Extensions.findOneAsync({ _id: extensionId })
     if (extension) {
       Extensions.remove({ _id: extension._id })
@@ -90,8 +90,8 @@ const launchExtension = new ValidatedMethod({
       extensionId: String,
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ extensionId }) {
-    checkAdminAuthentication(this)
     const extension = await Extensions.findOneAsync({ _id: extensionId })
     if (!extension) throw new Meteor.Error('Extension does not exist')
     try {
@@ -118,8 +118,8 @@ const toggleExtensionState = new ValidatedMethod({
       state: Boolean,
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ extensionId, state }) {
-    await checkAdminAuthentication(this)
     const extension = await Extensions.findOneAsync({ _id: extensionId })
     if (extension) {
       await Extensions.updateAsync({ _id: extension._id }, { $set: { isActive: state } })

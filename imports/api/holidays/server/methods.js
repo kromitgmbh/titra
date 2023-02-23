@@ -1,7 +1,7 @@
 import { check } from 'meteor/check'
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import Holidays from 'date-holidays'
-import { checkAuthentication } from '../../../utils/server_method_helpers.js'
+import { authenticationMixin } from '../../../utils/server_method_helpers.js'
 import { Globalsettings } from '../../globalsettings/globalsettings.js'
 
 const hd = new Holidays()
@@ -34,8 +34,8 @@ Returns a list of holidays.
 const getHolidays = new ValidatedMethod({
   name: 'getHolidays',
   validate: null,
+  mixins: [authenticationMixin],
   async run() {
-    await checkAuthentication(this)
     const h = await getCurrentHoliday()
     if (h) {
       return h.getHolidays()
@@ -51,8 +51,8 @@ Returns a list of holiday countries.
 const getHolidayCountries = new ValidatedMethod({
   name: 'getHolidayCountries',
   validate: null,
+  mixins: [authenticationMixin],
   async run() {
-    await checkAuthentication(this)
     return hd.getCountries()
   },
 })
@@ -69,8 +69,8 @@ const getHolidayStates = new ValidatedMethod({
       country: String,
     })
   },
+  mixins: [authenticationMixin],
   async run({ country }) {
-    await checkAuthentication(this)
     if (country) {
       return hd.getStates(country)
     }
@@ -92,8 +92,8 @@ const getHolidayRegions = new ValidatedMethod({
       state: String,
     })
   },
+  mixins: [authenticationMixin],
   async run({ country, state }) {
-    await checkAuthentication(this)
     if (country && state) {
       return hd.getRegions(country, state)
     }

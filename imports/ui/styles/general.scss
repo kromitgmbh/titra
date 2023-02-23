@@ -126,7 +126,7 @@ $btn-link-color: $body-color;
   background-repeat: repeat-x;
   background-size: 1px 5px;
 }
-.table-responsive .form-control {
+.table-responsive > .form-control {
   color: #00b9a6  !important;
 }
 // draggable

@@ -1,0 +1,68 @@
+<template name="administration">
+    <ul class="nav nav-tabs" id="administration-tab-pane" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="globalsettings-tab" data-bs-toggle="tab" href="#globalsettings" role="tab" aria-controls="globalsettings" aria-selected="true">{{t "settings.global_settings"}}</a>
+          </li>
+        <li class="nav-item">
+          <a class="nav-link" id="users-tab" data-bs-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">{{t "administration.users"}}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="customfields-tab" data-bs-toggle="tab" href="#customfields" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.customfields"}}</a>
+        </li>
+        {{#if getGlobalSetting "enableOpenIDConnect"}}
+            <li class="nav-item">
+                <a class="nav-link" id="login-tab" data-bs-toggle="tab" href="#oidc" role="tab" aria-controls="oidc" aria-selected="false">{{t "administration.oidc"}}</a>
+            </li>
+        {{/if}}
+        <li class="nav-item">
+            <a class="nav-link" id="extensions-tab" data-bs-toggle="tab" href="#extensions" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.extensions"}}</a>
+        </li>
+        {{#if getGlobalSetting "enableTransactions"}}
+            <li class="nav-item">
+                <a class="nav-link" id="transactions-tab" data-bs-toggle="tab" href="#transactions" role="tab" aria-controls="transactions" aria-selected="false">{{t "transactions.transactions"}}</a>
+            </li>
+        {{/if}}
+    </ul>
+    <div class="tab-content" id="administration-content">
+        <div class="tab-pane fade show active table-responsive tab-borders" id="globalsettings">
+            {{#if isActive "globalsettings-tab"}}
+                {{#if i18nReady}}
+                    {{>globalsettingscomponent}}
+                {{/if}}
+            {{/if}}
+        </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="users">
+            {{#if isActive "users-tab"}}
+                {{#if i18nReady}}
+                    {{>userscomponent}}
+                {{/if}}
+            {{/if}}
+        </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="customfields">
+            {{#if isActive "customfields-tab"}}
+                {{#if i18nReady}}
+                    {{>customfieldscomponent}}
+                {{/if}}
+            {{/if}}
+        </div>
+        {{#if isActive "oidc-tab"}}
+            {{#if i18nReady}}
+                {{>oidccomponent}}
+            {{/if}}
+        {{/if}}
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="extensions">
+            {{#if isActive "extensions-tab"}}
+                {{#if i18nReady}}
+                    {{>extensionscomponent}}
+                {{/if}}
+            {{/if}}
+        </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="transactions">
+            {{#if isActive "transactions-tab"}}
+                {{#if i18nReady}}
+                    {{>transactionscomponent}}
+                {{/if}}
+            {{/if}}
+        </div>
+    </div>
+</template>

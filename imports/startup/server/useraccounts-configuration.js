@@ -9,7 +9,7 @@ Accounts.setAdditionalFindUserOnExternalLogin(async (user) => {
   }
   return undefined
 })
-
+Accounts.validateLoginAttempt((attempt) => !attempt.user?.inactive)
 Accounts.onCreateUser((options, user) => {
   if (options.anonymous) {
     options.profile = {

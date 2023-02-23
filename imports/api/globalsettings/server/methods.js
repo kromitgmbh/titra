@@ -1,6 +1,6 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { defaultSettings, Globalsettings } from '../globalsettings.js'
-import { checkAdminAuthentication } from '../../../utils/server_method_helpers.js'
+import { adminAuthenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers.js'
 
 /**
 @summary Updates global settings
@@ -13,8 +13,8 @@ const updateGlobalSettings = new ValidatedMethod({
   validate(settingsArray) {
     check(settingsArray, Array)
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run(settingsArray) {
-    await checkAdminAuthentication(this)
     for (const setting of settingsArray) {
       check(setting, Object)
       check(setting.name, String)
@@ -30,8 +30,8 @@ const updateGlobalSettings = new ValidatedMethod({
 const resetSettings = new ValidatedMethod({
   name: 'resetSettings',
   validate: null,
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run() {
-    await checkAdminAuthentication(this)
     for (const setting of defaultSettings) {
       // eslint-disable-next-line no-await-in-loop
       await Globalsettings.removeAsync({ name: setting.name })
@@ -52,8 +52,8 @@ const resetGlobalsetting = new ValidatedMethod({
       name: String,
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ name }) {
-    await checkAdminAuthentication(this)
     Globalsettings.remove({ name })
     for (const setting of defaultSettings) {
       if (setting.name === name) {
@@ -76,8 +76,8 @@ const updateOidcSettings = new ValidatedMethod({
       configuration: Object,
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ configuration }) {
-    await checkAdminAuthentication(this)
     await ServiceConfiguration.configurations.removeAsync({
       service: 'oidc',
     })
@@ -92,8 +92,8 @@ const updateOidcSettings = new ValidatedMethod({
 const getGlobalsettingCategories = new ValidatedMethod({
   name: 'getGlobalsettingCategories',
   validate: null,
+  mixins: [adminAuthenticationMixin],
   async run() {
-    await checkAdminAuthentication(this)
     return Globalsettings.rawCollection().aggregate([{ $group: { _id: '$category' } }, { $sort: { _id: 1 } }]).toArray()
   },
 })

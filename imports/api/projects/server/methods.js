@@ -6,9 +6,9 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import Timecards from '../../timecards/timecards'
 import Projects from '../projects.js'
 import Tasks from '../../tasks/tasks.js'
-import { checkAuthentication } from '../../../utils/server_method_helpers.js'
 import { addNotification } from '../../notifications/notifications.js'
 import { emojify } from '../../../utils/frontend_helpers'
+import { authenticationMixin, transactionLogMixin } from '/imports/utils/server_method_helpers'
 
 /**
 Get the statistics of all projects based on the timecards.
@@ -24,9 +24,9 @@ const getAllProjectStats = new ValidatedMethod({
     check(args.includeNotBillableTime, Match.Maybe(Boolean))
     check(args.showArchived, Match.Maybe(Boolean))
   },
+  mixins: [authenticationMixin],
   async run({ includeNotBillableTime, showArchived }) {
     const notbillable = includeNotBillableTime
-    await checkAuthentication(this)
     dayjs.extend(utc)
     dayjs.extend(isBetween)
     const andCondition = [{
@@ -101,8 +101,8 @@ const updateProject = new ValidatedMethod({
       projectArray: Array,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId, projectArray }) {
-    await checkAuthentication(this)
     const updateJSON = {}
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
@@ -139,8 +139,8 @@ const createProject = new ValidatedMethod({
       projectArray: Array,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectArray }) {
-    await checkAuthentication(this)
     const updateJSON = {}
     for (const projectAttribute of projectArray) {
       updateJSON[projectAttribute.name] = projectAttribute.value
@@ -172,8 +172,8 @@ const deleteProject = new ValidatedMethod({
       projectId: String,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId }) {
-    await checkAuthentication(this)
     await Projects.removeAsync({
       $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
       _id: projectId,
@@ -196,8 +196,8 @@ const archiveProject = new ValidatedMethod({
       projectId: String,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId }) {
-    await checkAuthentication(this)
     await Projects.updateAsync(
       {
         _id: projectId,
@@ -223,8 +223,8 @@ const restoreProject = new ValidatedMethod({
       projectId: String,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId }) {
-    await checkAuthentication(this)
     await Projects.updateAsync(
       {
         _id: projectId,
@@ -244,8 +244,8 @@ const getTopTasks = new ValidatedMethod({
       showArchived: Match.Maybe(Boolean),
     })
   },
+  mixins: [authenticationMixin],
   async run({ projectId, includeNotBillableTime, showArchived }) {
-    await checkAuthentication(this)
     const rawCollection = Timecards.rawCollection()
     if (projectId === 'all') {
       const notbillable = includeNotBillableTime
@@ -283,8 +283,8 @@ const addTeamMember = new ValidatedMethod({
       eMail: String,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId, eMail }) {
-    await checkAuthentication(this)
     const targetProject = await Projects.findOneAsync({ _id: projectId })
     if (!targetProject
       || !(targetProject.userId === this.userId
@@ -318,8 +318,8 @@ const removeTeamMember = new ValidatedMethod({
       userId: String,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId, userId }) {
-    await checkAuthentication(this)
     const targetProject = await Projects.findOneAsync({ _id: projectId })
     if (!targetProject
       || !(targetProject.userId === this.userId
@@ -350,8 +350,8 @@ const changeProjectRole = new ValidatedMethod({
       administrator: Boolean,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId, userId, administrator }) {
-    await checkAuthentication(this)
     const targetProject = await Projects.findOneAsync({ _id: projectId })
     if (!targetProject
       || !(targetProject.userId === this.userId
@@ -383,8 +383,8 @@ const updatePriority = new ValidatedMethod({
       priority: Number,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId, priority }) {
-    await checkAuthentication(this)
     await Projects.updateAsync({ _id: projectId }, { $set: { priority } })
     return 'notifications.project_priority_success'
   },
@@ -406,8 +406,8 @@ const setDefaultTaskForProject = new ValidatedMethod({
       taskId: String,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId, taskId }) {
-    await checkAuthentication(this)
     const task = await Tasks.findOneAsync({ _id: taskId })
     if (task.isDefaultTask) {
       await Projects.updateAsync({ _id: projectId }, { $unset: { defaultTask: 1 } })

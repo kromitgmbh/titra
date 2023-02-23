@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.88.1",
+  "version": "0.89.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -32,14 +32,14 @@
     "is-dark": "^1.0.4",
     "jquery": "3.6.3",
     "jquery-serializejson": "^3.2.1",
-    "ldapjs": "^2.3.3",
+    "ldapjs": "2.3.3",
     "math-expression-evaluator": "^2.0.2",
     "meteor-node-stubs": "^1.2.5",
     "namedavatar": "^1.2.0",
     "node-emoji": "^1.11.0",
     "quill-delta-to-html": "^0.12.1",
     "randomcolor": "^0.6.2",
-    "raw-body": "^2.5.1",
+    "raw-body": "^2.5.2",
     "sortablejs": "^1.15.0",
     "tiny-date-picker": "^3.2.8",
     "vm2": "^3.9.14"

@@ -25,7 +25,7 @@ Template.projectInfoPopup.onCreated(function projectInfoPopupCreated() {
             this.projectDescAsHtml.set(converter.convert())
           })
         } else {
-          this.projectDescAsHtml.set(project.desc)
+          this.projectDescAsHtml.set(project?.desc)
         }
       }
     }

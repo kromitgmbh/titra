@@ -1,0 +1,73 @@
+<template name="globalsettingscomponent">
+    <div class="container">
+        <div class="input-group my-3">
+            <input type="text" class="form-control js-globalsetting-search" placeholder="{{t 'details.search'}}"/>
+            <button class="btn btn-outline-secondary rounded-end" type="button"><i class="fa fa-search"></i></button>
+        </div>
+    </div>
+    <div class="accordion accordion-flush mb-3" id="globalsettingsAccordion">
+        {{#each category in globalsettingCategories}}
+            {{#if getGlobalsettingsForCategory category}}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading-{{category}}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{category}}" aria-expanded="true" aria-controls="{{category}}">
+                            {{t category}}
+                        </button>
+                    </h2>
+                    <div id="{{category}}" class="accordion-collapse collapse show" aria-labelledby="heading-{{category}}">
+                        <div class="accordion-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="col-5">{{t "globals.name"}}</th>
+                                            <th scope="col" class="col-6">{{t "administration.value"}}</th>
+                                            <th scope="col" class="col">{{t "tracktime.actions"}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#each setting in getGlobalsettingsForCategory category}}
+                                            <tr>
+                                                <td>{{t setting.description}}</td>
+                                                <td class="form-switch">
+                                                    {{#if isTextArea setting}}
+                                                        <textarea id="{{setting.name}}" name="{{setting.name}}" value="{{setting.value}}" class="form-control js-setting-input"></textarea>
+                                                    {{else if isCheckbox setting}}
+                                                        <input id="{{setting.name}}" name="{{setting.name}}" type="checkbox" class="form-check-input js-setting-input form-checkbox" aria-label='{{t setting.description}}' {{isChecked setting}}/>
+                                                    {{else}}
+                                                        <input aria-label='{{t setting.description}}' id="{{setting.name}}" name="{{setting.name}}" type="{{setting.type}}" value="{{stringify setting.value}}" class="form-control js-setting-input"/>
+                                                    {{/if}}
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn js-reset" data-setting-name="{{setting.name}}">
+                                                        <i class="fa fa-undo" title='{{t "settings.reset"}}'></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/if}}
+        {{/each}}
+    </div>
+    <div class="card mx-3">
+        <div class="card-body">
+            <small>{{t "administration.globalsettings_help"}} <a href="https://wiki.titra.io/books/administration/page/global-settings" target="_blank">wiki</a>.</small>
+        </div>
+    </div>
+    <hr/>
+    <div class="container mb-3">
+        <div class="row px-1">
+            <div class="col-3 d-grid">
+                <button type="button" class="btn btn-danger" id="reset">{{t "settings.reset"}}</button>
+            </div>
+            <div class="col-3 ms-auto d-grid">
+                <button type="button" class="btn btn-primary js-save float-end">{{t "navigation.save"}}</button>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,7 +1,7 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { check, Match } from 'meteor/check'
 import { Accounts } from 'meteor/accounts-base'
-import { checkAuthentication, checkAdminAuthentication } from '../../../utils/server_method_helpers.js'
+import { authenticationMixin, adminAuthenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers.js'
 
 /**
  * Updates a user's settings.
@@ -57,6 +57,7 @@ const updateSettings = new ValidatedMethod({
     check(args.gitlaburl, Match.Maybe(String))
     check(args.rounding, Match.Maybe(Number))
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({
     unit,
     startOfWeek,
@@ -73,7 +74,6 @@ const updateSettings = new ValidatedMethod({
     gitlabtoken, gitlaburl,
     rounding,
   }) {
-    await checkAuthentication(this)
     await Meteor.users.updateAsync({ _id: this.userId }, {
       $set: {
         'profile.unit': unit,
@@ -110,8 +110,8 @@ const updateSettings = new ValidatedMethod({
 const resetUserSettings = new ValidatedMethod({
   name: 'resetUserSettings',
   validate: null,
+  mixins: [authenticationMixin, transactionLogMixin],
   async run() {
-    await checkAuthentication(this)
     await Meteor.users.updateAsync({ _id: this.userId }, {
       $unset: {
         'profile.unit': '',
@@ -158,10 +158,10 @@ const updateProfile = new ValidatedMethod({
       avatarColor: Match.Maybe(String),
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({
     name, theme, language, avatar, avatarColor,
   }) {
-    await checkAuthentication(this)
     if (!avatar) {
       await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.avatar': '' } })
     }
@@ -185,8 +185,8 @@ const updateProfile = new ValidatedMethod({
 const claimAdmin = new ValidatedMethod({
   name: 'claimAdmin',
   validate: null,
+  mixins: [authenticationMixin, transactionLogMixin],
   async run() {
-    await checkAuthentication(this)
     const meteorUser = await Meteor.users.findOneAsync({ _id: this.userId })
     if (await Meteor.users.find({ isAdmin: true }).countAsync() === 0) {
       await Meteor.users.updateAsync({ _id: this.userId }, { $set: { isAdmin: true } })
@@ -219,10 +219,10 @@ const adminCreateUser = new ValidatedMethod({
       currentLanguageProjectDesc: String,
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({
     name, email, password, isAdmin, currentLanguageProject, currentLanguageProjectDesc,
   }) {
-    await checkAdminAuthentication(this)
     const profile = { currentLanguageProject, currentLanguageProjectDesc, name }
     const userId = await Accounts.createUserAsync({
       email, password, profile,
@@ -245,8 +245,8 @@ const adminDeleteUser = new ValidatedMethod({
       userId: String,
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ userId }) {
-    await checkAdminAuthentication(this)
     await Meteor.users.removeAsync({ _id: userId })
   },
 })
@@ -266,8 +266,8 @@ const adminToggleUserAdmin = new ValidatedMethod({
       isAdmin: Boolean,
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ userId, isAdmin }) {
-    await checkAdminAuthentication(this)
     await Meteor.users.updateAsync({ _id: userId }, { $set: { isAdmin } })
   },
 })
@@ -287,8 +287,8 @@ const adminToggleUserState = new ValidatedMethod({
       inactive: Boolean,
     })
   },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ userId, inactive }) {
-    await checkAdminAuthentication(this)
     await Meteor.users.updateAsync({ _id: userId }, { $set: { inactive } })
   },
 })
@@ -307,8 +307,8 @@ const setCustomPeriodDates = new ValidatedMethod({
       customEndDate: Date,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ customStartDate, customEndDate }) {
-    await checkAuthentication(this)
     await Meteor.users.updateAsync({ _id: this.userId }, {
       $set: {
         'profile.customStartDate': customStartDate,
@@ -336,10 +336,10 @@ const setTimer = new ValidatedMethod({
     check(args.startTime, Match.Maybe(String))
     check(args.customFields, Match.Maybe(Array))
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({
     timestamp, project, task, startTime, customFields,
   }) {
-    await checkAuthentication(this)
     if (!timestamp) {
       await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.timer': '' } })
     } else {

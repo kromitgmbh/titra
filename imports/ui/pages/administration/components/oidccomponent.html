@@ -1,0 +1,32 @@
+<template name="oidccomponent">
+    {{#if getGlobalSetting "enableOpenIDConnect"}}
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="oidc">
+            {{t "administration.oidc_configure"}}: <span class="url">{{siteUrl}}_oauth/oidc</span>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{t "globals.name"}}</th>
+                            <th scope="col">{{t "administration.value"}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each setting in oidcSettings}}
+                        <tr>
+                            <td>{{setting.label}}</td>
+                            <td>
+                                <input aria-label='{{setting.label}}' id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="text" value="{{oidcValue setting.property}}" class="form-control js-setting-input"/>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-1 ms-auto b-grid">
+                    <button type="button" class="btn btn-primary js-update-oidc">{{t "navigation.save"}}</button>
+                </div>
+            </div>
+        </div>
+    {{/if}}
+</template>

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import Projects from '../api/projects/projects.js'
+import Transactions from '../api/transactions/transactions.js'
 import { projectResources } from '../api/users/users.js'
 import { periodToDates } from './periodHelpers.js'
 import { getGlobalSetting, getUserSetting } from './frontend_helpers.js'
@@ -537,8 +538,48 @@ function buildDetailedTimeEntriesForPeriodSelector({
   detailedTimeArray.push(options)
   return detailedTimeArray
 }
+function authenticationMixin(methodOptions) {
+  const runFunc = methodOptions.run
+  methodOptions.run = async function (args) {
+    await checkAuthentication(this)
+    return runFunc.call(this, args)
+  }
+  return methodOptions
+}
+function adminAuthenticationMixin(methodOptions) {
+  const runFunc = methodOptions.run
+  methodOptions.run = async function (args) {
+    await checkAdminAuthentication(this)
+    return runFunc.call(this, args)
+  }
+  return methodOptions
+}
+function transactionLogMixin(methodOptions) {
+  const runFunc = methodOptions.run
+  methodOptions.run = async function (args) {
+    if (getGlobalSetting('enableTransactions')) {
+      const user = await Meteor.users.findOneAsync({ _id: this.userId }, {
+        _id: 1, 'profile.name': 1, emails: 1, isAdmin: 1,
+      })
+      const transaction = {
+        user: JSON.stringify({
+          _id: user._id, name: user.profile.name, emails: user.emails, isAdmin: user.isAdmin,
+        }),
+        method: this.name,
+        args: JSON.stringify(args),
+        timestamp: new Date(),
+      }
+      Transactions.insert(transaction)
+    }
+    return runFunc.call(this, args)
+  }
+  return methodOptions
+}
 
 export {
+  authenticationMixin,
+  adminAuthenticationMixin,
+  transactionLogMixin,
   checkAuthentication,
   checkAdminAuthentication,
   getProjectListById,

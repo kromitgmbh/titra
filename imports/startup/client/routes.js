@@ -124,7 +124,7 @@ FlowRouter.route('/about', {
 })
 FlowRouter.route('/admin', {
   waitOn() {
-    return import('../../ui/pages/administration.js')
+    return import('../../ui/pages/administration/administration.js')
   },
   action() {
     document.title = 'titra - administration'

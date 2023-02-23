@@ -139,4 +139,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableSiwapp', description: 'settings.enable_siwapp', type: 'checkbox', value: true, category: 'settings.categories.interfaces',
 })
+defaultSettings.push({
+  name: 'enableTransactions', description: 'transactions.enable_transactions', type: 'checkbox', value: false, category: 'settings.categories.global',
+})
 export { defaultSettings, Globalsettings }

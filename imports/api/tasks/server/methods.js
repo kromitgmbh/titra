@@ -1,6 +1,6 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import Tasks from '../tasks.js'
-import { checkAuthentication } from '../../../utils/server_method_helpers.js'
+import { authenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers.js'
 
 /**
 Inserts a new project task into the Tasks collection.
@@ -22,10 +22,10 @@ const insertProjectTask = new ValidatedMethod({
       dependencies: Match.Optional([String]),
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({
     projectId, name, start, end, dependencies,
   }) {
-    await checkAuthentication(this)
     await Tasks.insertAsync({
       projectId,
       name,
@@ -59,10 +59,10 @@ const updateTask = new ValidatedMethod({
       dependencies: Match.Optional([String]),
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({
     taskId, name, start, end, dependencies,
   }) {
-    await checkAuthentication(this)
     const updatedTask = {
     }
     if (name) updatedTask.name = name
@@ -95,8 +95,8 @@ const removeProjectTask = new ValidatedMethod({
       taskId: String,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ taskId }) {
-    await checkAuthentication(this)
     await Tasks.removeAsync({ _id: taskId })
   },
 })

@@ -1,0 +1,126 @@
+<template name="customfieldscomponent">
+    <div class="card mb-3">
+        <div class="card-header">
+            <a href="#" class="text-reset text-decoration-none" data-bs-toggle="collapse" data-bs-target="#addCustomField"> {{t "administration.addcustomfield"}} <i class="float-end fa fa-chevron-right"></i></a>
+        </div>
+        <div class="card-block collapse" id="addCustomField">
+            <div class="mb-3 form-floating">
+                <select class="form-control" id="customfieldClassname" required placeholder="{{t 'globals.class'}}">
+                    <option value="project">{{t "globals.project"}}</option>
+                    <option value="time_entry">{{t "globals.time_entry"}}</option>
+                </select>
+                <label for="customfieldClassname" class="form-label">{{t "globals.class"}}</label>
+            </div>
+            <div class="mb-3 form-floating">
+                <input class="form-control" type="text" id="customfieldName" required placeholder="{{t 'globals.name'}}">
+                <label for="customfieldName" class="form-label">{{t "globals.name"}}</label>
+                <div class="form-text">{{t "administration.custom_field_name_hint"}}</div>
+            </div>
+            <div class="mb-3 form-floating">
+                <input class="form-control" type="text" id="customfieldDesc" placeholder="{{t 'globals.description'}}">
+                <label for="customfieldDesc" class="form-label">{{t "globals.description"}}</label>
+            </div>
+            <div class="mb-3 form-floating">
+                <select class="form-control" id="customfieldType" required>
+                    <option value="date">Date</option>
+                    <option value="number">Number</option>
+                    <option value="text" selected>String</option>
+                    <option value="email">E-Mail</option>
+                    <option value="color">Color</option>
+                </select>
+                <label for="customfieldType" class="form-label">{{t "globals.type"}}</label>
+            </div>
+            <div class="mb-3 form-floating">
+                <input class="form-control" id="customfieldPossibleValues" type="text" required placeholder="{{t 'administration.possible_values'}}"/>
+                <label for="customfieldPossibleValues" class="form-label">{{t "administration.possible_values"}}</label>
+                <span class="form-text">{{t "administration.possible_values_hint"}}</span>
+            </div>
+            <div class="col-lg-1">
+                <button type="button" class="btn btn-primary js-create-customfield">{{t "administration.create"}}</button>
+            </div>
+        </div>
+    </div>
+    {{#if customfields}}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>{{t "globals.class"}}</th>
+                        <th>{{t "globals.name"}}</th>
+                        <th>{{t "globals.description"}}</th>
+                        <th>{{t "globals.type"}}</th>
+                        <th class="text-center">{{t "tracktime.actions"}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each customfield in customfields}}
+                        <tr>
+                            <td>{{getClassName customfield.classname}}</td>
+                            <td>{{customfield.name}}</td>
+                            <td>{{customfield.desc}}</td>
+                            <td>
+                                {{#if customfield.possibleValues}}
+                                    {{customfield.possibleValues}}
+                                {{else}}
+                                    {{customfield.type}}
+                                {{/if}}
+                            </td>
+                            <td class="text-center">
+                                <a href="#" aria-label="Edit custom field" class="js-edit-customfield" data-customfield-id="{{customfield._id}}" data-bs-toggle="modal" data-bs-target=".js-edit-customfield-modal"><i class="fas fa-edit"></i></a>
+                                <a href="#" aria-label="Remove custom field" class="js-remove-customfield" data-customfield-id="{{customfield._id}}"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    {{else}}
+        <p>{{t "administration.no_customfields"}}</p>
+    {{/if}}
+    <div class="modal js-edit-customfield-modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{t "administration.edit_custom_field"}}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3 form-floating">
+                    <select class="form-control" id="editCustomfieldClassname" readonly placeholder="{{t 'globals.class'}}">
+                        <option value="project">{{t "globals.project"}}</option>
+                        <option value="time_entry">{{t "globals.time_entry"}}</option>
+                    </select>
+                    <label for="editCustomfieldClassname" class="form-label">{{t "globals.class"}}</label>
+                </div>
+                <div class="mb-3 form-floating">
+                    <input class="form-control" type="text" id="editCustomfieldName" readonly placeholder="{{t 'globals.name'}}">
+                    <label for="editCustomfieldName" class="form-label">{{t "globals.name"}}</label>
+                </div>
+                <div class="mb-3 form-floating">
+                    <input class="form-control" type="text" id="editCustomfieldDesc" placeholder="{{t 'globals.description'}}">
+                    <label for="editCustomfieldDesc" class="form-label">{{t "globals.description"}}</label>
+                </div>
+                <div class="mb-3 form-floating">
+                    <select class="form-control" id="editCustomfieldType" required>
+                        <option value="date">Date</option>
+                        <option value="number">Number</option>
+                        <option value="text" selected>String</option>
+                        <option value="email">E-Mail</option>
+                        <option value="color">Color</option>
+                    </select>
+                    <label for="editCustomfieldType" class="form-label">{{t "globals.type"}}</label>
+                </div>
+                <div class="mb-3 form-floating">
+                    <input class="form-control" id="editCustomfieldPossibleValues" type="text" required placeholder="{{t 'administration.possible_values'}}"/>
+                    <label for="editCustomfieldPossibleValues" class="form-label">{{t "administration.possible_values"}}</label>
+                    <span class="form-text">{{t "administration.possible_values_hint"}}</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{t "navigation.close"}}</button>
+              <button type="button" class="btn btn-primary js-update-customfield">{{t "navigation.save"}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</template>

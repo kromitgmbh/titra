@@ -413,5 +413,13 @@
     "list": "Wekan Liste",
     "swimlane": "Wekan Swimlane",
     "instance_url": "API URL der Wekan Instanz"
+  },
+  "transactions": {
+    "transactions": "Protokoll",
+    "enable_transactions": "Ereignis Protokoll aktivieren",
+    "user": "Benutzer",
+    "method": "Aktion",
+    "payload": "Änderungen",
+    "timestamp": "Zeitstempel"
   }
 }

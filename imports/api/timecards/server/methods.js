@@ -10,7 +10,8 @@ import { t } from '../../../utils/i18n.js'
 import { emojify, getGlobalSetting } from '../../../utils/frontend_helpers'
 import { timeInUserUnit } from '../../../utils/periodHelpers.js'
 import {
-  checkAuthentication,
+  authenticationMixin,
+  transactionLogMixin,
   buildTotalHoursForPeriodSelector,
   buildDailyHoursSelector,
   buildworkingTimeSelector,
@@ -182,10 +183,10 @@ const insertTimeCardMethod = new ValidatedMethod({
     check(args.hours, Number)
     check(args.customfields, Match.Maybe(Object))
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({
     projectId, task, date, hours, customfields,
   }) {
-    await checkAuthentication(this)
     await checkTimeEntryRule({
       userId: this.userId, projectId, task, state: 'new', date, hours,
     })
@@ -211,8 +212,8 @@ const upsertWeek = new ValidatedMethod({
   validate(args) {
     check(args, Array)
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run(weekArray) {
-    await checkAuthentication(this)
     weekArray.forEach(async (element) => {
       check(element.projectId, String)
       check(element.task, String)
@@ -261,10 +262,10 @@ const updateTimeCard = new ValidatedMethod({
     check(args.hours, Number)
     check(args.customfields, Match.Maybe(Object))
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({
     projectId, _id, task, date, hours, customfields,
   }) {
-    await checkAuthentication(this)
     const timecard = await Timecards.findOneAsync({ _id })
     await checkTimeEntryRule({
       userId: this.userId, projectId, task, state: timecard.state, date, hours,
@@ -300,8 +301,8 @@ const deleteTimeCard = new ValidatedMethod({
       timecardId: String,
     })
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ timecardId }) {
-    await checkAuthentication(this)
     const timecard = await Timecards.findOneAsync({ _id: timecardId })
     await checkTimeEntryRule({
       userId: this.userId,
@@ -340,10 +341,10 @@ const sendToSiwapp = new ValidatedMethod({
       check(args.dates.endDate, Date)
     }
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({
     projectId, timePeriod, userId, customer, dates,
   }) {
-    await checkAuthentication(this)
     const meteorUser = await Meteor.users.findOneAsync({ _id: this.userId })
     if (!meteorUser.profile.siwappurl || !meteorUser.profile.siwapptoken) {
       throw new Meteor.Error(t('notifications.siwapp_configuration'))
@@ -451,10 +452,10 @@ const getDailyTimecards = new ValidatedMethod({
       check(args.dates.endDate, Date)
     }
   },
+  mixins: [authenticationMixin],
   async run({
     projectId, userId, period, dates, customer, limit, page,
   }) {
-    await checkAuthentication(this)
     const aggregationSelector = buildDailyHoursSelector(
       projectId,
       period,
@@ -505,10 +506,10 @@ const getTotalHoursForPeriod = new ValidatedMethod({
       check(args.dates.endDate, Date)
     }
   },
+  mixins: [authenticationMixin],
   async run({
     projectId, userId, period, dates, customer, limit, page,
   }) {
-    await checkAuthentication(this)
     const aggregationSelector = buildTotalHoursForPeriodSelector(
       projectId,
       period,
@@ -560,10 +561,10 @@ const getWorkingHoursForPeriod = new ValidatedMethod({
       check(args.dates.endDate, Date)
     }
   },
+  mixins: [authenticationMixin],
   async run({
     projectId, userId, period, dates, limit, page,
   }) {
-    await checkAuthentication(this)
     const aggregationSelector = buildworkingTimeSelector(
       projectId,
       period,
@@ -603,8 +604,8 @@ const setTimeEntriesState = new ValidatedMethod({
       check(timeEntryId, String)
     }
   },
+  mixins: [authenticationMixin, transactionLogMixin],
   async run({ timeEntries, state }) {
-    await checkAuthentication(this)
     if (state === 'exported') {
       await Timecards.updateAsync({ _id: { $in: timeEntries }, state: { $in: ['new', undefined] } }, { $set: { state } }, { multi: true })
     } else if (state === 'billed') {

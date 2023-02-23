@@ -1,0 +1,21 @@
+<template name="transactionscomponent">
+     <div class="card mb-3">
+        <div class="card-header">
+            {{t "transactions.transactions"}}
+        </div>
+        <div class="card-block">
+            <div class="row">
+                <div class="col">
+                    {{>limitpicker}}
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input type="text" class="form-control js-transaction-search" placeholder="{{t 'details.search'}}"/>
+                        <button class="btn btn-outline-secondary rounded-end" type="button"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{> datatable columns=columns data=transactions}}
+</template>

@@ -406,5 +406,13 @@
     "list": "Wekan list",
     "swimlane": "Wekan swimlane",
     "instance_url": "API URL of the Wekan instance"
+  },
+  "transactions": {
+    "transactions": "Transactions",
+    "enable_transactions": "Enable transaction logging",
+    "user": "User",
+    "method": "Method",
+    "payload": "Payload",
+    "timestamp": "Timestamp"
   }
 }
