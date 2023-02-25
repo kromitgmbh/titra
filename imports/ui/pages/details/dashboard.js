@@ -116,7 +116,7 @@ Template.dashboard.onRendered(() => {
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && Timecards.find().fetch().length > 0) {
       window.requestAnimationFrame(() => {
-        import('frappe-charts').then((chartModule) => {
+        import('frappe-charts').then(async (chartModule) => {
           const { Chart } = chartModule
           let temphours = 0
           templateInstance.totalHours.set(0)
@@ -124,10 +124,11 @@ Template.dashboard.onRendered(() => {
           const datemap = new Map()
           const precision = getUserSetting('precision')
           for (const timecard of Timecards.find({}, { sort: { date: 1 } }).fetch()) {
+            const emojifiedTask = await emojify(timecard.task)
             taskmap.set(
-              $('<span>').text(timecard.task.replace(/(:\S*:)/g, emojify)).html(),
-              taskmap.get(timecard.task.replace(/(:\S*:)/g, emojify))
-                ? Number(Number(taskmap.get(timecard.task.replace(/(:\S*:)/g, emojify))) + Number(timeInUnitHelper(timecard.hours)))
+              $('<span>').text(emojifiedTask).html(),
+              taskmap.get(timecard.task)
+                ? Number(taskmap.get(timecard.task) + Number(timeInUnitHelper(timecard.hours)))
                 : Number(timeInUnitHelper(timecard.hours)),
             )
             datemap.set(
@@ -157,7 +158,7 @@ Template.dashboard.onRendered(() => {
                   spaceRatio: 0.2, // default: 1
                 },
                 tooltipOptions: {
-                  formatTooltipY: (value) => `${Number(value).toFixed(precision)} ${getUserTimeUnitVerbose()}`,
+                  formatTooltipY: (value) => `${Number(value).toFixed(precision)} ${timeUnitHelper()}`,
                 },
               })
             })

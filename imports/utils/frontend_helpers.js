@@ -13,7 +13,7 @@ function getUserSetting(field) {
   if ((Meteor.isClient && !Meteor.loggingIn()) && Meteor.user() && Meteor.user().profile) {
     return typeof Meteor.user().profile[field] !== 'undefined' ? Meteor.user().profile[field] : getGlobalSetting(field)
   }
-  return false
+  return getGlobalSetting(field) ? getGlobalSetting(field) : false
 }
 
 function addToolTipToTableCell(value) {
