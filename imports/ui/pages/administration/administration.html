@@ -11,7 +11,7 @@
         </li>
         {{#if getGlobalSetting "enableOpenIDConnect"}}
             <li class="nav-item">
-                <a class="nav-link" id="login-tab" data-bs-toggle="tab" href="#oidc" role="tab" aria-controls="oidc" aria-selected="false">{{t "administration.oidc"}}</a>
+                <a class="nav-link" id="oidc-tab" data-bs-toggle="tab" href="#oidc" role="tab" aria-controls="oidc" aria-selected="false">{{t "administration.oidc"}}</a>
             </li>
         {{/if}}
         <li class="nav-item">
@@ -45,11 +45,13 @@
                 {{/if}}
             {{/if}}
         </div>
-        {{#if isActive "oidc-tab"}}
-            {{#if i18nReady}}
-                {{>oidccomponent}}
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="oidc">
+            {{#if isActive "oidc-tab"}}
+                {{#if i18nReady}}
+                    {{>oidccomponent}}
+                {{/if}}
             {{/if}}
-        {{/if}}
+        </div>
         <div class="tab-pane fade table-responsive p-3 tab-borders" id="extensions">
             {{#if isActive "extensions-tab"}}
                 {{#if i18nReady}}

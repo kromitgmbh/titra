@@ -499,5 +499,7 @@ g > text {
 .gantt .bar {
     fill:                   $lightgrey !important;
 }
-
+#period {
+    background-color:           $input-button-background-color !important;
+}
 @import "{}/imports/ui/styles/general.scss";
