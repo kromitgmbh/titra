@@ -8,6 +8,7 @@ import './components/userscomponent.js'
 import './components/extensionscomponent.js'
 import './components/oidccomponent.js'
 import './components/transactionscomponent.js'
+import './components/inboundinterfacescomponent.js'
 
 Template.administration.onCreated(function administrationCreated() {
   this.activeTab = new ReactiveVar()

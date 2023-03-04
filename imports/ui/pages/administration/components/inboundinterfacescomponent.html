@@ -1,0 +1,17 @@
+<template name="inboundinterfacescomponent">
+    <div class="container">
+        <form class="form">
+            <input class="form-control mb-3" type="text" id="name" name="name" placeholder="Name"/>
+            <input class="form-control mb-3" type="text" id="description" name="description" placeholder="Description"/>
+            <button type="button" class="btn btn-primary add-inbound-interface">Add</button>
+        </form>
+        <ul>
+        {{#each inboundInterface in inboundInterfaces}}
+            <li>
+                <span>{{inboundInterface.name}}</span>
+                <span>{{inboundInterface.description}}</span>
+            </li>
+        {{/each}}
+        </ul>
+    </div>
+</template>

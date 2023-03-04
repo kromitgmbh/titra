@@ -1,3 +1,4 @@
+import { check } from 'meteor/check'
 import CustomFields from '../customfields.js'
 
 Meteor.publish('customfields', () => CustomFields.find({}))
