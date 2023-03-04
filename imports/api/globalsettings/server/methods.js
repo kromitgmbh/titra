@@ -71,10 +71,8 @@ const resetGlobalsetting = new ValidatedMethod({
 */
 const updateOidcSettings = new ValidatedMethod({
   name: 'updateOidcSettings',
-  validate(args) {
-    check(args, {
-      configuration: Object,
-    })
+  validate({ configuration }) {
+    check(configuration, Object)
   },
   mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ configuration }) {

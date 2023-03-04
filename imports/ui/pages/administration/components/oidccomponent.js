@@ -23,7 +23,7 @@ Template.oidccomponent.events({
     })
     configuration.idTokenWhitelistFields = configuration.idTokenWhitelistFields.split(' ')
     // Configure this login service
-    Meteor.call('updateOidcSettings', configuration, (error) => {
+    Meteor.call('updateOidcSettings', { configuration }, (error) => {
       if (error) {
         // eslint-disable-next-line no-underscore-dangle
         Meteor._debug('Error configuring login service oidc', error)
