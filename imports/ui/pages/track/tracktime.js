@@ -182,6 +182,8 @@ Template.tracktime.events({
         date = dayjs.utc(date.setHours($('#startTime').val().split(':')[0], $('#startTime').val().split(':')[1])).toDate()
       } else {
         showToast(t('notifications.check_time_input'))
+        templateInstance.$(event.currentTarget).text(buttonLabel)
+        templateInstance.$(event.currentTarget).prop('disabled', false)
         return
       }
     }
@@ -196,6 +198,16 @@ Template.tracktime.events({
     templateInstance.$('.js-save').text(t('navigation.saving'))
     templateInstance.$('.js-save').prop('disabled', true)
     if (templateInstance.tcid.get()) {
+      if (getGlobalSetting('useStartTime')) {
+        if (templateInstance.$('#startTime').val()) {
+          date = dayjs.utc(date.setHours(templateInstance.$('#startTime').val().split(':')[0], templateInstance.$('#startTime').val().split(':')[1])).toDate()
+        } else {
+          showToast(t('notifications.check_time_input'))
+          templateInstance.$(event.currentTarget).text(buttonLabel)
+          templateInstance.$(event.currentTarget).prop('disabled', false)
+          return
+        }
+      }
       Meteor.call('updateTimeCard', {
         _id: templateInstance.tcid.get(), projectId, date, hours, task, customfields,
       }, (error) => {
