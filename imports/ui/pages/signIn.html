@@ -8,6 +8,7 @@
           </div>
           <div class="alert alert-danger notification d-none" role="alert">
           </div>
+          {{#unless disableDefaultLoginForm}}
           <div class="at-pwd-form">
             <form role="form" id="at-pwd-form" novalidate="">
               <fieldset>
@@ -36,6 +37,7 @@
               </fieldset>
             </form>
           </div>
+          {{/unless}}
 
           {{#if isOidcConfigured}}
           <div class="mt-2">

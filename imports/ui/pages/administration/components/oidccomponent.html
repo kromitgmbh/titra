@@ -15,8 +15,12 @@
                     {{#each setting in oidcSettings}}
                     <tr>
                         <td>{{setting.label}}</td>
-                        <td>
-                            <input aria-label='{{setting.label}}' id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="text" value="{{oidcValue setting.property}}" class="form-control js-setting-input"/>
+                        <td class="form-switch">
+                            {{#if isCheckbox setting}}
+                                <input aria-label="{{setting.label}}" id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="checkbox" class="form-check-input js-setting-input form-checkbox" {{isChecked setting.property}}/>
+                            {{else}}
+                                <input aria-label='{{setting.label}}' id="configure-oidc-{{setting.property}}" name="{{setting.property}}" type="text" value="{{oidcValue setting.property}}" class="form-control js-setting-input"/>
+                            {{/if}}
                         </td>
                     </tr>
                     {{/each}}
