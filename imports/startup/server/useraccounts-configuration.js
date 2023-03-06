@@ -3,9 +3,9 @@ import dockerNames from 'docker-names'
 import { getGlobalSetting } from '../../utils/frontend_helpers'
 import initNewUser from '../../api/projects/setup.js'
 
-Accounts.setAdditionalFindUserOnExternalLogin(async (user) => {
-  if (user.serviceName === 'oidc' && user?.options?.emails?.[0]) {
-    return Meteor.users.findOneAsync({ 'emails.0.address': user.options.emails[0].address })
+Accounts.setAdditionalFindUserOnExternalLogin(({serviceName, serviceData}) => {
+  if (serviceName === 'oidc') {
+    return Accounts.findUserByEmail(serviceData.email);
   }
   return undefined
 })
