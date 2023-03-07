@@ -45,8 +45,20 @@ Template.timetracker.onCreated(function createTimeTracker() {
         this.intervalHandle = Meteor.setInterval(() => {
           const duration = dayjs.preciseDiff(dayjs(), storedTimer, true)
           $('.js-timer').val(`${pad(duration.hours, 2)}:${pad(duration.minutes, 2)}:${pad(duration.seconds, 2)}`)
-          if (document.title.codePointAt(0) !== '🔴'.codePointAt(0)) {
-            document.title = `🔴 ${document.title}`
+          if (document.title.indexOf('🔴') < 0) {
+            document.title = `${document.title} 🔴`
+          }
+          const links = document.querySelectorAll("link[rel*='icon']")
+          for (const link of links) {
+            if (!link.href.endsWith('favicon-record.ico')) {
+              link.href = 'favicons/favicon-record.ico'
+            }
+            if (!link.href.endsWith('favicon-record-32x32.png')) {
+              link.href = 'favicons/favicon-record-32x32.png'
+            }
+            if (!link.href.endsWith('favicon-record-16x16.png')) {
+              link.href = 'favicons/favicon-record-16x16.png'
+            }
           }
         }, 1000)
       }
@@ -90,8 +102,22 @@ Template.timetracker.events({
     Meteor.call('setTimer', {}, (error) => {
       if (error) {
         console.error(error)
-      } else if (document.title.codePointAt(0) === '🔴'.codePointAt(0)) {
-        document.title = document.title.replace('🔴 ', '')
+      } else {
+        if (document.title.indexOf('🔴') > 0) {
+          document.title = document.title.replace(' 🔴', '')
+        }
+        const links = document.querySelectorAll("link[rel*='icon']")
+        for (const link of links) {
+          if (!link.href.endsWith('favicon.ico')) {
+            link.href = 'favicons/favicon.ico'
+          }
+          if (!link.href.endsWith('favicon-32x32.png')) {
+            link.href = 'favicons/favicon-32x32.png'
+          }
+          if (!link.href.endsWith('favicon-16x16.png')) {
+            link.href = 'favicons/favicon-16x16.png'
+          }
+        }
       }
     })
     templateInstance.timer.set(null)
@@ -127,8 +153,22 @@ Template.timetracker.events({
     }, (error) => {
       if (error) {
         console.error(error)
-      } else if (document.title.codePointAt(0) !== '🔴'.codePointAt(0)) {
-        document.title = `🔴 ${document.title}`
+      } else {
+        if (document.title.indexOf('🔴') < 0) {
+          document.title = `${document.title} 🔴`
+        }
+        const links = document.querySelectorAll("link[rel*='icon']")
+        for (const link of links) {
+          if (!link.href.endsWith('favicon-record.ico')) {
+            link.href = 'favicons/favicon-record.ico'
+          }
+          if (!link.href.endsWith('favicon-record-32x32.png')) {
+            link.href = 'favicons/favicon-record-32x32.png'
+          }
+          if (!link.href.endsWith('favicon-record-16x16.png')) {
+            link.href = 'favicons/favicon-record-16x16.png'
+          }
+        }
       }
     })
   },
