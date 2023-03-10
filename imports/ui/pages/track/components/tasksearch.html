@@ -3,7 +3,8 @@
     <input type="text" aria-label='{{t "tracktime.task_placeholder"}}' value="{{task}}" class="js-tasksearch-input form-control" autocomplete="off" placeholder='{{t "tracktime.task_placeholder"}}'/>
   {{else}}
   <div class="input-group">
-    <div class="form-floating">
+    <div class="form-floating search-box">
+      <i class="fa fa-delete-left hover-remove-value-icon js-remove-value"></i>
       <input type="text" aria-label='{{t "tracktime.task_placeholder"}}' value="{{task}}" class="js-tasksearch-input form-control" autocomplete="off" placeholder='{{t "tracktime.task_placeholder"}}'/>
       <label class="form-label" for="task">{{t "globals.task"}}</label>
     </div>

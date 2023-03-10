@@ -102,4 +102,12 @@ Template.projectsearch.events({
     event.preventDefault()
     $('#projectInfoPopup').modal('show')
   },
+  'click .js-remove-value': (event, templateInstance) => {
+    event.preventDefault()
+    event.stopPropagation()
+    FlowRouter.setParams({ projectId: undefined })
+    templateInstance.$('.js-target-project').val('')
+    templateInstance.selectedId.set(undefined)
+    templateInstance.targetProject.renderIfNeeded()
+  },
 })

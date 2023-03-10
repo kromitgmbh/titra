@@ -209,15 +209,6 @@ $btn-link-color: $body-color;
     overflow-x: hidden !important;
   }
 }
-.week-row:hover {
-  text-decoration: none;
-  i.fa-chevron-right {
-    -webkit-transform: rotateZ(90deg);
-    -moz-transform: rotateZ(90deg);
-    transform: rotateZ(90deg);
-    transition: 0.25s ease-in-out;
-  }
-}
 .btn:hover {
   .fa-chevron-right {
     -webkit-transform: translateX(5px);
@@ -335,4 +326,22 @@ button.dp-clear {
 }
 .cl-content {
   background-color: transparent !important;
+}
+.hover-remove-value-icon {
+  position: absolute; 
+  padding: 20px;
+  right:0;
+  opacity: 10%;
+  cursor: pointer;
+}
+.search-box:hover > .hover-remove-value-icon {
+  opacity: 100%;
+}
+.week-row.js-collapse:hover > .fa-chevron-right {
+  transform: rotate(90deg);
+  transition: ease;
+  transition-duration: 300ms;
+}
+.table > tr:hover {
+  background-color: $secondary;
 }

@@ -2,7 +2,12 @@
   <div class="tab-borders p-3">
     <div class="row mb-3">
       <div class="col-3"><button type="button" class="btn btn-secondary border js-previous-week"><i class="fa fa-chevron-left"></i><span class="d-none d-lg-inline"> {{t "navigation.lastWeek"}}</span></button></div>
-      <div class="col text-center"><button type="button" class="btn btn-primary js-save">{{t "navigation.save"}}</button></div>
+      <div class="col text-center">
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary js-today">{{t "tracktime.today"}}</button>
+          <button type="button" class="btn btn-primary js-save">{{t "navigation.save"}}</button>
+        </div>
+      </div>
       <div class="col-3 text-end"><button type="button" class="btn btn-secondary border js-next-week"><span class="d-none d-lg-inline">{{t "navigation.nextWeek"}} </span><i class="fa fa-chevron-right"></i></button></div>
     </div>
     <div class="row">
@@ -11,11 +16,11 @@
           <thead class="thead">
             <th scope="col" style="min-width:200px;width:200px">{{t "globals.project"}} / {{t "globals.task"}}</th>
             {{#each weekday in weekDays}}
-            {{#if isHoliday @index }}
-              <th scope="col" class="holiday" style="min-width:122px;">{{ isHoliday @index }}<br>{{weekday}}</th>
-            {{else}}
-              <th scope="col" style="min-width:122px;">{{weekday}}</th>
-            {{/if}}
+              {{#if isHoliday @index }}
+                <th scope="col" class="holiday" style="min-width:122px;">{{ isHoliday @index }}<br>{{weekday}}</th>
+              {{else}}
+                  <th scope="col" class="{{isTodayClass weekday}}" style="min-width:122px;">{{weekday}}</th>
+              {{/if}}
             {{/each}}
             <th scope="col"></th>
           </thead>

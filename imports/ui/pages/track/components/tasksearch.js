@@ -19,6 +19,13 @@ Template.tasksearch.events({
     event.preventDefault()
     templateInstance.filter.set(templateInstance.$(event.currentTarget).val())
   },
+  'click .js-remove-value': (event, templateInstance) => {
+    event.preventDefault()
+    event.stopPropagation()
+    templateInstance.$('.js-tasksearch-input').val('')
+    templateInstance.filter.set('')
+    templateInstance.targetTask.renderIfNeeded()
+  },
 })
 
 Template.tasksearch.onCreated(function tasksearchcreated() {
