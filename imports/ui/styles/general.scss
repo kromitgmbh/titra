@@ -331,11 +331,11 @@ button.dp-clear {
   position: absolute; 
   padding: 20px;
   right:0;
-  opacity: 10%;
+  opacity: 0.1;
   cursor: pointer;
 }
 .search-box:hover > .hover-remove-value-icon {
-  opacity: 100%;
+  opacity: 1;
 }
 .week-row.js-collapse:hover > .fa-chevron-right {
   transform: rotate(90deg);
