@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.89.3",
+  "version": "0.90.2",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -30,7 +30,7 @@
     "frappe-gantt": "^0.6.1",
     "hotkeys-js": "^3.10.1",
     "is-dark": "^1.0.4",
-    "jquery": "3.6.3",
+    "jquery": "3.6.4",
     "jquery-serializejson": "^3.2.1",
     "ldapjs": "2.3.3",
     "math-expression-evaluator": "^2.0.2",

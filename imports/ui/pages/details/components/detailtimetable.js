@@ -97,6 +97,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
         period: this.data.period.get(),
         limit: this.data.limit.get(),
         search: this.search.get(),
+        sort: this.sort.get(),
         page: Number(FlowRouter.getQueryParam('page')),
       }
       if (this.data.period.get() === 'custom') {
@@ -126,7 +127,6 @@ Template.detailtimetable.onRendered(() => {
         {
           name: t('globals.date'),
           editable: false,
-          compareValue: (cell, keyword) => [dayjs.utc(cell, getGlobalSetting('dateformat')).toDate(), dayjs.utc(keyword, getGlobalSetting('dateformat')).toDate()],
           format: addToolTipToTableCell,
         },
         { name: t('globals.task'), editable: false, format: addToolTipToTableCell },

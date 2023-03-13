@@ -7,20 +7,24 @@ Template.oidccomponent.helpers({
   oidcSettings: () => oidcFields,
   oidcValue: (name) => getOidcConfiguration(name),
   siteUrl: () => Meteor.absoluteUrl({ replaceLocalhost: true }),
+  isCheckbox: (setting) => setting.type === 'checkbox',
+  isChecked: (name) => getOidcConfiguration(name) ? 'checked' : '',  
 })
 Template.oidccomponent.events({
-  'click .js-update-oidc': (event) => {
+  'click .js-update-oidc': (event, templateInstance) => {
     event.preventDefault()
     const configuration = {
       service: 'oidc',
       loginStyle: 'popup',
     }
-    // Fetch the value of each input field
-    oidcFields.forEach((field) => {
-      configuration[field.property] = document.getElementById(
-        `configure-oidc-${field.property}`,
-      ).value.replace(/^\s*|\s*$/g, '') // trim() doesnt work on IE8
-    })
+    for (const element of templateInstance.$('.js-setting-input')) {
+      const { name } = element
+      let value = templateInstance.$(element).val()
+      if (element.type === 'checkbox') {
+        value = templateInstance.$(element).is(':checked')
+      }
+      configuration[name] = value
+    }
     configuration.idTokenWhitelistFields = configuration.idTokenWhitelistFields.split(' ')
     // Configure this login service
     Meteor.call('updateOidcSettings', { configuration }, (error) => {

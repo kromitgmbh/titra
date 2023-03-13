@@ -82,6 +82,7 @@ Template.weektable.helpers({
     }
     return false
   },
+  isTodayClass: (weekday) => (dayjs.utc(weekday, getGlobalSetting('weekviewDateFormat')).isSame(dayjs.utc(), 'day') ? 'text-primary' : ''),
 })
 
 Template.weektable.events({
@@ -92,6 +93,10 @@ Template.weektable.events({
   'click .js-next-week': (event, templateInstance) => {
     event.preventDefault()
     FlowRouter.setQueryParams({ date: dayjs.utc(templateInstance.startDate.get()).add(1, 'week').format('YYYY-MM-DD') })
+  },
+  'click .js-today': (event, templateInstance) => {
+    event.preventDefault()
+    FlowRouter.setQueryParams({ date: dayjs.utc().startOf('week').add(getUserSetting('startOfWeek'), 'day').format('YYYY-MM-DD') })
   },
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
@@ -182,6 +187,8 @@ Template.weektablerow.events({
     event.preventDefault()
     templateInstance.$(event.currentTarget)
     templateInstance.$(templateInstance.$(event.currentTarget).data('target')).collapse('toggle')
+    templateInstance.$(event.currentTarget).children('svg').toggleClass('fa-chevron-right')
+    templateInstance.$(event.currentTarget).children('svg').toggleClass('fa-chevron-down')
   },
   'save tr': (event, templateInstance) => {
     event.preventDefault()

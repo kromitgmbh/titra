@@ -1,6 +1,7 @@
 <template name ="projectsearch">
   <div class="input-group">
-    <div class="form-floating">
+    <div class="form-floating search-box">
+      <i class="fa fa-delete-left hover-remove-value-icon js-remove-value"></i>
       <input type="text" placeholder="{{t 'project.project_placeholder'}}" class="form-control js-target-project" autocomplete="off" style="border-left-color: {{projectColor (selectedId)}}; border-left-width:thick;"/>
       <label class="form-label">{{t "globals.project"}}</label>
     </div>
