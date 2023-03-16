@@ -8,6 +8,7 @@
                 <select class="form-control" id="customfieldClassname" required placeholder="{{t 'globals.class'}}">
                     <option value="project">{{t "globals.project"}}</option>
                     <option value="time_entry">{{t "globals.time_entry"}}</option>
+                    <option value="global_setting">{{t "globals.global_setting"}}</option>
                 </select>
                 <label for="customfieldClassname" class="form-label">{{t "globals.class"}}</label>
             </div>
@@ -27,6 +28,7 @@
                     <option value="text" selected>String</option>
                     <option value="email">E-Mail</option>
                     <option value="color">Color</option>
+                    <option value="checkbox">Boolean</option>
                 </select>
                 <label for="customfieldType" class="form-label">{{t "globals.type"}}</label>
             </div>
@@ -34,6 +36,11 @@
                 <input class="form-control" id="customfieldPossibleValues" type="text" required placeholder="{{t 'administration.possible_values'}}"/>
                 <label for="customfieldPossibleValues" class="form-label">{{t "administration.possible_values"}}</label>
                 <span class="form-text">{{t "administration.possible_values_hint"}}</span>
+            </div>
+            <div class="mb-3 form-floating">
+                <input class="form-control" id="customfieldCategory" type="text" placeholder="{{t 'administration.category'}}"/>
+                <label for="customfieldCategory" class="form-label">{{t "administration.category"}}</label>
+                <span class="form-text">{{t "administration.category_hint"}}</span>
             </div>
             <div class="col-lg-1">
                 <button type="button" class="btn btn-primary js-create-customfield">{{t "administration.create"}}</button>
@@ -49,6 +56,7 @@
                         <th>{{t "globals.name"}}</th>
                         <th>{{t "globals.description"}}</th>
                         <th>{{t "globals.type"}}</th>
+                        <th>{{t "administration.category"}}</th>
                         <th class="text-center">{{t "tracktime.actions"}}</th>
                     </tr>
                 </thead>
@@ -65,6 +73,7 @@
                                     {{customfield.type}}
                                 {{/if}}
                             </td>
+                            <td>{{customfield.category}}</td>
                             <td class="text-center">
                                 <a href="#" aria-label="Edit custom field" class="js-edit-customfield" data-customfield-id="{{customfield._id}}" data-bs-toggle="modal" data-bs-target=".js-edit-customfield-modal"><i class="fas fa-edit"></i></a>
                                 <a href="#" aria-label="Remove custom field" class="js-remove-customfield" data-customfield-id="{{customfield._id}}"><i class="fas fa-trash"></i></a>
@@ -89,6 +98,7 @@
                     <select class="form-control" id="editCustomfieldClassname" readonly placeholder="{{t 'globals.class'}}">
                         <option value="project">{{t "globals.project"}}</option>
                         <option value="time_entry">{{t "globals.time_entry"}}</option>
+                        <option value="global_setting">{{t "globals.global_setting"}}</option>
                     </select>
                     <label for="editCustomfieldClassname" class="form-label">{{t "globals.class"}}</label>
                 </div>
@@ -114,6 +124,11 @@
                     <input class="form-control" id="editCustomfieldPossibleValues" type="text" required placeholder="{{t 'administration.possible_values'}}"/>
                     <label for="editCustomfieldPossibleValues" class="form-label">{{t "administration.possible_values"}}</label>
                     <span class="form-text">{{t "administration.possible_values_hint"}}</span>
+                </div>
+                <div class="mb-3 form-floating">
+                    <input class="form-control" id="editCustomfieldCategory" type="text" placeholder="{{t 'administration.category'}}"/>
+                    <label for="editCustomfieldCategory" class="form-label">{{t "administration.category"}}</label>
+                    <span class="form-text">{{t "administration.category_hint"}}</span>
                 </div>
             </div>
             <div class="modal-footer">

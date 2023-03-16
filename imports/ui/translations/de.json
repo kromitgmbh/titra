@@ -34,7 +34,8 @@
     "no": "Nein",
     "cancel": "Abbrechen",
     "ok": "Ok",
-    "definition": "Definition"
+    "definition": "Definition",
+    "global_setting": "Globale Einstellung"
   },
   "navigation": {
     "track": "Erfassen",
@@ -401,13 +402,20 @@
     "addcustomfield": "Neues benutzerdefiniertes Attribut",
     "possible_values": "Gültige Werte",
     "possible_values_hint": "Komma separarierte Werte (z.B.: a,b,c,d)",
+    "category": "Kategorie",
+    "category_hint": "Die Kategorie wird für die Gruppierung der benutzerdefinierten Attribute verwendet.",
     "no_customfields": "Es wurden noch keine benutzerdefinierten Attribute erstellt.",
     "no_extensions": "Es wurden noch keine Erweiterungen installiert.",
     "extension_removed": "Die Erweiterung wurde erfolgreich entfernt",
     "edit_custom_field": "Benutzerdefiniertes Attribut bearbeiten",
     "oidc": "OpenID Connect",
     "oidc_configure": "Sie müssen bei Ihrem Anbieter eine OpenID Connect-Clientkonfiguration erstellen. Legen Sie App-Callback-URLs fest auf",
-    "custom_field_name_hint": "Leerzeichen und Sonderzeichen sind nicht erlaubt."
+    "custom_field_name_hint": "Leerzeichen und Sonderzeichen sind nicht erlaubt.",
+    "inboundinterfaces": "Eingehende Schnittstellen",
+    "add_update_inbound_interface": "Eingehende Schnittstelle hinzufügen/bearbeiten",
+    "process_data": "Script für die Datenverarbeitung",
+    "processdata_hint": "Dieser JavaScript Code wird immer ausgeführt, wenn Daten über die eingehende Schnittstelle abgerufen werden. Das Script muss ein JSON Objekt (oder ein Promise, die ein solches Objekt zurückgibt) mit folgender Struktur zurückgeben: [{name: 'name', description:'description'}].",
+    "active": "Eingehende Schnittstelle aktivieren?"
   },
   "wekan": {
     "list": "Wekan Liste",

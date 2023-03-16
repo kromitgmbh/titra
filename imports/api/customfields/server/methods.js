@@ -1,5 +1,6 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import CustomFields from '../customfields.js'
+import { Globalsettings } from '../../globalsettings/globalsettings.js'
 import { adminAuthenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers'
 
 /**
@@ -22,14 +23,18 @@ const addCustomField = new ValidatedMethod({
       type: String,
       desc: String,
       possibleValues: Match.Maybe([String]),
+      category: Match.Maybe(String),
     })
   },
   mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({
-    classname, name, desc, type, possibleValues,
+    classname, name, desc, type, possibleValues, category,
   }) {
     if (await CustomFields.findOneAsync({ name })) {
       throw new Meteor.Error('error-custom-field-exists', 'Custom field already exists', { method: 'addCustomField' })
+    }
+    if (type === 'global_setting' && await Globalsettings.findOneAsync({ name })) {
+      throw new Meteor.Error('error-global-setting-exists', 'Global setting already exists', { method: 'addCustomField' })
     }
     const customField = {
       classname,
@@ -37,10 +42,18 @@ const addCustomField = new ValidatedMethod({
       desc,
       type,
       possibleValues,
+      category,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
     await CustomFields.insertAsync(customField)
+    const globalsetting = {
+      name,
+      description: desc,
+      category,
+      type,
+    }
+    await Globalsettings.insertAsync(globalsetting)
     return customField
   },
 })
@@ -61,9 +74,11 @@ const removeCustomField = new ValidatedMethod({
   },
   mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ _id }) {
-    if (!await CustomFields.findOneAsync({ _id })) {
+    const customfield = await CustomFields.findOneAsync({ _id })
+    if (!customfield) {
       throw new Meteor.Error('error-custom-field-not-found', 'Custom field not found', { method: 'removeCustomField' })
     }
+    await Globalsettings.removeAsync({ name: customfield.name })
     await CustomFields.removeAsync({ _id })
     return true
   },
@@ -87,23 +102,32 @@ const updateCustomField = new ValidatedMethod({
       type: String,
       desc: String,
       possibleValues: Match.Maybe([String]),
+      category: Match.Maybe(String),
     })
   },
   mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({
-    _id, desc, type, possibleValues,
+    _id, desc, type, possibleValues, category,
   }) {
-    if (!await CustomFields.findOneAsync({ _id })) {
+    const customfield = await CustomFields.findOneAsync({ _id })
+    if (!customfield) {
       throw new Meteor.Error('error-custom-field-not-found', 'Custom field not found', { method: 'removeCustomField' })
     }
     await CustomFields.updateAsync(
       { _id },
       {
         $set: {
-          desc, type, possibleValues, updatedAt: new Date(),
+          desc, type, possibleValues, category, updatedAt: new Date(),
         },
       },
     )
+    await Globalsettings.updateAsync({ name: customfield.name }, {
+      $set: {
+        description: desc,
+        type,
+        category,
+      },
+    })
     return true
   },
 })

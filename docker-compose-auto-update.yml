@@ -29,6 +29,6 @@ services:
     command: --cleanup --schedule "0 0 0 * * *" --label-enable
     volumes:
      - /var/run/docker.sock:/var/run/docker.sock
-  volumes:
-    titra_db_volume:
+volumes:
+  titra_db_volume:
     

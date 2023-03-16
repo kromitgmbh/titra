@@ -34,7 +34,8 @@
     "no": "No",
     "cancel": "Cancel",
     "ok": "Ok",
-    "definition": "Definition"
+    "definition": "Definition",
+    "global_setting": "Global setting"
   },
   "navigation": {
     "track": "Track",
@@ -394,13 +395,20 @@
     "addcustomfield": "New custom field",
     "possible_values": "Possible values",
     "possible_values_hint": "Separate values with a comma (e.g. a,b,c,d).",
+    "category": "Category",
+    "category_hint": "The category is used to group custom fields visually.",
     "no_customfields": "No custom fields have been defined yet.",
     "no_extensions": "No extensions have been installed yet.",
     "extension_removed": "The extension has been removed successfully.",
     "edit_custom_field": "Edit custom field",
     "oidc": "OpenID Connect",
     "oidc_configure": "You'll need to create an OpenID Connect client configuration with your provider. Set App Callbacks URLs to",
-    "custom_field_name_hint": "Spaces and special characters are not allowed."
+    "custom_field_name_hint": "Spaces and special characters are not allowed.",
+    "inboundinterfaces": "Inbound interfaces",
+    "add_update_inbound_interface": "Add or update inbound interface",
+    "process_data": "Process data script",
+    "processdata_hint":"This JavaScript will be executed whenever inbound interface data is requested. The script must return a JSON object (or a promise returning such an object) with the following structure: [{name: 'name', description:'description'}].",
+    "active": "Inbound interface active?"
   },
   "wekan": {
     "list": "Wekan list",

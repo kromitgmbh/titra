@@ -34,7 +34,22 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
   this.zammadAPITasks = new ReactiveVar()
   this.gitlabAPITasks = new ReactiveVar()
   this.project = new ReactiveVar()
-  // this.lastTimecards = new ReactiveVar()
+  this.inboundInterfaceTasks = new ReactiveVar([])
+  Meteor.call('inboundinterfaces.get', (inboundinterfaceserror, inboundInterfaces) => {
+    if (inboundinterfaceserror) {
+      console.error(inboundinterfaceserror)
+    } else {
+      for (const inboundInterface of inboundInterfaces) {
+        Meteor.call('inboundinterfaces.getTasks', { _id: inboundInterface._id, projectId: FlowRouter.getParam('projectId') }, (error, result) => {
+          if (error) {
+            console.error(error)
+          } else {
+            this.inboundInterfaceTasks.set(this.inboundInterfaceTasks.get().concat(result))
+          }
+        })
+      }
+    }
+  })
   this.autorun(() => {
     let tcid
     if (this.data.tcid && this.data.tcid.get()) {
@@ -148,6 +163,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
         const wekanAPITasks = Template.instance().wekanAPITasks.get()
         const zammadAPITasks = Template.instance().zammadAPITasks.get()
         const gitlabAPITasks = Template.instance().gitlabAPITasks.get()
+        const inboundInterfaceTasks = Template.instance().inboundInterfaceTasks.get()
         const regex = `.*${Template.instance().filter.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`
         if (Template.instance().wekanTasks) {
           const wekanResult = Template.instance().wekanTasks.find({ title: { $regex: regex, $options: 'i' }, archived: false }, { sort: { lastUsed: -1 }, limit: getGlobalSetting('taskSearchNumResults') })
@@ -165,6 +181,9 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
         }
         if (gitlabAPITasks && gitlabAPITasks.length > 0) {
           finalArray.push(...gitlabAPITasks.map((elem) => ({ label: elem.title, value: elem.title, gitlab: true })).filter((element) => new RegExp(regex, 'i').exec(element.label)))
+        }
+        if (inboundInterfaceTasks && inboundInterfaceTasks.length > 0) {
+          finalArray.push(...inboundInterfaceTasks.map((elem) => ({ label: elem.name, value: elem.name, inboundInterface: true })).filter((element) => new RegExp(regex, 'i').exec(element.label)))
         }
         finalArray.push(...Tasks.find({ name: { $regex: regex, $options: 'i' } }, { sort: { projectId: -1, lastUsed: -1 }, limit: getGlobalSetting('taskSearchNumResults') }).fetch().map((task) => ({ label: task.name, value: task._id })))
         data = finalArray

@@ -13,6 +13,7 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
   dayjs.extend(utc)
   const templateInstance = this
   templateInstance.activeTab = new ReactiveVar('local-tab')
+  templateInstance.activeInboundInterfaceId = new ReactiveVar()
   templateInstance.taskSelectSearchValue = new ReactiveVar()
   templateInstance.wekanAPITasks = new ReactiveVar()
   templateInstance.modalDisplayed = new ReactiveVar(false)
@@ -21,6 +22,35 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
   templateInstance.wekanTasksData = new ReactiveVar([])
   templateInstance.zammadTicketsData = new ReactiveVar()
   templateInstance.gitlabIssuesData = new ReactiveVar()
+  templateInstance.inboundInterfaces = new ReactiveVar()
+  templateInstance.inboundInterfaceData = new ReactiveVar([])
+  templateInstance.inboundInterfaceColumns = new ReactiveVar([
+    {
+      name: t('globals.task'),
+      format: (value) => `<button type="button" class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
+    },
+    {
+      name: t('globals.description'),
+      format: addToolTipToTableCell,
+    }])
+  Meteor.call('inboundinterfaces.get', (error, result) => {
+    if (error) {
+      console.error(error)
+    } else {
+      templateInstance.inboundInterfaces.set(result)
+    }
+  })
+  templateInstance.autorun(() => {
+    if (templateInstance.activeInboundInterfaceId.get()) {
+      Meteor.call('inboundinterfaces.getTasks', { _id: templateInstance.activeInboundInterfaceId.get(), projectId: templateInstance.data?.projectId?.get() }, (error, result) => {
+        if (error) {
+          console.error(error)
+        } else {
+          templateInstance.inboundInterfaceData.set(result)
+        }
+      })
+    }
+  })
   templateInstance.autorun(() => {
     if (templateInstance.modalDisplayed.get()) {
       templateInstance.subscribe('allmytasks', { limit: this.limit.get(), filter: templateInstance.taskSelectSearchValue.get() })
@@ -206,7 +236,19 @@ Template.taskSelectPopup.helpers({
   zammadEnabled: () => getGlobalSetting('enableZammad'),
   gitlabEnabled: () => getGlobalSetting('enableGitlab'),
   modalDisplayed: () => Template.instance().modalDisplayed.get(),
-  isActive: (tab) => Template.instance().activeTab.get() === tab,
+  isActive: (tab) => Template.instance().activeTab.get() === tab || Template.instance().activeTab.get() === `${tab}-tab`,
+  inboundInterfaces: () => Template.instance().inboundInterfaces.get(),
+  inboundInterfaceColumns: () => Template.instance().inboundInterfaceColumns,
+  inboundInterfaceData: () => (Template.instance().inboundInterfaceData?.get().length > 0
+    ? new ReactiveVar(Template.instance().inboundInterfaceData?.get()
+      ?.slice(0, Template.instance().limit.get())
+      .filter((item) => {
+        if (Template.instance().taskSelectSearchValue.get()) {
+          return item.name.indexOf(Template.instance().taskSelectSearchValue.get()) >= 0
+        }
+        return true
+      }).sort((a, b) => (a.name > b.name ? 1 : -1))
+      .map((element) => [element.name, element.description])) : false),
 })
 
 Template.taskSelectPopup.events({
@@ -228,6 +270,7 @@ Template.taskSelectPopup.events({
     event.preventDefault()
     window.requestAnimationFrame(() => {
       templateInstance.activeTab.set(templateInstance.$(event.currentTarget).get(0).id)
+      templateInstance.activeInboundInterfaceId.set(templateInstance.$(event.currentTarget).data('interface-id'))
     })
   },
 })

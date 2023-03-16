@@ -16,6 +16,7 @@ Template.customfieldscomponent.events({
     const type = templateInstance.$('#customfieldType').val()
     const classname = templateInstance.$('#customfieldClassname').val()
     const possibleValues = templateInstance.$('#customfieldPossibleValues').val() !== '' ? templateInstance.$('#customfieldPossibleValues').val().split(',') : undefined
+    const category = templateInstance.$('#customfieldCategory').val()
     if (!name) {
       templateInstance.$('#customfieldName').addClass('is-invalid')
       return
@@ -39,6 +40,7 @@ Template.customfieldscomponent.events({
       type,
       classname,
       possibleValues,
+      category
     }, (error) => {
       if (error) {
         console.error(error)
@@ -72,6 +74,7 @@ Template.customfieldscomponent.events({
       templateInstance.$('#editCustomfieldDesc').val(customField.desc)
       templateInstance.$('#editCustomfieldType').val(customField.type)
       templateInstance.$('#editCustomfieldPossibleValues').val(customField.possibleValues)
+      templateInstance.$('#editCustomfieldCategory').val(customField.category)
     }
   },
   'click .js-update-customfield': (event, templateInstance) => {
@@ -80,6 +83,7 @@ Template.customfieldscomponent.events({
       _id: templateInstance.editCustomFieldId.get(),
       desc: templateInstance.$('#editCustomfieldDesc').val(),
       type: templateInstance.$('#editCustomfieldType').val(),
+      category: templateInstance.$('#editCustomfieldCategory').val(),
       possibleValues: templateInstance.$('#editCustomfieldPossibleValues').val() !== '' ? templateInstance.$('#editCustomfieldPossibleValues').val().split(',') : undefined,
     }, (error) => {
       if (error) {

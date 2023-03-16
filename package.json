@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.90.2",
+  "version": "0.91.0",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -20,7 +20,7 @@
     "bootstrap": "^5.2.3",
     "cl-editor": "^2.3.0",
     "content-type": "^1.0.5",
-    "date-holidays": "^3.18.0",
+    "date-holidays": "^3.19.0",
     "dayjs": "^1.11.7",
     "dayjs-precise-range": "^1.0.1",
     "docker-names": "^1.2.1",
@@ -45,9 +45,9 @@
     "vm2": "^3.9.14"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.0",
-    "@babel/eslint-parser": "^7.19.1",
-    "eslint": "^8.35.0",
+    "@babel/core": "^7.21.3",
+    "@babel/eslint-parser": "^7.21.3",
+    "eslint": "^8.36.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^5.2.1",

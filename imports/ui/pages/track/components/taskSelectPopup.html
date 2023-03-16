@@ -47,6 +47,11 @@
                     <a class="nav-link" id="gitlab-tab" data-bs-toggle="tab" href="#gitlab" role="tab" aria-controls="gitlab" aria-selected="false">GitLab</a>
                   </li>
                 {{/if}}
+                {{#each inboundInterface in inboundInterfaces}}
+                  <li class="nav-item">
+                    <a class="nav-link" id="{{inboundInterface.name}}-tab" data-interface-id="{{inboundInterface._id}}" data-bs-toggle="tab" href="#{{inboundInterface.name}}" role="tab" aria-controls="{{inboundInterface.name}}" aria-selected="false">{{inboundInterface.description}}</a>
+                  </li>
+                {{/each}}
               </ul>
               <div class="tab-content" id="taskSourceContent">
                 <div class="tab-pane fade show active" id="local" role="tabpanel" aria-labelledby="local-tab">
@@ -73,6 +78,19 @@
                     {{> datatable columns=gitlabIssuesColumns data=gitlabIssuesData}}
                   {{/if}}
                 </div>
+                {{#each inboundInterface in inboundInterfaces}}
+                  <div class="tab-pane fade" id="{{inboundInterface.name}}" role="tabpanel" aria-labelledby="{{inboundInterface.name}}-tab">
+                    {{#if isActive inboundInterface.name}}
+                      {{#if inboundInterfaceData}}
+                        {{> datatable columns=inboundInterfaceColumns data=inboundInterfaceData}}
+                      {{else}}
+                        <div class="text-center p-3">
+                          <span>{{t "globals.loading"}}</span>
+                        </div>
+                      {{/if}}
+                    {{/if}}
+                  </div>
+                {{/each}}
               </div>
             </div>
           </div>
