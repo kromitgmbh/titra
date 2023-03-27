@@ -35,6 +35,7 @@
     "cancel": "Cancel",
     "ok": "Ok",
     "definition": "Definition",
+    "user": "User",
     "global_setting": "Global setting"
   },
   "navigation": {
@@ -75,7 +76,8 @@
     "actions": "Actions",
     "start_timer": "Start timer",
     "start_time": "Start time",
-    "timer": "Timer"
+    "timer": "Timer",
+    "user_placeholder": "Enter or search for user ..."
   },
   "overview": {
     "all_projects": "All projects",
@@ -175,6 +177,7 @@
     "mail_from_name": "Mail from name",
     "show_name_custom_field_in_details": "Show name for custom fields in details view?",
     "enable_open_id_connect": "Enable OpenID Connect?",
+    "enable_log_for_other_users": "Can administrator register time for other users?",
     "holiday": "Holiday",
     "holiday_country": "Holiday Country",
     "holiday_state": "Holiday State",
@@ -317,9 +320,11 @@
     "auth_error_method": "You have to be signed in to use this method.",
     "only_owner_can_add_team_members": "Only the project owner can add new team members",
     "only_owner_can_remove_team_members": "Only the project owner can remove team members",
+    "only_administrator_can_register_time": "Only administrators can register time for another user.",
     "team_member_added_success": "Team member added.",
     "team_member_removed_success": "Team member removed.",
     "user_not_found": "No user with this e-mail address could be found, please create the corresponding user account first.",
+    "user_not_found_in_project": "No user with this e-mail address could be found in this project.",
     "project_priority_success": "Project priority updated successfully",
     "password_changed": "Your password has been changed.",
     "connectioncheck": "Could not connect to server. Trying again ",

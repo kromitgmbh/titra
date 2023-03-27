@@ -161,6 +161,22 @@ async function upsertTimecard(projectId, task, date, hours, userId) {
   )
   return 'notifications.success'
 }
+function checkProjectAdministratorAndUser(projectId, administratorId, userId) {
+  const targetProject = Projects.findOne({ _id: projectId })
+  if (!targetProject
+    || !(targetProject.userId === administratorId
+      || targetProject.admins.indexOf(administratorId) >= 0)) {
+    throw new Meteor.Error('notifications.only_administrator_can_register_time')
+  }
+  const user = Meteor.users.findOne({ 'emails.0.address': userId })
+  if (!user) {
+    throw new Meteor.Error('notifications.user_not_found')
+  }
+  if (targetProject.team.indexOf(user._id)) {
+    throw new Meteor.Error('notifications.user_not_found_in_project')
+  }
+  return user._id
+}
 /**
  * Inserts a new timecard into the Timecards collection.
  * @param {Object} args - The arguments object containing the timecard information.
@@ -182,15 +198,21 @@ const insertTimeCardMethod = new ValidatedMethod({
     check(args.date, Date)
     check(args.hours, Number)
     check(args.customfields, Match.Maybe(Object))
+    check(args.user, String)
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
-    projectId, task, date, hours, customfields,
+    projectId, task, date, hours, customfields, user,
   }) {
+    let { userId } = this
+    if (user !== userId) {
+      userId = checkProjectAdministratorAndUser(projectId, userId, user)
+    }
+
     await checkTimeEntryRule({
-      userId: this.userId, projectId, task, state: 'new', date, hours,
+      userId, projectId, task, state: 'new', date, hours,
     })
-    await insertTimeCard(projectId, task, date, hours, this.userId, customfields)
+    await insertTimeCard(projectId, task, date, hours, userId, customfields)
   },
 })
 /**
@@ -261,17 +283,22 @@ const updateTimeCard = new ValidatedMethod({
     check(args.date, Date)
     check(args.hours, Number)
     check(args.customfields, Match.Maybe(Object))
+    check(args.user, String)
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
-    projectId, _id, task, date, hours, customfields,
+    projectId, _id, task, date, hours, customfields, user,
   }) {
+    let { userId } = this
+    if (user !== userId) {
+      userId = checkProjectAdministratorAndUser(projectId, userId, user)
+    }
     const timecard = await Timecards.findOneAsync({ _id })
     await checkTimeEntryRule({
-      userId: this.userId, projectId, task, state: timecard.state, date, hours,
+      userId, projectId, task, state: timecard.state, date, hours,
     })
-    if (!await Tasks.findOneAsync({ userId: this.userId, name: await emojify(task) })) {
-      await Tasks.insertAsync({ userId: this.userId, name: await emojify(task), ...customfields })
+    if (!await Tasks.findOneAsync({ userId, name: await emojify(task) })) {
+      await Tasks.insertAsync({ userId, name: await emojify(task), ...customfields })
     }
     await Timecards.updateAsync({ _id }, {
       $set: {
@@ -631,4 +658,5 @@ export {
   getTotalHoursForPeriod,
   getDailyTimecards,
   sendToSiwapp,
+  checkProjectAdministratorAndUser,
 }

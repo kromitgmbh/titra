@@ -21,6 +21,7 @@ import './components/tasksearch.js'
 import './components/timetracker.js'
 import './components/weektable.js'
 import './components/calendar.js'
+import './components/usersearch.js'
 import '../../shared components/backbutton.js'
 
 function isHoliday(date) {
@@ -172,6 +173,7 @@ Template.tracktime.events({
       return
     }
     const projectId = templateInstance.projectId.get()
+    const user = templateInstance.$('.js-usersearch-input')?.val() || Meteor.userId()
     const task = templateInstance.$('.js-tasksearch-input').val()
     const localDate = dayjs(templateInstance.$('.js-date').val()).toDate()
     let date = dayjs.utc(templateInstance.$('.js-date').val(), getGlobalSetting('dateformatVerbose')).isValid()
@@ -209,7 +211,7 @@ Template.tracktime.events({
         }
       }
       Meteor.call('updateTimeCard', {
-        _id: templateInstance.tcid.get(), projectId, date, hours, task, customfields,
+        _id: templateInstance.tcid.get(), projectId, date, hours, task, customfields, user,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -235,7 +237,7 @@ Template.tracktime.events({
       })
     } else {
       Meteor.call('insertTimeCard', {
-        projectId, date, hours, task, customfields,
+        projectId, date, hours, task, customfields, user,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -424,6 +426,17 @@ Template.tracktime.helpers({
   holidayToday: () => (isHoliday(Template.instance().date.get())
     ? isHoliday(Template.instance().date.get())[0].name : false),
   replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
+  logForOtherUsers: () => {
+    if (getGlobalSetting('enableLogForOtherUsers') && Template?.instance()?.projectId?.get()) {
+      const targetProject = Projects.findOne({ _id: Template.instance().projectId.get() })
+      if (targetProject
+          && (targetProject.userId === Meteor.userId()
+              || targetProject.admins?.indexOf(Meteor.userId()) >= 0)) {
+        return true
+      }
+    }
+    return false
+  },
 })
 
 Template.tracktimemain.onCreated(function tracktimeCreated() {

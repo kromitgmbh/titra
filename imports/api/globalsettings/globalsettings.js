@@ -142,4 +142,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableTransactions', description: 'transactions.enable_transactions', type: 'checkbox', value: false, category: 'settings.categories.global',
 })
+defaultSettings.push({
+  name: 'enableLogForOtherUsers', description: 'settings.enable_log_for_other_users', type: 'checkbox', value: false,  category: 'settings.categories.time_tracking',
+})
 export { defaultSettings, Globalsettings }
