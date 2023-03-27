@@ -164,7 +164,7 @@ async function upsertTimecard(projectId, task, date, hours, userId) {
 function checkProjectAdministratorAndUser(projectId, administratorId, userId) {
   const targetProject = Projects.findOne({ _id: projectId })
   if (!targetProject
-    || !(targetProject.userId === administratorId
+      || !(targetProject.userId === administratorId
       || targetProject.admins.indexOf(administratorId) >= 0)) {
     throw new Meteor.Error('notifications.only_administrator_can_register_time')
   }
@@ -172,7 +172,7 @@ function checkProjectAdministratorAndUser(projectId, administratorId, userId) {
   if (!user) {
     throw new Meteor.Error('notifications.user_not_found')
   }
-  if (targetProject.team.indexOf(user._id)) {
+  if (targetProject.public !== true && targetProject.team.indexOf(user._id)) {
     throw new Meteor.Error('notifications.user_not_found_in_project')
   }
   return user._id
