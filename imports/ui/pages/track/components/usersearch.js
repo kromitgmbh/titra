@@ -1,21 +1,6 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './usersearch.html'
 import Timecards from '../../../../api/timecards/timecards.js'
-/*
-Template.projectsearch.events({
-  'click .js-display-project-info': (event, templateInstance) => {
-    event.preventDefault()
-    $('#projectInfoPopup').modal('show')
-  },
-  'click .js-remove-value': (event, templateInstance) => {
-    event.preventDefault()
-    event.stopPropagation()
-    FlowRouter.setParams({ projectId: undefined })
-    templateInstance.$('.js-target-project').val('')
-    templateInstance.selectedId.set(undefined)
-    templateInstance.targetProject.renderIfNeeded()
-  },
-})*/
 
 Template.usersearch.events({
   'click .js-remove-value': (event, templateInstance) => {
