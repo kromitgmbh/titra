@@ -427,12 +427,23 @@ Template.tracktime.helpers({
     ? isHoliday(Template.instance().date.get())[0].name : false),
   replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
   logForOtherUsers: () => {
-    if (getGlobalSetting('enableLogForOtherUsers') && Template?.instance()?.projectId?.get()) {
+    if (getGlobalSetting('enableLogForOtherUsers')
+      && Template?.instance()?.projectId?.get()
+      && FlowRouter.getParam('projectId')) {
       const targetProject = Projects.findOne({ _id: Template.instance().projectId.get() })
-      if (targetProject
-          && (targetProject.userId === Meteor.userId()
-              || targetProject.admins?.indexOf(Meteor.userId()) >= 0)) {
-        return true
+      if (targetProject) {
+        if (targetProject.userId === Meteor.userId()
+          || targetProject.admins?.indexOf(Meteor.userId()) >= 0) {
+          if (targetProject.public) {
+            return true
+          }
+
+          if (targetProject.team
+            && (targetProject.team.length > 1
+            || targetProject.team[0] !== Meteor.userId())) {
+            return true
+          }
+        }
       }
     }
     return false
