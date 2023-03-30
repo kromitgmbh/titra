@@ -93,7 +93,6 @@ const getProjectUsers = new ValidatedMethod({
   async run({ projectId }) {
     const data = []
     const project = Projects.findOne({ _id: projectId })
-    console.log('getProjectUsers', project)
     if (project?.team || project?.admins) {
       let team = []
       if (project.team) {
