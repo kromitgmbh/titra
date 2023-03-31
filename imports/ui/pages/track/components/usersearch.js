@@ -81,7 +81,17 @@ Template.usersearch.onCreated(function usersearchcreated() {
     if (tcid) {
       const handle = this.subscribe('singleTimecard', tcid)
       if (handle.ready()) {
-        this.$('.js-usersearch-input').val(Timecards.findOne({ _id: tcid }).user)
+        const card = Timecards.findOne({ _id: tcid })
+        const user = this.users.get().find((u) => u._id === card.userId)
+        if (user?.emails) {
+          this.$('.js-usersearch-input').val(user.emails[0].address)
+        }
+        Meteor.call('getProjectUsers', { projectId: card.projectId }, (error, result) => {
+          const found = result.find((u) => u._id === card.userId)
+          if (found?.emails) {
+            this.$('.js-usersearch-input').val(found.emails[0].address)
+          }
+        })
       }
     }
   })
@@ -101,11 +111,22 @@ Template.usersearch.onCreated(function usersearchcreated() {
 })
 Template.usersearch.helpers({
   getMail: (user) => {
+    if (typeof user === 'string') {
+      const users = Template.instance().users.get()
+      if (!users) {
+        return ''
+      }
+      const found = users.find((u) => u._id === user)
+      if (found && found.emails) {
+        return found.emails[0].address
+      }
+    }
     if (user.emails) {
       return user.emails[0].address
     }
     return ''
   },
+  user: () => Template.instance()?.data?.user,
   users: () => Template.instance().users.get(),
   projectId: () => Template.instance()?.data?.projectId,
 })

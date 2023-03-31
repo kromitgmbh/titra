@@ -172,7 +172,7 @@ function checkProjectAdministratorAndUser(projectId, administratorId, userId) {
   if (!user) {
     throw new Meteor.Error('notifications.user_not_found')
   }
-  if (targetProject.public !== true && targetProject.team.indexOf(user._id)) {
+  if (targetProject.public !== true && targetProject.team.indexOf(user._id) === -1) {
     throw new Meteor.Error('notifications.user_not_found_in_project')
   }
   return user._id

@@ -106,10 +106,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
           : dayjs().toDate())
         this.projectId.set(Timecards.findOne({ _id: this.tcid.get() }) ? Timecards.findOne({ _id: this.tcid.get() }).projectId : '')
       }
-    }
-  })
-  this.autorun(() => {
-    if (!this.tcid.get()) {
+    } else {
       handle = this.subscribe('myTimecardsForDate', { date: dayjs(this.date.get()).format('YYYY-MM-DD') })
       if (handle.ready()) {
         Timecards.find().forEach((timecard) => {
@@ -117,6 +114,8 @@ Template.tracktime.onCreated(function tracktimeCreated() {
         })
       }
     }
+  })
+  this.autorun(() => {
     if (this.subscriptionsReady()) {
       this.totalTime.set(Timecards.find()
         .fetch().reduce((a, b) => (a === 0 ? b.hours : a + b.hours), 0))
@@ -408,6 +407,8 @@ Template.tracktime.helpers({
     }
     return timecard ? timecard?.task : false
   },
+  user: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
+    ? Timecards.findOne({ _id: Template.instance().tcid.get() }).userId : false),
   hours: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
     ? Timecards.findOne({ _id: Template.instance().tcid.get() }).hours : false),
   showTracker: () => (getUserSetting('timeunit') !== 'd'),
@@ -427,23 +428,29 @@ Template.tracktime.helpers({
     ? isHoliday(Template.instance().date.get())[0].name : false),
   replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
   logForOtherUsers: () => {
-    if (getGlobalSetting('enableLogForOtherUsers')
-      && Template?.instance()?.projectId?.get()
-      && FlowRouter.getParam('projectId')) {
-      const targetProject = Projects.findOne({ _id: Template.instance().projectId.get() })
-      if (targetProject) {
-        if (targetProject.userId === Meteor.userId()
-          || targetProject.admins?.indexOf(Meteor.userId()) >= 0) {
-          if (targetProject.public) {
-            return true
-          }
-
-          if (targetProject.team
-            && (targetProject.team.length > 1
-            || targetProject.team[0] !== Meteor.userId())) {
-            return true
-          }
-        }
+    if (!getGlobalSetting('enableLogForOtherUsers')) {
+      return false
+    }
+    if (isEditMode()) {
+      return true
+    }
+    if (!Template?.instance()?.projectId?.get()
+      || !FlowRouter.getParam('projectId')) {
+      return false
+    }
+    const targetProject = Projects.findOne({ _id: Template.instance().projectId.get() })
+    if (!targetProject) {
+      return false
+    }
+    if (targetProject.userId === Meteor.userId()
+      || targetProject.admins?.indexOf(Meteor.userId()) >= 0) {
+      if (targetProject.public) {
+        return true
+      }
+      if (targetProject.team
+        && (targetProject.team.length > 1
+        || targetProject.team[0] !== Meteor.userId())) {
+        return true
       }
     }
     return false
