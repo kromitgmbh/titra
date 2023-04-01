@@ -384,6 +384,10 @@ Template.tracktime.events({
       templateInstance.edittcid.set(undefined)
     })
   },
+  'focusout .js-target-project': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.projectId.set(templateInstance.$(event.relatedTarget).data('value'))
+  },
 })
 function isEditMode() {
   return (Template.instance().tcid && Template.instance().tcid.get())
@@ -428,14 +432,10 @@ Template.tracktime.helpers({
     ? isHoliday(Template.instance().date.get())[0].name : false),
   replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
   logForOtherUsers: () => {
-    if (!getGlobalSetting('enableLogForOtherUsers')) {
-      return false
-    }
-    if (isEditMode()) {
-      return true
-    }
-    if (!Template?.instance()?.projectId?.get()
-      || !FlowRouter.getParam('projectId')) {
+    if (!getGlobalSetting('enableLogForOtherUsers')
+        || !Template?.instance()?.projectId?.get()
+        || Template?.instance()?.projectId?.get() === 'all')
+    {
       return false
     }
     const targetProject = Projects.findOne({ _id: Template.instance().projectId.get() })
