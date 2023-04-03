@@ -168,7 +168,7 @@ function checkProjectAdministratorAndUser(projectId, administratorId, userId) {
       || targetProject.admins.indexOf(administratorId) >= 0)) {
     throw new Meteor.Error('notifications.only_administrator_can_register_time')
   }
-  const user = Meteor.users.findOne({ 'emails.0.address': userId })
+  const user = Meteor.users.findOne({ 'profile.name': userId })
   if (!user) {
     throw new Meteor.Error('notifications.user_not_found')
   }

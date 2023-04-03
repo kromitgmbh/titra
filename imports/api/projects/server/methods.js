@@ -96,7 +96,7 @@ const getProjectUsers = new ValidatedMethod({
     if (project?.public) {
       for (const user of Meteor.users.find({})) {
         if (user.inactive !== true) {
-          data.push({ _id: user._id, emails: user.emails, profile: user.profile })
+          data.push({ _id: user._id, profile: user.profile })
         }
       }
     } else if (project?.team || project?.admins) {
@@ -114,7 +114,7 @@ const getProjectUsers = new ValidatedMethod({
       for (const member of team) {
         const user = Meteor.users.findOne({ _id: member })
         if (user && user.inactive !== true) {
-          data.push({ _id: user._id, emails: user.emails, profile: user.profile })
+          data.push({ _id: user._id, profile: user.profile })
         }
       }
     }

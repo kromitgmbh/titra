@@ -83,13 +83,13 @@ Template.usersearch.onCreated(function usersearchcreated() {
       if (handle.ready()) {
         const card = Timecards.findOne({ _id: tcid })
         const user = this.users.get().find((u) => u._id === card.userId)
-        if (user?.emails) {
-          this.$('.js-usersearch-input').val(user.emails[0].address)
+        if (user?.profile) {
+          this.$('.js-usersearch-input').val(user.profile.name)
         }
         Meteor.call('getProjectUsers', { projectId: card.projectId }, (error, result) => {
           const found = result.find((u) => u._id === card.userId)
-          if (found?.emails) {
-            this.$('.js-usersearch-input').val(found.emails[0].address)
+          if (found?.profile) {
+            this.$('.js-usersearch-input').val(found.profile.name)
           }
         })
       }
@@ -110,19 +110,19 @@ Template.usersearch.onCreated(function usersearchcreated() {
   })
 })
 Template.usersearch.helpers({
-  getMail: (user) => {
+  getName: (user) => {
     if (typeof user === 'string') {
       const users = Template.instance().users.get()
       if (!users) {
         return ''
       }
       const found = users.find((u) => u._id === user)
-      if (found && found.emails) {
-        return found.emails[0].address
+      if (found && found.profile) {
+        return found.profile.name
       }
     }
-    if (user.emails) {
-      return user.emails[0].address
+    if (user.profile) {
+      return user.profile.name
     }
     return ''
   },
