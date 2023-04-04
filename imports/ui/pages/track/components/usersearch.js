@@ -9,7 +9,6 @@ Template.usersearch.events({
     event.preventDefault()
     event.stopPropagation()
     templateInstance.$('.js-usersearch-input').val('')
-    templateInstance.filter.set('')
     templateInstance.targetUser.renderIfNeeded()
   },
 })
