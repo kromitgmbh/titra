@@ -163,7 +163,8 @@
     "mail_from_name": "Courriel du nom",
     "show_name_custom_field_in_details": "Afficher le nom des champs personnalisés dans la vue détaillée ?",
     "enable_open_id_connect": "Activer OpenID Connect ?",
-    "enable_log_for_other_users": "L'administrateur peut-il enregistrer du temps pour d'autres utilisateurs ?"
+    "enable_log_for_other_users": "L'administrateur peut-il enregistrer du temps pour d'autres utilisateurs ?",
+    "user_search_num_results": "Nombre d'utilisateurs affichés dans la recherche d'utilisateurs (par défaut 5)"
   },
   "customer": {
     "select_customer": "Selectionner un client",

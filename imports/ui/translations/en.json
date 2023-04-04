@@ -185,6 +185,7 @@
     "xframe_options_origin": "X-Frame-Options header origin URL",
     "project_search_num_results": "Number of projects displayed in the project search (default 5)",
     "task_search_num_results": "Number of tasks displayed in the task search (default 5)",
+    "user_search_num_results": "Number of users displayed in the user search (default 5)",
     "categories": {
       "global": "Globals",
       "interfaces": "Interfaces",

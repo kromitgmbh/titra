@@ -184,6 +184,7 @@
     "xframe_options_origin": "X-Frame-Options header origin URL",
     "project_search_num_results": "Die Anzahl der Projekt in der Projektsuche (Standard 5)",
     "task_search_num_results": "Die Anzahl der Tätigkeiten in der Tätigkeitensuche (Standard 5)",
+    "user_search_num_results": "Die Anzahl der Benutzer in der Benutzersuche (Standard 5)",
     "categories": {
       "global": "Globale Einstellungen",
       "interfaces": "Schnittstellen",
