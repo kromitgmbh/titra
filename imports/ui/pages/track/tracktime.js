@@ -412,7 +412,8 @@ Template.tracktime.helpers({
     return timecard ? timecard?.task : false
   },
   user: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
-    ? Timecards.findOne({ _id: Template.instance().tcid.get() }).userId : false),
+    ? Timecards.findOne({ _id: Template.instance().tcid.get() }).userId
+    : Meteor.user().profile.name),
   hours: () => (Timecards.findOne({ _id: Template.instance().tcid.get() })
     ? Timecards.findOne({ _id: Template.instance().tcid.get() }).hours : false),
   showTracker: () => (getUserSetting('timeunit') !== 'd'),
@@ -434,8 +435,7 @@ Template.tracktime.helpers({
   logForOtherUsers: () => {
     if (!getGlobalSetting('enableLogForOtherUsers')
         || !Template?.instance()?.projectId?.get()
-        || Template?.instance()?.projectId?.get() === 'all')
-    {
+        || Template?.instance()?.projectId?.get() === 'all') {
       return false
     }
     const targetProject = Projects.findOne({ _id: Template.instance().projectId.get() })
