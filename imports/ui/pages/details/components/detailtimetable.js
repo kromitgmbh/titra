@@ -201,12 +201,27 @@ Template.detailtimetable.onRendered(() => {
           editable: false,
           dropdown: false,
           focusable: false,
-          format: (value) => (value && Timecards.findOne({ _id: value }).userId === Meteor.userId()
-            ? `<div class="text-center">
+          format: (value) => {
+            if (!value) {
+              return ''
+            }
+            const timeCard = Timecards.findOne({ _id: value })
+            let showEdit = timeCard.userId === Meteor.userId()
+            if ((getGlobalSetting('enableLogForOtherUsers'))) {
+              const targetProject = Projects.findOne({ _id: timeCard.projectId })
+              if (targetProject.userId === Meteor.userId()
+                || targetProject.admins?.indexOf(Meteor.userId()) >= 0) {
+                showEdit = true
+              }
+            }
+            if (showEdit) {
+              return `<div class="text-center">
                 <a href="#" class="js-edit" data-id="${value}"><i class="fa fa-edit"></i></a>
                 <a href="#" class="js-delete" data-id="${value}"><i class="fa fa-trash"></i></a>
-              </div`
-            : ''),
+              </div>`
+            }
+            return ''
+          },
         },
       )
       if (!templateInstance.datatable) {

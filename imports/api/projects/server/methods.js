@@ -82,6 +82,45 @@ const getAllProjectStats = new ValidatedMethod({
     }
   },
 })
+const getProjectUsers = new ValidatedMethod({
+  name: 'getProjectUsers',
+  validate(args) {
+    check(args, {
+      projectId: String,
+    })
+  },
+  mixins: [authenticationMixin, transactionLogMixin],
+  async run({ projectId }) {
+    const data = []
+    const project = Projects.findOne({ _id: projectId })
+    if (project?.public) {
+      for (const user of Meteor.users.find({})) {
+        if (user.inactive !== true) {
+          data.push({ _id: user._id, profile: user.profile })
+        }
+      }
+    } else if (project?.team || project?.admins) {
+      let team = []
+      if (project.team) {
+        team = team.concat(project.team)
+      }
+      if (project.admins) {
+        team = team.concat(project.admins)
+      }
+      if (team.indexOf(project.userId) === -1) {
+        team.push(project.userId)
+      }
+      team = team.filter((value, index, self) => self.indexOf(value) === index)
+      for (const member of team) {
+        const user = Meteor.users.findOne({ _id: member })
+        if (user && user.inactive !== true) {
+          data.push({ _id: user._id, profile: user.profile })
+        }
+      }
+    }
+    return data
+  },
+})
 /**
  * Update a project by ID
  *
@@ -422,6 +461,7 @@ const setDefaultTaskForProject = new ValidatedMethod({
 })
 export {
   getAllProjectStats,
+  getProjectUsers,
   createProject,
   updateProject,
   deleteProject,

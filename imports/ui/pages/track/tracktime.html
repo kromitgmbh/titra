@@ -86,6 +86,11 @@
     <div class="mb-3 js-tracktime-projectselect mb-3">
       {{>projectsearch tcid=tcid projectId=reactiveProjectId displayProjectInfo=true}}
     </div>
+    {{#if logForOtherUsers}}
+    <div class="mb-3 mb-3">
+      {{>usersearch tcid=tcid projectId=reactiveProjectId user=user}}
+    </div>
+    {{/if}}
     <div class="mb-3 mb-3">
       {{>tasksearch tcid=tcid projectId=reactiveProjectId task=task}}
     </div>

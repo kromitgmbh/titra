@@ -1,0 +1,13 @@
+<template name="usersearch">
+  {{#if isComponent}}
+    <input type="text" aria-label='{{t "tracktime.user_placeholder"}}' value="{{user}}" class="js-usersearch-input form-control" autocomplete="off" placeholder='{{t "tracktime.user_placeholder"}}'/>
+  {{else}}
+  <div class="input-group">
+    <div class="form-floating search-box">
+      <i class="fa fa-delete-left hover-remove-value-icon js-remove-value"></i>
+      <input type="text" aria-label='{{t "tracktime.user_placeholder"}}' value="{{user}}" class="js-usersearch-input form-control" autocomplete="off" placeholder='{{t "tracktime.user_placeholder"}}'/>
+      <label class="form-label" for="user">{{t "globals.user"}}</label>
+    </div>
+  </div>
+  {{/if}}
+</template>
