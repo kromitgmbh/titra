@@ -26,7 +26,7 @@ function registerOidc() {
     const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent)
     const display = mobile ? 'touch' : 'popup'
     const loginStyle = OAuth._loginStyle(SERVICE_NAME, config, options)
-    const scope = config.requestPermissions || ['openid', 'profile', 'email']
+    const scope = config.requestPermissions?.split(',') || ['openid', 'profile', 'email']
 
     // options
     options.client_id = config.clientId

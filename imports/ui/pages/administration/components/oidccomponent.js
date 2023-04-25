@@ -8,7 +8,7 @@ Template.oidccomponent.helpers({
   oidcValue: (name) => getOidcConfiguration(name),
   siteUrl: () => Meteor.absoluteUrl({ replaceLocalhost: true }),
   isCheckbox: (setting) => setting.type === 'checkbox',
-  isChecked: (name) => getOidcConfiguration(name) ? 'checked' : '',  
+  isChecked: (name) => (getOidcConfiguration(name) ? 'checked' : ''),
 })
 Template.oidccomponent.events({
   'click .js-update-oidc': (event, templateInstance) => {
