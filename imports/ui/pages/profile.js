@@ -31,8 +31,8 @@ Template.profile.events({
     event.preventDefault()
     const updateJSON = {
       name: templateInstance.$('#name').val(),
-      theme: templateInstance.$('#theme').val(),
-      language: templateInstance.$('#language').val(),
+      // theme: templateInstance.$('#theme').val(),
+      // language: templateInstance.$('#language').val(),
       avatarColor: templateInstance.$('#avatarColor').val(),
     }
     if (!templateInstance.$('#avatarData').val() || templateInstance.$('#avatarData').val() !== 'false') {
@@ -47,10 +47,10 @@ Template.profile.events({
       }
     })
   },
-  'click .js-logout': (event) => {
-    event.preventDefault()
-    Meteor.logout()
-  },
+  // 'click .js-logout': (event) => {
+  //   event.preventDefault()
+  //   Meteor.logout()
+  // },
   'change #avatarImage': (event, templateInstance) => {
     if (event.currentTarget.files && event.currentTarget.files[0]) {
       const reader = new FileReader()
@@ -99,8 +99,8 @@ Template.profile.onRendered(function settingsRendered() {
   templateInstance.autorun(() => {
     if (!Meteor.loggingIn() && Meteor.user()
         && Meteor.user().profile && this.subscriptionsReady()) {
-      templateInstance.$('#theme').val(getUserSetting('theme') ? getUserSetting('theme') : 'auto')
-      templateInstance.$('#language').val(getUserSetting('language') ? getUserSetting('language') : 'auto')
+      // templateInstance.$('#theme').val(getUserSetting('theme') ? getUserSetting('theme') : 'auto')
+      // templateInstance.$('#language').val(getUserSetting('language') ? getUserSetting('language') : 'auto')
       templateInstance.$('#avatarData').val(getUserSetting('avatar'))
       if (templateInstance.pickr) {
         templateInstance.pickr.destroy()

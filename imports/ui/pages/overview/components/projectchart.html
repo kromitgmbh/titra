@@ -22,6 +22,12 @@
         {{#if target}}
           <i class="fa fa-bullseye" style="width:18px;"></i> {{t "overview.target"}}: {{timeInUserUnit(target)}} ({{timeunitVerbose}})<br/>
         {{/if}}
+        {{#if startDate}}
+        <i class="fa-regular fa-calendar-days fa-sm" style="width:18px;"></i> {{t "overview.startDate"}}: {{startDate}} <br/>
+        {{/if}}
+        {{#if endDate}}
+          <i class="fa-regular fa-calendar-days fa-sm" style="width:18px;"></i> {{t "overview.endDate"}}: {{endDate}}<br/>
+        {{/if}}
         {{#if turnOver}}
           <i class="fa fa-money-bill-alt" style="width:18px;"></i> {{t "overview.turnover"}}: {{turnOver}} {{unit}}
         {{/if}}

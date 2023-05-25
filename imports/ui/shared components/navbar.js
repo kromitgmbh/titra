@@ -19,3 +19,10 @@ Template.navbar.helpers({
   avatar: () => displayUserAvatar(Meteor.user()),
   getUserSetting: (setting) => getUserSetting(setting),
 })
+
+Template.navbar.events({
+  'click .js-logout': (event) => {
+    event.preventDefault()
+    Meteor.logout()
+  }
+})

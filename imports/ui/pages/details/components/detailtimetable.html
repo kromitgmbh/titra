@@ -38,12 +38,16 @@
     </div> 
     <div id="datatable-container" class="my-3">
     </div>
-        <div class="col-md-3 ms-md-auto mb-3">
+    <div class="row">
+    <div class="col-md-3 ">
+        {{#if detailTimeEntries}}
+        {{>pagination totalEntries=totalDetailTimeEntries limit=limit}}
+    {{/if}}
+    </div>
+        <div class="col-md-3 ms-md-auto"> 
             {{>limitpicker}}
         </div>
-    {{#if detailTimeEntries}}
-        {{>pagination totalEntries=totalDetailTimeEntries limit=limit}}
-    {{/if}}  
+    </div> 
     {{>editTimeEntryModal tcid=tcid selectedProjectId=project}}
 </template>
 

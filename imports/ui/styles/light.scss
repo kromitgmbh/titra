@@ -13,6 +13,17 @@ $progress-bg: $secondary;
   color: white;
 }
 
+// .card.mb-3.all-projects-bg {
+//   background-image:         linear-gradient(to right bottom, $ap-card-bg-color-left-top, $ap-card-bg-color-center, $ap-card-bg-color-bottom-right) !important;
+// }
+
+// //AllProjectsCard
+// $ap-card-bg-color-left-top:             #1d1d1d;       // 1. gradient color for allProjectsCard
+// $ap-card-bg-color-center:               #004842;       // 2. gradient color for allProjectsCard
+// $ap-card-bg-color-bottom-right:         #212529;       // 3. gradient color for allProjectsCard
+
+
+
 .btn-primary {
     color:            #fff !important;
     background-color: #009688 !important;
@@ -134,23 +145,32 @@ border: 0px !important;
 .drag.card {
   background-color:           $secondary;  
 }
-.card-header-filter{
-  padding: var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x); 
-  color: #fff;
-  background-color: var(--bs-card-cap-bg);
-  border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
-  --bs-card-cap-bg: #009688;// head color
-  --bs-card-border-radius: 0.375rem;
-  border-top-right-radius: 0.300rem;
-  border-top-left-radius: 0.300rem;
-  // --bs-card-cap-padding-y: 0.5rem;
-  // --bs-card-cap-padding-x: 1rem;
-  //rgba(255, 0, 0, 0.03) 
-  //solid var(--bs-card-border-color)
-  // --bs-card-border-color: var(--bs-border-color-translucent);
+span.d-inline-block.align-middle {
+  padding-right: 6px;
 }
+.row.d-print-none {
+  margin-right:        calc(-.3 * var(--bs-gutter-x));
+}
+.card-header-filter{
+  padding:                    var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x); 
+  background-color:           var(--bs-card-cap-bg);
+  border-bottom:              var(--bs-card-border-width) solid var(--bs-card-border-color);
+  --bs-card-border-radius:    0.375rem;
+  border-top-right-radius:    0.300rem;
+  border-top-left-radius:     0.300rem;
+  //border-bottom-color: $primary !important;
+}
+.card.mb-3.all-projects-bg {
+  background-color:           var(--bs-card-cap-bg);
+  border-bottom:              var(--bs-card-border-width) solid var(--bs-card-border-color);
+  border-color:               $primary !important;
+  //--bs-card-cap-bg:           #009688;// head color
+}
+// .col.me-auto {
+//   color:                      white;
+// }
 .card.mb-2.d-print-none {
-  border-color: #009688 !important;
+  border-color:               $primary!important;
 }
 .card-block .list-group-item {
   background-color:           $secondary;

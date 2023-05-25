@@ -2,12 +2,16 @@ import namedavatar from 'namedavatar'
 import './projectchart.html'
 import Projects, { ProjectStats } from '../../../../api/projects/projects.js'
 import { projectUsers } from '../../../../api/users/users.js'
-import { getUserSetting, getUserTimeUnitVerbose } from '../../../../utils/frontend_helpers'
+import { getUserSetting, getUserTimeUnitVerbose, getGlobalSetting } from '../../../../utils/frontend_helpers'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 Template.projectchart.onCreated(function projectchartCreated() {
   this.topTasks = new ReactiveVar()
   this.projectDescAsHtml = new ReactiveVar()
   this.isVisible = new ReactiveVar(false)
+
+  dayjs.extend(utc)
 })
 Template.projectchart.helpers({
   totalHours() {
@@ -66,6 +70,14 @@ Template.projectchart.helpers({
   target() {
     return Number(Projects.findOne({ _id: Template.instance().data.projectId }).target) > 0
       ? Projects.findOne({ _id: Template.instance().data.projectId }).target : false
+  },
+  startDate() {
+    return Projects.findOne({ _id: Template.instance().data.projectId }).startDate 
+      ? dayjs.utc(Projects.findOne({ _id: Template.instance().data.projectId }).startDate).local().format(getGlobalSetting('dateformat')) : false
+  },
+  endDate() {
+    return Projects.findOne({ _id: Template.instance().data.projectId }).endDate
+      ? dayjs.utc(Projects.findOne({ _id: Template.instance().data.projectId }).endDate).local().format(getGlobalSetting('dateformat')) : false
   },
   customer() {
     return Projects.findOne({ _id: Template.instance().data.projectId })?.customer

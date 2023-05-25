@@ -98,6 +98,11 @@ Template.weektable.events({
     event.preventDefault()
     FlowRouter.setQueryParams({ date: dayjs.utc().startOf('week').add(getUserSetting('startOfWeek'), 'day').format('YYYY-MM-DD') })
   },
+  'keyup .js-hours': (event, templateInstance) => {
+    if (event.keyCode === 13) {
+      templateInstance.$('.js-save').click();
+    }
+  },
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()
     const weekArray = []

@@ -126,6 +126,7 @@
   },
   "settings": {
     "user_profile": "Benutzer Profil",
+    "userInterface_settings": "Benutzeroberflächeneinstellungen",
     "language": "Sprache",
     "de": "Deutsch",
     "en": "Englisch",

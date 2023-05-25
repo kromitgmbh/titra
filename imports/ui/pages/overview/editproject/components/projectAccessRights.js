@@ -104,6 +104,11 @@ Template.projectAccessRights.helpers({
   disablePublic: () => getGlobalSetting('disablePublicProjects'),
 })
 Template.projectAccessRights.events({
+  'keyup #newmembermail': (event, templateInstance) => {
+    if (event.keyCode === 13) {
+      templateInstance.$('#addNewMember').click();
+    }
+  },
   'click #addNewMember': (event, templateInstance) => {
     event.preventDefault()
     const newmembermail = templateInstance.$('#newmembermail').val()
