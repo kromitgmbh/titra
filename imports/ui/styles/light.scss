@@ -20,16 +20,25 @@ $progress-bg: $secondary;
 }
 .btn-primary:hover {
     color:            #fff!important;
-    background-color: #006e63!important;
+    background-color: #006e63!important; 
     border-color:     #006e63!important;
 }
 .btn-secondary {
     color:            #000 !important;
     background-color: #ffffff !important;
+    border-color:     #006e63!important; 
 }
 .btn-secondary:hover {
     color:            #fff !important;
     background-color: #009688 !important;
+}
+button#addNewMember {
+  color:                #fff !important;
+  background-color:     #009688 !important;
+}
+button#addNewMember:hover{
+  color:            #fff !important;
+  background-color: #006e63 !important;
 }
 .list-group-item {
   color:              #495057;
@@ -66,15 +75,20 @@ $progress-bg: $secondary;
 .btn-outline-secondary:hover{
   background-color:     #ececec !important;
 }
-.fc-button-primary {
-    color:              #000000 !important;
-    background-color:     $secondary !important;
+.fc-button-primary{
+    color:                #000000 !important; 
+    background-color:     $secondary !important; 
     border-color:         $light !important;
-} 
+}
+button.fc-today-button.fc-button.fc-button-primary {
+  color:                #fff !important;
+  background-color:     #009688 !important;
+  font-weight:             400;
+}
 .fc-button-primary:hover {
     color:                #000000 !important;
     background-color:     #eee !important;
-    border-color:           $light !important;
+    border-color:          $light !important; 
 }
 .datatable {
     --dt-border-color:     #d1d8dd;
@@ -86,6 +100,9 @@ $progress-bg: $secondary;
     --dt-selection-highlight-color: var(--dt-light-yellow);
     --dt-toast-message-border: none;
     --dt-header-cell-bg:     var(--dt-cell-bg);
+}
+svg.svg-inline--fa.fa-pen-to-square {
+  margin-right: 10px;
 }
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
   color:                    #495057;
@@ -116,6 +133,24 @@ border: 0px !important;
 }
 .drag.card {
   background-color:           $secondary;  
+}
+.card-header-filter{
+  padding: var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x); 
+  color: #fff;
+  background-color: var(--bs-card-cap-bg);
+  border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
+  --bs-card-cap-bg: #009688;// head color
+  --bs-card-border-radius: 0.375rem;
+  border-top-right-radius: 0.300rem;
+  border-top-left-radius: 0.300rem;
+  // --bs-card-cap-padding-y: 0.5rem;
+  // --bs-card-cap-padding-x: 1rem;
+  //rgba(255, 0, 0, 0.03) 
+  //solid var(--bs-card-border-color)
+  // --bs-card-border-color: var(--bs-border-color-translucent);
+}
+.card.mb-2.d-print-none {
+  border-color: #009688 !important;
 }
 .card-block .list-group-item {
   background-color:           $secondary;

@@ -76,7 +76,7 @@
     "actions": "Aktionen",
     "start_timer": "Timer starten",
     "start_time": "Beginn",
-    "timer": "Stoppuhr",
+    "timer": "Zeitmesser",
     "user_placeholder": "Benutzer eingeben oder suchen ..."
   },
   "overview": {
@@ -91,14 +91,19 @@
     "target": "Ziel: ",
     "turnover": "Umsatz: ",
     "number_projects": "Anzahl Projekte",
-    "summary": "Zusammenfassung"
+    "summary": "Zusammenfassung",
+    "properties": "Eigenschaften",
+    "percentage": "Projektfortschritt: ",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "duration": "Projektdauer"
   },
   "project": {
     "title": "Projekt Bearbeiten",
     "first_project_desc": "Dieses Projekt wurde automatisch erstellt, Sie können es nach Belieben bearbeiten. Wussten Sie, dass Sie Emojis wie 💰 ⏱ 👍 überall verwenden können?",
     "customer_placeholder": "Beispiel Kunde",
     "rate": "Rate",
-    "target": "Ziel / Budget",
+    "target": "Ziel",
     "wekan_integration": "Wekan Integration",
     "wekan_help": "Benötigen Sie Hilfe bei der Konfiguration? Werfen Sie einen Blick in unser titra ",
     "wekan_list": "Wekan Liste(n) für die Zeiterfassung",
@@ -127,7 +132,7 @@
     "fr": "Französisch",
     "zh": "Chinesisch",
     "user_interface": "Benutzeroberfläche",
-    "theme": "Darstellung",
+    "theme": "Thema",
     "auto_detect": "Automatisch",
     "light_theme": "Hell",
     "dark_theme": "Dunkel",
@@ -212,7 +217,7 @@
   },
   "limit": {
     "entries": "Einträge",
-    "show": "Zeige",
+    "show": "Zeilenlinien anzeigen",
     "all": "Alle"
   },
   "period": {
@@ -242,7 +247,8 @@
     "duration": "Dauer",
     "dependencies": "Abhängigkeiten",
     "newTask": "Neue Tätigkeit",
-    "editTask": "Tätigkeit bearbeiten"
+    "editTask": "Tätigkeit bearbeiten",
+    "addTask": "Tätigkeit hinzufügen"
   },
   "details": {
     "filter": "Filter",

@@ -35,7 +35,6 @@
     "cancel": "Cancel",
     "ok": "Ok",
     "definition": "Definition",
-    "user": "User",
     "global_setting": "Global setting"
   },
   "navigation": {
@@ -62,22 +61,21 @@
     "retry": "Retry now",
     "lastWeek": "Last week",
     "nextWeek": "Next week",
-    "newLine": "New task",
+    "newLine": "New line",
     "cancel": "Cancel",
     "saving": "Saving ..."
   },
   "tracktime": {
     "no_time": "No time tracked yet.",
-    "task_placeholder": "Enter or search for task",
-    "working_time": "Working time ",
+    "task_placeholder": "Enter or search for task ...",
+    "working_time": "Workingtime ",
     "time_tracked": "Time tracked: ",
     "month_drag_help_text": "You can drag projects on a date to track time",
     "today": "Today",
     "actions": "Actions",
     "start_timer": "Start timer",
     "start_time": "Start time",
-    "timer": "Timer",
-    "user_placeholder": "Enter or search for user ..."
+    "timer": "Timer"
   },
   "overview": {
     "all_projects": "All projects",
@@ -91,19 +89,14 @@
     "target": "Target: ",
     "turnover": "Turnover: ",
     "number_projects": "Number of projects",
-    "summary": "Summary",
-    "properties": "Properties",
-    "percentage": "Project progress: ",
-    "startDate": "Start date",
-    "endDate": "End date",
-    "duration": "Project duration"
+    "summary": "Summary"
   },
   "project": {
     "title": "Edit project",
     "first_project_desc": "This project has been automatically created for you, feel free to change it! Did you know that you can use emojis like 💰 ⏱ 👍 everywhere?",
     "customer_placeholder": "Sample Customer",
     "rate": "Rate",
-    "target": "Target",
+    "target": "Target / Budget",
     "wekan_integration": "Wekan integration",
     "wekan_help": "Need help with the setup? Checkout the titra ",
     "wekan_list": "Wekan list(s) used for time tracking",
@@ -182,7 +175,6 @@
     "mail_from_name": "Mail from name",
     "show_name_custom_field_in_details": "Show name for custom fields in details view?",
     "enable_open_id_connect": "Enable OpenID Connect?",
-    "enable_log_for_other_users": "Can administrator register time for other users?",
     "holiday": "Holiday",
     "holiday_country": "Holiday Country",
     "holiday_state": "Holiday State",
@@ -190,7 +182,6 @@
     "xframe_options_origin": "X-Frame-Options header origin URL",
     "project_search_num_results": "Number of projects displayed in the project search (default 5)",
     "task_search_num_results": "Number of tasks displayed in the task search (default 5)",
-    "user_search_num_results": "Number of users displayed in the user search (default 5)",
     "categories": {
       "global": "Globals",
       "interfaces": "Interfaces",
@@ -217,8 +208,8 @@
     "all": "All customers"
   },
   "limit": {
-    "entries": "row lines",
-    "show": "Show row lines",
+    "entries": "entries",
+    "show": "Show",
     "all": "All"
   },
   "period": {
@@ -248,8 +239,7 @@
     "duration": "Duration",
     "dependencies": "Dependencies",
     "newTask": "New task",
-    "editTask": "Edit task",
-    "addTask": "Add task"
+    "editTask": "Edit task"
   },
   "details": {
     "filter": "Filter",
@@ -327,11 +317,9 @@
     "auth_error_method": "You have to be signed in to use this method.",
     "only_owner_can_add_team_members": "Only the project owner can add new team members",
     "only_owner_can_remove_team_members": "Only the project owner can remove team members",
-    "only_administrator_can_register_time": "Only administrators can register time for another user.",
     "team_member_added_success": "Team member added.",
     "team_member_removed_success": "Team member removed.",
     "user_not_found": "No user with this e-mail address could be found, please create the corresponding user account first.",
-    "user_not_found_in_project": "No user with this e-mail address could be found in this project.",
     "project_priority_success": "Project priority updated successfully",
     "password_changed": "Your password has been changed.",
     "connectioncheck": "Could not connect to server. Trying again ",
@@ -353,7 +341,7 @@
     "sign_in_oidc": "Sign In with OpenID Connect",
     "login_or_signup": "Please login or sign up to continue.",
     "login_failed": "Unable to login, please check your username/password.",
-    "fullname_placholder": "Your Full name",
+    "fullname_placholder": "Your Fullname",
     "create_account": "Create an account",
     "password_again": "Password (again)",
     "already_have_account": "If you already have an account - ",
