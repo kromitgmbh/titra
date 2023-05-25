@@ -9,11 +9,10 @@ $dark:                #455A64;
 $dropdown-link-hover-bg: $dark !default;
 $progress-bg: $secondary;
 
-.is-light-theme {
-  color: white;
-}
 
-// .card.mb-3.all-projects-bg {
+
+
+// .card.mb-3.all-projects-bg { // schatten 
 //   background-image:         linear-gradient(to right bottom, $ap-card-bg-color-left-top, $ap-card-bg-color-center, $ap-card-bg-color-bottom-right) !important;
 // }
 
@@ -23,36 +22,51 @@ $progress-bg: $secondary;
 // $ap-card-bg-color-bottom-right:         #212529;       // 3. gradient color for allProjectsCard
 
 
-
+.is-light-theme {
+  color:                white;
+}
+.card-header.js-toggle-timecards {                     //Time tracked table
+  color:                $primary !important;
+  font-weight:          bold;
+}
+svg.svg-inline--fa.fa-chevron-down.float-end {         //Icon Time tracked table
+  color:                $primary !important;
+}
+.progress.w-100 {
+  border-bottom-color:  $primary !important;
+}
+small.text-nowrap {                                    //Progress %
+    font-size:          small;
+}
 .btn-primary {
-    color:            #fff !important;
-    background-color: #009688 !important;
-    border-color:     #009688 !important; 
+    color:              #fff !important;
+    background-color:   #009688 !important;
+    border-color:       #009688 !important; 
 }
 .btn-primary:hover {
-    color:            #fff!important;
-    background-color: #006e63!important; 
-    border-color:     #006e63!important;
+    color:              #fff!important;
+    background-color:   #006e63!important; 
+    border-color:       #006e63!important;
 }
 .btn-secondary {
-    color:            #000 !important;
-    background-color: #ffffff !important;
-    border-color:     #006e63!important; 
+    color:              #000 !important;
+    background-color:   #ffffff !important;
+    border-color:       #006e63!important; 
 }
 .btn-secondary:hover {
-    color:            #fff !important;
-    background-color: #009688 !important;
+    color:              #fff !important;
+    background-color:   #009688 !important;
 }
-button#addNewMember {
+button#addNewMember {      
   color:                #fff !important;
   background-color:     #009688 !important;
 }
 button#addNewMember:hover{
-  color:            #fff !important;
-  background-color: #006e63 !important;
+  color:                #fff !important;
+  background-color:     #006e63 !important;
 }
 .list-group-item {
-  color:              #495057;
+  color:                #495057;
 }
 .tab-borders {
   background-color:     $secondary;
@@ -64,14 +78,14 @@ button#addNewMember:hover{
   background:           $secondary !important;
 }
 .all-projects-bg {
-  background:         rgba(0,112,101,0.05) !important;
+  background:           rgba(0,112,101,0.05) !important;
 }
 .fc-unthemed td.fc-today {
-  background:         rgba(0, 150, 136, 0.5) !important;
+  background:           rgba(0, 150, 136, 0.5) !important;
 }
 .fc-bg-event {
-  background-color: #d1d1d1 !important;
-  color: #636363 !important;
+  background-color:     #d1d1d1 !important;
+  color:                #636363 !important;
   opacity: 1 !important;
 }
 .alert-secondary {
@@ -87,9 +101,9 @@ button#addNewMember:hover{
   background-color:     #ececec !important;
 }
 .fc-button-primary{
-    color:                #000000 !important; 
-    background-color:     $secondary !important; 
-    border-color:         $light !important;
+    color:              #000000 !important; 
+    background-color:   $secondary !important; 
+    border-color:       $light !important;
 }
 button.fc-today-button.fc-button.fc-button-primary {
   color:                #fff !important;
@@ -97,9 +111,9 @@ button.fc-today-button.fc-button.fc-button-primary {
   font-weight:             400;
 }
 .fc-button-primary:hover {
-    color:                #000000 !important;
-    background-color:     #eee !important;
-    border-color:          $light !important; 
+    color:               #000000 !important;
+    background-color:    #eee !important;
+    border-color:        $light !important; 
 }
 .datatable {
     --dt-border-color:     #d1d8dd;
@@ -108,9 +122,9 @@ button.fc-today-button.fc-button.fc-button-primary {
     --dt-text-light:       #dfe2e5;
     --dt-cell-bg:          #fff;
     --dt-focus-border-width: 1px;
-    --dt-selection-highlight-color: var(--dt-light-yellow);
-    --dt-toast-message-border: none;
-    --dt-header-cell-bg:     var(--dt-cell-bg);
+    --dt-selection-highlight-color:   var(--dt-light-yellow);
+    --dt-toast-message-border:        none;
+    --dt-header-cell-bg:              var(--dt-cell-bg);
 }
 svg.svg-inline--fa.fa-pen-to-square {
   margin-right: 10px;
@@ -128,11 +142,11 @@ svg.svg-inline--fa.fa-pen-to-square {
   background-color:         #f8f8f8 !important;
 }
 .nav-tabs {
-    border-bottom: 0px solid #dee2e6 !important;
+  border-bottom:  0px solid #dee2e6 !important;
 }
 .dt-scrollable {
     //border-top: 0px solid #d1d8dd;
-    border-top: 0px solid var(--dt-border-color) !important;
+    border-top:   0px solid var(--dt-border-color) !important;
 }
 .dt-scrollable__no-data {
 border: 0px !important;
@@ -143,7 +157,7 @@ border: 0px !important;
   border-color:             #dee2e6 #dee2e6 #fff;
 }
 .drag.card {
-  background-color:           $secondary;  
+  background-color:         $secondary;  
 }
 span.d-inline-block.align-middle {
   padding-right: 6px;
@@ -159,19 +173,14 @@ span.d-inline-block.align-middle {
   border-top-right-radius:    0.300rem;
   border-top-left-radius:     0.300rem;
   //border-bottom-color: $primary !important;
-}
-.card.mb-3.all-projects-bg {
-  background-color:           var(--bs-card-cap-bg);
-  border-bottom:              var(--bs-card-border-width) solid var(--bs-card-border-color);
-  border-color:               $primary !important;
-  //--bs-card-cap-bg:           #009688;// head color
+  
 }
 // .col.me-auto {
 //   color:                      white;
 // }
-.card.mb-2.d-print-none {
-  border-color:               $primary!important;
-}
+// .card.mb-2.d-print-none {
+//   border-color:               $primary!important;
+// }
 .card-block .list-group-item {
   background-color:           $secondary;
 }
@@ -212,7 +221,7 @@ span.d-inline-block.align-middle {
   background:                 $primary !important;
 }
 g>text {
-  fill:                     #212529;
+  fill:                       #212529;
 }
 #period {
   background-color:           white !important;

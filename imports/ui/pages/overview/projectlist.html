@@ -1,6 +1,5 @@
 <template name="projectlist">
   {{#if Template.subscriptionsReady}}
-    {{#if moreThanOneProject}}
       <div class="card mb-3 all-projects-bg">
         <div class="card-header">
           <div class="row">
@@ -20,15 +19,15 @@
               <a href="{{ prefix }}/list/timecards/all" class="btn btn-secondary border" title='{{t "navigation.details"}}'><i class="fa fa-list"></i> <span class="d-none d-md-inline">{{t "navigation.details"}}</span></a>
               </div>
               <div class="col g-drig"></div>
-              {{#if moreThanOneProject}}
+              
                 <div class="col-3 d-grid">
                     <a href="{{ prefix }}/create/project" class="btn btn-primary" id="next" title='{{t "navigation.new_project"}}'><i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "globals.project"}}</span></a>
                 </div>
-              {{/if}}
+              
             </div>
         </div>
       </div>
-    {{/if}}
+   
     {{#if getGlobalSetting "customPlaceholderContent" }}
       <div class="card mb-3" style="border: 1px solid #455A64; overflow:hidden;">
         <div class="card-body">
@@ -39,7 +38,7 @@
       <div class="js-project-list">
         {{#each project in projects}}
            <div class="card mb-3" style="border: 1px solid {{colorOpacity project.color 50}}">
-            <div class="card-header">{{project.name}} <span class="float-end handle"><i class="fa fa-arrows-alt"></i></span></div>
+            <div class="card-header" style="border-bottom: 1px solid {{colorOpacity project.color 50}}" >{{project.name}}  <span class="float-end handle"><i class="fa fa-arrows-alt"></i></span></div>
             <div class="card-body">
               {{> projectchart projectId=project._id}}
                 <div class="row mt-2" id="{{project._id}}">
@@ -79,7 +78,7 @@
           </div>
         {{/each}}
       </div>
-      {{#unless moreThanOneProject}}
+      <!-- {{#unless moreThanOneProject}}
         <div class="row">
           <div class="col-md-10 col-6">
             <a href="{{ prefix }}/create/project" class="btn btn-primary" id="next">{{t "navigation.new_project"}}</a>
@@ -93,7 +92,7 @@
             {{/if}}
           </div>
         </div>
-      {{/unless}}
+      {{/unless}} -->
   {{else}}
     <div class="card mb-3 all-projects-bg" style="min-height:332px">
       <div class="card-header">{{t "tabular.sLoadingRecords"}}</div>

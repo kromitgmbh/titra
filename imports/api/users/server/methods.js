@@ -56,6 +56,8 @@ const updateSettings = new ValidatedMethod({
     check(args.gitlabtoken, Match.Maybe(String))
     check(args.gitlaburl, Match.Maybe(String))
     check(args.rounding, Match.Maybe(Number))
+    check(args.theme, String)
+    check(args.language, String)
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
@@ -73,6 +75,8 @@ const updateSettings = new ValidatedMethod({
     zammadtoken, zammadurl,
     gitlabtoken, gitlaburl,
     rounding,
+    theme,
+    language,
   }) {
     await Meteor.users.updateAsync({ _id: this.userId }, {
       $set: {
@@ -98,6 +102,8 @@ const updateSettings = new ValidatedMethod({
         'profile.gitlabtoken': gitlabtoken,
         'profile.gitlaburl': gitlaburl,
         'profile.rounding': rounding,
+        'profile.theme': theme,
+        'profile.language': language,
       },
     })
   },

@@ -41,13 +41,6 @@
             </div>
           </div>
         </div>
-        <div class="mb-3">
-          <div class="input-group form-floating" id="colpick">
-            <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
-            <button type="button" class="btn rounded-end" id="pickr"></button>
-            <label class="form-label" for="color">{{t "globals.color"}}</label>
-          </div>
-        </div>
         <div class="form-floating">
           <input name="customer" type="text" autocomplete="off" id="customer" class="form-control" placeholder='{{t "globals.customer"}}'/>
           <label class="form-label" for="customer">{{t "globals.customer"}}</label>
@@ -118,6 +111,13 @@
             </div>
           </div>
         {{/if}}
+        <div class="mb-3">
+          <div class="input-group form-floating" id="colpick">
+            <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
+            <button type="button" class="btn rounded-end" id="pickr"></button>
+            <label class="form-label" for="color">{{t "globals.color"}}</label>
+          </div>
+        </div>
       {{#if getGlobalSetting "enableWekan"}}
       <div class="mb-3">
         <div class="card">
