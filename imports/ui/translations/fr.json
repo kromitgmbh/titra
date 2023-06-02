@@ -71,7 +71,8 @@
     "start_timer": "Démarrer le chronomètre",
     "start_time": "Arrêter le chronomètre",
     "timer": "chronomètre",
-    "user_placeholder": "Saisir ou rechercher un utilisateur..."
+    "user_placeholder": "Saisir ou rechercher un utilisateur...",
+    "timeline": "Chronologie"
   },
   "overview": {
     "all_projects": "Tous les projets",

@@ -2,10 +2,11 @@ import { check, Match } from 'meteor/check'
 import { NodeVM } from 'vm2'
 import fetch from 'node-fetch'
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
-import { adminAuthenticationMixin, authenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers'
+import {
+  adminAuthenticationMixin, authenticationMixin, transactionLogMixin, getGlobalSettingAsync,
+} from '../../../utils/server_method_helpers'
 import InboundInterfaces from '../inboundinterfaces.js'
 import Projects from '../../projects/projects.js'
-import { getGlobalSetting } from '../../../utils/frontend_helpers'
 
 const inboundinterfacesinsert = new ValidatedMethod({
   name: 'inboundinterfaces.insert',
@@ -102,7 +103,7 @@ const getTasksFromInboundInterface = new ValidatedMethod({
         user: meteorUser.profile,
         project,
         fetch,
-        getGlobalSetting,
+        getGlobalSettingAsync,
       },
       require: {
         external: true,

@@ -161,7 +161,7 @@
 </template>
 
 <template name="tracktimemain">
-  <ul class="nav nav-tabs" role="tablist">
+  <ul class="nav nav-tabs sticky-top bg-body" style="top:2.7rem;z-index:1010;box-shadow:-0.125rem 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important" role="tablist">
     <li class="nav-item" role="tab">
       <button class="nav-link {{showDay}} js-day">{{t "globals.day"}}</button>
     </li>
@@ -170,6 +170,9 @@
     </li>
     <li class="nav-item" role="tab">
       <button class="nav-link {{showMonth}} js-month">{{t "globals.month"}}</button>
+    </li>
+    <li class="nav-item" role="tab">
+      <button class="nav-link {{showTimeline}} js-timeline">{{t "tracktime.timeline"}}</button>
     </li>
   </ul>
   {{#if showDay}}
@@ -182,5 +185,8 @@
     <div class="tab-borders p-3">
     {{>calendar}}
     </div>
+  {{/if}}
+  {{#if showTimeline}}
+    {{>timeline}}
   {{/if}}
 </template>

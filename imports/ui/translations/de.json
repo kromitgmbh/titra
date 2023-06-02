@@ -77,7 +77,8 @@
     "start_timer": "Timer starten",
     "start_time": "Beginn",
     "timer": "Stoppuhr",
-    "user_placeholder": "Benutzer eingeben oder suchen ..."
+    "user_placeholder": "Benutzer eingeben oder suchen ...",
+    "timeline": "Zeitleiste"
   },
   "overview": {
     "all_projects": "Alle Projekte",

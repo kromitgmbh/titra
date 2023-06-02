@@ -112,7 +112,7 @@ const getProjectUsers = new ValidatedMethod({
       }
       team = team.filter((value, index, self) => self.indexOf(value) === index)
       for (const member of team) {
-        const user = Meteor.users.findOne({ _id: member })
+        const user = await Meteor.users.findOneAsync({ _id: member })
         if (user && user.inactive !== true) {
           data.push({ _id: user._id, profile: user.profile })
         }

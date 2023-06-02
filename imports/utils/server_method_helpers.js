@@ -4,8 +4,19 @@ import Projects from '../api/projects/projects.js'
 import Transactions from '../api/transactions/transactions.js'
 import { projectResources } from '../api/users/users.js'
 import { periodToDates } from './periodHelpers.js'
-import { getGlobalSetting, getUserSetting } from './frontend_helpers.js'
+import { Globalsettings } from '../api/globalsettings/globalsettings.js'
 
+async function getGlobalSettingAsync(name) {
+  const globalSetting = await Globalsettings.findOneAsync({ name })
+  return globalSetting ? globalSetting.value : false
+}
+async function getUserSettingAsync(field) {
+  const meteorUser = await Meteor.userAsync()
+  if (meteorUser?.profile) {
+    return typeof meteorUser.profile[field] !== 'undefined' ? meteorUser.profile[field] : getGlobalSettingAsync(field)
+  }
+  return false
+}
 /**
  * Gets the list of projects for the current user.
  * @param {string[]} projectId - The list of project IDs to get.
@@ -92,50 +103,7 @@ function getProjectListByCustomer(customer) {
   }
   return projects
 }
-/**
- * Mapper function for the totalHoursForPeriod publication.
- * @param {Object} entry - The entry to map.
- * @returns {Object} The mapped entry.
- */
-function totalHoursForPeriodMapper(entry) {
-  let { totalHours } = entry
-  if (Meteor.user()) {
-    if (getUserSetting('timeunit') === 'd') {
-      totalHours = Number(entry.totalHours / getUserSetting('hoursToDays'))
-    }
-    if (getUserSetting('timeunit') === 'm') {
-      totalHours = Number(entry.totalHours * 60)
-    }
-  }
-  return {
-    projectId: Projects.findOne({ _id: entry._id.projectId })?.name,
-    userId: projectResources.findOne({ _id: entry._id.userId })?.name,
-    totalHours,
-  }
-}
 
-/**
- * Mapper function for the dailyTimecard method.
- * @param {Object} entry - The entry to map.
- * @returns {Object} The mapped entry.
- */
-function dailyTimecardMapper(entry) {
-  let { totalHours } = entry
-  if (Meteor.user()) {
-    if (getUserSetting('timeunit') === 'd') {
-      totalHours = Number(entry.totalHours / getUserSetting('hoursToDays'))
-    }
-    if (getUserSetting('timeunit') === 'm') {
-      totalHours = Number(entry.totalHours * 60)
-    }
-  }
-  return {
-    date: entry._id.date,
-    projectId: Projects.findOne({ _id: entry._id.projectId })?.name,
-    userId: projectResources.findOne({ _id: entry._id.userId })?.name,
-    totalHours,
-  }
-}
 /**
  * Builds the selector for the totalHoursForPeriod publication.
  * @param {string[]} projectId - The list of project IDs to get.
@@ -427,16 +395,16 @@ function buildworkingTimeSelector(projectId, period, dates, userId, limit, page)
  * @param {Object} entry - The entry to map.
  * @returns {Object} The mapped entry.
  */
-function workingTimeEntriesMapper(entry) {
+async function workingTimeEntriesMapper(entry) {
   dayjs.extend(customParseFormat)
-  const meteorUser = Meteor.users.findOne({ _id: entry._id.userId })
-  const userBreakStartTime = dayjs(meteorUser?.profile?.breakStartTime ? meteorUser.profile.breakStartTime : getGlobalSetting('breakStartTime'), 'HH:mm')
-  const userBreakDuration = meteorUser?.profile?.breakDuration ? meteorUser.profile.breakDuration : getGlobalSetting('breakDuration')
+  const meteorUser = await Meteor.users.findOneAsync({ _id: entry._id.userId })
+  const userBreakStartTime = dayjs(meteorUser?.profile?.breakStartTime ? meteorUser.profile.breakStartTime : getGlobalSettingAsync('breakStartTime'), 'HH:mm')
+  const userBreakDuration = meteorUser?.profile?.breakDuration ? meteorUser.profile.breakDuration : getGlobalSettingAsync('breakDuration')
   const userBreakEndTime = dayjs(userBreakStartTime, 'HH:mm').add(userBreakDuration, 'hour')
-  const userRegularWorkingTime = meteorUser?.profile?.regularWorkingTime ? meteorUser.profile.regularWorkingTime : getGlobalSetting('regularWorkingTime')
-  const userStartTime = meteorUser?.profile?.dailyStartTime ? meteorUser.profile.dailyStartTime : getGlobalSetting('dailyStartTime')
+  const userRegularWorkingTime = meteorUser?.profile?.regularWorkingTime ? meteorUser.profile.regularWorkingTime : getGlobalSettingAsync('regularWorkingTime')
+  const userStartTime = meteorUser?.profile?.dailyStartTime ? meteorUser.profile.dailyStartTime : getGlobalSettingAsync('dailyStartTime')
   let userEndTime = dayjs(userStartTime, 'HH:mm').add(entry.totalTime, 'hour')
-  if (getGlobalSetting('addBreakToWorkingTime')) {
+  if (await getGlobalSettingAsync('addBreakToWorkingTime')) {
     userEndTime = userEndTime.add(userBreakDuration, 'hour')
   }
   return {
@@ -557,7 +525,7 @@ function adminAuthenticationMixin(methodOptions) {
 function transactionLogMixin(methodOptions) {
   const runFunc = methodOptions.run
   methodOptions.run = async function (args) {
-    if (getGlobalSetting('enableTransactions')) {
+    if (await getGlobalSettingAsync('enableTransactions')) {
       const user = await Meteor.users.findOneAsync({ _id: this.userId }, {
         _id: 1, 'profile.name': 1, emails: 1, isAdmin: 1,
       })
@@ -575,7 +543,6 @@ function transactionLogMixin(methodOptions) {
   }
   return methodOptions
 }
-
 export {
   authenticationMixin,
   adminAuthenticationMixin,
@@ -584,11 +551,11 @@ export {
   checkAdminAuthentication,
   getProjectListById,
   getProjectListByCustomer,
-  totalHoursForPeriodMapper,
-  dailyTimecardMapper,
   buildTotalHoursForPeriodSelector,
   buildDailyHoursSelector,
   workingTimeEntriesMapper,
   buildworkingTimeSelector,
   buildDetailedTimeEntriesForPeriodSelector,
+  getGlobalSettingAsync,
+  getUserSettingAsync,
 }

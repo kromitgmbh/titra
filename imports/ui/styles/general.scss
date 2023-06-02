@@ -345,3 +345,9 @@ button.dp-clear {
 .table > tr:hover {
   background-color: $secondary;
 }
+.btn-reveal {
+  opacity: 0.1;
+  &:hover {
+    opacity: 1;
+  }
+}
