@@ -30,7 +30,13 @@
     "time_entry": "Entrée de temps",
     "class": "Classe",
     "type": "Type",
-    "user": "Utilisateur"
+	"yes": "Oui",
+    "no": "Non",
+    "cancel": "Annuler",
+    "ok": "Ok",
+    "definition": "Definition",
+    "user": "Utilisateur",
+    "global_setting": "Réglage général"
   },
   "navigation": {
     "track": "Suivi",
@@ -85,7 +91,8 @@
     "total_time": "Temps total: ",
     "target": "Cible: ",
     "turnover": "Chiffre d'affaires: ",
-    "number_projects": "Nombre de projets"
+    "number_projects": "Nombre de projets",
+    "summary": "Résumé"
   },
   "project": {
     "title": "Editer le projet",
@@ -106,7 +113,12 @@
     "project_placeholder": "Sélectionner un projet",
     "my_project_placeholder": "Mon projet",
     "not_billable": "Non facturable",
-    "billing_budget": "Facturation & Budget"
+    "billing_budget": "Facturation & Budget",
+    "default_task": "Tâche par défaut",
+    "default_task_help": "Cette valeur sera utilisée comme tâche par défaut lors du suivi du temps sur ce projet.",
+    "gitlab_integration": "Intégration de GitLab",
+    "gitlab_query": "Paramètre de la requête",
+    "gitlab_help": "Vous pouvez utiliser tous les paramètres de requête disponibles dans l'API GitLab Issues, par exemple"
   },
   "settings": {
     "user_profile": "Profil utilisateur",
@@ -115,6 +127,7 @@
     "en": "Anglais",
     "fr": "Français",
     "zh": "Chinois",
+    "ru": "Russe",
     "user_interface": "Interface utilisateur",
     "theme": "Thème",
     "auto_detect": "Détection automatique",
@@ -160,12 +173,41 @@
     "custom_css": "CSS personnalisé",
     "custom_html": "HTML personnalisé",
     "custom_placeholder_content": "Contenu de placeholder personnalisé",
-    "mail_from_address": "Courrier de l'adresse",
-    "mail_from_name": "Courriel du nom",
+    "show_custom_fields_in_details": "Afficher/Exporter les champs personnalisés dans la vue détaillée ?",
+    "show_customer_in_details": "Afficher/eEporter le champ client dans la vue détaillée ?",
+    "mail_from_address": "Adresse de l'expéditeur",
+    "mail_from_name": "Nom de l'expéditeur",
     "show_name_custom_field_in_details": "Afficher le nom des champs personnalisés dans la vue détaillée ?",
     "enable_open_id_connect": "Activer OpenID Connect ?",
     "enable_log_for_other_users": "L'administrateur peut-il enregistrer du temps pour d'autres utilisateurs ?",
-    "user_search_num_results": "Nombre d'utilisateurs affichés dans la recherche d'utilisateurs (par défaut 5)"
+    "holiday": "Vacances",
+    "holiday_country": "Pays des vacances",
+    "holiday_state": "Etat des vacances",
+    "holiday_region": "Région des vacances",
+    "xframe_options_origin": "X-Frame-Options header origin URL",
+    "project_search_num_results": "Nombre de projets affichés dans la recherche de projets (par défaut 5)",
+    "task_search_num_results": "Nombre de tâches affichées dans la recherche de tâches (par défaut 5)",
+    "user_search_num_results": "Nombre d'utilisateurs affichés dans la recherche d'utilisateurs (par défaut 5)",
+    "categories": {
+      "global": "Globaux",
+      "interfaces": "Interfaces",
+      "customization": "Personnalisation",
+      "login": "Connexion",
+      "holidays": "Vacances",
+      "security": "Securité",
+      "workingtime_defaults": "Affichage par défaut du temps de travail",
+      "email": "E-mail",
+      "user_defaults": "Valeurs par défaut de l'utilisateur",
+      "time_tracking": "Suivi du temps",
+      "date_settings": "Réglages de la date",
+      "no_category": "Pas de catégorie"
+    },
+    "gitlab_url": "URL de l'instance GitLab",
+    "gitlab_api_token": "Token API GitLab",
+    "enable_gitlab": "Activer l'intégration Gitlab ?",
+    "rounding": "Arrondi",
+    "rounding_tooltip": "Le temps suivi sera arrondi en fonction de l'unité de temps sélectionnée et de la valeur d'arrondi spécifiée, par exemple l'unité de temps minutes et la valeur d'arrondi 15 arrondiront au quart d'heure supérieur (entrée 5 minutes > résultat après arrondi à 15 minutes).",
+    "enable_siwapp": "Activer l'intégration Siwapp ?"
   },
   "customer": {
     "select_customer": "Selectionner un client",
@@ -197,7 +239,13 @@
     "searching": "Recherche de tâches ...",
     "storedTasks": "Tâches sauvegardées",
     "search": "Recherche de tâches",
-    "lastUsed": "Dernière utilisation"
+    "lastUsed": "Dernière utilisation",
+    "startDate": "Début prévu",
+    "endDate": "Fin prévue",
+    "duration": "Durée",
+    "dependencies": "Dépendances",
+    "newTask": "Nouvelle tâche",
+    "editTask": "Modifier la tâche"
   },
   "details": {
     "filter": "Filtre",
@@ -218,7 +266,8 @@
     "exported": "Exporté",
     "billed": "Facturé",
     "notBillable": "Non-facturable",
-    "charts": "Graphiques"
+    "charts": "Graphiques",
+	"markAsBilled": "Marquer comme facturé"
   },
   "dashboard": {
     "share": "Partager le dashboard",
@@ -287,7 +336,9 @@
     "access_rights_updated": "Droits d'accès au projet mis à jour.",
     "success": "Changements traités avec succès.",
     "wekan_error": "Impossible de récupérer les cartes Wekan. Vérifiez vos réglages!",
-    "zammad_error": "Impossible de récupérer les tickets Zammad. Vérifiez vos réglages!"
+    "zammad_error": "Impossible de récupérer les tickets Zammad. Vérifiez vos réglages!",
+    "user_inactive": "Cet utilisateur a été désactivé, veuillez l'activer pour continuer.",
+    "extensionAlreadyLaunched": "L'extension est déjà en cours d'exécution."
   },
   "login": {
     "password": "Mot de passe",
@@ -311,7 +362,12 @@
     "permanent_account": "Créer un compte permanent",
     "email_unknown": "Désolé, mais nous ne trouvons pas de compte avec ce courriel.",
     "anonymous_account_warning": "Vous êtes actuellement connecté avec un compte temporaire qui ne peut être utilisé que sur ce compte. Si vous voulez utiliser Titra sur d'autres appareils, veuillez créer un utilisateur permanent grace à votre courriel et mot de passe ci-dessous.",
-    "registration_disabled_warning": "L'enregistrement de nouveaux utilisateurs est désactivé sur cette instance."
+    "registration_disabled_warning": "L'enregistrement de nouveaux utilisateurs est désactivé sur cette instance.",
+    "invalid_email": "Adresse e-mail invalide",
+    "password_insufficient": "Le mot de passe doit comporter au moins 8 caractères.",
+    "password_strong": "Force du mot de passe : fort",
+    "password_medium": "Force du mot de passe : moyenne",
+    "password_weak": "Force du mot de passe : faible"
   },
   "about": {
     "documentation": "Documentation",
@@ -335,6 +391,7 @@
     "user_updated": "L'information de cet utilisateur a été mise à jour.",
     "user_deleted": "Cet utilisateur a été supprimé",
     "user_deletion_confirmation": "Voulez-vous réellement supprimer cet utilisateur (cette action ne peut pas être annulée)?",
+    "user_inactive": "Inactif ?",
     "value": "Valeur",
     "globalsettings_help": "Besoin d'aide pour définir les bonnes valeurs ? Consultez le Titra",
     "extensions": "Extensions",
@@ -346,15 +403,32 @@
     "addcustomfield": "Nouveau champ personnalisé",
     "possible_values": "Valeurs possibles",
     "possible_values_hint": "Valeurs séparées par une virgule (par exemple a,b,c,d).",
+    "category": "Catégorie",
+    "category_hint": "La catégorie est utilisée pour regrouper visuellement les champs personnalisés.",
     "no_customfields": "Aucun champ personnalisé défini pour le moment.",
     "no_extensions": "Pas d'extension installée pour le moment.",
     "extension_removed": "L'extension a été supprimée avec succès.",
+    "edit_custom_field": "Modifier un champ personnalisé",
     "oidc": "OpenID Connect",
-    "oidc_configure": "Vous devrez créer une configuration client OpenID Connect avec votre fournisseur. Définissez les URL de rappel d'application sur"
+    "oidc_configure": "Vous devrez créer une configuration client OpenID Connect avec votre fournisseur. Définissez les URL de rappel d'application sur",
+    "custom_field_name_hint": "Les espaces et les caractères spéciaux ne sont pas autorisés.",
+    "inboundinterfaces": "Interfaces entrantes",
+    "add_update_inbound_interface": "Ajouter ou mettre à jour une interface entrante",
+    "process_data": "Script de traitement des données",
+    "processdata_hint":"Ce JavaScript sera exécuté chaque fois que des données d'interface entrantes seront demandées. Le script doit renvoyer un objet JSON (ou une promesse renvoyant un tel objet) avec la structure suivante : [{name:'name', description:'description'}].",
+    "active": "Interface entrante active ?"
   },
   "wekan": {
     "list": "Liste Wekan",
     "swimlane": "Couloir Wekan",
     "instance_url": "URL de l'API de l'instance Wekan"
+  },
+  "transactions": {
+    "transactions": "Transactions",
+    "enable_transactions": "Activer les logs des transactions",
+    "user": "Utilisateur",
+    "method": "Méthode",
+    "payload": "Charge utile",
+    "timestamp": "Horodatage"
   }
 }
