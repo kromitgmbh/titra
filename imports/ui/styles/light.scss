@@ -13,7 +13,7 @@ $progress-bg: $secondary;
 
 
 // .card.mb-3.all-projects-bg { // schatten 
-//   background-image:         linear-gradient(to right bottom, $ap-card-bg-color-left-top, $ap-card-bg-color-center, $ap-card-bg-color-bottom-right) !important;
+// background-image:         linear-gradient(to right bottom, $ap-card-bg-color-left-top, $ap-card-bg-color-center, $ap-card-bg-color-bottom-right) !important;
 // }
 
 // //AllProjectsCard
@@ -25,17 +25,33 @@ $progress-bg: $secondary;
 .is-light-theme {
   color:                white;
 }
-.card-header.js-toggle-timecards {                     //Time tracked table
+
+select#timeunit {
+  background-color:     inherit;
+  border:               none;
+  outline:              none;
+  color:                #fff;
+  //-webkit-appearance:   none;                           // Cursor
+}
+svg.rounded {                                           // User Foto 
+  opacity: 0.7;
+  transition:           opacity 0.3s ease;
+}
+svg.rounded:hover {                                     
+    opacity:                  1;
+    cursor:             pointer;
+}
+.card-header.js-toggle-timecards {                     //  Time tracked table
   color:                $primary !important;
   font-weight:          bold;
 }
-svg.svg-inline--fa.fa-chevron-down.float-end {         //Icon Time tracked table
+svg.svg-inline--fa.fa-chevron-down.float-end {         //  Icon Time tracked table
   color:                $primary !important;
 }
-.progress.w-100 {
-  border-bottom-color:  $primary !important;
+.css-progresspopup .progress.w-100{                    //  Progress-bar
+  --bs-progress-height: 1.3rem !important;
 }
-small.text-nowrap {                                    //Progress %
+small.text-nowrap {                                    //  Progress percent
     font-size:          small;
 }
 .btn-primary {

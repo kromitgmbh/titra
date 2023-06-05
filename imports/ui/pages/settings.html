@@ -34,11 +34,14 @@
           </div>
           <div class="mb-3 form-floating">
             <select class="form-select form-control" id="timeunit">
-                <option value="m">{{t "globals.minute"}}</option>
-                <option value="h">{{t "globals.hour"}}</option>
-                <option value="d">{{t "globals.day"}}</option>
+              <option value="m">{{t "globals.minute"}}</option>
+              <option value="h">{{t "globals.hour"}}</option>
+              <option value="d">{{t "globals.day"}}</option>
             </select>
             <label class="form-label" for="timeunit">{{t "settings.time_unit"}}</label>
+            <!-- <span style="position: absolute; top: 0; right: 0; margin-top: 5px; margin-right: 10px;">
+              <i class="fas fa-chevron-down fa-xs"></i>
+            </span> -->
           </div>
           {{#if displayHoursToDays}}
             <div class="mb-3 form-floating">

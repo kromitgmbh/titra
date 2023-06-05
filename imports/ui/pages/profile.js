@@ -49,6 +49,12 @@ Template.profile.events({
   //   event.preventDefault()
   //   Meteor.logout()
   // },
+
+  'click svg.rounded': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.$('#avatarImage').click()
+  },
+  
   'change #avatarImage': (event, templateInstance) => {
     if (event.currentTarget.files && event.currentTarget.files[0]) {
       const reader = new FileReader()

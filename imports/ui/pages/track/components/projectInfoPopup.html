@@ -29,11 +29,14 @@
                 </div>
                 {{/unless}}
             </div>
+         <div class="css-progresspopup">
             {{#if target}}
-                {{#with project}}
-                    {{>projectProgress}}
-                {{/with}}
-            {{/if}}
+            {{#with project}}
+                {{>projectProgress}}
+            {{/with}}
+        {{/if}}
+         </div>   
+            
           </div>
         </div>
     </div>

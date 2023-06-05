@@ -42,17 +42,27 @@
 
 <template name="weektablerow">
     <tr>
-      <td scope="row">
-        <a href="#" style="color:inherit" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
+      <!-- <td scope="row">
+        <a href="#" style="color:inherit; border-left-color: {{project.color}}; border-left-width:thick" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
+      </td> -->
+
+     
+      <td scope="row" style="color:inherit; border-left-color: {{getColorForProject projectId}}; border-left-width:thick;">
+        <a href="#" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
       </td>
+      
+      
+      
       {{#if weekDays}}
         {{#each weekday in weekDays}}
-          <td class="ps-3">{{getTotalForDayPerProject projectId weekday}}</td>
+          <td class="ps-3" >{{getTotalForDayPerProject projectId weekday}}</td>
         {{/each}}
       {{/if}}
       <td class="text-center">{{#if tasks}}Σ{{/if}}</td>
     </tr>
-  <tbody data-project-id="{{projectId}}" class="collapse">
+  <tbody data-project-id="{{projectId}}" class="collapse" >
+    <tr class="js-new-line-placeholder"></tr>
+    <tr><td colspan="9"><button type="button" class="btn btn-sm btn-primary js-newline"><i class="fa fa-plus"></i> {{t "navigation.newLine"}}</button></td></tr> 
     {{#each task in tasks}}
       <tr>
         <td>
@@ -70,7 +80,7 @@
         <td class="pt-2">{{getTotalForTask(task)}}</td>
       </tr>
     {{/each}}
-    <tr class="js-new-line-placeholder"></tr>
-    <tr><td colspan="9"><button type="button" class="btn btn-sm btn-primary js-newline"><i class="fa fa-plus"></i> {{t "navigation.newLine"}}</button></td></tr> 
+    <!-- <tr class="js-new-line-placeholder"></tr>
+    <tr><td colspan="9"><button type="button" class="btn btn-sm btn-primary js-newline"><i class="fa fa-plus"></i> {{t "navigation.newLine"}}</button></td></tr>  -->
   </tbody>
 </template>

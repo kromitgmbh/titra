@@ -108,6 +108,39 @@ const updateSettings = new ValidatedMethod({
     })
   },
 })
+
+const updateTimeUnit = new ValidatedMethod({
+  name: 'updateTimeUnit',
+  validate(args) {
+    
+    check(args.timeunit, String)
+  
+  },
+  mixins: [authenticationMixin, transactionLogMixin],
+  async run({
+    
+    timeunit,
+   
+  }) {
+    await Meteor.users.updateAsync({ _id: this.userId }, {
+      $set: {
+        
+        'profile.timeunit': timeunit,
+       
+        
+      },
+    })
+  },
+})
+
+
+
+
+
+
+
+
+
 /**
  * Resets a user's settings.
  * @throws {Meteor.Error} If user is not authenticated.
@@ -146,8 +179,6 @@ const resetUserSettings = new ValidatedMethod({
 /**
  * Updates a user's profile.
  * @param {string} args.name - The name to use for the user.
- * @param {string} args.theme - The theme to use for the user.
- * @param {string} args.language - The language to use for the user.
  * @param {string} args.avatar - The avatar to use for the user.
  * @param {string} args.avatarColor - The avatar color to use for the user.
  * @throws {Meteor.Error} If user is not authenticated.
@@ -158,15 +189,13 @@ const updateProfile = new ValidatedMethod({
   validate(args) {
     check(args, {
       name: String,
-      theme: String,
-      language: String,
       avatar: Match.Maybe(String),
       avatarColor: Match.Maybe(String),
     })
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
-    name, theme, language, avatar, avatarColor,
+    name, avatar, avatarColor,
   }) {
     if (!avatar) {
       await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.avatar': '' } })
@@ -174,8 +203,6 @@ const updateProfile = new ValidatedMethod({
     await Meteor.users.updateAsync({ _id: this.userId }, {
       $set: {
         'profile.name': name,
-        'profile.theme': theme,
-        'profile.language': language,
         'profile.avatar': avatar,
         'profile.avatarColor': avatarColor,
       },
