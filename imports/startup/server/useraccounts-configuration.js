@@ -1,6 +1,6 @@
 import { Accounts } from 'meteor/accounts-base'
 import dockerNames from 'docker-names'
-import { getGlobalSetting } from '../../utils/frontend_helpers'
+import { getGlobalSettingAsync } from '../../utils/server_method_helpers'
 import initNewUser from '../../api/projects/setup.js'
 
 Accounts.setAdditionalFindUserOnExternalLogin(({serviceName, serviceData}) => {
@@ -41,7 +41,8 @@ Accounts.onCreateUser((options, user) => {
   }
   return localUser
 })
-
-Accounts.emailTemplates.from = `${getGlobalSetting('fromName')} <${getGlobalSetting('fromAddress')}>`
+const fromName = await getGlobalSettingAsync('fromName')
+const fromAddress = await getGlobalSettingAsync('fromAddress')
+Accounts.emailTemplates.from = `${fromName} <${fromAddress}>`
 Accounts.emailTemplates.enrollAccount.subject = (user) => `Welcome to Awesome Town, ${user.profile.name}`
-Accounts.emailTemplates.resetPassword.from = () => `${getGlobalSetting('fromName')} Password Reset <${getGlobalSetting('fromAddress')}>`
+Accounts.emailTemplates.resetPassword.from = () => `${fromName} Password Reset <${fromAddress}>`

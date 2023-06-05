@@ -29,6 +29,8 @@
                 <option value="d">{{t "globals.day"}}</option>
                 <option value="w">{{t "globals.week"}}</option>
                 <option value="M">{{t "globals.month"}}</option>
+                <option value="T">{{t "tracktime.timeline"}}</option>
+
             </select>
             <label class="form-label" for="tracktimeview">{{t "settings.track_time_view"}}</label>
           </div>
@@ -134,7 +136,7 @@
               </div>
           </div>
         </div>
-        {{#if getGlobalSetting "enableGitlab"}}
+        {{#if getGlobalSetting "enableSiwapp"}}
           <div class="card mb-3">
             <div class="card-header">Siwapp</div>
               <div class="card-block">
@@ -149,7 +151,7 @@
               </div>
           </div>
         {{/if}}
-        {{#if getGlobalSetting "enableGitlab"}}
+        {{#if getGlobalSetting "enableZammad"}}
           <div class="card mb-3">
             <div class="card-header">Zammad</div>
             <div class="card-block">

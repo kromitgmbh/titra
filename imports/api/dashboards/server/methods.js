@@ -1,8 +1,7 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { Dashboards } from '../dashboards'
 import { periodToDates } from '../../../utils/periodHelpers.js'
-import { authenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers.js'
-import { getGlobalSetting } from '../../../utils/frontend_helpers'
+import { authenticationMixin, transactionLogMixin, getGlobalSettingAsync } from '../../../utils/server_method_helpers.js'
 
 /**
  * Adds a dashboard.
@@ -31,8 +30,8 @@ const addDashboard = new ValidatedMethod({
   }) {
     const { startDate, endDate } = periodToDates(timePeriod)
     const meteorUser = await Meteor.users.findOneAsync({ _id: this.userId })
-    let timeunit = getGlobalSetting('timeunit')
-    let hoursToDays = getGlobalSetting('hoursToDays')
+    let timeunit = await getGlobalSettingAsync('timeunit')
+    let hoursToDays = await getGlobalSettingAsync('hoursToDays')
     if (meteorUser.profile.timeunit) {
       timeunit = meteorUser.profile.timeunit
     }

@@ -23,6 +23,7 @@ import './components/weektable.js'
 import './components/calendar.js'
 import './components/usersearch.js'
 import '../../shared components/backbutton.js'
+import './components/timeline.js'
 
 function isHoliday(date) {
   const templateInstance = Template.instance()
@@ -473,6 +474,7 @@ Template.tracktimemain.helpers({
   showDay: () => (Template.instance().timetrackview.get() === 'd' ? 'active' : ''),
   showWeek: () => (Template.instance().timetrackview.get() === 'w' ? 'active' : ''),
   showMonth: () => (Template.instance().timetrackview.get() === 'M' ? 'active' : ''),
+  showTimeline: () => (Template.instance().timetrackview.get() === 'T' ? 'active' : ''),
 })
 
 Template.tracktimemain.events({
@@ -489,5 +491,10 @@ Template.tracktimemain.events({
     event.preventDefault()
     FlowRouter.setParams({ projectId: '' })
     FlowRouter.setQueryParams({ view: 'M' })
+  },
+  'click .js-timeline': (event) => {
+    event.preventDefault()
+    FlowRouter.setParams({ projectId: '' })
+    FlowRouter.setQueryParams({ view: 'T' })
   },
 })

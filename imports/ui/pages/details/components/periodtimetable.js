@@ -12,8 +12,8 @@ import {
   getUserSetting,
   getUserTimeUnitVerbose,
   addToolTipToTableCell,
+  totalHoursForPeriodMapper,
 } from '../../../../utils/frontend_helpers.js'
-import { totalHoursForPeriodMapper } from '../../../../utils/server_method_helpers.js'
 
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
   dayjs.extend(utc)

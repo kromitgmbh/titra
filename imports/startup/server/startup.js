@@ -3,7 +3,7 @@ import { BrowserPolicy } from 'meteor/browser-policy-framing'
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter'
 import Extensions from '../../api/extensions/extensions.js'
 import { defaultSettings, Globalsettings } from '../../api/globalsettings/globalsettings.js'
-import { getGlobalSetting } from '../../utils/frontend_helpers'
+import { getGlobalSettingAsync } from '../../utils/server_method_helpers.js'
 
 Meteor.startup(async () => {
   AccountsAnonymous.init()
@@ -20,7 +20,7 @@ Meteor.startup(async () => {
     // eslint-disable-next-line i18next/no-literal-string
     Globalsettings.update({ name: 'enableAnonymousLogins' }, { $set: { value: Meteor.settings.disablePublic === 'true' } })
   }
-  if (getGlobalSetting('enableOpenIDConnect')) {
+  if (await getGlobalSettingAsync('enableOpenIDConnect')) {
     import('../../utils/oidc_server').then((Oidc) => {
       Oidc.registerOidc()
     })
@@ -36,8 +36,8 @@ Meteor.startup(async () => {
       eval(extension.server)
     }
   }
-  if (getGlobalSetting('XFrameOptionsOrigin')) {
-    BrowserPolicy.framing.restrictToOrigin(getGlobalSetting('XFrameOptionsOrigin'))
+  if (await getGlobalSettingAsync('XFrameOptionsOrigin')) {
+    BrowserPolicy.framing.restrictToOrigin(await getGlobalSettingAsync('XFrameOptionsOrigin'))
   }
   if (process.env.NODE_ENV !== 'development') {
     // eslint-disable-next-line no-console

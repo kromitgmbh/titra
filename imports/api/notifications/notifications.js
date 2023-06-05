@@ -2,7 +2,7 @@ import { Mongo } from 'meteor/mongo'
 import { Email } from 'meteor/email'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { getGlobalSetting } from '../../utils/frontend_helpers'
+import { getGlobalSettingAsync } from '../../utils/server_method_helpers'
 
 const Notifications = new Mongo.Collection('notifications')
 const DailyMailLimit = new Mongo.Collection('dailymaillimit')
@@ -12,8 +12,8 @@ async function addNotification(message, userId) {
   const meteorUser = await Meteor.users.findOneAsync({ _id: userId, inactive: { $ne: true } })
   const start = dayjs.utc().startOf('day').toDate()
   const end = dayjs.utc().endOf('day').toDate()
-  const mailFrom = getGlobalSetting('fromAddress')
-  const mailName = getGlobalSetting('fromName')
+  const mailFrom = await getGlobalSettingAsync('fromAddress')
+  const mailName = await getGlobalSettingAsync('fromName')
   let recipient = ''
   if (meteorUser) {
     recipient = meteorUser.emails[0].address

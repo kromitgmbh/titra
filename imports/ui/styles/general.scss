@@ -39,6 +39,7 @@
 
 @import "{}/node_modules/bootstrap/scss/functions";
 @import "{}/node_modules/bootstrap/scss/variables";
+$enable-dark-mode: false;
 @import "{}/node_modules/bootstrap/scss/maps";
 @import "{}/node_modules/bootstrap/scss/mixins";
 @import "{}/node_modules/bootstrap/scss/utilities";
@@ -344,4 +345,10 @@ button.dp-clear {
 }
 .table > tr:hover {
   background-color: $secondary;
+}
+.btn-reveal {
+  opacity: 0.1;
+  &:hover {
+    opacity: 1;
+  }
 }

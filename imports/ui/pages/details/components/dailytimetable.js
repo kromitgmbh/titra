@@ -12,9 +12,9 @@ import {
   getUserSetting,
   getUserTimeUnitVerbose,
   addToolTipToTableCell,
+  dailyTimecardMapper,
 } from '../../../../utils/frontend_helpers'
 import { i18nReady, t } from '../../../../utils/i18n.js'
-import { dailyTimecardMapper } from '../../../../utils/server_method_helpers'
 
 Template.dailytimetable.onCreated(function dailytimetablecreated() {
   dayjs.extend(utc)

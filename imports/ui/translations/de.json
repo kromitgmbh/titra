@@ -77,7 +77,8 @@
     "start_timer": "Timer starten",
     "start_time": "Beginn",
     "timer": "Zeitmesser",
-    "user_placeholder": "Benutzer eingeben oder suchen ..."
+    "user_placeholder": "Benutzer eingeben oder suchen ...",
+    "timeline": "Zeitleiste"
   },
   "overview": {
     "all_projects": "Alle Projekte",
@@ -132,6 +133,7 @@
     "en": "Englisch",
     "fr": "Französisch",
     "zh": "Chinesisch",
+    "ru": "Russisch",
     "user_interface": "Benutzeroberfläche",
     "theme": "Thema",
     "auto_detect": "Automatisch",

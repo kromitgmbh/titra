@@ -1,6 +1,8 @@
 import namedavatar from 'namedavatar'
 import { i18nReady, t } from './i18n.js'
 import { Globalsettings } from '../api/globalsettings/globalsettings.js'
+import { projectResources } from '../api/users/users.js'
+import Projects from '../api/projects/projects.js'
 
 const clientTimecards = new Mongo.Collection('clientTimecards')
 
@@ -162,6 +164,49 @@ function waitForElement(templateInstance, selector) {
     }
   })
 }
+/**
+ * Mapper function for the dailyTimecard method.
+ * @param {Object} entry - The entry to map.
+ * @returns {Object} The mapped entry.
+ */
+function dailyTimecardMapper(entry) {
+  let { totalHours } = entry
+  if (Meteor.user()) {
+    if (getUserSetting('timeunit') === 'd') {
+      totalHours = Number(entry.totalHours / getUserSetting('hoursToDays'))
+    }
+    if (getUserSetting('timeunit') === 'm') {
+      totalHours = Number(entry.totalHours * 60)
+    }
+  }
+  return {
+    date: entry._id.date,
+    projectId: Projects.findOne({ _id: entry._id.projectId })?.name,
+    userId: projectResources.findOne({ _id: entry._id.userId })?.name,
+    totalHours,
+  }
+}
+/**
+ * Mapper function for the totalHoursForPeriod publication.
+ * @param {Object} entry - The entry to map.
+ * @returns {Object} The mapped entry.
+ */
+function totalHoursForPeriodMapper(entry) {
+  let { totalHours } = entry
+  if (Meteor.user()) {
+    if (getUserSetting('timeunit') === 'd') {
+      totalHours = Number(entry.totalHours / getUserSetting('hoursToDays'))
+    }
+    if (getUserSetting('timeunit') === 'm') {
+      totalHours = Number(entry.totalHours * 60)
+    }
+  }
+  return {
+    projectId: Projects.findOne({ _id: entry._id.projectId })?.name,
+    userId: projectResources.findOne({ _id: entry._id.userId })?.name,
+    totalHours,
+  }
+}
 export {
   addToolTipToTableCell,
   getWeekDays,
@@ -178,4 +223,6 @@ export {
   getUserTimeUnitAbbreviated,
   showToast,
   waitForElement,
+  dailyTimecardMapper,
+  totalHoursForPeriodMapper,
 }

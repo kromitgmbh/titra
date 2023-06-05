@@ -1,0 +1,35 @@
+<template name="timeline">
+    <div class="tab-borders">
+        <table class="table">
+            <thead class="tab-borders sticky-top shadow-sm" style="top:5.3rem;z-index:1000;">
+            <tr>
+                <th scope="col" style="min-width:5rem;">{{t "globals.date"}}</th>
+                {{#each project in projectList}}
+                    <th scope="col" style="max-width:5rem;" class="text-truncate">{{getProjectName project}}</th>
+                {{/each}}
+            </tr>
+            </thead>
+            <tbody class="table-body table-group-divider">
+                {{#each date in dateRange}}
+                <tr data-date="{{formatDate date}}" class="{{highlightToday date}}">
+                    <th scope="row">
+                    {{formatDate date}}
+                    <br/>
+                    <button data-date={{date}} class="js-add-time-entry-date btn btn-sm btn-reveal"><i class="fa fa-plus"></i> {{t "project.add"}}</button>
+                    </th>
+                    {{#each project in projectList}}
+                        <td style="max-width:5rem; transition: width 2s;" class="overflow-hidden">
+                            {{#each entry in getTimeEntriesForDateAndProject date project}}
+                                <span data-tcid="{{entry._id}}" class="badge js-edit-time-entry" style="background-color:{{getProjectColor project}};cursor:pointer;">{{entry.task}} ({{entry.hours}})</span>
+                                <br/>
+                            {{/each}}
+                            <button data-projectid="{{project}}" data-date="{{date}}" class="btn btn-sm btn-reveal js-add-time-entry-project"><i class="fa fa-plus"></i> {{t "project.add"}}</button>
+                        </td>
+                    {{/each}}
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+      </div>
+    {{>editTimeEntryModal tcid=tcid selectedDate=selectedDate selectedProjectId=selectedProjectId}}
+</template>

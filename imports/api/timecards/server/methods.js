@@ -7,7 +7,7 @@ import Timecards from '../timecards.js'
 import Tasks from '../../tasks/tasks.js'
 import Projects from '../../projects/projects.js'
 import { t } from '../../../utils/i18n.js'
-import { emojify, getGlobalSetting } from '../../../utils/frontend_helpers'
+import { emojify } from '../../../utils/frontend_helpers'
 import { timeInUserUnit } from '../../../utils/periodHelpers.js'
 import {
   authenticationMixin,
@@ -17,6 +17,7 @@ import {
   buildworkingTimeSelector,
   workingTimeEntriesMapper,
   buildDetailedTimeEntriesForPeriodSelector,
+  getGlobalSettingAsync,
 } from '../../../utils/server_method_helpers.js'
 /**
  * Inserts a new timecard into the Timecards collection.
@@ -56,7 +57,7 @@ async function checkTimeEntryRule({
     },
   })
   try {
-    if (!vm.run(getGlobalSetting('timeEntryRule'))) {
+    if (!vm.run(await getGlobalSettingAsync('timeEntryRule'))) {
       throw new Meteor.Error('notifications.time_entry_rule_failed')
     }
   } catch (error) {
@@ -161,14 +162,14 @@ async function upsertTimecard(projectId, task, date, hours, userId) {
   )
   return 'notifications.success'
 }
-function checkProjectAdministratorAndUser(projectId, administratorId, userId) {
+async function checkProjectAdministratorAndUser(projectId, administratorId, userId) {
   const targetProject = Projects.findOne({ _id: projectId })
   if (!targetProject
       || !(targetProject.userId === administratorId
       || targetProject.admins.indexOf(administratorId) >= 0)) {
     throw new Meteor.Error('notifications.only_administrator_can_register_time')
   }
-  const user = Meteor.users.findOne({ 'profile.name': userId })
+  const user = await Meteor.users.findOneAsync({ 'profile.name': userId })
   if (!user) {
     throw new Meteor.Error('notifications.user_not_found')
   }
@@ -206,10 +207,9 @@ const insertTimeCardMethod = new ValidatedMethod({
   }) {
     let { userId } = this
     if (user !== userId) {
-      userId = checkProjectAdministratorAndUser(projectId, userId, user)
+      userId = await checkProjectAdministratorAndUser(projectId, userId, user)
     }
-
-    await checkTimeEntryRule({
+    const check = await checkTimeEntryRule({
       userId, projectId, task, state: 'new', date, hours,
     })
     await insertTimeCard(projectId, task, date, hours, userId, customfields)
@@ -291,7 +291,7 @@ const updateTimeCard = new ValidatedMethod({
   }) {
     let { userId } = this
     if (user !== userId) {
-      userId = checkProjectAdministratorAndUser(projectId, userId, user)
+      userId = await checkProjectAdministratorAndUser(projectId, userId, user)
     }
     const timecard = await Timecards.findOneAsync({ _id })
     await checkTimeEntryRule({
@@ -607,7 +607,7 @@ const getWorkingHoursForPeriod = new ValidatedMethod({
     workingHoursObject.totalEntries = totalEntries
     const workingHoursTimeCardsRaw = await Timecards.rawCollection().aggregate(aggregationSelector)
       .toArray()
-    const workingHours = workingHoursTimeCardsRaw.map(workingTimeEntriesMapper)
+    const workingHours = await Promise.all(workingHoursTimeCardsRaw.map(workingTimeEntriesMapper))
     workingHoursObject.workingHours = workingHours
     return workingHoursObject
   },
@@ -634,9 +634,17 @@ const setTimeEntriesState = new ValidatedMethod({
   mixins: [authenticationMixin, transactionLogMixin],
   async run({ timeEntries, state }) {
     if (state === 'exported') {
-      await Timecards.updateAsync({ _id: { $in: timeEntries }, state: { $in: ['new', undefined] } }, { $set: { state } }, { multi: true })
+      await Timecards.updateAsync(
+        { _id: { $in: timeEntries } },
+        { $set: { state } },
+        { multi: true },
+      )
     } else if (state === 'billed') {
-      await Timecards.updateAsync({ _id: { $in: timeEntries }, state: { $ne: 'notBillable' } }, { $set: { state } }, { multi: true })
+      await Timecards.updateAsync(
+        { _id: { $in: timeEntries } },
+        { $set: { state } },
+        { multi: true },
+      )
     } else {
       await Timecards.updateAsync(
         { _id: { $in: timeEntries } },
