@@ -367,7 +367,7 @@ Template.detailtimetable.events({
     const selector = structuredClone(templateInstance.selector.get()[0])
     selector.state = { $in: ['new', undefined] }
     for (const timeEntry of Timecards
-      .find(selector, templateInstance.selector.get()[1])
+      .find(templateInstance.selector.get()[0], templateInstance.selector.get()[1])
       .fetch().map(detailedDataTableMapper)) {
       const row = []
       for (const attribute of timeEntry) {
@@ -420,7 +420,7 @@ Template.detailtimetable.events({
     const selector = structuredClone(templateInstance.selector.get()[0])
     selector.state = { $in: ['new', undefined] }
     for (const timeEntry of Timecards
-      .find(selector, templateInstance.selector.get()[1]).fetch()
+      .find(templateInstance.selector.get()[0], templateInstance.selector.get()[1]).fetch()
       .map(detailedDataTableMapper)) {
       const row = []
       let index = 0
