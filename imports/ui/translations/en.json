@@ -64,7 +64,8 @@
     "nextWeek": "Next week",
     "newLine": "New task",
     "cancel": "Cancel",
-    "saving": "Saving ..."
+    "saving": "Saving ...",
+    "timeUnit_message": "Definition of the time unit for your tasks" 
   },
   "tracktime": {
     "no_time": "No time tracked yet.",
@@ -74,9 +75,10 @@
     "month_drag_help_text": "You can drag projects on a date to track time",
     "today": "Today",
     "actions": "Actions",
-    "start_timer": "Start timer",
+    "start_timer": "Start stopwatch",
     "start_time": "Start time",
-    "timer": "Timer",
+    "timer": "Stopwatch",
+    "timerMessage": "By using a stopwatch, you can track the time spent completing a specific task",
     "user_placeholder": "Enter or search for user ...",
     "timeline": "Timeline"
   },
@@ -220,7 +222,6 @@
     "all": "All customers"
   },
   "limit": {
-    "entries": "row lines",
     "show": "Show row lines",
     "all": "All"
   },
@@ -278,6 +279,7 @@
   },
   "dashboard": {
     "share": "Share project dashboard",
+    "shareMessage": "You have the opportunity to share a link of the project",
     "copy_instructions": "Copy & paste the link above to share your project information with someone.",
     "security_notice": "This dashboard is accessible to everybody on the web through this link.",
     "time_per_date": "Time per date",
@@ -437,5 +439,9 @@
     "method": "Method",
     "payload": "Payload",
     "timestamp": "Timestamp"
+  },
+  "weektable": {
+    "sumProject_message": "The sum per project",
+    "sum_per_day":  "The sum per day"
   }
 }

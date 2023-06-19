@@ -502,4 +502,17 @@ g > text {
 #period {
     background-color:           $input-button-background-color !important;
 }
+select#language, select#theme, 
+select#holidayCountry, select#holidayState,
+select#holidayRegion, select#timetrackview {            // Settings Bootstrap fixed
+
+background:                 #272727 !important;
+}
+table.table.table-sm.mb-0 {                             // Update Bootstrap fixed 
+    --bs-table-bg:          #2d2d2d!important;
+}
+.tooltip-inner {
+color:                      white !important;         // Tooltip color 
+  }
 @import "{}/imports/ui/styles/general.scss";
+

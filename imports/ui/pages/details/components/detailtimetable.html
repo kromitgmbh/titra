@@ -6,7 +6,7 @@
                 {{#if detailTimeEntries}}
                     <button type="button"  class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
                     <button type="button"  class="btn btn-secondary border js-export-xlsx"><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
-                    <button type="button"  class="btn btn-secondary border js-share"><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
+                    <button type="button"  class="btn btn-secondary border js-share" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{t 'dashboard.shareMessage'}}"><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
                     {{#if showInvoiceButton}}
                         <button type="button"  class="btn btn-secondary border js-invoice"><i class="fa fa-upload"></i> <span class="d-none d-md-inline">{{t "navigation.invoice"}}</span></button>
                     {{/if}}

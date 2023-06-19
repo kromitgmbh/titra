@@ -112,22 +112,15 @@ const updateSettings = new ValidatedMethod({
 const updateTimeUnit = new ValidatedMethod({
   name: 'updateTimeUnit',
   validate(args) {
-    
     check(args.timeunit, String)
-  
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
-    
-    timeunit,
-   
+    timeunit
   }) {
     await Meteor.users.updateAsync({ _id: this.userId }, {
       $set: {
-        
-        'profile.timeunit': timeunit,
-       
-        
+        'profile.timeunit': timeunit
       },
     })
   },

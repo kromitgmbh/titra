@@ -8,30 +8,68 @@ $light:               #BDBDBD;
 $dark:                #455A64;
 $dropdown-link-hover-bg: $dark !default;
 $progress-bg: $secondary;
+$ap-card-bg-color-left-top:             #c6d9e4;    // 1. gradient color for allProjectsCard
+$ap-card-bg-color-center:               #c9e6e4;       // 2. gradient color for allProjectsCard
+// $ap-card-bg-color-bottom-right:         #23937e;       // 3. gradient color for allProjectsCard
+$ap-card-bg-color-bottom-right:         #21917d;       // 3. gradient color for allProjectsCard
 
+// $ap-card-bg-color-bottom-right:            #6e869e;    // 1. gradient color for allProjectsCard
+// $ap-card-bg-color-left-top:             #BDBDBD;      // 1. gradient color for allProjectsCard
+// $ap-card-bg-color-center:               #42cec0;       // 2. gradient color for allProjectsCard
+// $ap-card-bg-color-bottom-right:         #576d81;       // 3. gradient color for allProjectsCard
 
-
-
-// .card.mb-3.all-projects-bg { // schatten 
-// background-image:         linear-gradient(to right bottom, $ap-card-bg-color-left-top, $ap-card-bg-color-center, $ap-card-bg-color-bottom-right) !important;
-// }
-
-// //AllProjectsCard
-// $ap-card-bg-color-left-top:             #1d1d1d;       // 1. gradient color for allProjectsCard
-// $ap-card-bg-color-center:               #004842;       // 2. gradient color for allProjectsCard
-// $ap-card-bg-color-bottom-right:         #212529;       // 3. gradient color for allProjectsCard
 
 
 .is-light-theme {
   color:                white;
 }
-
-select#timeunit {
+a#dropdownMenuLink::after {                               
+  content:              none;                           // Arrow in dropdown Overview
+  //backgroung-color: var(--bs-card-cap-bg);                                                  
+}
+a#dropdownMenuLink:hover {
+  background-color:     #009688 !important;
+  color:                #fff; 
+}
+th.holiday {                                            // Week Holiday 
+  color:                #455A64!important;
+  background-color:     #f7f7f7;
+  font-weight:          bolder;
+  text-decoration:      underline;
+  font-style:           italic;
+}
+select#period {
+  background-image:     none;
+}
+table.table.table-sm.mb-0 {                             // Update Bootstrap fixed 
+  --bs-table-bg:        #f7f7f7;
+}
+select#language, select#theme, 
+select#holidayCountry, select#holidayState,
+select#holidayRegion, select#timetrackview {            // Settings Bootstrap fixed
+  background:           white !important;
+}
+svg.svg-inline--fa.fa-circle-user {                     // Icon NavbarProfile
+  margin-right: 4px;
+}
+svg.svg-inline--fa.fa-circle-info {                
+  margin-right: 4px;
+}
+svg.svg-inline--fa.fa-arrow-right-from-bracket {
+  margin-right: 4px;
+}
+svg.svg-inline--fa.fa-box-archive {                     // Icon Overview Dropdown
+  margin-right: 10px;
+}
+svg.svg-inline--fa.fa-link {
+  margin-right: 6px;
+}
+.timeunitNavbar{                                        // Timeunit Navbar
   background-color:     inherit;
   border:               none;
   outline:              none;
   color:                #fff;
-  //-webkit-appearance:   none;                           // Cursor
+  //-webkit-appearance:   none;                         // Cursor
 }
 svg.rounded {                                           // User Foto 
   opacity: 0.7;
@@ -41,17 +79,17 @@ svg.rounded:hover {
     opacity:                  1;
     cursor:             pointer;
 }
-.card-header.js-toggle-timecards {                     //  Time tracked table
+.card-header.js-toggle-timecards {                      //  Time tracked table
   color:                $primary !important;
   font-weight:          bold;
 }
-svg.svg-inline--fa.fa-chevron-down.float-end {         //  Icon Time tracked table
+svg.svg-inline--fa.fa-chevron-down.float-end {          //  Icon Time tracked table
   color:                $primary !important;
 }
-.css-progresspopup .progress.w-100{                    //  Progress-bar
+.css-progresspopup .progress.w-100 {                     //  Progress-bar
   --bs-progress-height: 1.3rem !important;
 }
-small.text-nowrap {                                    //  Progress percent
+small.text-nowrap {                                     //  Progress percent
     font-size:          small;
 }
 .btn-primary {
@@ -90,11 +128,11 @@ button#addNewMember:hover{
   border-right:         1px solid #dee2e6;
   border-bottom:        1px solid #dee2e6;
 }
-.form-select {
-  background:           $secondary !important;
-}
-.all-projects-bg {
-  background:           rgba(0,112,101,0.05) !important;
+// .form-select {
+//   background:           $secondary !important;
+// }
+.all-projects-bg {                                                     // Schatten 
+  background-image:      linear-gradient(to right bottom, $ap-card-bg-color-left-top, $ap-card-bg-color-center, $ap-card-bg-color-bottom-right) !important;
 }
 .fc-unthemed td.fc-today {
   background:           rgba(0, 150, 136, 0.5) !important;

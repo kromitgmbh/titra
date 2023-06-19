@@ -119,6 +119,7 @@ Template.weektable.events({
           return
         }
         let hours = Number(value)
+        // hours = hours.toString().replace(',', '.');
         if (getUserSetting('timeunit') === 'd') {
           hours *= (getUserSetting('hoursToDays'))
         }
@@ -206,12 +207,10 @@ Template.weektablerow.events({
   },
 })
 Template.weektablerow.helpers({
-  
   getColorForProject(projectId){
     return Projects.findOne({ _id: projectId })?.color 
 
   },
- 
   weekDays() {
     return getWeekDays(Template.instance().data.startDate.get())
   },

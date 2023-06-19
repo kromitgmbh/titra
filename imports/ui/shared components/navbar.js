@@ -14,7 +14,6 @@ Template.navbar.onCreated(function navbarCreated() {
     this.displayHoursToDays.set(getUserSetting('timeunit'))
   })
 })
-
 Template.navbar.onRendered(function settingsRendered() {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
@@ -24,26 +23,17 @@ Template.navbar.onRendered(function settingsRendered() {
         }
       })
     })
-
 Template.navbar.helpers({
   isRouteActive: (routename) => (FlowRouter.getRouteName() === routename ? 'active' : ''),
   displayLinkText: (routename) => (FlowRouter.getRouteName() === routename),
   avatar: () => displayUserAvatar(Meteor.user()),
   getUserSetting: (setting) => getUserSetting(setting),
-
-  
-  
 })
-
-
-
-
 Template.navbar.events({
   'click .js-logout': (event) => {
     event.preventDefault()
     Meteor.logout()
   },
-
   'change #timeunit': (event, templateInstance) => {
     event.preventDefault()
     console.log(templateInstance.$('#timeunit').val())
@@ -51,9 +41,7 @@ Template.navbar.events({
       if(error){
         console.error(error)
       }
-    }
-
-    )
+    })
   },
 })
 

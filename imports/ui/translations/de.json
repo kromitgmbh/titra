@@ -64,7 +64,8 @@
     "nextWeek": "Nächste Woche",
     "newLine": "Neue Zeile",
     "cancel": "Abbrechen",
-    "saving": "Speichern ..."
+    "saving": "Speichern ...",
+    "timeUnit_message": "Definition der Zeiteinheit für Ihre Aufgaben" 
   },
   "tracktime": {
     "no_time": "Keine Zeiten erfasst.",
@@ -74,9 +75,10 @@
     "month_drag_help_text": "Sie können ein Projekt auf ein Datum ziehen um Zeiten zu erfassen",
     "today": "Heute",
     "actions": "Aktionen",
-    "start_timer": "Timer starten",
+    "start_timer": "Stoppuhr starten",
     "start_time": "Beginn",
-    "timer": "Zeitmesser",
+    "timer": "Stoppuhr",
+    "timerMessage": "Mittels dieser Stoppuhr können Sie die Zeit verfolgen, welche für die Durchführung einer bestimmten Aufgabe benötigt wird",
     "user_placeholder": "Benutzer eingeben oder suchen ...",
     "timeline": "Zeitleiste"
   },
@@ -219,7 +221,6 @@
     "all": "Alle Kunden"
   },
   "limit": {
-    "entries": "Einträge",
     "show": "Zeilenlinien anzeigen",
     "all": "Alle"
   },
@@ -277,6 +278,7 @@
   },
   "dashboard": {
     "share": "Projekt Dashboard teilen",
+    "shareMessage": "Sie haben die Möglichkeit, einen Link zum Projekt zu teilen",
     "copy_instructions": "Den Link oben kopieren um die Projekt Informationen zu teilen.",
     "security_notice": "Dieses Dashboard ist für jeden über das Internet zugänglich der den Link kennt.",
     "time_per_date": "Zeit pro Tag",
@@ -444,5 +446,9 @@
     "method": "Aktion",
     "payload": "Änderungen",
     "timestamp": "Zeitstempel"
+  },
+  "weektable": {
+    "sumProject_message": "Die Summe pro Projekt",
+    "sum_per_day":  "Die Summe pro Tag"
   }
 }
