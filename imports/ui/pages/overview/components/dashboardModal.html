@@ -1,0 +1,33 @@
+<template name="dashboardModal">
+    <div class="modal fade js-dashboard-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title">{{t "dashboard.share"}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" name="selectedProject" type="text" disabled value="{{selectedProjectName}}"/>
+                        <label for="selectedProject">{{t "globals.project"}}</label>
+                    </div>
+                    <div class="mb-3">
+                        {{>periodpicker}}
+                    </div>
+                    <button type="button" class="btn btn-primary border js-create-dashboard mb-3">{{t "administration.create"}}</button>
+                    {{#if dashboardId}}
+                        <div class="mb-3">
+                            <input aria-label="Dashboard URL" class="form-control" type="text" id="dashboardURL" value="{{dashboardURL}}"/>
+                        </div>
+                        <p>{{t "dashboard.copy_instructions"}}<br/>
+                            <small class="text-muted">{{t "dashboard.security_notice"}}</small></p>
+                     {{/if}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary border" data-bs-dismiss="modal">{{t "navigation.close"}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

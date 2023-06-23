@@ -58,19 +58,21 @@ Template.filterbar.helpers({
 Template.filterbar.events({
   'change .js-projectselect': (event, templateInstance) => {
     event.preventDefault()
-    if ($(event.currentTarget).val().length > 0) {
+    if ($(event.currentTarget).val().length > 0 && !templateInstance.data.isComponent) {
       FlowRouter.setParams({ projectId: templateInstance.$(event.currentTarget).val().join(',') })
     }
   },
   'change .js-resourceselect': (event, templateInstance) => {
     event.preventDefault()
-    if (templateInstance.$(event.currentTarget).val().length > 0) {
+    if (templateInstance.$(event.currentTarget).val().length > 0
+      && !templateInstance.data.isComponent) {
       FlowRouter.setQueryParams({ resource: templateInstance.$(event.currentTarget).val().join(',') })
     }
   },
   'change .js-customerselect': (event, templateInstance) => {
     event.preventDefault()
-    if (templateInstance.$(event.currentTarget).val().length > 0) {
+    if (templateInstance.$(event.currentTarget).val().length > 0
+      && !templateInstance.data.isComponent) {
       FlowRouter.setQueryParams({ customer: templateInstance.$(event.currentTarget).val().join(',') })
     }
   },

@@ -468,7 +468,6 @@ Template.detailtimetable.events({
       } else {
         $('#dashboardURL').val(FlowRouter.url('dashboard', { _id }))
         new bootstrap.Modal($('.js-dashboard-modal')[0], { focus: false }).toggle()
-        // FlowRouter.go('dashboard', { _id })
       }
     })
   },

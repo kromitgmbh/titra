@@ -10,7 +10,7 @@ Template.allprojectschart.onCreated(function allprojectschartCreated() {
   this.autorun(() => {
     const precision = getUserSetting('precision')
     const timeUnit = getUserSetting('timeunit')
-    Meteor.call('getAllProjectStats', { includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived.get() }, (error, result) => {
+    Meteor.call('getAllProjectStats', { includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived?.get() }, (error, result) => {
       if (error) {
         console.error(error)
       } else if (result instanceof Object) {
@@ -33,7 +33,7 @@ Template.allprojectschart.onCreated(function allprojectschartCreated() {
         this.projectStats.set(stats)
       }
     })
-    Meteor.call('getTopTasks', { projectId: 'all', includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived.get() }, (error, result) => {
+    Meteor.call('getTopTasks', { projectId: 'all', includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived?.get() }, (error, result) => {
       if (error) {
         console.error(error)
       } else {

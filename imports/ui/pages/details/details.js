@@ -1,5 +1,4 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import bootstrap from 'bootstrap'
 import './details.html'
 import './components/dailytimetable.js'
 import './components/periodtimetable.js'
@@ -84,15 +83,6 @@ Template.timecardlist.helpers({
 })
 
 Template.timecardlist.events({
-  // 'change #period': (event, templateInstance) => {
-  //   FlowRouter.setQueryParams({ period: templateInstance.$(event.currentTarget).val() })
-  // },
-  // 'change #resourceselect': (event, templateInstance) => {
-  //   FlowRouter.setQueryParams({ resource: templateInstance.$(event.currentTarget).val() })
-  // },
-  // 'change #customerselect': (event, templateInstance) => {
-  //   FlowRouter.setQueryParams({ customer: templateInstance.$(event.currentTarget).val() })
-  // },
   'click .nav-link[data-bs-toggle]': (event, templateInstance) => {
     FlowRouter.setQueryParams({ activeTab: templateInstance.$(event.currentTarget)[0].id })
   },

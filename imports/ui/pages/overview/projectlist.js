@@ -1,17 +1,20 @@
 import { Meteor } from 'meteor/meteor'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import bootstrap from 'bootstrap'
 import { t } from '../../../utils/i18n.js'
 import './projectlist.html'
 import Projects from '../../../api/projects/projects'
 import './components/projectchart.js'
 import './components/allprojectschart.js'
 import './components/projectProgress.js'
+import './components/dashboardModal.js'
 import hex2rgba from '../../../utils/hex2rgba.js'
 import { showToast } from '../../../utils/frontend_helpers.js'
 
 Template.projectlist.onCreated(function createProjectList() {
   this.subscribe('myprojects', {})
   this.data.showArchived = new ReactiveVar(false)
+  this.projectId = new ReactiveVar(null)
 })
 Template.projectlist.onRendered(() => {
   Meteor.setTimeout(() => {
@@ -80,6 +83,7 @@ Template.projectlist.helpers({
   projectCount: () => (Template.instance().data?.showArchived?.get()
     ? Projects.find({}).count()
     : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count()),
+  projectId: () => Template.instance().projectId,
 })
 
 Template.projectlist.events({
@@ -127,16 +131,11 @@ Template.projectlist.events({
     const projectId = event.currentTarget.dataset.id
     FlowRouter.go('editproject', { id: projectId })
   },
-  // 'click .js-share': (event, templateInstance) => {
-  //   event.preventDefault()
-  //   const projectId = event.currentTarget.dataset.id
-  //   Meteor.call('addDashboard', {
-  //     projectId, resourceId: $('#resourceselect').val()[0], customer: $('#customerselect').val()[0], timePeriod: $('#period').val(),
-  //   }, (error, _id) => { $('#dashboardURL').val(FlowRouter.url('dashboard', { _id }))
-  //       new bootstrap.Modal($('.js-dashboard-modal')[0], { focus: false }).toggle()
-  //       // FlowRouter.go('dashboard', { _id })
-  //   })
-  // },
+  'click .js-share': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.projectId.set(event.currentTarget.dataset.id)
+    const dashboardModal = new bootstrap.Modal($('.js-dashboard-modal')[0], { focus: false }).toggle()
+  },
   'change #showArchived': (event) => {
     Template.instance().data.showArchived.set($(event.currentTarget).is(':checked'))
   },

@@ -299,6 +299,15 @@ button.dp-clear {
   background-color: $primary;
 }
 
+.project-menu::after {                               
+  content:              none;                           // Arrow in dropdown Overview
+  //backgroung-color: var(--bs-card-cap-bg);                                                  
+}
+.project-menu:hover {
+  background-color:     $primary !important;
+  color:                $white; 
+}
+
 .holiday {
   background-color: $dark;
   color: $light !important;

@@ -279,7 +279,7 @@
     "markAsBilled": "All billed"
   },
   "dashboard": {
-    "share": "Share",
+    "share": "Share project dashboard",
     "shareMessage": "You have the opportunity to share a link of the project",
     "copy_instructions": "Copy & paste the link above to share your project information with someone.",
     "security_notice": "This dashboard is accessible to everybody on the web through this link.",
@@ -311,7 +311,7 @@
   	}
   },
   "notifications": {
-    "sanity": "Sorry, but for your own sanity you can not share all time of all projects. Please select a single project to share.",
+    "sanity": "Sorry, but dashboards are currently limited to sharing one project. Please select a single project to share.",
     "dashboard_creation_failed": "Dashboard creation failed.",
     "export_failed": "Export failed.",
     "siwapp_configuration": "You have to configure the Siwapp integration to use this feature.",

@@ -23,14 +23,6 @@ $ap-card-bg-color-bottom-right:         #21917d;       // 3. gradient color for 
 .is-light-theme {
   color:                white;
 }
-a#dropdownMenuLink::after {                               
-  content:              none;                           // Arrow in dropdown Overview
-  //backgroung-color: var(--bs-card-cap-bg);                                                  
-}
-a#dropdownMenuLink:hover {
-  background-color:     #009688 !important;
-  color:                #fff; 
-}
 th.holiday {                                            // Week Holiday 
   color:                #455A64!important;
   background-color:     #f7f7f7;
@@ -63,13 +55,6 @@ svg.svg-inline--fa.fa-box-archive {                     // Icon Overview Dropdow
 }
 svg.svg-inline--fa.fa-link {
   margin-right: 6px;
-}
-.timeunitNavbar{                                        // Timeunit Navbar
-  background-color:     inherit;
-  border:               none;
-  outline:              none;
-  color:                #fff;
-  //-webkit-appearance:   none;                         // Cursor
 }
 svg.rounded {                                           // User Foto 
   opacity: 0.7;
