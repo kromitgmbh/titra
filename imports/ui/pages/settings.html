@@ -36,11 +36,14 @@
           </div>
           <div class="mb-3 form-floating">
             <select class="form-select form-control" id="timeunit">
-                <option value="m">{{t "globals.minute"}}</option>
-                <option value="h">{{t "globals.hour"}}</option>
-                <option value="d">{{t "globals.day"}}</option>
+              <option value="m">{{t "globals.minute"}}</option>
+              <option value="h">{{t "globals.hour"}}</option>
+              <option value="d">{{t "globals.day"}}</option>
             </select>
             <label class="form-label" for="timeunit">{{t "settings.time_unit"}}</label>
+            <!-- <span style="position: absolute; top: 0; right: 0; margin-top: 16px; margin-right: 18px;">
+              <i class="fas fa-chevron-down fa-sm"></i>
+            </span> -->
           </div>
           {{#if displayHoursToDays}}
             <div class="mb-3 form-floating">
@@ -90,6 +93,33 @@
               </div>
             </div>
           </div>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-header">
+        {{t "settings.userInterface_settings"}}
+      </div>
+      <div class="card-block">
+        <div class="mb-3 form-floating">
+          <select class="form-select form-control" id="theme">
+            <option value="auto">{{t "settings.auto_detect"}}</option>
+            <option value="light">{{t "settings.light_theme"}}</option>
+            <option value="dark">{{t "settings.dark_theme"}}</option>
+        </select>
+        <label class="form-label" for="theme">{{t "settings.theme"}}</label>
+        <small class="form-text text-muted">{{t "settings.auto_detect_help"}} <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">caniuse.com</a>.</small>
+      </div>
+        <div class="mb-3 form-floating">
+          <select class="form-select form-control" id="language">
+            <option value="auto">{{t "settings.auto_detect"}}</option>
+            <option value="en">{{t "settings.en"}}</option>
+            <option value="de">{{t "settings.de"}}</option>
+            <option value="fr">{{t "settings.fr"}}</option>
+            <option value="zh">{{t "settings.zh"}}</option>
+            <option value="ukr">{{t "settings.ukr"}}</option>
+        </select>
+        <label class="form-label" for="theme">{{t "settings.language"}}</label>   
+        </div> 
       </div>
     </div>
     <div class="card mb-3">

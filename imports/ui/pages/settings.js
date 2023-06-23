@@ -58,6 +58,8 @@ Template.settings.onRendered(function settingsRendered() {
       templateInstance.$('#breakStartTime').val(getUserSetting('breakStartTime'))
       templateInstance.$('#breakDuration').val(getUserSetting('breakDuration'))
       templateInstance.$('#regularWorkingTime').val(getUserSetting('regularWorkingTime'))
+      templateInstance.$('#theme').val(getUserSetting('theme') ? getUserSetting('theme') : 'auto')
+      templateInstance.$('#language').val(getUserSetting('language') ? getUserSetting('language') : 'auto')
       const country = getUserSetting('holidayCountry')
       const holidayCountry = templateInstance.$('#holidayCountry')
       getHolidayCountries().then((countries) => {
@@ -95,6 +97,7 @@ Template.settings.helpers({
   zammadtoken: () => getUserSetting('zammadtoken'),
   gitlaburl: () => getUserSetting('gitlaburl'),
   gitlabtoken: () => getUserSetting('gitlabtoken'),
+  theme: () => getUserSetting('theme'),
 })
 
 Template.settings.events({
@@ -125,6 +128,8 @@ Template.settings.events({
         gitlabtoken: templateInstance.$('#gitlabtoken').val(),
         gitlaburl: templateInstance.$('#gitlaburl').val(),
         rounding: Number(templateInstance.$('#rounding').val()),
+        theme: templateInstance.$('#theme').val(),
+        language: templateInstance.$('#language').val()
       },
       (error) => {
         if (error) {

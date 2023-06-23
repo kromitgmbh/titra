@@ -16,21 +16,29 @@
           <h5>{{#if newProject}}{{t "navigation.new_project"}}{{/if}}</h5>
         </div>
         <div class="mb-3 form-floating">
-          <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="{{t 'project.my_project_placeholder'}}" />
+          <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="{{t 'project.my_project_placeholder'}}" required/>
           <label class="form-label" for="name">{{t "globals.prj_name"}}</label>
+        </div>
+        <div class="mb-3">
+          <div class="card">
+            <div class="card-header">{{t "overview.duration"}}</div>
+             <div class="card-block">
+              <div class="form-floating mb-3">
+                <input class="form-control" name="startDate" id="startDate" type="date" value="{{startDate}}"/>
+                <label class="form-label" for="Start date">{{t "overview.startDate"}}</label>
+              </div>
+              <div class="form-floating">
+                <input class="form-control" name="endDate" id="endDate" type="date" value="{{endDate}}"/>
+                <label class="form-label" for="endDate">{{t "overview.endDate"}}</label>
+              </div>
+            </div>      
+          </div>
         </div>
         <div class="card mb-3">
           <div class="card-header">{{t "globals.description"}}</div>
           <div class="card-block p-0">
             <div id="richDesc" style="padding-bottom:2px;">
             </div>
-          </div>
-        </div>
-        <div class="mb-3">
-          <div class="input-group form-floating" id="colpick">
-            <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
-            <button type="button" class="btn rounded-end" id="pickr"></button>
-            <label class="form-label" for="color">{{t "globals.color"}}</label>
           </div>
         </div>
         <div class="form-floating">
@@ -103,6 +111,13 @@
             </div>
           </div>
         {{/if}}
+        <div class="mb-3">
+          <div class="input-group form-floating" id="colpick">
+            <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
+            <button type="button" class="btn rounded-end" id="pickr"></button>
+            <label class="form-label" for="color">{{t "globals.color"}}</label>
+          </div>
+        </div>
       {{#if getGlobalSetting "enableWekan"}}
       <div class="mb-3">
         <div class="card">
@@ -156,7 +171,7 @@
             <button type="button" class="btn btn-secondary border js-archive-project"><i class="fa fa-archive"></i> <span class="d-none d-md-inline">{{t "navigation.archive"}}</span></button>
           </div>
           {{/if}} {{/unless}}
-          <div class="col-3 d-grid gap-2">
+          <div class="ms-auto col-3 d-grid gap-2">
             <button type="button" class="btn btn-primary js-save" id="save">{{t "navigation.save"}}</button>
           </div>
         </div>

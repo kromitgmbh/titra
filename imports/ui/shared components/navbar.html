@@ -27,6 +27,16 @@
               <div class="dropdown-menu mt-0 bg-dark" aria-label="navbarDropdownMenuLink" style="left:auto;right:-1rem;z-index:99999;border-radius: 0 0 var(--bs-dropdown-border-radius) var(--bs-dropdown-border-radius);border-top: 0px;">
                   <a class="dropdown-item text-white" href="{{ prefix }}/profile"><i class="fa fa-user-circle"></i> {{t "navigation.profile"}}</a>
                   <a class="dropdown-item text-white" href="{{ prefix }}/settings"><i class="fa fa-cogs"></i> {{t "navigation.settings"}}</a>
+                    <div class="dropdown-item text-white" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{t 'navigation.timeUnit_message'}}">
+                      <i class="fa-regular fa-clock"></i>
+                      <select id="timeunit" class="timeunitNavbar">
+                        <!-- <option selected>{{t "settings.time_unit"}}</option> -->
+                        <option value="m">{{t "globals.minute"}}</option>
+                        <option value="h">{{t "globals.hour"}}</option>
+                        <option value="d">{{t "globals.day"}}</option>
+                      </select>
+                    </div>
+                  <a class="dropdown-item text-white" href="{{ prefix }}/about"><i class="fa fa-info-circle"></i> {{t "navigation.about"}}</a>
                 {{#unless currentUser.loggingIn}}
                   {{#if Template.subscriptionsReady}}
                     {{#if currentUser.isAdmin}}
@@ -35,7 +45,7 @@
                   {{/if}}
                 {{/unless}}
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-white" href="{{ prefix }}/about"><i class="fa fa-info-circle"></i> {{t "navigation.about"}}</a>
+                <a class="dropdown-item text-white js-logout" href="#"><i class="fa fa-sign-out"></i> {{t "navigation.logout"}}</a>
               </div>
             </li>
           </ul>

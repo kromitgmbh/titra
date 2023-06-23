@@ -106,7 +106,7 @@ Template.projectlist.events({
   'click .js-archive-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
-    const projectId = event.currentTarget.parentElement.parentElement.id
+    const projectId = event.currentTarget.dataset.id
     Meteor.call('archiveProject', { projectId }, (error) => {
       if (!error) {
         showToast(t('notifications.project_archive_success'))
@@ -118,7 +118,7 @@ Template.projectlist.events({
   'click .js-restore-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
-    const projectId = event.currentTarget.parentElement.parentElement.id
+    const projectId = event.currentTarget.dataset.id
     Meteor.call('restoreProject', { projectId }, (error) => {
       if (!error) {
         showToast(t('notifications.project_restore_success'))
@@ -130,9 +130,19 @@ Template.projectlist.events({
   'click .js-edit-project': (event) => {
     event.preventDefault()
     event.stopPropagation()
-    const projectId = event.currentTarget.parentElement.parentElement.id
+    const projectId = event.currentTarget.dataset.id
     FlowRouter.go('editproject', { id: projectId })
   },
+  // 'click .js-share': (event, templateInstance) => {
+  //   event.preventDefault()
+  //   const projectId = event.currentTarget.dataset.id
+  //   Meteor.call('addDashboard', {
+  //     projectId, resourceId: $('#resourceselect').val()[0], customer: $('#customerselect').val()[0], timePeriod: $('#period').val(),
+  //   }, (error, _id) => { $('#dashboardURL').val(FlowRouter.url('dashboard', { _id }))
+  //       new bootstrap.Modal($('.js-dashboard-modal')[0], { focus: false }).toggle()
+  //       // FlowRouter.go('dashboard', { _id })
+  //   })
+  // },
   'change #showArchived': (event) => {
     Template.instance().data.showArchived.set($(event.currentTarget).is(':checked'))
   },

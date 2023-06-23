@@ -11,11 +11,14 @@
         {{/if}}
       </div>
     </div>
-    <div class="offset-lg-5 col-lg-4 col-8">
+    <!-- <div class="offset-lg-5 col-lg-4 col-8">
       {{>limitpicker}}
-    </div>
+    </div> -->
   </div>
   <div id="datatable-container" class="mt-3 mb-3"></div>
+  <div class="col-md-3 ms-md-auto"> 
+    {{>limitpicker}}
+</div>
   {{#if dailyTimecards}}
     {{>pagination totalEntries=totalEntries limit=limit}}
   {{/if}}

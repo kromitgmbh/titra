@@ -39,7 +39,7 @@
     "global_setting": "Globale Einstellung"
   },
   "navigation": {
-    "track": "Erfassen",
+    "track": "Zeit erfassen",
     "overview": "Übersicht",
     "details": "Details",
     "profile": "Profil",
@@ -64,7 +64,8 @@
     "nextWeek": "Nächste Woche",
     "newLine": "Neue Zeile",
     "cancel": "Abbrechen",
-    "saving": "Speichern ..."
+    "saving": "Speichern ...",
+    "timeUnit_message": "Definition der Zeiteinheit für Ihre Aufgaben" 
   },
   "tracktime": {
     "no_time": "Keine Zeiten erfasst.",
@@ -74,9 +75,10 @@
     "month_drag_help_text": "Sie können ein Projekt auf ein Datum ziehen um Zeiten zu erfassen",
     "today": "Heute",
     "actions": "Aktionen",
-    "start_timer": "Timer starten",
+    "start_timer": "Stoppuhr starten",
     "start_time": "Beginn",
     "timer": "Stoppuhr",
+    "timerMessage": "Mittels dieser Stoppuhr können Sie die Zeit verfolgen, welche für die Durchführung einer bestimmten Aufgabe benötigt wird",
     "user_placeholder": "Benutzer eingeben oder suchen ...",
     "timeline": "Zeitleiste"
   },
@@ -92,14 +94,19 @@
     "target": "Ziel: ",
     "turnover": "Umsatz: ",
     "number_projects": "Anzahl Projekte",
-    "summary": "Zusammenfassung"
+    "summary": "Zusammenfassung",
+    "properties": "Eigenschaften",
+    "percentage": "Projektfortschritt: ",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "duration": "Projektdauer"
   },
   "project": {
     "title": "Projekt Bearbeiten",
     "first_project_desc": "Dieses Projekt wurde automatisch erstellt, Sie können es nach Belieben bearbeiten. Wussten Sie, dass Sie Emojis wie 💰 ⏱ 👍 überall verwenden können?",
     "customer_placeholder": "Beispiel Kunde",
     "rate": "Rate",
-    "target": "Ziel / Budget",
+    "target": "Ziel",
     "wekan_integration": "Wekan Integration",
     "wekan_help": "Benötigen Sie Hilfe bei der Konfiguration? Werfen Sie einen Blick in unser titra ",
     "wekan_list": "Wekan Liste(n) für die Zeiterfassung",
@@ -122,14 +129,16 @@
   },
   "settings": {
     "user_profile": "Benutzer Profil",
+    "userInterface_settings": "Benutzeroberflächeneinstellungen",
     "language": "Sprache",
     "de": "Deutsch",
     "en": "Englisch",
     "fr": "Französisch",
     "zh": "Chinesisch",
     "ru": "Russisch",
+    "ukr": "Ukrainisch",
     "user_interface": "Benutzeroberfläche",
-    "theme": "Darstellung",
+    "theme": "Thema",
     "auto_detect": "Automatisch",
     "light_theme": "Hell",
     "dark_theme": "Dunkel",
@@ -171,6 +180,7 @@
     "zammad_api_token": "Zammad Personal Access Token",
     "custom_css": "Benutzerdefiniertes CSS",
     "custom_html": "Benuzterdefiniertes HTML",
+    "global_defaults": "Standardeinstellungen:",
     "custom_placeholder_content": "Benutzerdefinierter Inhalt für den Platzhalter",
     "show_custom_fields_in_details": "Benutzerdefinierte Felder in den Details anzeigen/exportieren?",
     "show_customer_in_details": "Spalte Kunde in den Details anzeigen/exportieren?",
@@ -213,8 +223,7 @@
     "all": "Alle Kunden"
   },
   "limit": {
-    "entries": "Einträge",
-    "show": "Zeige",
+    "show": "Zeilenlinien anzeigen",
     "all": "Alle"
   },
   "period": {
@@ -244,7 +253,8 @@
     "duration": "Dauer",
     "dependencies": "Abhängigkeiten",
     "newTask": "Neue Tätigkeit",
-    "editTask": "Tätigkeit bearbeiten"
+    "editTask": "Tätigkeit bearbeiten",
+    "addTask": "Tätigkeit hinzufügen"
   },
   "details": {
     "filter": "Filter",
@@ -269,7 +279,8 @@
     "markAsBilled": "Alles verrechnet"
   },
   "dashboard": {
-    "share": "Projekt Dashboard teilen",
+    "share": "Teilen",
+    "shareMessage": "Sie haben die Möglichkeit, einen Link zum Projekt zu teilen",
     "copy_instructions": "Den Link oben kopieren um die Projekt Informationen zu teilen.",
     "security_notice": "Dieses Dashboard ist für jeden über das Internet zugänglich der den Link kennt.",
     "time_per_date": "Zeit pro Tag",
@@ -437,5 +448,9 @@
     "method": "Aktion",
     "payload": "Änderungen",
     "timestamp": "Zeitstempel"
+  },
+  "weektable": {
+    "sumProject_message": "Die Summe pro Projekt",
+    "sum_per_day":  "Die Summe pro Tag"
   }
 }

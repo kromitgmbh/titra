@@ -39,7 +39,7 @@
     "global_setting": "Global setting"
   },
   "navigation": {
-    "track": "Track",
+    "track": "Track time",
     "overview": "Overview",
     "details": "Details",
     "profile": "Profile",
@@ -62,21 +62,23 @@
     "retry": "Retry now",
     "lastWeek": "Last week",
     "nextWeek": "Next week",
-    "newLine": "New line",
+    "newLine": "New task",
     "cancel": "Cancel",
-    "saving": "Saving ..."
+    "saving": "Saving ...",
+    "timeUnit_message": "Definition of the time unit for your tasks" 
   },
   "tracktime": {
     "no_time": "No time tracked yet.",
-    "task_placeholder": "Enter or search for task ...",
-    "working_time": "Workingtime ",
+    "task_placeholder": "Enter or search for task",
+    "working_time": "Working time ",
     "time_tracked": "Time tracked: ",
     "month_drag_help_text": "You can drag projects on a date to track time",
     "today": "Today",
     "actions": "Actions",
-    "start_timer": "Start timer",
+    "start_timer": "Start stopwatch",
     "start_time": "Start time",
-    "timer": "Timer",
+    "timer": "Stopwatch",
+    "timerMessage": "By using a stopwatch, you can track the time spent completing a specific task",
     "user_placeholder": "Enter or search for user ...",
     "timeline": "Timeline"
   },
@@ -92,14 +94,19 @@
     "target": "Target: ",
     "turnover": "Turnover: ",
     "number_projects": "Number of projects",
-    "summary": "Summary"
+    "summary": "Summary",
+    "properties": "Properties",
+    "percentage": "Project progress: ",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "duration": "Project duration"
   },
   "project": {
     "title": "Edit project",
     "first_project_desc": "This project has been automatically created for you, feel free to change it! Did you know that you can use emojis like 💰 ⏱ 👍 everywhere?",
     "customer_placeholder": "Sample Customer",
     "rate": "Rate",
-    "target": "Target / Budget",
+    "target": "Target",
     "wekan_integration": "Wekan integration",
     "wekan_help": "Need help with the setup? Checkout the titra ",
     "wekan_list": "Wekan list(s) used for time tracking",
@@ -122,12 +129,14 @@
   },
   "settings": {
     "user_profile": "User profile",
+    "userInterface_settings": "User interface settings",
     "language": "Language",
     "de": "German",
     "en": "English",
     "fr": "French",
     "zh": "Chinese",
     "ru": "Russian",
+    "ukr": "Ukrainian",
     "user_interface": "User interface",
     "theme": "Theme",
     "auto_detect": "Auto detect",
@@ -214,8 +223,7 @@
     "all": "All customers"
   },
   "limit": {
-    "entries": "entries",
-    "show": "Show",
+    "show": "Show row lines",
     "all": "All"
   },
   "period": {
@@ -245,7 +253,8 @@
     "duration": "Duration",
     "dependencies": "Dependencies",
     "newTask": "New task",
-    "editTask": "Edit task"
+    "editTask": "Edit task",
+    "addTask": "Add task"
   },
   "details": {
     "filter": "Filter",
@@ -270,7 +279,8 @@
     "markAsBilled": "All billed"
   },
   "dashboard": {
-    "share": "Share project dashboard",
+    "share": "Share",
+    "shareMessage": "You have the opportunity to share a link of the project",
     "copy_instructions": "Copy & paste the link above to share your project information with someone.",
     "security_notice": "This dashboard is accessible to everybody on the web through this link.",
     "time_per_date": "Time per date",
@@ -349,7 +359,7 @@
     "sign_in_oidc": "Sign In with OpenID Connect",
     "login_or_signup": "Please login or sign up to continue.",
     "login_failed": "Unable to login, please check your username/password.",
-    "fullname_placholder": "Your Fullname",
+    "fullname_placholder": "Your Full name",
     "create_account": "Create an account",
     "password_again": "Password (again)",
     "already_have_account": "If you already have an account - ",
@@ -430,5 +440,9 @@
     "method": "Method",
     "payload": "Payload",
     "timestamp": "Timestamp"
+  },
+  "weektable": {
+    "sumProject_message": "The sum per project",
+    "sum_per_day":  "The sum per day"
   }
 }
