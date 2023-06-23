@@ -136,6 +136,7 @@
     "fr": "French",
     "zh": "Chinese",
     "ru": "Russian",
+    "ukr": "Ukrainian",
     "user_interface": "User interface",
     "theme": "Theme",
     "auto_detect": "Auto detect",
@@ -278,7 +279,7 @@
     "markAsBilled": "All billed"
   },
   "dashboard": {
-    "share": "Share project dashboard",
+    "share": "Share",
     "shareMessage": "You have the opportunity to share a link of the project",
     "copy_instructions": "Copy & paste the link above to share your project information with someone.",
     "security_notice": "This dashboard is accessible to everybody on the web through this link.",
