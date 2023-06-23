@@ -221,12 +221,6 @@ Template.tracktime.events({
         } else {
           templateInstance.$('.js-tasksearch-results').addClass('d-none')
           showToast(t('notifications.time_entry_updated'))
-          window.requestAnimationFrame(() => {
-            templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
-              container: templateInstance.firstNode,
-              trigger: 'hover focus',
-            })
-          })
           if (templateInstance.data.tcid) {
             $('#edit-tc-entry-modal').modal('hide')
           }
@@ -251,7 +245,6 @@ Template.tracktime.events({
           templateInstance.$('.js-tasksearch-results').addClass('d-none')
           showToast(t('notifications.time_entry_saved'))
           templateInstance.$('.js-show-timecards').slideDown('fast')
-          templateInstance.$('[data-bs-toggle="tooltip"]').tooltip()
           $('#edit-tc-entry-modal').modal('hide')
           selectedProjectElement.removeClass('is-invalid')
         }
@@ -298,12 +291,6 @@ Template.tracktime.events({
   'click .js-toggle-timecards': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.$('.js-show-timecards').slideToggle('fast')
-    window.requestAnimationFrame(() => {
-      templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
-        container: templateInstance.firstNode,
-        trigger: 'hover focus',
-      })
-    })
   },
   'click .js-time-row': (event, templateInstance) => {
     event.preventDefault()

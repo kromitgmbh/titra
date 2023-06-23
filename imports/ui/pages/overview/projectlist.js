@@ -14,12 +14,6 @@ Template.projectlist.onCreated(function createProjectList() {
   this.data.showArchived = new ReactiveVar(false)
 })
 Template.projectlist.onRendered(() => {
-  const templateInstance = Template.instance()
-  templateInstance.autorun(() => {
-    if (window.BootstrapLoaded.get()) {
-      $('[data-bs-toggle="tooltip"]').tooltip()
-    }
-  })
   Meteor.setTimeout(() => {
     import('sortablejs').then((sortableImport) => {
       const Sortable = sortableImport.default
@@ -135,9 +129,6 @@ Template.projectlist.events({
   },
   'change #showArchived': (event) => {
     Template.instance().data.showArchived.set($(event.currentTarget).is(':checked'))
-  },
-  'mouseenter .js-tooltip': (event, templateInstance) => {
-    templateInstance.$('.js-tooltip').tooltip()
   },
 })
 

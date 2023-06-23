@@ -103,13 +103,6 @@ Template.workingtimetable.onRendered(() => {
         }
         if (templateInstance.workingTimeEntries.get().length === 0) {
           $('.dt-scrollable').height('auto')
-        } else {
-          window.requestAnimationFrame(() => {
-            templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
-              container: templateInstance.firstNode,
-              trigger: 'hover focus',
-            })
-          })
         }
       }
     }

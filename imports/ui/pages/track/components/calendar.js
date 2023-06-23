@@ -106,7 +106,6 @@ Template.calendar.onRendered(() => {
                 new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
               },
               eventClick: (eventClickInfo) => {
-                // $('.tooltip').tooltip('dispose')
                 if (eventClickInfo.event.id !== '') {
                   templateInstance.selectedDate.set(undefined)
                   templateInstance.selectedProjectId.set(undefined)

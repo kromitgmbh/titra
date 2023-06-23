@@ -1,4 +1,5 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
+import bootstrap from 'bootstrap'
 import './details.html'
 import './components/dailytimetable.js'
 import './components/periodtimetable.js'
@@ -23,16 +24,6 @@ Template.timecardlist.onCreated(function createTimeCardList() {
 Template.timecardlist.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
-    if (templateInstance.subscriptionsReady() && window.BootstrapLoaded.get()) {
-      window.requestAnimationFrame(() => {
-        if (templateInstance.$('[data-bs-toggle="tooltip"]').get(0)) {
-          templateInstance.$('[data-bs-toggle="tooltip"]').tooltip({
-            container: templateInstance.firstNode,
-            trigger: 'hover focus',
-          })
-        }
-      })
-    }
     if (FlowRouter.getParam('projectId')) {
       const projectIdParam = FlowRouter.getParam('projectId')
       const projectIdArray = projectIdParam.split(',')

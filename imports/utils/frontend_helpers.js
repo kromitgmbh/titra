@@ -44,8 +44,9 @@ function timeInUserUnit(time) {
     return false
   }
   const precision = getUserSetting('precision')
+  const hoursToDays = getUserSetting('hoursToDays') ? getUserSetting('hoursToDays') : getGlobalSetting('hoursToDays')
   if (getUserSetting('timeunit') === 'd') {
-    const convertedTime = Number(time / getUserSetting('hoursToDays')).toFixed(precision)
+    const convertedTime = Number(time / hoursToDays).toFixed(precision)
     return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
   }
   if (getUserSetting('timeunit') === 'm') {

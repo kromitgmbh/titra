@@ -88,7 +88,7 @@ Template.timeline.helpers({
   selectedProjectId: () => Template.instance().selectedProjectId,
 })
 Template.timeline.onRendered(() => {
-  document.querySelector(`[data-date="${dayjs.utc().format(getGlobalSetting('weekviewDateFormat'))}"]`).scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+  document.querySelector(`[data-date="${dayjs.utc().format(getGlobalSetting('weekviewDateFormat'))}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
   const templateInstance = Template.instance()
   templateInstance.startObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -107,9 +107,7 @@ Template.timeline.onRendered(() => {
       if (entry.isIntersecting) {
         templateInstance.endDate.set(templateInstance.endDate.get().add(1, 'week'))
         templateInstance.endObserver.disconnect()
-        // Meteor.setTimeout(() => {
-          templateInstance.endObserver.observe(templateInstance.$('tbody tr:last-child')[0])
-        // }, 1000)
+        templateInstance.endObserver.observe(templateInstance.$('tbody tr:last-child')[0])
       }
     })
   }, { threshold: 1 })

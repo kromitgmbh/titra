@@ -31,13 +31,10 @@ Meteor.startup(() => {
   import('@fortawesome/fontawesome-free/js/all.js')
   import('bootstrap').then((bs) => {
     window.BootstrapLoaded.set(true)
-    const bsTooltips = new bs.Tooltip(document.body, {
+    bs.Tooltip.getOrCreateInstance(document.body, {
       selector: '[data-bs-toggle="tooltip"]',
       trigger: 'hover focus',
-    })
-    const avatarTooltip = new bs.Tooltip(document.body, {
-      selector: '.js-avatar-tooltip',
-      trigger: 'hover focus',
+      container: 'body',
     })
   })
   function cleanupStyles(theme) {
@@ -125,25 +122,30 @@ Meteor.startup(() => {
 
   hotkeys('command+s,d,w,m', (event, handler) => {
     event.preventDefault()
+    const mouseEvent = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    })
     switch (handler.key) {
       case 'command+s':
         if (document.querySelector('.js-save')) {
-          document.querySelector('.js-save').click()
+          document.querySelector('.js-save').dispatchEvent(mouseEvent)
         }
         break
       case 'd':
         if (document.querySelector('.js-day')) {
-          document.querySelector('.js-day').click()
+          document.querySelector('.js-day').dispatchEvent(mouseEvent)
         }
         break
       case 'w':
         if (document.querySelector('.js-week')) {
-          document.querySelector('.js-week').click()
+          document.querySelector('.js-week').dispatchEvent(mouseEvent)
         }
         break
       case 'm':
         if (document.querySelector('.js-month')) {
-          document.querySelector('.js-month').click()
+          document.querySelector('.js-month').dispatchEvent(mouseEvent)
         }
         break
       default:

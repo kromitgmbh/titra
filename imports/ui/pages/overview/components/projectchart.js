@@ -36,7 +36,7 @@ Template.projectchart.helpers({
   },
   avatarImg(avatar, name, avatarColor) {
     if (avatar) {
-      return `<img src="${avatar}" alt="${name}" style="height:25px; cursor:pointer;" class="rounded js-avatar-tooltip" data-bs-placement="top" title="${name}"/>`
+      return `<img src="${avatar}" alt="${name}" style="height:25px; cursor:pointer;" class="rounded" data-bs-placement="top" title="${name}"/>`
     }
     namedavatar.config({
       nameType: 'initials',
@@ -44,10 +44,12 @@ Template.projectchart.helpers({
       minFontSize: 2,
     })
     const rawSVG = namedavatar.getSVG(name)
-    rawSVG.classList = 'rounded js-avatar-tooltip'
+    rawSVG.classList.add('rounded')
     rawSVG.style.width = '25px'
     rawSVG.style.height = '25px'
     rawSVG.style.cursor = 'pointer'
+    rawSVG.dataset.bsPlacement = 'right'
+    rawSVG.dataset.bsToggle = 'tooltip'
     rawSVG.setAttribute('title', name)
     return rawSVG.outerHTML
   },
@@ -91,7 +93,7 @@ Template.projectchart.onRendered(() => {
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady() && templateInstance.projectDescAsHtml.get()) {
       import('bootstrap').then((bs) => {
-        const tooltip = new bs.Tooltip(templateInstance.$('.js-tooltip').get(0), {
+        bs.Tooltip.getOrCreateInstance(templateInstance.$('.js-tooltip').get(0), {
           title: templateInstance.projectDescAsHtml.get(),
           html: true,
           placement: 'auto',
@@ -226,7 +228,6 @@ Template.projectchart.onRendered(() => {
   })
 })
 Template.projectchart.onDestroyed(() => {
-  Template.instance().$('.js-tooltip').tooltip('dispose')
   const templateInstance = Template.instance()
   if (templateInstance.chart) {
     templateInstance.chart.destroy()
