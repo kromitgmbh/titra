@@ -60,7 +60,7 @@ Template.taskSelectPopup.onCreated(function taskSelectPopupCreated() {
     if (templateInstance.modalDisplayed.get()) {
       if (i18nReady.get()) {
         templateInstance.localTasksColumns = new ReactiveVar([{
-          name: t('globals.task'),
+          name: t('task.addTask'),
           editable: false,
           format: (value) => `<button type="button" class="btn text-primary py-0 js-select-task" data-task="${value}"><i class="fa fa-plus"></i></button><span>${value}</span>`,
         }, {

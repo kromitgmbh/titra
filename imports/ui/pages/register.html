@@ -1,7 +1,7 @@
 <template name="register">
   <div class="container">
     <div class="row">
-      <div class="col-md-6 col-md-offset-3">
+      <div class="col-md-6 offset-md-3">   
         {{#if getGlobalSetting "disableUserRegistration"}}
           <div class="alert alert-danger">
             {{t "login.registration_disabled_warning"}}
@@ -15,6 +15,13 @@
           <div class="at-pwd-form">
             <form role="form" id="at-pwd-form" novalidate="">
               <fieldset>
+                <div class="at-input mb-3 has-feedback">
+                  <label class="control-label" for="at-field-name">
+                    {{t "globals.name"}}
+                  </label>
+                  <input type="text" class="form-control" id="at-field-name" name="at-field-name" placeholder="{{t 'login.fullname_placholder'}}" autocapitalize="none" autocorrect="off" value="{{name}}">
+                  <span class="help-block hide"></span>
+                </div>
                 <div class="at-input mb-3 has-feedback">
                   <label class="control-label" for="at-field-email">
                     {{t "globals.email"}}
@@ -37,13 +44,6 @@
                   <span class="help-block hide"></span>
                 </div>
                 {{#unless currentUser}}
-                  <div class="at-input mb-3 has-feedback">
-                    <label class="control-label" for="at-field-name">
-                      {{t "globals.name"}}
-                    </label>
-                    <input type="text" class="form-control" id="at-field-name" name="at-field-name" placeholder="{{t 'login.fullname_placholder'}}" autocapitalize="none" autocorrect="off" value="{{name}}">
-                    <span class="help-block hide"></span>
-                  </div>
                 {{/unless}}
                 <button type="button" class="btn btn-primary form-control" id="register">
                   {{t "login.register"}}

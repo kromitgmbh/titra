@@ -345,6 +345,10 @@ Template.editproject.helpers({
   archived: (_id) => (Projects.findOne({ _id }) ? Projects.findOne({ _id }).archived : false),
   target: () => (Template.instance().project.get()
     ? Template.instance().project.get().target : false),
+  startDate: () => (Template.instance().project.get()
+    ? Template.instance().project.get().startDate : false),
+  endDate: () => (Template.instance().project.get()
+    ? Template.instance().project.get().endDate : false),
   notbillable: () => Template.instance().notbillable.get(),
   customfields: () => (CustomFields.find({ classname: 'project' }).fetch().length > 0 ? CustomFields.find({ classname: 'project' }) : false),
   getCustomFieldValue: (fieldId) => (Template.instance().project.get()

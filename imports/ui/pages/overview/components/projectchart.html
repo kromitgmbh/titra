@@ -8,11 +8,15 @@
         </div>
       {{/if}}
       {{#if componentIsReady}}
+
+
         {{#if allTeamMembers}}
           <i class="fa fa-users" style="width:18px;"></i> {{t "overview.team"}}: {{#each teamMember in allTeamMembers}}
           {{{avatarImg teamMember.profile.avatar teamMember.profile.name teamMember.profile.avatarColor}}}
           {{/each}}<br/>
         {{/if}}
+
+
         {{#if customer}}
           <i class="fa fa-address-card" style="width:18px;"></i> {{t "globals.customer"}}: <span class="text-truncate">{{customer}}</span><br/>
         {{/if}}
@@ -21,6 +25,12 @@
         {{/if}}
         {{#if target}}
           <i class="fa fa-bullseye" style="width:18px;"></i> {{t "overview.target"}}: {{timeInUserUnit(target)}} ({{timeunitVerbose}})<br/>
+        {{/if}}
+        {{#if startDate}}
+        <i class="fa-solid fa-hourglass-start fa-sm" style="width:18px;"></i> {{t "overview.startDate"}}: {{startDate}} <br/>
+        {{/if}}
+        {{#if endDate}}
+        <i class="fa-solid fa-hourglass-end fa-sm" style="width:18px;"></i> {{t "overview.endDate"}}: {{endDate}}<br/>
         {{/if}}
         {{#if turnOver}}
           <i class="fa fa-money-bill-alt" style="width:18px;"></i> {{t "overview.turnover"}}: {{turnOver}} {{unit}}

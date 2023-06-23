@@ -124,7 +124,7 @@ $fc-cell-bg-color:                      #1d1f21;       // calendar cell BG-color
 
 //Body
 $body-bg:                               #1d1d1d;
-$body-font-weight:                      200;
+$body-font-weight:                      250;
 $body-color:                            #f0f0f0;
 
 //OverviewCards
@@ -144,7 +144,7 @@ $pagination-disabled-border-color:      $dark;
 $pagination-disabled-bg:                #303030;
 
 //Other
-$font-weight-base:                      200;
+$font-weight-base:                      250;
 $form-file-button-bg:                   $secondary;
 $progress-bg:                           $secondary;
 
@@ -502,4 +502,17 @@ g > text {
 #period {
     background-color:           $input-button-background-color !important;
 }
+select#language, select#theme, 
+select#holidayCountry, select#holidayState,
+select#holidayRegion, select#timetrackview {            // Settings Bootstrap fixed
+
+background:                 #272727 !important;
+}
+table.table.table-sm.mb-0 {                             // Update Bootstrap fixed 
+    --bs-table-bg:          #2d2d2d!important;
+}
+.tooltip-inner {
+color:                      white !important;         // Tooltip color 
+  }
 @import "{}/imports/ui/styles/general.scss";
+
