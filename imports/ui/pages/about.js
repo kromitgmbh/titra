@@ -20,7 +20,7 @@ Template.about.events({
       $.getJSON('https://api.github.com/repos/kromitgmbh/titra/tags', (data) => {
         const tag = data[2]
         $.getJSON(tag.commit.url, (commitData) => {
-          templateInstance.$('#titra-changelog').html(`Version <a href='https://github.com/kromitgmbh/titra/tags' target='_blank'>${tag.name}</a> (${dayjs(commitData.commit.committer.date).format(getGlobalSetting('dateformat'))}) :<br/>${commitData.commit.message.replace(/(:\S*:)/g, emojify)}`)
+          templateInstance.$('#titra-changelog').html(`Version <a href='https://github.com/kromitgmbh/titra/tags' target='_blank'>${tag.name}</a> (${dayjs(commitData.commit.committer.date).format(getGlobalSetting('dateformat'))}) :<br/>${emojify(commitData.commit.message)}`)
         })
       }).fail(() => {
         templateInstance.$('#titra-changelog').html(t('settings.titra_changelog_error'))

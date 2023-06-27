@@ -8,15 +8,11 @@
         </div>
       {{/if}}
       {{#if componentIsReady}}
-
-
         {{#if allTeamMembers}}
           <i class="fa fa-users" style="width:18px;"></i> {{t "overview.team"}}: {{#each teamMember in allTeamMembers}}
           {{{avatarImg teamMember.profile.avatar teamMember.profile.name teamMember.profile.avatarColor}}}
           {{/each}}<br/>
         {{/if}}
-
-
         {{#if customer}}
           <i class="fa fa-address-card" style="width:18px;"></i> {{t "globals.customer"}}: <span class="text-truncate">{{customer}}</span><br/>
         {{/if}}

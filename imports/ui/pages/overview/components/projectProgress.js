@@ -32,6 +32,14 @@ Template.projectProgress.helpers({
     return Number(Template.currentData()?.target) > 0
       ? Template.currentData()?.target : false
   },
+  isPercentageAbove15() {
+    const projectStats = ProjectStats.findOne({ _id: Template.currentData()._id })
+    const percentage = projectStats && projectStats.totalHours
+      && Template.currentData().target && Template.currentData().target > 0
+      ? Number((projectStats.totalHours * 100) / Template.currentData().target).toFixed(0)
+      : false
+    return percentage && Number(percentage) >= 15
+  },
   colorOpacity(hex, op) {
     return hex2rgba(hex || '#009688', !isNaN(op) ? op : 50)
   },

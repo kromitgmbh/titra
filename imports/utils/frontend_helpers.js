@@ -105,7 +105,7 @@ function validatePassword(pwd) {
 }
 async function emojify(match) {
   const emojiImport = await import('node-emoji')
-  return emojiImport.default.emojify(match, (name) => name)
+  return emojiImport.emojify(match)
 }
 function getUserTimeUnitVerbose() {
   if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile && i18nReady.get()) {

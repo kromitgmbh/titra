@@ -84,7 +84,7 @@ async function insertTimeCard(projectId, task, date, hours, userId, customfields
     projectId,
     date,
     hours,
-    task: task.replace(/(:\S*:)/g, emojify),
+    task: await emojify(task),
     ...customfields,
   }
   if (!await Tasks.findOneAsync({ userId, name: await emojify(task) })) {

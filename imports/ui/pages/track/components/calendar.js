@@ -7,7 +7,7 @@ import Timecards from '../../../../api/timecards/timecards.js'
 import Projects from '../../../../api/projects/projects.js'
 import './calendar.html'
 import './editTimeEntryModal.js'
-import { emojify, getUserSetting } from '../../../../utils/frontend_helpers.js'
+import { getUserSetting } from '../../../../utils/frontend_helpers.js'
 import { getHolidays } from '../../../../utils/holiday.js'
 
 Template.calendar.onCreated(function calendarCreated() {
@@ -21,7 +21,7 @@ Template.calendar.onCreated(function calendarCreated() {
 })
 
 Template.calendar.onRendered(() => {
-  const safeReplacer = (transform) => transform.replace(/(:\S*:)/g, emojify).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  const safeReplacer = (transform) => transform.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
   const templateInstance = Template.instance()
   templateInstance.calendarInitialized = new ReactiveVar(false)
   templateInstance.autorun(() => {

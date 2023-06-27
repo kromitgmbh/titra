@@ -512,7 +512,9 @@ table.table.table-sm.mb-0 {                             // Update Bootstrap fixe
     --bs-table-bg:          #2d2d2d!important;
 }
 .tooltip-inner {
-color:                      white !important;         // Tooltip color 
-  }
+    color:                      white !important;         // Tooltip color 
+}
+$btn-close-color: white;
+
 @import "{}/imports/ui/styles/general.scss";
 

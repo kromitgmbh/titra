@@ -173,9 +173,9 @@ Template.registerHelper('unit', () => {
   }
   return false
 })
-Template.registerHelper('emojify', (text) => {
+Template.registerHelper('emojify', async (text) => {
   if (text) {
-    return text.replace(/(:\S*:)/g, emojify)
+    return emojify(text)
   }
   return false
 })
