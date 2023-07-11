@@ -442,7 +442,7 @@ const sendToSiwapp = new ValidatedMethod({
         },
       })
       if (response.status === 201) {
-        Timecards.update({ _id: { $in: timeEntries } }, { $set: { state: 'billed' } }, { multi: true })
+        await Timecards.updateAsync({ _id: { $in: timeEntries } }, { $set: { state: 'billed' } }, { multi: true })
         return 'notifications.siwapp_success'
       }
       return 'notifications.siwapp_configuration'

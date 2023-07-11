@@ -148,4 +148,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'userSearchNumResults', description: 'settings.user_search_num_results', type: 'number', value: 5,  category: 'settings.categories.time_tracking',
 })
+defaultSettings.push({
+  name: 'customLogo', description: 'settings.custom_logo', type: 'textarea', value: '', category: 'settings.categories.customization',
+})
 export { defaultSettings, Globalsettings }

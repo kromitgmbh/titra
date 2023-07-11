@@ -3,7 +3,6 @@ import Projects from '../../projects/projects.js'
 import { checkAuthentication } from '../../../utils/server_method_helpers.js'
 
 /**
-
 @function projectCustomers
 @param {Object} options - An object containing the projectId or an array of projectIds.
 @param {string|Array} options.projectId - The id of the project(s) to retrieve customers for.

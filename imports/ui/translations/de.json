@@ -216,7 +216,8 @@
     "enable_gitlab": "Gitlab Schnittstelle aktivieren?",
     "rounding": "Rundung",
     "rounding_tooltip": "Erfasste Zeiten werden auf Basis der gewählten Zeiteinheit automatisch auf die nächste spezifizierte Einheit aufgerundet z.B. bei Zeiteinheit Minuten und Rundungswert 15 wird immer auf die nächsten 15 Minuten aufgerundet (Eingabe 5 Minuten > Ergebnis nach Rundung 15 Minuten).",
-    "enable_siwapp": "Siwapp Schnittstelle aktivieren?"
+    "enable_siwapp": "Siwapp Schnittstelle aktivieren?",
+    "custom_logo": "Benutzerdefiniertes Logo (URL oder Data-URI)"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

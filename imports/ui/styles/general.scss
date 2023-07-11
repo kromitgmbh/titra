@@ -209,6 +209,13 @@ $btn-link-color: $body-color;
     overflow-y: auto !important;
     overflow-x: hidden !important;
   }
+  .navbar {
+    padding-left: calc(100vw - 100%);
+  }
+  .main-content {
+    margin-left: calc(100vw - 100%);
+    margin-right: 0;
+  }
 }
 .btn:hover {
   .fa-chevron-right {

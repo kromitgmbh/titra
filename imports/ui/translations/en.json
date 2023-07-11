@@ -178,10 +178,10 @@
     "use_start_time": "Track start time?",
     "enable_zammad_integration": "Enable Zammad integration?",
     "zammad_url": "URL of the Zammad instance",
-    "zammad_api_token": "Zammad Personal Access Token",
+    "zammad_api_token": "Zammad personal access token",
     "custom_css": "Custom CSS",
     "custom_html": "Custom HTML",
-    "custom_placeholder_content": "Custom Placeholder Content",
+    "custom_placeholder_content": "Custom placeholder content",
     "show_custom_fields_in_details": "Show/export custom fields in details view?",
     "show_customer_in_details": "Show/export customer field in details view?",
     "mail_from_address": "Mail from address",
@@ -213,10 +213,11 @@
     },
     "gitlab_url": "GitLab Instance URL",
     "gitlab_api_token": "GitLab API Token",
-    "enable_gitlab": "Enable Gitlab Interface?",
+    "enable_gitlab": "Enable Gitlab interface?",
     "rounding": "Rounding",
     "rounding_tooltip": "Tracked time will be rounded up according to the selected time unit and the specified rounding value e.g. time unit minutes and round value 15 will round up to the next 15 minutes (input 5 minutes > result after rounding 15 minutes).",
-    "enable_siwapp": "Enable Siwapp integration?"
+    "enable_siwapp": "Enable Siwapp integration?",
+    "custom_logo": "Custom logo (URL or Data URI)"
   },
   "customer": {
     "select_customer": "Select a customer",

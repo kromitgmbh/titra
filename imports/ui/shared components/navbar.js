@@ -1,6 +1,6 @@
 import { Template } from 'meteor/templating'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
-import { displayUserAvatar, getUserSetting } from '../../utils/frontend_helpers'
+import { displayUserAvatar, getUserSetting, getGlobalSetting } from '../../utils/frontend_helpers'
 
 import './navbar.html'
 import '../pages/track/components/timetracker.js'
@@ -20,14 +20,15 @@ Template.navbar.onRendered(function settingsRendered() {
     if (!Meteor.loggingIn() && Meteor.user()
         && Meteor.user().profile && this.subscriptionsReady()) {
       templateInstance.$('#timeunit').val(getUserSetting('timeunit'))
-        }
-      })
-    })
+    }
+  })
+})
 Template.navbar.helpers({
   isRouteActive: (routename) => (FlowRouter.getRouteName() === routename ? 'active' : ''),
   displayLinkText: (routename) => (FlowRouter.getRouteName() === routename),
   avatar: () => displayUserAvatar(Meteor.user()),
   getUserSetting: (setting) => getUserSetting(setting),
+  getGlobalSetting: (setting) => getGlobalSetting(setting),
 })
 Template.navbar.events({
   'click .js-logout': (event) => {
@@ -36,13 +37,10 @@ Template.navbar.events({
   },
   'change #timeunit': (event, templateInstance) => {
     event.preventDefault()
-    console.log(templateInstance.$('#timeunit').val())
-    Meteor.call('updateTimeUnit', {timeunit: templateInstance.$('#timeunit').val()},(error,result)=> {
-      if(error){
+    Meteor.call('updateTimeUnit', { timeunit: templateInstance.$('#timeunit').val() }, (error, result) => {
+      if (error) {
         console.error(error)
       }
     })
   },
 })
-
-

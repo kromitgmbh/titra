@@ -119,7 +119,14 @@ Meteor.startup(() => {
       })
     }
   })
-
+  Tracker.autorun(() => {
+    if (getGlobalSetting('customLogo')) {
+      const links = document.querySelectorAll("link[rel*='icon']")
+      for (const link of links) {
+        link.href = getGlobalSetting('customLogo')
+      }
+    }
+  })
   hotkeys('command+s,d,w,m', (event, handler) => {
     event.preventDefault()
     const mouseEvent = new MouseEvent('click', {

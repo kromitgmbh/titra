@@ -47,7 +47,7 @@
       <!-- <td scope="row">
         <a href="#" style="color:inherit; border-left-color: {{project.color}}; border-left-width:thick" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
       </td> -->
-      <td scope="row" style="color:inherit; border-left-color: {{getColorForProject projectId}}; border-left-width:thick;">
+      <td scope="row" style="color:inherit; border-left-color: {{getColorForProject projectId}} !important; border-left-width:thick;">
         <a href="#" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
       </td>
       {{#if weekDays}}

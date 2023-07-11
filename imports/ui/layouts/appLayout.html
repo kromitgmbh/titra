@@ -2,8 +2,10 @@
   {{>toast}}
   {{>navbar}}
   <div class="pt-3 mt-1 d-print-none"></div>
-  <div class="container mb-3">
-    {{>connectioncheck}}
-    {{> yield}}
+    <div class="main-content">
+      <div class="container mb-3">
+        {{>connectioncheck}}
+        {{> yield}}
+      </div>
   </div>
 </template>

@@ -1,7 +1,11 @@
 <template name="navbar">
   <nav class="navbar shadow navbar-expand bg-dark sticky-top d-print-none" style="position: sticky !important; min-height:42.283px">
     <div class="container">
-        <a class="navbar-brand text-white" href="{{ prefix }}/"><img src="{{ prefix }}/img/navbar_logo.svg" alt="titra - open source time tracking for small companies" class="d-inline-block" height="24" width="24"/></a>
+      {{#if getGlobalSetting "customLogo"}}
+        <a class="navbar-brand text-white mx-auto" href="{{ prefix }}/"><img src='{{getGlobalSetting "customLogo"}}' alt="titra - open source time tracking for small companies" class="d-inline-block" height="24" width="24"/></a>
+      {{else}}
+        <a class="navbar-brand text-white mx-auto" href="{{ prefix }}/"><img src="{{ prefix }}/img/navbar_logo.svg" alt="titra - open source time tracking for small companies" class="d-inline-block" height="24" width="24"/></a>
+      {{/if}}
       {{#if currentUser}}
         <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
