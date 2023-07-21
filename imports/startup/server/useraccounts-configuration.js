@@ -17,9 +17,11 @@ Accounts.onCreateUser((options, user) => {
       avatarColor: `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`,
     }
   }
-  if (!options.profile.currentLanguageProject) {
-    options.profile.currentLanguageProject = 'Projekt'
-    options.profile.currentLanguageProjectDesc = 'Dieses Projekt wurde automatisch erstellt, Sie können es nach Belieben bearbeiten. Wussten Sie, dass Sie Emojis wie 💰 ⏱ 👍 überall verwenden können?'
+  if (!options.profile?.currentLanguageProject) {
+    if (options.profile) {
+      options.profile.currentLanguageProject = 'Projekt'
+      options.profile.currentLanguageProjectDesc = 'Dieses Projekt wurde automatisch erstellt, Sie können es nach Belieben bearbeiten. Wussten Sie, dass Sie Emojis wie 💰 ⏱ 👍 überall verwenden können?'
+    }
   }
 
   initNewUser(user._id, options)

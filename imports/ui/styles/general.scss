@@ -200,13 +200,9 @@ $btn-link-color: $body-color;
 }
 .dt-scrollable {
   width: 100% !important;
-  overflow-y: auto !important;
-  overflow-x: auto !important;
 }
 @include media-breakpoint-up(lg) {
   .dt-scrollable {
-    width: 100% !important;
-    overflow-y: auto !important;
     overflow-x: hidden !important;
   }
   .navbar {
@@ -307,14 +303,15 @@ button.dp-clear {
 }
 
 .project-menu::after {                               
-  content:              none;                           // Arrow in dropdown Overview
-  //backgroung-color: var(--bs-card-cap-bg);                                                  
-}
-.project-menu:hover {
-  background-color:     $primary !important;
-  color:                $white; 
+  content: none;                           // Hide arrow in dropdown Overview
 }
 
+.project-menu:hover svg path {
+  fill: $primary; 
+}
+.project-menug:hover {
+  border: 1px solid $primary;
+}
 .holiday {
   background-color: $dark;
   color: $light !important;

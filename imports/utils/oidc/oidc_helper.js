@@ -1,5 +1,5 @@
 import { ServiceConfiguration } from 'meteor/service-configuration'
-import { getGlobalSetting } from './frontend_helpers'
+import { getGlobalSetting } from '../frontend_helpers.js'
 
 const SERVICE_NAME = 'oidc'
 

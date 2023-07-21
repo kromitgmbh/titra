@@ -78,7 +78,7 @@
             {{#unless notbillable}}
               <div class="mb-3 form-floating">
                 <input name="rate" id="rate" type="number" value={{rate}} class="form-control" placeholder="100" step="any" />
-                <label class="form-label" for="rate">{{t "project.rate"}} ({{unit}}/h)</label>
+                <label class="form-label" for="rate">{{t "project.default_rate"}} ({{unit}}/h)</label>
               </div>
               <div class="form-floating">
                 <input name="target" id="target" type="number" value="{{timeInUserUnit (target)}}" class="form-control" placeholder="1000" step="any"/>
@@ -112,10 +112,12 @@
           </div>
         {{/if}}
         <div class="mb-3">
-          <div class="input-group form-floating" id="colpick">
-            <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
+          <div class="input-group" id="colpick">
+            <div class="form-floating">
+              <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
+              <label class="form-label" for="color">{{t "globals.color"}}</label>
+            </div>
             <button type="button" class="btn rounded-end" id="pickr"></button>
-            <label class="form-label" for="color">{{t "globals.color"}}</label>
           </div>
         </div>
       {{#if getGlobalSetting "enableWekan"}}
@@ -145,7 +147,7 @@
       {{#unless newProject}}
         <div>
           <div class="card">
-            <div class="card-header">{{t "project.access_rights"}}</div>
+            <div class="card-header">{{t "overview.team"}} & {{t "project.access_rights"}}</div>
             <div class="card-block">
               {{> projectAccessRights projectId=projectId}}
             </div>

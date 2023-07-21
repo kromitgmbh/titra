@@ -16,7 +16,14 @@ Template.periodpicker.events({
     FlowRouter.setQueryParams({ period: $(event.currentTarget).val() })
     if ($(event.currentTarget).val() === 'custom') {
       templateInstance.modal = new bootstrap.Modal(templateInstance.$('.js-custom-period-modal')[0])
-      templateInstance.modal.toggle()
+      templateInstance.modal.show()
+    }
+    $(event.currentTarget).blur()
+  },
+  'focus #period': (event) => {
+    if ($(event.currentTarget).val() === 'custom') {
+      event.currentTarget.selectedIndex = 0
+      $(event.currentTarget).trigger('blur')
     }
   },
   'click .js-save': (event, templateInstance) => {

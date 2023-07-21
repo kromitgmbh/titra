@@ -15,6 +15,7 @@ import {
   getUserSetting,
   getUserTimeUnitVerbose,
   showToast,
+  waitForElement,
 } from '../../../../utils/frontend_helpers'
 import { projectResources } from '../../../../api/users/users.js'
 import Projects from '../../../../api/projects/projects'
@@ -311,6 +312,11 @@ Template.detailtimetable.onRendered(() => {
       if (window.BootstrapLoaded.get()) {
         if (data.length === 0) {
           $('.dt-scrollable').height('auto')
+        } else {
+          waitForElement(undefined, '.dt-scrollable').then((element) => {
+            $(element).height(`${parseInt(document.querySelector('.dt-row.vrow:last-of-type')?.style.top, 10) + 40}px`)
+            element.style.overflow = 'hidden'
+          })
         }
       }
     }

@@ -1,6 +1,6 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { validateEmail, getGlobalSetting } from '../../utils/frontend_helpers'
-import { isOidcConfigured, disableDefaultLoginForm } from '../../utils/oidc_helper'
+import { isOidcConfigured, disableDefaultLoginForm } from '../../utils/oidc/oidc_helper'
 import { t } from '../../utils/i18n.js'
 import './signIn.html'
 

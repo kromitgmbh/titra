@@ -1,8 +1,10 @@
 <template name="wekanInterfaceSettings">
-    <div class="input-group form-floating">
-      <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://wekan.url/api/boards/abcdefg.../export?authToken=abcdefg..." />
+    <div class="input-group">
+      <div class="form-floating">
+        <input name="wekanurl" id="wekanurl" type="text" value={{wekanurl}} class="form-control" placeholder="https://wekan.url/api/boards/abcdefg.../export?authToken=abcdefg..." />
+        <label class="form-label" for="wekanurl">{{t "wekan.instance_url"}}</label>
+      </div>
       <button type="button" class="btn btn-secondary border rounded-end" id="wekan-status">{{t "project.check"}}</button>
-      <label class="form-label" for="wekanurl">{{t "wekan.instance_url"}}</label>
     </div>
     {{#unless displayHelp}}
         <small class="form-text text-muted">{{t "project.wekan_help"}} <a href="https://wiki.titra.io/books/deployment/page/wekan-integration" target="_blank">wiki</a>.</small>

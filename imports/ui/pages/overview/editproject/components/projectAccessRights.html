@@ -1,20 +1,16 @@
 <template name="projectAccessRights">
     {{#unless public}}
-        <div class="input-group form-floating mb-2">
-            <input id="newmembermail" type="email" class="form-control" placeholder="{{t 'project.access_rights_placeholder'}}" aria-label="{{t 'project.access_rights_placeholder'}}">
+        <div class="input-group mb-2">
+            <div class="form-floating">
+                <input id="newmembermail" type="email" class="form-control" placeholder="{{t 'project.access_rights_placeholder'}}" aria-label="{{t 'project.access_rights_placeholder'}}">
+                <label class="form-label" for="newmembermail">{{t 'project.access_rights_placeholder'}}</label>
+            </div>
             <button type="button" class="btn btn-secondary border rounded-end" id="addNewMember">{{t "project.add"}}</button>
-            <label class="form-label">{{t 'project.access_rights_placeholder'}}</label>
         </div>
         <div class="mb-2" style="overflow-x: auto;">
             <div id="project-access-rights-table" style="min-width: 25rem;">
             </div>
         </div>
-        <!-- <ul class="list-group mb-2">
-            <li class="list-group-item">{{currentUser.profile.name}} (owner)</li>
-            {{#each member in team}}
-            <li id="{{member._id}}" class="list-group-item">{{member.profile.name}} <span class="float-end"><a href="#removeMember" id="removeTeamMember"><i class="fa fa-trash"></i></a></span></li>
-            {{/each}}
-        </ul> -->
         {{/unless}}
         {{#unless disablePublic}}
         <div class="form-check">

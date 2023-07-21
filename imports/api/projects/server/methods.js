@@ -305,6 +305,38 @@ const getTopTasks = new ValidatedMethod({
     return rawCollection.aggregate([{ $match: { projectId } }, { $group: { _id: '$task', count: { $sum: '$hours' } } }, { $sort: { count: -1 } }, { $limit: 3 }]).toArray()
   },
 })
+
+const getProjectDistribution = new ValidatedMethod({
+  name: 'getProjectDistribution',
+  validate(args) {
+    check(args, {
+      projectId: String,
+      includeNotBillableTime: Match.Maybe(Boolean),
+      showArchived: Match.Maybe(Boolean),
+    })
+  },
+  mixins: [authenticationMixin],
+  async run({ projectId, includeNotBillableTime, showArchived }) {
+    const rawCollection = Timecards.rawCollection()
+    if (projectId === 'all') {
+      const notbillable = includeNotBillableTime
+      const andCondition = [{
+        $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+      }]
+      if (!showArchived) {
+        andCondition.push({ $or: [{ archived: false }, { archived: { $exists: false } }] })
+      }
+      if (!notbillable) {
+        andCondition.push({ $or: [{ notbillable }, { notbillable: { $exists: false } }] })
+      }
+      let projectList = await Projects.find({ $and: andCondition }, { _id: 1 })
+        .fetchAsync()
+      projectList = projectList.map((value) => value._id)
+      return rawCollection.aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: '$projectId', count: { $sum: '$hours' } } }, { $sort: { projectId: 1 } }]).toArray()
+    }
+    return rawCollection.aggregate([{ $match: { projectId } }, { $group: { _id: '$projectId', count: { $sum: '$hours' } } }, { $sort: { projectId: 1 } }]).toArray()
+  },
+})
 /**
  * Add a team member to a project
  * @param {Object} options
@@ -459,6 +491,44 @@ const setDefaultTaskForProject = new ValidatedMethod({
     return 'notifications.default_task_success'
   },
 })
+
+/**
+ * Set the rate for a user in a project
+ * @param {Object} options
+ * @param {String} options.projectId - The ID of the project to set the rate for the user in
+ * @param {String} options.userId - The ID of the user to set the rate for
+ * @param {Number} options.rate - The rate to set for the user
+ * @throws {Meteor.Error} If the project is not found or the user does not have
+ * permission to set the rate for the user
+ * @return {undefined}
+ */
+const setRateForUser = new ValidatedMethod({
+  name: 'setRateForUser',
+  validate(args) {
+    check(args, {
+      projectId: String,
+      userId: String,
+      rate: Number,
+    })
+  },
+  mixins: [authenticationMixin, transactionLogMixin],
+  async run({ projectId, userId, rate }) {
+    const project = await Projects.findOneAsync({ _id: projectId })
+    if (project) {
+      const rates = project.rates || {}
+      const rateId = JSON.parse(`{ "rates.${userId}": 1}`)
+      if (parseFloat(rate) > 0) {
+        rates[userId] = rate
+        await Projects.updateAsync({ _id: projectId }, { $set: { rates } })
+      } else {
+        await Projects.updateAsync({ _id: projectId }, { $unset: rateId })
+      }
+      return 'notifications.rate_success'
+    }
+    throw new Meteor.Error('notifications.project_not_found')
+  },
+})
+
 export {
   getAllProjectStats,
   getProjectUsers,
@@ -468,9 +538,11 @@ export {
   archiveProject,
   restoreProject,
   getTopTasks,
+  getProjectDistribution,
   addTeamMember,
   removeTeamMember,
   changeProjectRole,
   updatePriority,
   setDefaultTaskForProject,
+  setRateForUser,
 }

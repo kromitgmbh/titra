@@ -13,6 +13,7 @@ import {
   getUserTimeUnitVerbose,
   addToolTipToTableCell,
   dailyTimecardMapper,
+  waitForElement,
 } from '../../../../utils/frontend_helpers'
 import { i18nReady, t } from '../../../../utils/i18n.js'
 
@@ -117,6 +118,11 @@ Template.dailytimetable.onRendered(() => {
         }
         if (templateInstance.dailyTimecards.get().length === 0) {
           $('.dt-scrollable').height('auto')
+        } else {
+          waitForElement(undefined, '.dt-scrollable').then((element) => {
+            $(element).height(`${parseInt(document.querySelector('.dt-row.vrow:last-of-type')?.style.top, 10) + 40}px`)
+            element.style.overflow = 'hidden'
+          })
         }
       }
     }

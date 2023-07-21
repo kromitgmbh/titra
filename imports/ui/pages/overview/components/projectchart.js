@@ -62,12 +62,10 @@ Template.projectchart.helpers({
   },
   turnOver() {
     const precision = getUserSetting('precision')
-    const project = Projects.findOne({ _id: Template.instance().data.projectId })
-    const totalHours = Number(ProjectStats.findOne({
+    const totalRevenue = Number(ProjectStats.findOne({
       _id: Template.instance().data.projectId,
-    })?.totalHours)
-    return project && project.rate && totalHours
-      ? (Number(project.rate) * totalHours).toFixed(precision) : false
+    })?.totalRevenue)
+    return totalRevenue ? totalRevenue.toFixed(precision) : false
   },
   target() {
     return Number(Projects.findOne({ _id: Template.instance().data.projectId }).target) > 0

@@ -656,6 +656,37 @@ const setTimeEntriesState = new ValidatedMethod({
     }
   },
 })
+/**
+ * Deletes timecards for a given project, task, and date range.
+ * @param {Object} args - The arguments object containing the timecard information.
+ * @param {string} args.projectId - The ID of the project.
+ * @param {string} args.task - The task associated with the timecards.
+ * @param {Date} args.startDate - The start date of the timecard range.
+ * @param {Date} args.endDate - The end date of the timecard range.
+ * @throws {Meteor.Error} If user is not authenticated.
+ * @returns {undefined}
+ */
+const deleteTimeCardsForWeek = new ValidatedMethod({
+  name: 'deleteTimeCardsForWeek',
+  validate(args) {
+    check(args, {
+      projectId: String,
+      task: String,
+      startDate: Date,
+      endDate: Date,
+    })
+  },
+  mixins: [authenticationMixin, transactionLogMixin],
+  async run({
+    projectId, task, startDate, endDate,
+  }) {
+    await Timecards.removeAsync({
+      projectId,
+      task,
+      date: { $gte: startDate, $lte: endDate },
+    })
+  },
+})
 export {
   insertTimeCard,
   insertTimeCardMethod,
@@ -663,6 +694,7 @@ export {
   upsertWeek,
   updateTimeCard,
   deleteTimeCard,
+  deleteTimeCardsForWeek,
   setTimeEntriesState,
   getWorkingHoursForPeriod,
   getTotalHoursForPeriod,

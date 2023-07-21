@@ -146,13 +146,14 @@ function showToast(message) {
 }
 function waitForElement(templateInstance, selector) {
   const targetElement = templateInstance?.view.firstNode().parentElement
+    ? templateInstance?.view.firstNode().parentElement : document
   return new Promise((resolve) => {
     let element = targetElement?.querySelector(selector)
     if (element) {
       resolve(element)
     } else if (targetElement) {
       const observer = new MutationObserver((mutations, obs) => {
-        element = mutations.addedNodes?.find((node) => node.matchesSelector(selector))
+        element = targetElement.querySelector(selector)
         if (element) {
           obs.disconnect()
           resolve(element)

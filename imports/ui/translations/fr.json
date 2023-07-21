@@ -83,6 +83,7 @@
   "overview": {
     "all_projects": "Tous les projets",
     "total_time_tracked": "Temps total suivi:",
+    "project_distribution": "Répartition du projet",
     "top_tasks": "Tâches principales",
     "three_month_history": "Historique à 3mois",
     "details_button": "Détails",
@@ -99,6 +100,7 @@
     "first_project_desc": "Ce projet a été créé automatiquement pour vous, n'hésitez pas à le changer. Saviez-vous que vous pouviez utiliser des emojis comme 💰 ⏱ 👍 partout?",
     "customer_placeholder": "Client démo",
     "rate": "Tarif",
+    "default_rate": "Taux de défaut",
     "target": "Cible",
     "wekan_integration": "Intégration Wekan",
     "wekan_help": "Besoin d'aide avec l'installation ? Consultez le Titra ",

@@ -6,6 +6,7 @@ import { getUserSetting, getUserTimeUnitVerbose } from '../../../../utils/fronte
 Template.allprojectschart.onCreated(function allprojectschartCreated() {
   this.topTasks = new ReactiveVar()
   this.projectStats = new ReactiveVar()
+  this.projectDistribution = new ReactiveVar()
   this.includeNotBillableTime = new ReactiveVar(false)
   this.autorun(() => {
     const precision = getUserSetting('precision')
@@ -38,6 +39,13 @@ Template.allprojectschart.onCreated(function allprojectschartCreated() {
         console.error(error)
       } else {
         this.topTasks.set(result)
+      }
+    })
+    Meteor.call('getProjectDistribution', { projectId: 'all', includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived?.get() }, (error, result) => {
+      if (error) {
+        console.error(error)
+      } else {
+        this.projectDistribution.set(result)
       }
     })
   })
@@ -112,24 +120,27 @@ Template.allprojectschart.onRendered(() => {
           }
         })
       }
-      if (templateInstance.topTasks.get()?.length > 0 && templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
+      if (templateInstance.projectDistribution.get()?.length > 0 && templateInstance.$('.js-pie-chart-container')[0] && templateInstance.$('.js-pie-chart-container').is(':visible')) {
         import('frappe-charts').then((chartModule) => {
           window.requestAnimationFrame(() => {
             const { Chart } = chartModule
             if (templateInstance.piechart) {
               templateInstance.piechart.destroy()
             }
+            const colors = []
+            for (const project of templateInstance.projectDistribution.get()) {
+              colors.push(Projects.findOne({ _id: project._id }).color ? Projects.findOne({ _id: project._id }).color : '#009688')
+            }
             templateInstance.piechart = new Chart(templateInstance.$('.js-pie-chart-container')[0], {
               type: 'pie',
-              colors: ['#009688', '#455A64', '#e4e4e4'],
+              colors,
               height: 230,
               data: {
-                labels: templateInstance.topTasks.get().map((task) => $('<span>').text(task._id).html()),
+                labels: templateInstance.projectDistribution.get()
+                  .map((project) => $('<span>').text(Projects.findOne({ _id: project._id }).name).html()),
                 datasets: [{
-                  values: templateInstance.topTasks.get().map((task) => task.count),
+                  values: templateInstance.projectDistribution.get().map((project) => project.count),
                 }],
-              },
-              tooltipOptions: {
               },
             })
           })

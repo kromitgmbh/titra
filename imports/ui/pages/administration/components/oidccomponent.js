@@ -1,5 +1,5 @@
 import './oidccomponent.html'
-import { oidcFields, getOidcConfiguration } from '../../../../utils/oidc_helper'
+import { oidcFields, getOidcConfiguration } from '../../../../utils/oidc/oidc_helper'
 import { showToast } from '../../../../utils/frontend_helpers'
 import { t } from '../../../../utils/i18n.js'
 

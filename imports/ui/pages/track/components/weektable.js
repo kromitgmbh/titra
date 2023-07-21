@@ -100,7 +100,7 @@ Template.weektable.events({
   },
   'keyup .js-hours': (event, templateInstance) => {
     if (event.keyCode === 13) {
-      templateInstance.$('.js-save').click();
+      templateInstance.$('.js-save').click()
     }
   },
   'click .js-save': (event, templateInstance) => {
@@ -157,6 +157,24 @@ Template.weektable.events({
       })
     }
   },
+  'click .js-delete-task': (event, templateInstance) => {
+    event.preventDefault()
+    const startDate = templateInstance.startDate.get().toDate()
+    const endDate = templateInstance.endDate.get().toDate()
+    const projectId = $(event.currentTarget).data('project-id')
+    const task = $(event.currentTarget).data('task')
+    if (confirm(t('notifications.delete_confirm'))) {
+      Meteor.call('deleteTimeCardsForWeek', {
+        projectId, task, startDate, endDate,
+      }, (error) => {
+        if (error) {
+          console.error(error)
+        } else {
+          showToast(t('notifications.time_entry_deleted'))
+        }
+      })
+    }
+  },
 })
 
 Template.weektablerow.onCreated(function weektablerowCreated() {
@@ -207,9 +225,8 @@ Template.weektablerow.events({
   },
 })
 Template.weektablerow.helpers({
-  getColorForProject(projectId){
-    return Projects.findOne({ _id: projectId })?.color 
-
+  getColorForProject(projectId) {
+    return Projects.findOne({ _id: projectId })?.color
   },
   weekDays() {
     return getWeekDays(Template.instance().data.startDate.get())

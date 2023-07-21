@@ -13,6 +13,7 @@ import {
   getUserTimeUnitVerbose,
   addToolTipToTableCell,
   totalHoursForPeriodMapper,
+  waitForElement,
 } from '../../../../utils/frontend_helpers.js'
 
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
@@ -96,6 +97,11 @@ Template.periodtimetable.onRendered(() => {
           .refresh(data, columns)
         if (templateInstance.periodTimecards.get().length === 0) {
           $('.dt-scrollable').height('auto')
+        } else {
+          waitForElement(undefined, '.dt-scrollable').then((element) => {
+            $(element).height(`${parseInt(document.querySelector('.dt-row.vrow:last-of-type')?.style.top, 10) + 40}px`)
+            element.style.overflow = 'hidden'
+          })
         }
       }
     }

@@ -10,9 +10,6 @@
                     <label class="form-label" for="name">{{t "globals.name"}}</label>
                 </div>  
                 <div class="card mb-3">
-                <!-- <div class="card-header">
-                    {{t "settings.avatar"}}
-                </div> -->
                 <div class="card-block">
                     <div class="row">
                     <div class="col-lg-2">
@@ -27,10 +24,12 @@
                     <div class="col-lg-3">
                         {{#unless currentUser.profile.avatar}}
                         <div class="mb-3">
-                            <div class="input-group form-floating" id="colpick">
-                                <input aria-label='{{t "globals.color"}}' name="avatarColor" id="avatarColor" type="text" value="{{avatarColor}}" data-color="{{avatarColor}}" class="form-control" />
+                            <div class="input-group" id="colpick">
+                                <div class="form-floating">
+                                    <input aria-label='{{t "globals.color"}}' name="avatarColor" id="avatarColor" type="text" value="{{avatarColor}}" data-color="{{avatarColor}}" class="form-control" />
+                                    <label class="form-label" for="color">{{t "globals.color"}}</label>
+                                </div>
                                 <button type="button" class="btn" id="avatarColorPickr"></button>
-                                <label class="form-label" for="color">{{t "globals.color"}}</label>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -57,9 +56,6 @@
                     <div class="col-6 col-md-3 me-auto d-grid">
                     <a class="btn btn-secondary border" href="/changePwd">{{t "login.change_password"}}</a>
                     </div>
-                    <!-- <div class="col-6 col-md-3 d-grid">
-                    <a class="btn btn-secondary border js-logout" href="#">{{t "navigation.logout"}}</a>
-                    </div> -->
                 </div>
                 {{/unless}}
                 {{else}}
@@ -70,35 +66,6 @@
                 {{/if}}
             </div>
         </div>
-        <!-- <div class="card mb-3">
-            <div class="card-header">
-                {{t "settings.user_interface"}}
-            </div>
-            <div class="card-block">
-                <div class="mb-3">
-                    <div class="form-floating">
-                        <select class="form-select form-control" id="theme">
-                            <option value="auto">{{t "settings.auto_detect"}}</option>
-                            <option value="light">{{t "settings.light_theme"}}</option>
-                            <option value="dark">{{t "settings.dark_theme"}}</option>
-                        </select>
-                        <label class="form-label" for="theme">{{t "settings.theme"}}</label>
-                    </div>
-                    <small class="form-text text-muted">{{t "settings.auto_detect_help"}} <a href="https://caniuse.com/#feat=prefers-color-scheme" target="_blank">caniuse.com</a>.</small>
-                </div>
-                <div class="form-floating">
-                    <select class="form-select form-control" id="language">
-                        <option value="auto">{{t "settings.auto_detect"}}</option>
-                        <option value="en">{{t "settings.en"}}</option>
-                        <option value="de">{{t "settings.de"}}</option>
-                        <option value="fr">{{t "settings.fr"}}</option>
-                        <option value="zh">{{t "settings.zh"}}</option>
-                        <option value="ru">{{t "settings.ru"}}</option>
-                    </select>
-                    <label class="form-label" for="theme">{{t "settings.language"}}</label>
-                </div>
-            </div>
-        </div> -->
         <div class="row">
             <div class="col-6 col-md-3 me-auto d-grid">
               {{>backbutton}}

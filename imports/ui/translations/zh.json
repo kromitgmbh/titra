@@ -79,6 +79,7 @@
   "overview": {
     "all_projects": "所有项目",
     "total_time_tracked": "总计时间",
+    "project_distribution": "项目分布",
     "top_tasks": "头部任务",
     "three_month_history": "近三个月",
     "details_button": "明细",
@@ -94,6 +95,7 @@
     "first_project_desc": "这个是为你自动创建的项目，你可酌情删除。你是否了解你可在 titra 中的输入文本的地方任意使用像 💰 ⏱ 👍 的emojis?",
     "customer_placeholder": "样例客户",
     "rate": "费率",
+    "default_rate": "违约率",
     "target": "目标 / 预算",
     "wekan_integration": "Wekan 集成",
     "wekan_help": "不会设置，需要帮忙？请参考 titra ",

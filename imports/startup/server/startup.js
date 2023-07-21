@@ -21,7 +21,7 @@ Meteor.startup(async () => {
     Globalsettings.update({ name: 'enableAnonymousLogins' }, { $set: { value: Meteor.settings.disablePublic === 'true' } })
   }
   if (await getGlobalSettingAsync('enableOpenIDConnect')) {
-    import('../../utils/oidc_server').then((Oidc) => {
+    import('../../utils/oidc/oidc_server').then((Oidc) => {
       Oidc.registerOidc()
     })
   }
@@ -45,7 +45,6 @@ Meteor.startup(async () => {
   }
 
   // Rate limiting all methods and subscriptions, defaulting to 100 calls per second
-
   for (const subscription in Meteor.server.publish_handlers) {
     if ({}.hasOwnProperty.call(Meteor.server.publish_handlers, subscription)) {
       DDPRateLimiter.addRule({

@@ -114,7 +114,7 @@ Meteor.startup(() => {
   })
   Tracker.autorun(() => {
     if (getGlobalSetting('enableOpenIDConnect')) {
-      import('../../utils/oidc_client').then((Oidc) => {
+      import('../../utils/oidc/oidc_client.js').then((Oidc) => {
         Oidc.registerOidc()
       })
     }

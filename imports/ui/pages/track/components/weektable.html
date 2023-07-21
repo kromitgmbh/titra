@@ -48,7 +48,7 @@
         <a href="#" style="color:inherit; border-left-color: {{project.color}}; border-left-width:thick" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
       </td> -->
       <td scope="row" style="color:inherit; border-left-color: {{getColorForProject projectId}} !important; border-left-width:thick;">
-        <a href="#" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
+        <a href="#" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:165px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
       </td>
       {{#if weekDays}}
         {{#each weekday in weekDays}}
@@ -64,7 +64,9 @@
       <tr>
         <td>
           {{#if task._id}}
-            <div class="input-group-text bg-secondary" style="overflow:hidden" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{task._id}}">{{task._id}}</div>
+            <div class="input-group-text bg-secondary text-start" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{task._id}}">
+              <span class="d-inline-block" style="overflow:hidden;text-overflow:ellipsis; max-width:10rem;">{{task._id}}</span> <a href="#" class="d-inline-block ms-auto js-delete-task" data-task="{{task._id}}" data-project-id="{{projectId}}"><i class="fa fa-trash"></i></a>
+            </div>
           {{else}}
             {{>tasksearch projectId=reactiveProjectId isComponent=true}}
           {{/if}}

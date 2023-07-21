@@ -29,19 +29,26 @@ Template.projectAccessRights.onRendered(() => {
           editable: false,
           focusable: false,
           format: addToolTipToTableCell,
-        }, {
+        },
+        {
+          name: t('project.rate'),
+          editable: true,
+          focusable: true,
+        },
+        {
           name: t('project.access_rights'),
           editable: false,
           focusable: false,
           format: (value) => {
             if (value !== templateInstance.project?.get()?.userId) {
               return templateInstance.project?.get()?.admins?.indexOf(value) >= 0
-                ? `<select class="form-select js-rw-rights" data-id="${value}"><option value="team">Team member</option><option value="admin" selected>Administrator</option></select>`
-                : `<select class="form-select js-rw-rights" data-id="${value}"><option value="team" selected>Team member</option><option value="admin">Administrator</option></select>`
+                ? `<select class="form-select js-rw-rights" style="margin-top:-8.5px;" data-id="${value}"><option value="team">Team member</option><option value="admin" selected>Administrator</option></select>`
+                : `<select class="form-select js-rw-rights" style="margin-top:-8.5px;" data-id="${value}"><option value="team" selected>Team member</option><option value="admin">Administrator</option></select>`
             }
             return t('project.owner')
           },
-        }, {
+        },
+        {
           name: t('tracktime.actions'),
           editable: false,
           focusable: false,
@@ -51,13 +58,17 @@ Template.projectAccessRights.onRendered(() => {
       const data = []
       data.push([
         Meteor.users.findOne({ _id: templateInstance.project?.get()?.userId })?.profile?.name,
+        templateInstance.project?.get()?.rates ? templateInstance.project?.get()?.rates[templateInstance.project?.get()?.userId] : '',
         templateInstance.project?.get()?.userId,
         templateInstance.project?.get()?.userId])
       if (templateInstance.project.get()?.team) {
-        for (const member of templateInstance.project.get().team) {
+        for (const member of templateInstance.project?.get()?.team) {
           const user = Meteor.users.findOne({ _id: member })
           if (user !== undefined) {
-            data.push([user?.profile?.name, user?._id, user?._id])
+            data.push([user?.profile?.name,
+              templateInstance.project?.get()?.rates ? templateInstance.project?.get()?.rates[user?._id] : '',
+              user?._id,
+              user?._id])
           }
         }
       }
@@ -76,6 +87,32 @@ Template.projectAccessRights.onRendered(() => {
                 onRemoveColumn() {
                   templateInstance.projectAccessRightsDataTable.refresh(data, columns)
                 },
+              },
+              getEditor(colIndex, rowIndex, value, parent, column, row, data) {
+                if (column.name === t('project.rate')) {
+                  const $input = document.createElement('input')
+                  $input.type = 'number'
+                  $input.classList = 'dt-input'
+                  parent.appendChild($input)
+                  return {
+                    initValue(initValue) {
+                      $input.focus()
+                      $input.value = initValue
+                    },
+                    getValue() {
+                      return $input.value
+                    },
+                    setValue(setValue) {
+                      Meteor.call('setRateForUser', { projectId: templateInstance.data.projectId, userId: row[Number.parseInt(colIndex, 10) + 1].content, rate: Number.parseFloat(setValue) }, (error, result) => {
+                        if (error) {
+                          console.error(error)
+                        } else {
+                          $input.value = setValue
+                        }
+                      })
+                    },
+                  }
+                }
               },
             }
             try {
@@ -104,11 +141,10 @@ Template.projectAccessRights.helpers({
   disablePublic: () => getGlobalSetting('disablePublicProjects'),
 })
 
-
 Template.projectAccessRights.events({
   'keyup #newmembermail': (event, templateInstance) => {
     if (event.keyCode === 13) {
-      templateInstance.$('#addNewMember').click();
+      templateInstance.$('#addNewMember').click()
     }
   },
   'click #addNewMember': (event, templateInstance) => {
