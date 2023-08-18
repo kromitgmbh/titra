@@ -58,7 +58,7 @@ Template.workingtimetable.onRendered(() => {
       if (templateInstance.workingTimeEntries.get()) {
         data = templateInstance.workingTimeEntries.get()
           .map((entry) => Object.entries(entry)
-            .map((key) => { if (key[1] instanceof Date) { return dayjs(key[1]).format(getGlobalSetting('dateformat')) } return key[1] }))
+            .map((key) => { if (key[1] instanceof Date) { return dayjs.utc(key[1]).format(getGlobalSetting('dateformat')) } return key[1] }))
       }
       const columns = [
         {
@@ -139,7 +139,7 @@ Template.workingtimetable.events({
     event.preventDefault()
     const csvArray = [`\uFEFF${t('globals.date')},${t('globals.resource')},${t('details.startTime')},${t('details.breakStartTime')},${t('details.breakEndTime')},${t('details.endTime')},${t('details.totalTime')},${t('details.regularWorkingTime')},${t('details.regularWorkingTimeDifference')}\r\n`]
     for (const timeEntry of templateInstance.workingTimeEntries.get()) {
-      csvArray.push(`${dayjs(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.resource},${timeEntry.startTime},${timeEntry.breakStartTime},${timeEntry.breakEndTime},${timeEntry.endTime},${timeEntry.totalTime},${timeEntry.regularWorkingTime},${timeEntry.regularWorkingTimeDifference}\r\n`)
+      csvArray.push(`${dayjs.utc(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.resource},${timeEntry.startTime},${timeEntry.breakStartTime},${timeEntry.breakEndTime},${timeEntry.endTime},${timeEntry.totalTime},${timeEntry.regularWorkingTime},${timeEntry.regularWorkingTimeDifference}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_working_time_${templateInstance.data.period.get()}.csv`)
   },
@@ -147,7 +147,7 @@ Template.workingtimetable.events({
     event.preventDefault()
     const data = [[t('globals.date'), t('globals.resource'), t('details.startTime'), t('details.breakStartTime'), t('details.breakEndTime'), t('details.endTime'), t('details.totalTime'), t('details.regularWorkingTime'), t('details.regularWorkingTimeDifference')]]
     for (const timeEntry of templateInstance.workingTimeEntries.get()) {
-      data.push([dayjs(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.resource, timeEntry.startTime, timeEntry.breakStartTime, timeEntry.breakEndTime, timeEntry.endTime, timeEntry.totalTime, timeEntry.regularWorkingTime, timeEntry.regularWorkingTimeDifference])
+      data.push([dayjs.utc(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.resource, timeEntry.startTime, timeEntry.breakStartTime, timeEntry.breakEndTime, timeEntry.endTime, timeEntry.totalTime, timeEntry.regularWorkingTime, timeEntry.regularWorkingTimeDifference])
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'working time').createDownloadUrl(), `titra_working_time_${templateInstance.data.period.get()}.xlsx`)
   },

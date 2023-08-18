@@ -46,7 +46,7 @@ Template.dailytimetable.onCreated(function dailytimetablecreated() {
         if (error) {
           console.error(error)
         } else {
-          this.dailyTimecards.set(result.dailyHours.sort((a, b) => b.date - a.date))
+          this.dailyTimecards.set(result.dailyHours.sort((a, b) => b._id.date - a._id.date))
           this.totalEntries.set(result.totalEntries)
         }
       })
@@ -61,7 +61,7 @@ Template.dailytimetable.onRendered(() => {
       if (templateInstance.dailyTimecards.get() && templateInstance.projectUsersHandle.ready()) {
         data = templateInstance.dailyTimecards.get().map(dailyTimecardMapper)
           .map((entry) => Object.entries(entry)
-            .map((key) => { if (key[1] instanceof Date) { return dayjs(key[1]).format(getGlobalSetting('dateformat')) } return key[1] }))
+            .map((key) => { if (key[1] instanceof Date) { return dayjs.utc(key[1]).format(getGlobalSetting('dateformat')) } return key[1] }))
       }
       const columns = [
         {
@@ -145,7 +145,7 @@ Template.dailytimetable.events({
     }
     const csvArray = [`\uFEFF${t('globals.date')},${t('globals.project')},${t('globals.resource')},${unit}\r\n`]
     for (const timeEntry of templateInstance.dailyTimecards.get().map(dailyTimecardMapper)) {
-      csvArray.push(`${dayjs(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
+      csvArray.push(`${dayjs.utc(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_daily_time_${templateInstance.data.period.get()}.csv`)
   },
@@ -157,7 +157,7 @@ Template.dailytimetable.events({
     }
     const data = [[t('globals.date'), t('globals.project'), t('globals.resource'), unit]]
     for (const timeEntry of templateInstance.dailyTimecards.get().map(dailyTimecardMapper)) {
-      data.push([dayjs(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
+      data.push([dayjs.utc(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'daily').createDownloadUrl(), `titra_daily_time_${templateInstance.data.period.get()}.xlsx`)
   },

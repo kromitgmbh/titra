@@ -32,7 +32,7 @@ const customFieldType = 'name'
 function detailedDataTableMapper(entry) {
   const project = Projects.findOne({ _id: entry.projectId })
   const mapping = [project ? project.name : '',
-    dayjs.utc(entry.date).local().format(getGlobalSetting('dateformat')),
+    dayjs.utc(entry.date).format(getGlobalSetting('dateformat')),
     entry.task.replace(/^=/, '\\='),
     projectResources.findOne() ? projectResources.findOne({ _id: entry.userId })?.name : '']
   if (getGlobalSetting('showCustomFieldsInDetails')) {
@@ -54,8 +54,8 @@ function detailedDataTableMapper(entry) {
     mapping.push(entry.state)
   }
   if (getGlobalSetting('useStartTime')) {
-    mapping.push(dayjs.utc(entry.date).local().format('HH:mm'))
-    mapping.push(dayjs.utc(entry.date).add(entry.hours, 'hour').local().format('HH:mm'))
+    mapping.push(dayjs.utc(entry.date).format('HH:mm'))
+    mapping.push(dayjs.utc(entry.date).add(entry.hours, 'hour').format('HH:mm'))
   }
   mapping.push(Number(timeInUserUnit(entry.hours)))
   mapping.push(entry._id)

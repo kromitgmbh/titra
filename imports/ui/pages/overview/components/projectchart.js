@@ -72,12 +72,12 @@ Template.projectchart.helpers({
       ? Projects.findOne({ _id: Template.instance().data.projectId }).target : false
   },
   startDate() {
-    return Projects.findOne({ _id: Template.instance().data.projectId }).startDate 
-      ? dayjs.utc(Projects.findOne({ _id: Template.instance().data.projectId }).startDate).local().format(getGlobalSetting('dateformat')) : false
+    return Projects.findOne({ _id: Template.instance().data.projectId }).startDate
+      ? dayjs.utc(Projects.findOne({ _id: Template.instance().data.projectId }).startDate).format(getGlobalSetting('dateformat')) : false
   },
   endDate() {
     return Projects.findOne({ _id: Template.instance().data.projectId }).endDate
-      ? dayjs.utc(Projects.findOne({ _id: Template.instance().data.projectId }).endDate).local().format(getGlobalSetting('dateformat')) : false
+      ? dayjs.utc(Projects.findOne({ _id: Template.instance().data.projectId }).endDate).format(getGlobalSetting('dateformat')) : false
   },
   customer() {
     return Projects.findOne({ _id: Template.instance().data.projectId })?.customer
