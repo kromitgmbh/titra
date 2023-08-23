@@ -17,7 +17,7 @@
           <i class="fa fa-address-card" style="width:18px;"></i> {{t "globals.customer"}}: <span class="text-truncate">{{customer}}</span><br/>
         {{/if}}
         {{#if totalHours}}
-          <i class="fa fa-clock" style="width:18px;"></i> {{t "overview.total_time"}} {{timeInUserUnit(totalHours)}} ({{timeunitVerbose}}) {{{hourIndicator}}}<br/>
+          <i class="fa fa-clock" style="width:18px;"></i> {{t "overview.total_time"}}: {{timeInUserUnit(totalHours)}} ({{timeunitVerbose}}) {{{hourIndicator}}}<br/>
         {{/if}}
         {{#if target}}
           <i class="fa fa-bullseye" style="width:18px;"></i> {{t "overview.target"}}: {{timeInUserUnit(target)}} ({{timeunitVerbose}})<br/>

@@ -89,9 +89,9 @@
     "details_button": "Détails",
     "project_information": "Informations sur le projet",
     "team": "Equipe ",
-    "total_time": "Temps total: ",
+    "total_time": "Temps total",
     "target": "Cible: ",
-    "turnover": "Chiffre d'affaires: ",
+    "turnover": "Chiffre d'affaires",
     "number_projects": "Nombre de projets",
     "summary": "Résumé"
   },
@@ -210,7 +210,10 @@
     "enable_gitlab": "Activer l'intégration Gitlab ?",
     "rounding": "Arrondi",
     "rounding_tooltip": "Le temps suivi sera arrondi en fonction de l'unité de temps sélectionnée et de la valeur d'arrondi spécifiée, par exemple l'unité de temps minutes et la valeur d'arrondi 15 arrondiront au quart d'heure supérieur (entrée 5 minutes > résultat après arrondi à 15 minutes).",
-    "enable_siwapp": "Activer l'intégration Siwapp ?"
+    "enable_siwapp": "Activer l'intégration Siwapp ?",
+    "google_clientid": "Google Workspace Client ID",
+    "google_secret": "Google Workspace Client Secret",
+    "openai": "Open AI API Key"
   },
   "customer": {
     "select_customer": "Selectionner un client",
@@ -264,7 +267,7 @@
     "regularWorkingTime": "Heures de travail habituelles",
     "regularWorkingTimeDifference": "Différence",
     "addBreakToWorkingTime": "Ajouter une pause au suivi du temps?",
-    "state": "Etat",
+    "state": "Statut de facturation",
     "new": "Nouveau",
     "exported": "Exporté",
     "billed": "Facturé",
@@ -433,5 +436,12 @@
     "method": "Méthode",
     "payload": "Charge utile",
     "timestamp": "Horodatage"
+  },
+  "autocomplete": {
+    "modal_title": "Autocomplétion alimentée par l'IA",
+    "processing": "Récupération des données et traitement à l'aide d'OpenAI...",
+    "authentication_missing": "Vous devez autoriser l'accès à votre compte Google Workspace pour traiter les données.",
+    "authorize_now": "Autoriser maintenant",
+    "save_selected": "Enregistrer les entrées de temps sélectionnées"
   }
 }

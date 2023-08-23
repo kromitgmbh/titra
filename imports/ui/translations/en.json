@@ -91,13 +91,13 @@
     "details_button": "Details",
     "project_information": "Project information",
     "team": "Team ",
-    "total_time": "Total time: ",
-    "target": "Target: ",
-    "turnover": "Turnover: ",
+    "total_time": "Total time",
+    "target": "Target",
+    "turnover": "Turnover",
     "number_projects": "Number of projects",
     "summary": "Summary",
     "properties": "Properties",
-    "percentage": "Project progress: ",
+    "percentage": "Project progress",
     "startDate": "Start date",
     "endDate": "End date",
     "duration": "Project duration"
@@ -171,7 +171,7 @@
     "weekview_date_format": "Weekview date format",
     "startof_week": "Start of week (0=Sun, 1=Mon, etc)",
     "global_defaults": "Default settings:",
-    "use_state": "Use time entry state?",
+    "use_state": "Use time entry billing state?",
     "disable_user_registration": "Disable new user registration?",
     "enable_anonymous_logins": "Allow anonymous user creation (activates the /try route)?",
     "show_not_billable_time": "Include not billable projects?",
@@ -219,7 +219,11 @@
     "rounding": "Rounding",
     "rounding_tooltip": "Tracked time will be rounded up according to the selected time unit and the specified rounding value e.g. time unit minutes and round value 15 will round up to the next 15 minutes (input 5 minutes > result after rounding 15 minutes).",
     "enable_siwapp": "Enable Siwapp integration?",
-    "custom_logo": "Custom logo (URL or Data URI)"
+    "custom_logo": "Custom logo (URL or Data URI)",
+    "enable_googleapi": "Enable Google Workspace integration?",
+    "google_clientid": "Google Workspace Client ID",
+    "google_secret": "Google Workspace Client Secret",
+    "openai": "Open AI API Key"
   },
   "customer": {
     "select_customer": "Select a customer",
@@ -273,7 +277,7 @@
     "regularWorkingTime": "Regular work time",
     "regularWorkingTimeDifference": "Difference",
     "addBreakToWorkingTime": "Add break to working time?",
-    "state": "State",
+    "state": "Billing status",
     "new": "New",
     "exported": "Exported",
     "billed": "Billed",
@@ -447,5 +451,12 @@
   "weektable": {
     "sumProject_message": "The sum per project",
     "sum_per_day":  "The sum per day"
+  },
+  "autocomplete": {
+    "modal_title": "AI powered autocomplete",
+    "processing": "Fetching data and processing using OpenAI ...",
+    "authentication_missing": "You need to authorize access to your Google Workspace account to process data.",
+    "authorize_now": "Authorize now",
+    "save_selected": "Save selected time entries"
   }
 }

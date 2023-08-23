@@ -145,7 +145,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
   })
   this.autorun(() => {
     if (this.data.projectId.get()) {
-      Blaze.renderWithData(
+      this.taskSelectPopup = Blaze.renderWithData(
         Template.taskSelectPopup,
         { projectId: this.data.projectId },
         document.body,
@@ -207,4 +207,9 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
 Template.tasksearch.helpers({
   displayTaskSelectionIcon: () => (Template.instance()?.data?.projectId
     ? Template.instance()?.data?.projectId?.get() : false),
+})
+Template.tasksearch.onRendered(() => {
+  Template.instance().$('#edit-tc-entry-modal').on('hidden.bs.modal', () => {
+    Blaze.remove(Template.instance().taskSelectPopup)
+  })
 })

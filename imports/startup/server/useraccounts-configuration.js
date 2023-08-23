@@ -3,9 +3,9 @@ import dockerNames from 'docker-names'
 import { getGlobalSettingAsync } from '../../utils/server_method_helpers'
 import initNewUser from '../../api/projects/setup.js'
 
-Accounts.setAdditionalFindUserOnExternalLogin(({serviceName, serviceData}) => {
+Accounts.setAdditionalFindUserOnExternalLogin(({ serviceName, serviceData }) => {
   if (serviceName === 'oidc') {
-    return Accounts.findUserByEmail(serviceData.email);
+    return Accounts.findUserByEmail(serviceData.email)
   }
   return undefined
 })

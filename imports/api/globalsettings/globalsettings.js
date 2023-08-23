@@ -151,4 +151,13 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'customLogo', description: 'settings.custom_logo', type: 'textarea', value: '', category: 'settings.categories.customization',
 })
+defaultSettings.push({
+  name: 'google_clientid', description: 'settings.google_clientid', type: 'text', value: '', category: 'settings.categories.interfaces',
+})
+defaultSettings.push({
+  name: 'google_secret', description: 'settings.google_secret', type: 'password', value: '', category: 'settings.categories.interfaces',
+})
+defaultSettings.push({
+  name: 'openai_apikey', description: 'settings.openai', type: 'password', value: '', category: 'settings.categories.interfaces',
+})
 export { defaultSettings, Globalsettings }

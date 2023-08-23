@@ -24,6 +24,7 @@ Template.registerHelper('t', (param) => (i18nReady.get() ? t(param) : 'Loading .
 Template.registerHelper('prefix', () => window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || '')
 
 Meteor.startup(() => {
+  import('../../utils/google/google_client.js')
   window.BootstrapLoaded = new ReactiveVar(false)
   Meteor.subscribe('globalsettings')
   const extensionHandle = Meteor.subscribe('extensions')

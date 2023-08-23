@@ -2,7 +2,6 @@ import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import Projects from '../api/projects/projects.js'
 import Transactions from '../api/transactions/transactions.js'
-import { projectResources } from '../api/users/users.js'
 import { periodToDates } from './periodHelpers.js'
 import { Globalsettings } from '../api/globalsettings/globalsettings.js'
 
@@ -543,6 +542,59 @@ function transactionLogMixin(methodOptions) {
   }
   return methodOptions
 }
+/**
+ * Calculates the edit distance between two strings using the Levenshtein distance algorithm.
+ * @param {string} string1 - The first string to compare.
+ * @param {string} string2 - The second string to compare.
+ * @returns {number} The edit distance between the two strings.
+ */
+function editDistance(string1, string2) {
+  const s1 = string1.toLowerCase()
+  const s2 = string2.toLowerCase()
+
+  const costs = []
+  for (let i = 0; i <= s1.length; i += 1) {
+    let lastValue = i
+    for (let j = 0; j <= s2.length; j += 1) {
+      if (i === 0) { costs[j] = j } else if (j > 0) {
+        let newValue = costs[j - 1]
+        if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+          newValue = Math.min(
+            Math.min(newValue, lastValue),
+            costs[j],
+          ) + 1
+        }
+        costs[j - 1] = lastValue
+        lastValue = newValue
+      }
+    }
+    if (i > 0) { costs[s2.length] = lastValue }
+  }
+  return costs[s2.length]
+}
+
+/**
+ * Calculates the similarity between two strings using the Levenshtein distance algorithm.
+ * @param {string} s1 - The first string to compare.
+ * @param {string} s2 - The second string to compare.
+ * @returns {number} - A value between 0 and 1 representing the similarity between the two strings.
+ */
+function calculateSimilarity(s1, s2) {
+  if (s1 && s2) {
+    let longer = s1
+    let shorter = s2
+    if (s1.length < s2.length) {
+      longer = s2
+      shorter = s1
+    }
+    const longerLength = longer.length
+    if (longerLength === 0) {
+      return 1.0
+    }
+    return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)
+  }
+  return 0
+}
 export {
   authenticationMixin,
   adminAuthenticationMixin,
@@ -558,4 +610,5 @@ export {
   buildDetailedTimeEntriesForPeriodSelector,
   getGlobalSettingAsync,
   getUserSettingAsync,
+  calculateSimilarity,
 }

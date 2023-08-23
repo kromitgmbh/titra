@@ -209,6 +209,7 @@ function totalHoursForPeriodMapper(entry) {
     totalHours,
   }
 }
+
 export {
   addToolTipToTableCell,
   getWeekDays,

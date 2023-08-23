@@ -8,7 +8,7 @@ import Projects from '../projects.js'
 import Tasks from '../../tasks/tasks.js'
 import { addNotification } from '../../notifications/notifications.js'
 import { emojify } from '../../../utils/frontend_helpers'
-import { authenticationMixin, transactionLogMixin } from '/imports/utils/server_method_helpers'
+import { authenticationMixin, transactionLogMixin, calculateSimilarity } from '../../../utils/server_method_helpers'
 
 /**
 Get the statistics of all projects based on the timecards.
@@ -529,6 +529,29 @@ const setRateForUser = new ValidatedMethod({
   },
 })
 
+const searchForProject = new ValidatedMethod({
+  name: 'searchForProject',
+  validate(args) {
+    check(args, {
+      query: String,
+    })
+  },
+  mixins: [authenticationMixin],
+  async run({ query }) {
+    const projects = await Projects.find({
+      $and: [
+        {
+          $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+        },
+        { $or: [{ archived: false }, { archived: { $exists: false } }] },
+      ],
+    }).fetchAsync()
+    projects.map((entry) => ({ ...entry, score: calculateSimilarity(entry.name, query) }))
+    projects.sort((a, b) => b.score - a.score)
+    return projects.length > 0 ? projects[0]._id : null
+  },
+})
+
 export {
   getAllProjectStats,
   getProjectUsers,
@@ -545,4 +568,5 @@ export {
   updatePriority,
   setDefaultTaskForProject,
   setRateForUser,
+  searchForProject,
 }

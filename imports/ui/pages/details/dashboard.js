@@ -133,7 +133,7 @@ Template.dashboard.onRendered(() => {
             )
             datemap.set(
               dayjs.utc(timecard.date).format('DDMMYYYY'),
-              datemap.get(dayjs.utc(timecard.date).local().format('DDMMYYYY'))
+              datemap.get(dayjs.utc(timecard.date).format('DDMMYYYY'))
                 ? Number(Number(datemap.get(dayjs(timecard.date).format('DDMMYYYY'))) + Number(timeInUnitHelper(timecard.hours)))
                 : Number(timeInUnitHelper(timecard.hours)),
             )
@@ -149,7 +149,7 @@ Template.dashboard.onRendered(() => {
                 type: 'bar',
                 colors: ['#009688'],
                 data: {
-                  labels: [...datemap.keys()].map((value) => dayjs.utc(value, 'DDMMYYYY').local().format(getGlobalSetting('dateformat'))),
+                  labels: [...datemap.keys()].map((value) => dayjs.utc(value, 'DDMMYYYY').format(getGlobalSetting('dateformat'))),
                   datasets: [{
                     values: [...datemap.values()],
                   }],
@@ -203,10 +203,10 @@ Template.dashboard.onRendered(() => {
 Template.dashboard.helpers({
   timecards: () => (Timecards.find().fetch().length > 0 ? Timecards.find() : false),
   projectName: () => (Projects.findOne() ? Projects.findOne().name : false),
-  formatDate: (date) => dayjs.utc(date).local().format(getGlobalSetting('dateformatVerbose')),
+  formatDate: (date) => dayjs.utc(date).format(getGlobalSetting('dateformatVerbose')),
   timeunit: () => timeUnitHelper(),
-  startDate: () => (Dashboards.findOne() ? dayjs.utc(Dashboards.findOne().startDate).local().format(getGlobalSetting('dateformat')) : false),
-  endDate: () => (Dashboards.findOne() ? dayjs.utc(Dashboards.findOne().endDate).local().format(getGlobalSetting('dateformat')) : false),
+  startDate: () => (Dashboards.findOne() ? dayjs.utc(Dashboards.findOne().startDate).format(getGlobalSetting('dateformat')) : false),
+  endDate: () => (Dashboards.findOne() ? dayjs.utc(Dashboards.findOne().endDate).format(getGlobalSetting('dateformat')) : false),
   dashBoardResource: () => (Dashboards.findOne()
     ? Meteor.users.findOne(Dashboards.findOne().resourceId)?.profile?.name : false),
   customer: () => (Dashboards.findOne() ? Dashboards.findOne().customer : false),

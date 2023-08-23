@@ -1,6 +1,7 @@
 import { AccountsAnonymous } from 'meteor/faburem:accounts-anonymous'
 import { BrowserPolicy } from 'meteor/browser-policy-framing'
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter'
+import { ServiceConfiguration } from 'meteor/service-configuration'
 import Extensions from '../../api/extensions/extensions.js'
 import { defaultSettings, Globalsettings } from '../../api/globalsettings/globalsettings.js'
 import { getGlobalSettingAsync } from '../../utils/server_method_helpers.js'
@@ -14,15 +15,28 @@ Meteor.startup(async () => {
   }
   if (Meteor.settings.disablePublic) {
     // eslint-disable-next-line i18next/no-literal-string
-    Globalsettings.update({ name: 'disablePublicProjects' }, { $set: { value: Meteor.settings.disablePublic === 'true' } })
+    await Globalsettings.updateAsync({ name: 'disablePublicProjects' }, { $set: { value: Meteor.settings.disablePublic === 'true' } })
   }
   if (Meteor.settings.enableAnonymousLogins) {
     // eslint-disable-next-line i18next/no-literal-string
-    Globalsettings.update({ name: 'enableAnonymousLogins' }, { $set: { value: Meteor.settings.disablePublic === 'true' } })
+    await Globalsettings.updateAsync({ name: 'enableAnonymousLogins' }, { $set: { value: Meteor.settings.disablePublic === 'true' } })
   }
   if (await getGlobalSettingAsync('enableOpenIDConnect')) {
     import('../../utils/oidc/oidc_server').then((Oidc) => {
       Oidc.registerOidc()
+    })
+  }
+  if (await getGlobalSettingAsync('enable_googleapi')) {
+    ServiceConfiguration.configurations.upsert({
+      service: 'googleapi',
+    }, {
+      $set: {
+        clientId: await getGlobalSettingAsync('google_clientid'),
+        secret: await getGlobalSettingAsync('google_secret'),
+      },
+    })
+    import('../../utils/google/google_server.js').then((registerGoogleAPI) => {
+      registerGoogleAPI.default()
     })
   }
   for (const extension of Extensions.find({})) {

@@ -24,6 +24,7 @@ import './components/calendar.js'
 import './components/usersearch.js'
 import '../../shared components/backbutton.js'
 import './components/timeline.js'
+import './components/magicPopup.js'
 
 function isHoliday(date) {
   const templateInstance = Template.instance()
@@ -36,7 +37,7 @@ Template.tracktime.onRendered(() => {
   if (!templateInstance.tinydatepicker) {
     templateInstance.tinydatepicker = TinyDatePicker(templateInstance.$('.js-date')[0], {
       format(date) {
-        return date ? dayjs(date).format(getGlobalSetting('dateformatVerbose')) : dayjs.format(getGlobalSetting('dateformatVerbose'))
+        return date ? dayjs(date).format(getGlobalSetting('dateformatVerbose')) : dayjs().format(getGlobalSetting('dateformatVerbose'))
       },
       parse(date) {
         return dayjs(date, [getGlobalSetting('dateformatVerbose'), undefined]).toDate()
@@ -265,14 +266,6 @@ Template.tracktime.events({
     templateInstance.$('#hours').val('')
     templateInstance.$('.js-tasksearch-results').addClass('d-none')
   },
-  // 'change .js-target-project': (event, templateInstance) => {
-  //   event.preventDefault()
-  //   templateInstance.projectId.set(templateInstance.$(event.currentTarget).val())
-  //   const project = Projects.findOne({ _id: templateInstance.projectId.get() })
-  //   if (!project?.defaultTask) {
-  //     templateInstance.$('.js-tasksearch').first().focus()
-  //   }
-  // },
   'change .js-date': (event, templateInstance) => {
     if ($(event.currentTarget).val()) {
       let date = dayjs(templateInstance.$(event.currentTarget).val(), [getGlobalSetting('dateformatVerbose'), undefined])
@@ -286,7 +279,6 @@ Template.tracktime.events({
         FlowRouter.setQueryParams({ date })
       }
     }
-    // templateInstance.date.set($(event.currentTarget).val())
   },
   'click .js-toggle-timecards': (event, templateInstance) => {
     event.preventDefault()

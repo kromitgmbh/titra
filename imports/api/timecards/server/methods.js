@@ -18,7 +18,10 @@ import {
   workingTimeEntriesMapper,
   buildDetailedTimeEntriesForPeriodSelector,
   getGlobalSettingAsync,
+  calculateSimilarity,
 } from '../../../utils/server_method_helpers.js'
+import { getOpenAIResponse } from '../../../utils/openai/openai_server.js'
+
 /**
  * Inserts a new timecard into the Timecards collection.
  * @param {Object} args - The arguments object containing the timecard information.
@@ -173,9 +176,9 @@ async function checkProjectAdministratorAndUser(projectId, administratorId, user
   if (!user) {
     throw new Meteor.Error('notifications.user_not_found')
   }
-  if (targetProject.public !== true &&
-      targetProject.userId !== user._id &&
-      targetProject.team.indexOf(user._id) === -1) {
+  if (targetProject.public !== true
+      && targetProject.userId !== user._id
+      && targetProject.team.indexOf(user._id) === -1) {
     throw new Meteor.Error('notifications.user_not_found_in_project')
   }
   return user._id
@@ -603,7 +606,7 @@ const getWorkingHoursForPeriod = new ValidatedMethod({
       page,
     )
     const totalEntriesTimecardsRaw = await Timecards.rawCollection()
-      .aggregate(buildworkingTimeSelector(projectId, period, dates, userId, 0)).toArray()
+      .aggregate(buildworkingTimeSelector(projectId, period, dates, userId, limit, page)).toArray()
     const totalEntries = totalEntriesTimecardsRaw.length
     const workingHoursObject = {}
     workingHoursObject.totalEntries = totalEntries
@@ -687,6 +690,168 @@ const deleteTimeCardsForWeek = new ValidatedMethod({
     })
   },
 })
+
+/**
+ * Gets the Google Workspace data for a given date range.
+ * @param {Object} args - The arguments object containing the date range.
+ * @param {Date} args.startDate - The start date of the date range.
+ * @param {Date} args.endDate - The end date of the date range.
+ * @throws {Meteor.Error} If user is not authenticated.
+ * @returns {Object} The Google Workspace data for the given date range.
+ */
+const getGoogleWorkspaceData = new ValidatedMethod({
+  name: 'getGoogleWorkspaceData',
+  validate(args) {
+    check(args, {
+      startDate: Date,
+      endDate: Date,
+    })
+  },
+  mixins: [authenticationMixin],
+  async run({ startDate, endDate }) {
+    const { serviceData } = Meteor.user().services.googleapi
+    let eventResponse = []
+    if (serviceData) {
+      const events = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?singleEvents=true&timeMax=${encodeURIComponent(endDate.toISOString())}&timeMin=${encodeURIComponent(startDate.toISOString())}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${serviceData.accessToken}`,
+          Accept: 'application/json',
+        },
+      })
+      const jsonEvents = await events.json()
+      const fetchedEvents = jsonEvents.items.map((event) => ({
+        summary: event.summary,
+        description: event.description?.substring(0, 255),
+        startTime: event.start?.dateTime,
+        endTime: event.end?.dateTime,
+        attendees: event.attendees,
+      }))
+      eventResponse = fetchedEvents
+      if (await getGlobalSettingAsync('openai_apikey') && fetchedEvents.length > 0) {
+        eventResponse = await Promise.all(fetchedEvents.map(async (eventData) => getOpenAIResponse(`Based on the following JSON representation of a calendar event, respond with a JSON object summarizing the event with as few words as possible. Add the date of the event and the duration in hours and try to identify the customer based on the majority of attendee e-mail addresses. Use the following schema for the return JSON:
+        \`Interface event {summary: string, duration:number, customer: string, date:  date}\`
+        ${JSON.stringify(eventData)}`)))
+      }
+      const emails = await fetch(`https://www.googleapis.com/gmail/v1/users/me/messages?q=in:sent%20after:${Date.parse(startDate) / 1000}%20before:${Date.parse(endDate) / 1000}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${serviceData.accessToken}`,
+          Accept: 'application/json',
+        },
+      })
+      const emailIds = await emails.json()
+      let fetchedMessages = []
+      if (emailIds.messages) {
+        fetchedMessages = await Promise.all(emailIds.messages.map(async (emailId) => {
+          const message = await fetch(`https://www.googleapis.com/gmail/v1/users/me/messages/${emailId.id}?format=metadata`, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${serviceData.accessToken}`,
+              Accept: 'application/json',
+            },
+          })
+          const jsonMessage = await message.json()
+          const returnMessage = {}
+          returnMessage.date = dayjs(new Date(Number.parseInt(jsonMessage.internalDate, 10))).format('YYYY-MM-DD')
+          returnMessage.sizeEstimate = jsonMessage.sizeEstimate
+          returnMessage.recipients = ''
+          const headers = jsonMessage.payload && jsonMessage.payload.headers
+          if (headers) {
+            for (const header of headers) {
+              if (header.name === 'Subject') {
+                returnMessage.subject = header.value
+              }
+              if (header.name === 'To') {
+                returnMessage.recipients += header.value
+              }
+              if (header.name === 'CC') {
+                returnMessage.recipients += header.value
+              }
+            }
+            if (await getGlobalSettingAsync('openai_apikey')) {
+              return getOpenAIResponse(`Based on the email representation in JSON format, respond with a JSON object with the following schema where you estimate the time it took to write the email in hours based on the snippet and sizeEstimate in bytes where 0.25 hours is the minimum and add it to the duration field, use date format "YYYY-MM-DD" for dates, summarize the content with as few words as possible, do not include the snippet in the summary, guess the customer company name based on the majority of recipient's mail address domain:
+          \`Interface message {summary:string,customer:string,date:date,duration:number}\`
+          ${JSON.stringify(jsonMessage)}`)
+            }
+            returnMessage.summary = jsonMessage.snippet.substring(0, 50)
+            returnMessage.duration = 0.25
+            return returnMessage
+          }
+          return returnMessage
+        }))
+      }
+      let returnEvents = eventResponse
+      if (await getGlobalSettingAsync('openai_apikey')) {
+        returnEvents = await Promise.all(eventResponse.map(async (event) => {
+          const projects = await Projects.find({
+            $and: [
+              {
+                $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+              },
+              { $or: [{ archived: false }, { archived: { $exists: false } }] },
+            ],
+          }).fetchAsync()
+          const filteredProjects = projects.map((entry) => {
+            const score = calculateSimilarity(entry.name, event.customer)
+            if (score > 0.3) {
+              return {
+                ...entry,
+                score: calculateSimilarity(entry.name, event.customer),
+              }
+            }
+            return undefined
+          }).filter((entry) => entry !== undefined)
+          filteredProjects.sort((a, b) => b.score - a.score)
+          const updatedMessage = {
+            ...event,
+            projectID: filteredProjects.length > 0 ? filteredProjects[0]._id : null,
+          }
+          return updatedMessage
+        }))
+      } else {
+        returnEvents.map((event) => {
+          event.date = dayjs(event.startTime).format('YYYY-MM-DD')
+          event.duration = (Date.parse(event.endTime) - Date.parse(event.startTime))
+            / 1000 / 60 / 60
+          return event
+        })
+      }
+      let returnMessages = fetchedMessages
+      if (await getGlobalSettingAsync('openai_apikey')) {
+        returnMessages = await Promise.all(fetchedMessages.map(async (message) => {
+          const projects = await Projects.find({
+            $and: [
+              {
+                $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
+              },
+              { $or: [{ archived: false }, { archived: { $exists: false } }] },
+            ],
+          }).fetchAsync()
+          const filteredProjects = projects.map((entry) => {
+            const score = calculateSimilarity(entry.name, message.customer)
+            if (score > 0.3) {
+              return {
+                ...entry,
+                score: calculateSimilarity(entry.name, message.customer),
+              }
+            }
+            return undefined
+          }).filter((entry) => entry !== undefined)
+          filteredProjects.sort((a, b) => b.score - a.score)
+          const updatedMessage = {
+            ...message,
+            projectID: filteredProjects.length > 0 ? filteredProjects[0]._id : null,
+          }
+          return updatedMessage
+        }))
+      }
+      return { returnEvents, returnMessages }
+    }
+    throw new Meteor.Error('You need to authorize Google API access for titra first.')
+  },
+})
+
 export {
   insertTimeCard,
   insertTimeCardMethod,
@@ -701,4 +866,5 @@ export {
   getDailyTimecards,
   sendToSiwapp,
   checkProjectAdministratorAndUser,
+  getGoogleWorkspaceData,
 }

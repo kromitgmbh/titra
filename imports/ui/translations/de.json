@@ -91,13 +91,13 @@
     "details_button": "Details",
     "project_information": "Projekt Informationen",
     "team": "Team",
-    "total_time": "Gesamte Zeit: ",
-    "target": "Ziel: ",
-    "turnover": "Umsatz: ",
+    "total_time": "Gesamte Zeit",
+    "target": "Ziel",
+    "turnover": "Umsatz",
     "number_projects": "Anzahl Projekte",
     "summary": "Zusammenfassung",
     "properties": "Eigenschaften",
-    "percentage": "Projektfortschritt: ",
+    "percentage": "Projektfortschritt",
     "startDate": "Startdatum",
     "endDate": "Enddatum",
     "duration": "Projektdauer"
@@ -170,7 +170,7 @@
     "verbose_date_format": "Detailliertes Datumsformat",
     "weekview_date_format": "Datumsformat Wochenansicht",
     "startof_week": "Wochenbeginn (0=Sonntag, 1=Montag, etc.)",
-    "use_state": "Status für Zeiteinträge verwenden?",
+    "use_state": "Verrechnungsstatus für Zeiteinträge verwenden?",
     "disable_user_registration": "Registrierung neuer Benutzer deaktivieren?",
     "enable_anonymous_logins": "Anonyme Benutzer erlauben (aktiviert die /try Route)?",
     "show_not_billable_time": "Nicht verrechenbare Projekte berücksichtigen?",
@@ -219,7 +219,11 @@
     "rounding": "Rundung",
     "rounding_tooltip": "Erfasste Zeiten werden auf Basis der gewählten Zeiteinheit automatisch auf die nächste spezifizierte Einheit aufgerundet z.B. bei Zeiteinheit Minuten und Rundungswert 15 wird immer auf die nächsten 15 Minuten aufgerundet (Eingabe 5 Minuten > Ergebnis nach Rundung 15 Minuten).",
     "enable_siwapp": "Siwapp Schnittstelle aktivieren?",
-    "custom_logo": "Benutzerdefiniertes Logo (URL oder Data-URI)"
+    "custom_logo": "Benutzerdefiniertes Logo (URL oder Data-URI)",
+    "enable_googleapi": "Google Workspace Schnittstelle aktivieren?",
+    "google_clientid": "Google Workspace Client ID",
+    "google_secret": "Google Workspace Client Secret",
+    "openai": "Open AI API Key"
   },
   "customer": {
     "select_customer": "Kunde auswählen",
@@ -273,7 +277,7 @@
     "regularWorkingTime": "Normalarbeitszeit",
     "regularWorkingTimeDifference": "Differenz",
     "addBreakToWorkingTime": "Pause zu Arbeitszeit addieren?",
-    "state": "Status",
+    "state": "Verrechnungsstatus",
     "new": "Neu",
     "exported": "Exportiert",
     "billed": "Verrechnet",
@@ -455,5 +459,12 @@
   "weektable": {
     "sumProject_message": "Die Summe pro Projekt",
     "sum_per_day":  "Die Summe pro Tag"
+  },
+  "autocomplete": {
+    "modal_title": "KI unterstützte Zeiterfassung",
+    "processing": "Import und Verarbeitung der Daten ...",
+    "authentication_missing": "Sie müssen den Zugriff auf Ihr Google Workspace-Konto autorisieren, um Daten zu verarbeiten.",
+    "authorize_now": "Jetzt autorisieren",
+    "save_selected": "Ausgewählte Zeiteinträge speichern"
   }
 }

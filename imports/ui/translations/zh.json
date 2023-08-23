@@ -84,10 +84,10 @@
     "three_month_history": "近三个月",
     "details_button": "明细",
     "project_information": "项目信息",
-    "team": "团队 ",
-    "total_time": "总时间: ",
-    "target": "目标: ",
-    "turnover": "周转: ",
+    "team": "团队",
+    "total_time": "总时间",
+    "target": "目标",
+    "turnover": "周转",
     "number_projects": "项目数量"
   },
   "project": {
@@ -178,7 +178,10 @@
     "holiday_country": "假日国家",
     "holiday_state": "假日州",
     "holiday_region": "假日地区",
-    "xframe_options_origin": "X-Frame-Options header origin URL"
+    "xframe_options_origin": "X-Frame-Options header origin URL",
+    "google_clientid": "Google Workspace Client ID",
+    "google_secret": "Google Workspace Client Secret",
+    "openai": "Open AI API Key"
   },
   "customer": {
     "select_customer": "请选一个客户",
@@ -232,7 +235,7 @@
     "regularWorkingTime": "常规工作时间",
     "regularWorkingTimeDifference": "差",
     "addBreakToWorkingTime": "休息时间算进工作时间？",
-    "state": "状态",
+    "state": "计费状态",
     "new": "新建",
     "exported": "导出",
     "billed": "计费的",
@@ -379,5 +382,12 @@
     "list": "Wekan 列表",
     "swimlane": "Wekan 泳道",
     "instance_url": "Wekan 实例 API URL"
+  },
+  "autocomplete": {
+    "modal_title": "AI 助手自动完成",
+    "processing": "正在获取数据并使用 OpenAI 进行处理...",
+    "authentication_missing": "你需要授权访问你的 Google Workspace 帐户才能处理数据。",
+    "authorize_now": "现在授权",
+    "save_selected": "保存所选时间记录"
   }
 }

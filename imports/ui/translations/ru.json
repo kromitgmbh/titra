@@ -91,13 +91,13 @@
     "details_button": "Детали",
     "project_information": "Информация о проекте",
     "team": "Команда ",
-    "total_time": "Общее время: ",
-    "target": "Цель: ",
-    "turnover": "Оборот: ",
+    "total_time": "Общее время",
+    "target": "Цель",
+    "turnover": "Оборот",
     "number_projects": "Количество проектов",
     "summary": "Суммарно",
     "properties": "Свойства",
-    "percentage": "Прогресс проекта: ",
+    "percentage": "Прогресс проекта",
     "startDate": "Дата начала",
     "endDate": "Дата завершения",
     "duration": "Длительность проекта"
@@ -218,7 +218,10 @@
     "enable_gitlab": "Активировать интерфейс GitLab?",
     "rounding": "Округление",
     "rounding_tooltip": "Затраченное время будет округляться в соответствии с выбранной единицей времени и указанным округленным значением. Например, единица времени - минуты, округленное значение - 15, будет округляться до ближайших 15 минут (ввод 5 минут > результат после округления - 15 минут)",
-    "enable_siwapp": "Активировать интеграцию с Siwapp?"
+    "enable_siwapp": "Активировать интеграцию с Siwapp?",
+    "google_clientid": "Google Workspace Client ID",
+    "google_secret": "Google Workspace Client Secret",
+    "openai": "Open AI API Key"
   },
   "customer": {
     "select_customer": "Выберите клиента",
@@ -272,7 +275,7 @@
     "regularWorkingTime": "Длительность рабочего дня",
     "regularWorkingTimeDifference": "Разница",
     "addBreakToWorkingTime": "Добавить перерыв к рабочему времени?",
-    "state": "Cтатус",
+    "state": "Статус оплаты",
     "new": "Новый",
     "exported": "Экспортировано",
     "billed": "Оплачено",
@@ -446,5 +449,12 @@
   "weektable": {
     "sumProject_message": "Суммарное время проекта",
     "sum_per_day":  "Суммарное время за день"
+  },
+  "autocomplete": {
+    "modal_title": "Автозаполнение на основе искусственного интеллекта",
+    "processing": "Получение данных и их обработка с помощью OpenAI...",
+    "authentication_missing": "Вам необходимо авторизовать доступ к вашей учетной записи Google Workspace для обработки данных.",
+    "authorize_now": "Авторизоваться сейчас",
+    "save_selected": "Сохранить выбранные записи времени"
   }
 }

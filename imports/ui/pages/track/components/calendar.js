@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { Template } from 'meteor/templating'
 import bootstrap from 'bootstrap'
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import hex2rgba from '../../../../utils/hex2rgba.js'
 import Timecards from '../../../../api/timecards/timecards.js'
 import Projects from '../../../../api/projects/projects.js'
@@ -24,107 +25,105 @@ Template.calendar.onRendered(() => {
   const safeReplacer = (transform) => transform.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
   const templateInstance = Template.instance()
   templateInstance.calendarInitialized = new ReactiveVar(false)
-  templateInstance.autorun(() => {
+  templateInstance.autorun(async () => {
     if (window.BootstrapLoaded.get()) {
-      import('@fullcalendar/core').then((calendar) => {
-        const { Calendar } = calendar
-        import('@fullcalendar/daygrid').then((dayGridPlugin) => {
-          import('@fullcalendar/interaction').then((interaction) => {
-            const interactionPlugin = interaction.default
-            const { Draggable } = interaction
-            const draggable = new Draggable(document.querySelector('.js-project-container'), {
-              itemSelector: '.drag',
-            })
-            const calendarEl = document.getElementById('cal')
-            calendarEl.innerHTML = ''
-            templateInstance.calendar = new Calendar(calendarEl, {
-              plugins: [dayGridPlugin.default, interactionPlugin],
-              initialView: 'dayGridMonth',
-              droppable: true,
-              aspectRatio: 2,
-              height: 'auto',
-              timeZone: 'UTC',
-              firstDay: getUserSetting('startOfWeek'),
-              themeSystem: 'bootstrap',
-              events: (fetchInfo, successCallback) => {
-                templateInstance.startDate.set(fetchInfo.start)
-                templateInstance.endDate.set(fetchInfo.end)
-                const events = Timecards.find(
-                  {
-                    date: {
-                      $gte: templateInstance.startDate.get(),
-                      $lte: templateInstance.endDate.get(),
-                    },
-                  },
-                ).map((it) => (
-                  {
-                    id: it._id,
-                    title: it.task,
-                    start: it.date,
-                    allDay: true,
-                    backgroundColor: hex2rgba(Projects.findOne({ _id: it.projectId }).color ? Projects.findOne({ _id: it.projectId }).color : '#009688', 100),
-                    borderColor: 'rgba(255, 255, 255, 0)',
-                    extendedProps: {
-                      hours: it.hours,
-                    },
-                  }))
-                getHolidays().then((holidays) => {
-                  holidays.forEach((holiday) => {
-                    if (holiday.type === 'public') {
-                      events.push({
-                        title: holiday.name,
-                        start: holiday.date,
-                        allDay: true,
-                        display: 'background',
-                      })
-                    }
-                  })
-                  successCallback(events)
-                })
-              },
-              eventDidMount: (info) => {
-                if (window.innerWidth >= 768) {
-                  let title = `${safeReplacer(info.event.title)}: ${info.event.extendedProps.hours} hours`
-                  if (info.event.id === '') {
-                    title = safeReplacer(info.event.title)
-                  }
-                  return {
-                    domNodes: $(info.el).tooltip({
-                      html: true,
-                      placement: 'right',
-                      trigger: 'hover',
-                      title: `<span>${title}</span>`,
-                    }),
-                  }
-                }
-                return ''
-              },
-              drop: function dropEvent(dropInfo) {
-                templateInstance.tcid.set(undefined)
-                templateInstance.selectedDate.set(dropInfo.date)
-                templateInstance.selectedProjectId.set($(dropInfo.draggedEl).data('project'))
-                new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
-              },
-              eventClick: (eventClickInfo) => {
-                if (eventClickInfo.event.id !== '') {
-                  templateInstance.selectedDate.set(undefined)
-                  templateInstance.selectedProjectId.set(undefined)
-                  templateInstance.tcid.set(eventClickInfo.event.id)
-                  new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
-                }
-              },
-              dateClick: (dateClickInfo) => {
-                templateInstance.tcid.set(undefined)
-                templateInstance.selectedProjectId.set('all')
-                templateInstance.selectedDate.set(dateClickInfo.date)
-                new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
-              },
-            })
-            templateInstance.calendar.render()
-            templateInstance.calendarInitialized.set(true)
-          })
-        })
+      const { Calendar } = await import('@fullcalendar/core')
+      const interActionPlugin = await import('@fullcalendar/interaction')
+      const dayGridPlugin = await import('@fullcalendar/daygrid')
+      const { Draggable } = interActionPlugin
+      const draggable = new Draggable(document.querySelector('.js-project-container'), {
+        itemSelector: '.drag',
       })
+      const calendarEl = document.getElementById('cal')
+      calendarEl.innerHTML = ''
+      templateInstance.calendar = new Calendar(calendarEl, {
+        plugins: [dayGridPlugin.default, interActionPlugin.default],
+        initialView: 'dayGridMonth',
+        droppable: true,
+        aspectRatio: 2,
+        height: 'auto',
+        timeZone: 'UTC',
+        firstDay: getUserSetting('startOfWeek'),
+        themeSystem: 'bootstrap',
+        events: (fetchInfo, successCallback) => {
+          templateInstance.startDate.set(fetchInfo.start)
+          templateInstance.endDate.set(fetchInfo.end)
+          const events = Timecards.find(
+            {
+              date: {
+                $gte: templateInstance.startDate.get(),
+                $lte: templateInstance.endDate.get(),
+              },
+            },
+          ).map((it) => (
+            {
+              id: it._id,
+              title: it.task,
+              start: it.date,
+              allDay: true,
+              backgroundColor: hex2rgba(Projects.findOne({ _id: it.projectId }).color ? Projects.findOne({ _id: it.projectId }).color : '#009688', 100),
+              borderColor: 'rgba(255, 255, 255, 0)',
+              extendedProps: {
+                hours: it.hours,
+              },
+            }))
+          getHolidays().then((holidays) => {
+            holidays.forEach((holiday) => {
+              if (holiday.type === 'public') {
+                events.push({
+                  title: holiday.name,
+                  start: holiday.date,
+                  allDay: true,
+                  display: 'background',
+                })
+              }
+            })
+            successCallback(events)
+          })
+        },
+        eventDidMount: (info) => {
+          if (window.innerWidth >= 768) {
+            let title = `${safeReplacer(info.event.title)}: ${info.event.extendedProps.hours} hours`
+            if (info.event.id === '') {
+              title = safeReplacer(info.event.title)
+            }
+            return {
+              domNodes: $(info.el).tooltip({
+                html: true,
+                placement: 'right',
+                trigger: 'hover',
+                title: `<span>${title}</span>`,
+              }),
+            }
+          }
+          return ''
+        },
+        drop: function dropEvent(dropInfo) {
+          templateInstance.tcid.set(undefined)
+          templateInstance.selectedDate.set(dropInfo.date)
+          templateInstance.selectedProjectId.set($(dropInfo.draggedEl).data('project'))
+          new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
+        },
+        eventClick: (eventClickInfo) => {
+          if (eventClickInfo.event.id !== '') {
+            templateInstance.selectedDate.set(undefined)
+            templateInstance.selectedProjectId.set(undefined)
+            templateInstance.tcid.set(eventClickInfo.event.id)
+            new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
+          }
+        },
+        dateClick: (dateClickInfo) => {
+          templateInstance.tcid.set(undefined)
+          templateInstance.selectedProjectId.set('all')
+          templateInstance.selectedDate.set(dateClickInfo.date)
+          new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
+        },
+        datesSet: (dateInfo) => {
+          FlowRouter.setQueryParams({ date: dayjs(dateInfo.view.currentStart).format('YYYY-MM-DD') })
+        },
+      })
+      templateInstance.calendar.render()
+      templateInstance.calendarInitialized.set(true)
     }
   })
   templateInstance.autorun(() => {

@@ -1,0 +1,54 @@
+<template name="magicPopup">
+    <div class="modal fade" id="magicModal" tabindex="-1" aria-labelledby="magicModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="magicModalLabel"><i class="fa-solid fa-wand-magic-sparkles"></i> {{t 'autocomplete.modal_title'}}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{#if currentUser.profile.googleAPIexpiresAt}}
+                    {{#unless magicData}}
+                        <div class="robot">
+                            <img src ="{{ prefix }}/img/ai_working.gif" class="img-fluid d-block mx-auto" alt="AI working"/>
+                            <p class="mx-auto text-center">{{t 'autocomplete.processing'}}</p>
+                        </div>
+                    {{/unless}}
+                {{else}}
+                    <h1 class="mx-auto text-center"><i class="fa-solid fa-wand-magic-sparkles fa-2xl"></i></h1>
+                    <p class="mx-auto text-center">{{t 'autocomplete.authorization_missing'}}</p>
+                    <button class="btn btn-primary js-authorize-google d-block mx-auto">{{t 'autocomplete.authorize_now'}}</button>
+                {{/if}}
+                {{#if magicData}}
+                    <table class="table js-table">
+                        <thead>
+                            <tr>
+                                <th scope="col"><input type="checkbox" class="js-select-all form-check-input"/></th>
+                                <th scope="col">{{t 'globals.date'}}</th>
+                                <th scope="col">{{t 'globals.project'}}</th>
+                                <th scope="col">{{t 'globals.task'}}</th>
+                                <th scope="col">{{t 'tracktime.working_time'}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each entry in magicData}}
+                                <tr>
+                                    <td><input type="checkbox" class="js-magic-select form-check-input"/></td>
+                                    <td><input type="date" class="form-control js-magic-date" value="{{entry.date}}" required/></td>
+                                    <td>{{{ renderProjectSelect (entry.projectID) }}}</td>
+                                    <td><input type="text" class="form-control js-magic-task" value="{{entry.summary}}" required/></td>
+                                    <td><input type="number" class="form-control js-magic-hours" value="{{entry.duration}}" required/></td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                {{/if}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{t 'navigation.cancel'}}</button>
+                <button type="button" class="btn btn-primary js-save">{{t 'autocomplete.save_selected'}}</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</template>
