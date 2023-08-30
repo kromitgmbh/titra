@@ -26,7 +26,7 @@ Meteor.startup(async () => {
       Oidc.registerOidc()
     })
   }
-  if (await getGlobalSettingAsync('enable_googleapi')) {
+  if (await getGlobalSettingAsync('google_client_id') && await getGlobalSettingAsync('google_secret')) {
     ServiceConfiguration.configurations.upsert({
       service: 'googleapi',
     }, {

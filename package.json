@@ -1,12 +1,12 @@
 {
   "name": "titra",
-  "version": "0.95.0",
+  "version": "0.95.1",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.22.10",
+    "@babel/runtime": "^7.22.11",
     "@dashboardcode/bsmultiselect": "^1.1.18",
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@fullcalendar/core": "6.1.8",
@@ -20,7 +20,7 @@
     "bootstrap": "^5.3.1",
     "cl-editor": "^2.3.0",
     "content-type": "^1.0.5",
-    "date-holidays": "^3.21.3",
+    "date-holidays": "^3.21.5",
     "dayjs": "^1.11.9",
     "dayjs-precise-range": "^1.0.1",
     "docker-names": "^1.2.1",
@@ -30,7 +30,7 @@
     "frappe-gantt": "^0.6.1",
     "hotkeys-js": "^3.12.0",
     "is-dark": "^1.0.4",
-    "jquery": "3.7.0",
+    "jquery": "3.7.1",
     "jquery-serializejson": "^3.2.1",
     "ldapjs": "2.3.3",
     "math-expression-evaluator": "^2.0.3",
@@ -45,9 +45,9 @@
     "vm2": "^3.9.19"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.10",
-    "@babel/eslint-parser": "^7.22.10",
-    "eslint": "^8.47.0",
+    "@babel/core": "^7.22.11",
+    "@babel/eslint-parser": "^7.22.11",
+    "eslint": "^8.48.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^6.0.3",
