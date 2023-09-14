@@ -362,7 +362,8 @@
     "wekan_error": "Die Wekan Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!",
     "zammad_error": "Die Zammad Daten konnten nicht abgerufen werden, bitte überprüfen Sie die Projekt Einstellungen!",
     "user_inactive": "Dieser Benutzer wurde deaktiviert, der Benutzer muss aktiviert werden um fortzufahren.",
-    "extensionAlreadyLaunched": "Die Erweiterung wurde bereits gestartet."
+    "extensionAlreadyLaunched": "Die Erweiterung wurde bereits gestartet.",
+    "no_entry_selected": "Es wurde kein Eintrag ausgewählt. Bitte wählen Sie zumindest einen Eintrag aus."
   },
   "login": {
     "password": "Passwort",

@@ -54,8 +54,8 @@ function detailedDataTableMapper(entry) {
     mapping.push(entry.state)
   }
   if (getGlobalSetting('useStartTime')) {
-    mapping.push(dayjs.utc(entry.date).format('HH:mm'))
-    mapping.push(dayjs.utc(entry.date).add(entry.hours, 'hour').format('HH:mm'))
+    mapping.push(dayjs.utc(entry.date).local().format('HH:mm'))
+    mapping.push(dayjs.utc(entry.date).local().add(entry.hours, 'hour').format('HH:mm'))
   }
   mapping.push(Number(timeInUserUnit(entry.hours)))
   mapping.push(entry._id)

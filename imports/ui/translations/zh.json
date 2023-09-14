@@ -307,7 +307,8 @@
     "access_rights_updated": "项目访问权限已更新",
     "success": "变更已成功处理",
     "wekan_error": "无法获取Wekan 卡片，请检查项目设置！",
-    "zammad_error": "无法获取Zammad 工单，请检查项目设置！"
+    "zammad_error": "无法获取Zammad 工单，请检查项目设置！",
+    "no_entry_selected": "未选择任何条目。请选择至少一个条目以继续。"
   },
   "login": {
     "password": "密码",

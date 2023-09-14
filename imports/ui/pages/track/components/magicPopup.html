@@ -37,7 +37,7 @@
                                     <td><input type="date" class="form-control js-magic-date" value="{{entry.date}}" required/></td>
                                     <td>{{{ renderProjectSelect (entry.projectID) }}}</td>
                                     <td><input type="text" class="form-control js-magic-task" value="{{entry.summary}}" required/></td>
-                                    <td><input type="number" class="form-control js-magic-hours" value="{{entry.duration}}" required/></td>
+                                    <td><input type="number" class="form-control js-magic-hours" value="{{timeInUserUnit entry.duration}}" required/></td>
                                 </tr>
                             {{/each}}
                         </tbody>
@@ -46,7 +46,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{t 'navigation.cancel'}}</button>
-                <button type="button" class="btn btn-primary js-save">{{t 'autocomplete.save_selected'}}</button>
+                {{#if magicData}}
+                    <button type="button" class="btn btn-primary js-save">{{t 'autocomplete.save_selected'}}</button>
+                {{/if}}
             </div>
             </div>
         </div>

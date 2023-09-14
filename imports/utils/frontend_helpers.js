@@ -13,7 +13,7 @@ function getGlobalSetting(name) {
 function getUserSetting(field) {
   check(field, String)
   if ((Meteor.isClient && !Meteor.loggingIn()) && Meteor.user() && Meteor.user().profile) {
-    return typeof Meteor.user().profile[field] !== 'undefined' ? Meteor.user().profile[field] : getGlobalSetting(field)
+    return typeof Meteor.user().profile[field] !== 'undefined' && !Number.isNaN(Meteor.user().profile[field]) ? Meteor.user().profile[field] : getGlobalSetting(field)
   }
   return getGlobalSetting(field) ? getGlobalSetting(field) : false
 }

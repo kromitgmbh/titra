@@ -92,7 +92,7 @@ Template.magicPopup.events({
       const date = $(element).find('.js-magic-date').val()
       const projectId = $(element).find('.js-magic-project').val()
       const task = $(element).find('.js-magic-task').val()
-      const hours = $(element).find('.js-magic-hours').val()
+      let hours = Number.parseFloat(templateInstance.$(element).find('.js-magic-hours').val())
       if (selected) {
         $(element).find('.js-magic-date').removeClass('is-invalid')
         $(element).find('.js-magic-project').removeClass('is-invalid')
@@ -118,12 +118,18 @@ Template.magicPopup.events({
           selectedEntries = []
           return false
         }
+        if (getUserSetting('timeunit') === 'd') {
+          hours *= (getUserSetting('hoursToDays'))
+        }
+        if (getUserSetting('timeunit') === 'm') {
+          hours /= 60
+        }
         selectedEntries.push(
           {
             date: new Date(Date.parse(date)),
             projectId,
             task,
-            hours: parseFloat(hours),
+            hours,
           },
         )
       }
@@ -138,6 +144,8 @@ Template.magicPopup.events({
           showToast(t('notifications.time_entry_saved'))
         }
       })
+    } else {
+      showToast(t('notifications.no_entry_selected'))
     }
   },
 })
