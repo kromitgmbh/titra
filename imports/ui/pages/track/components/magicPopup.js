@@ -48,9 +48,9 @@ Template.magicPopup.onRendered(() => {
     templateInstance.showPopup.set(true)
   })
   templateInstance.autorun(() => {
-    if (templateInstance.showPopup.get() && Meteor.user().profile.googleAPIexpiresAt) {
+    if (templateInstance.showPopup.get() && Meteor.user()?.profile?.googleAPIexpiresAt) {
       getMagicData(templateInstance)
-    } else if (Meteor.user().profile.googleAPIexpiresAt) {
+    } else if (Meteor.user()?.profile?.googleAPIexpiresAt) {
       templateInstance.$('.robot').removeClass('d-none')
       templateInstance.$('.js-datatable-container').addClass('d-none')
     }
@@ -61,7 +61,7 @@ Template.magicPopup.helpers({
     ? Template.instance().magicData.get() : false),
   renderProjectSelect: (projectId) => `<select class="form-control js-magic-project" required>
     <option value="">${t('project.project_placeholder')}</option>
-    ${Projects.find().fetch().map((project) => (project._id === projectId ? `<option value="${project._id}" selected>${project.name}</option>` : `<option value="${project._id}">${project.name}</option>`)).join('')}
+    ${Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).fetch().map((project) => (project._id === projectId ? `<option value="${project._id}" selected>${project.name}</option>` : `<option value="${project._id}">${project.name}</option>`)).join('')}
   </select>`,
 })
 

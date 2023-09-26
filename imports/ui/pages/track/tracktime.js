@@ -54,13 +54,11 @@ Template.tracktime.onRendered(() => {
   templateInstance.autorun(() => {
     const timeEntry = templateInstance.time_entry.get()
     if (timeEntry) {
-      // Meteor.setTimeout(() => {
       for (const customfield of CustomFields.find({ classname: 'time_entry', possibleValues: { $exists: true } })) {
         waitForElement(templateInstance, `#${customfield.name}`).then((element) => {
           element.value = timeEntry[customfield.name]
         })
       }
-      // }, 500)
     }
   })
 })
@@ -161,14 +159,14 @@ Template.tracktime.events({
       showToast(t('notifications.enter_task'))
       return
     }
-    if (!hours) {
+    if (!hours && hours !== 0 && !Number.isNaN(hours)) {
       templateInstance.$('#hours').addClass('is-invalid')
       showToast(t('notifications.enter_time'))
       return
     }
     try {
       hours = hours.replace(',', '.')
-      templateInstance.math.eval(hours)
+      hours = templateInstance.math.eval(hours)
     } catch (exception) {
       showToast(t('notifications.check_time_input'))
       return
@@ -190,8 +188,6 @@ Template.tracktime.events({
         return
       }
     }
-    hours = templateInstance.math.eval(hours)
-
     if (getUserSetting('timeunit') === 'd') {
       hours *= getUserSetting('hoursToDays')
     }
@@ -336,20 +332,19 @@ Template.tracktime.events({
       templateInstance.$('.js-save').click()
     }
   },
-  'change #hours': (event, templateInstance) => {
+  'focusout #hours': (event, templateInstance) => {
+    event.preventDefault()
     if (getUserSetting('rounding') && getUserSetting('rounding') !== 0) {
-      const hours = templateInstance.$('#hours').val()
-      let modulo = 1
+      const hours = Number.parseFloat(templateInstance.$('#hours').val().replace(',', '.'))
+      const rounding = 1 / Number.parseFloat(getUserSetting('rounding'))
+      let result = Math.round(rounding * hours) / rounding
       if (getUserSetting('timeunit') === 'm') {
-        modulo = 60
-      }
-      if (getUserSetting('timeunit') === 'h') {
-        modulo = 1
+        result %= 60
       } else if (getUserSetting('timeunit') === 'd') {
-        modulo = getUserSetting('hoursToDays')
+        result %= getUserSetting('hoursToDays')
       }
-      if (hours) {
-        templateInstance.$('#hours').val((Math.ceil(hours / getUserSetting('rounding')) * getUserSetting('rounding')) % modulo)
+      if (result) {
+        templateInstance.$('#hours').val(result)
       }
     }
   },
