@@ -463,9 +463,10 @@
   },
   "autocomplete": {
     "modal_title": "KI unterstützte Zeiterfassung",
-    "processing": "Import und Verarbeitung der Daten ...",
+    "processing": "Import und Verarbeitung der Daten aus Google Workspace ...",
     "authentication_missing": "Sie müssen den Zugriff auf Ihr Google Workspace-Konto autorisieren, um Daten zu verarbeiten.",
     "authorize_now": "Jetzt autorisieren",
-    "save_selected": "Ausgewählte Zeiteinträge speichern"
+    "save_selected": "Ausgewählte Zeiteinträge speichern",
+    "origin": "Datenursprung"
   }
 }

@@ -455,9 +455,10 @@
   },
   "autocomplete": {
     "modal_title": "AI powered autocomplete",
-    "processing": "Fetching data and processing using OpenAI ...",
+    "processing": "Fetching and processing Google Workspace data ...",
     "authentication_missing": "You need to authorize access to your Google Workspace account to process data.",
     "authorize_now": "Authorize now",
-    "save_selected": "Save selected time entries"
+    "save_selected": "Save selected time entries",
+    "origin": "Origin"
   }
 }

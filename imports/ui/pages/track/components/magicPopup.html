@@ -1,5 +1,5 @@
 <template name="magicPopup">
-    <div class="modal fade" id="magicModal" tabindex="-1" aria-labelledby="magicModalLabel" aria-hidden="true">
+    <div class="modal fade" id="magicModal" tabindex="-1" aria-labelledby="magicModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
             <div class="modal-header">
@@ -24,6 +24,7 @@
                         <thead>
                             <tr>
                                 <th scope="col"><input type="checkbox" class="js-select-all form-check-input"/></th>
+                                <th scope="col">{{t 'autocomplete.origin'}}</th>
                                 <th scope="col">{{t 'globals.date'}}</th>
                                 <th scope="col">{{t 'globals.project'}}</th>
                                 <th scope="col">{{t 'globals.task'}}</th>
@@ -34,6 +35,7 @@
                             {{#each entry in magicData}}
                                 <tr>
                                     <td><input type="checkbox" class="js-magic-select form-check-input"/></td>
+                                    <td class="text-center"><i class="js-origin-icon text-primary fa-solid {{entry.icon}}" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="{{entry.origin}}" style="cursor:pointer"></i></td>
                                     <td><input type="date" class="form-control js-magic-date" value="{{entry.date}}" required/></td>
                                     <td>{{{ renderProjectSelect (entry.projectID) }}}</td>
                                     <td><input type="text" class="form-control js-magic-task" value="{{entry.summary}}" required/></td>

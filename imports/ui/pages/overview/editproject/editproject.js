@@ -1,8 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import 'jquery-serializejson'
-import '@simonwep/pickr/dist/themes/monolith.min.css'
-import Pickr from '@simonwep/pickr/dist/pickr.min'
 import { t } from '../../../../utils/i18n.js'
 import './editproject.html'
 import Projects from '../../../../api/projects/projects.js'
@@ -44,38 +42,11 @@ Template.editproject.onCreated(function editprojectSetup() {
 })
 Template.editproject.onRendered(() => {
   const templateInstance = Template.instance()
-  const pickrOptions = {
-    el: '#pickr',
-    theme: 'monolith',
-    lockOpacity: true,
-    comparison: false,
-    position: 'left-start',
-    components: {
-      preview: true,
-      opacity: false,
-      hue: true,
-      interaction: {
-        hex: false,
-        input: false,
-        clear: false,
-        save: false,
-      },
-    },
-  }
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
       if (!FlowRouter.getParam('id')) {
         templateInstance.color = `#${(`000000${Math.floor(0x1000000 * Math.random()).toString(16)}`).slice(-6)}`
         $('#color').val(templateInstance.color)
-        pickrOptions.default = templateInstance.color
-      }
-      if (!templateInstance.pickr) {
-        window.setTimeout(() => {
-          templateInstance.pickr = Pickr.create(pickrOptions)
-          templateInstance.pickr.on('change', (color) => {
-            $('#color').val(color.toHEXA().toString())
-          }, 0)
-        })
       }
       if (!templateInstance.quill) {
         import('cl-editor').then((Editor) => {
@@ -121,10 +92,10 @@ Template.editproject.onRendered(() => {
         templateInstance.quill.setHtml(project.desc)
       }
       if (project?.color || templateInstance.color) {
-        templateInstance.pickr?.setColor(project?.color
+        templateInstance.$('#color').val(project?.color
           ? project.color : templateInstance.color)
       } else {
-        templateInstance.pickr?.setColor('#009688')
+        templateInstance.$('#color').val('#009688')
       }
       if (project.desc instanceof Object && templateInstance.quill) {
         import('quill-delta-to-html').then((deltaToHtml) => {
@@ -258,11 +229,6 @@ Template.editproject.events({
     if (!templateInstance.$(event.currentTarget).val()) {
       templateInstance.$(event.currentTarget).val('#009688')
     }
-    if (!Template.instance().pickr?.setColor(templateInstance.$(event.currentTarget).val())) {
-      templateInstance.$('#color').addClass('is-invalid')
-    } else {
-      templateInstance.$('#color').removeClass('is-invalid')
-    }
   },
   'change #notbillable': (event, templateInstance) => {
     event.preventDefault()
@@ -361,9 +327,4 @@ Template.editproject.helpers({
     .slice(0, 5),
   replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
   gitlabquery: () => Template.instance()?.project?.get()?.gitlabquery,
-})
-
-Template.editproject.onDestroyed(function editprojectDestroyed() {
-  this.pickr?.destroy()
-  delete this.pickr
 })

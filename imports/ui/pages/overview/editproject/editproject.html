@@ -15,9 +15,19 @@
         <div class="mb-3">
           <h5>{{#if newProject}}{{t "navigation.new_project"}}{{/if}}</h5>
         </div>
-        <div class="mb-3 form-floating">
-          <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="{{t 'project.my_project_placeholder'}}" required/>
-          <label class="form-label" for="name">{{t "globals.prj_name"}}</label>
+        <div class="row">
+          <div class="col-8">
+            <div class="mb-3 form-floating">
+              <input name="name" id="name" type="text" value="{{name}}" class="form-control" placeholder="{{t 'project.my_project_placeholder'}}" required/>
+              <label class="form-label" for="name">{{t "globals.prj_name"}}</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3 form-floating">
+              <input name="color" id="color" type="color" value="{{color}}" class="form-control" />
+              <label class="form-label" for="color">{{t "globals.color"}}</label>
+            </div>
+          </div>
         </div>
         <div class="mb-3">
           <div class="card">
@@ -111,15 +121,6 @@
             </div>
           </div>
         {{/if}}
-        <div class="mb-3">
-          <div class="input-group" id="colpick">
-            <div class="form-floating">
-              <input name="color" id="color" type="text" value="{{color}}" data-color="{{color}}" class="form-control" />
-              <label class="form-label" for="color">{{t "globals.color"}}</label>
-            </div>
-            <button type="button" class="btn rounded-end" id="pickr"></button>
-          </div>
-        </div>
       {{#if getGlobalSetting "enableWekan"}}
       <div class="mb-3">
         <div class="card">

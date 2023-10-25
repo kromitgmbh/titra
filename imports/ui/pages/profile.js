@@ -1,6 +1,4 @@
 import namedavatar from 'namedavatar'
-import '@simonwep/pickr/dist/themes/monolith.min.css'
-import Pickr from '@simonwep/pickr/dist/pickr.min'
 import { t } from '../../utils/i18n.js'
 import '../shared components/backbutton.js'
 import './profile.html'
@@ -54,7 +52,6 @@ Template.profile.events({
     event.preventDefault()
     templateInstance.$('#avatarImage').click()
   },
-  
   'change #avatarImage': (event, templateInstance) => {
     if (event.currentTarget.files && event.currentTarget.files[0]) {
       const reader = new FileReader()
@@ -104,43 +101,6 @@ Template.profile.onRendered(function settingsRendered() {
     if (!Meteor.loggingIn() && Meteor.user()
         && Meteor.user().profile && this.subscriptionsReady()) {
       templateInstance.$('#avatarData').val(getUserSetting('avatar'))
-      if (templateInstance.pickr) {
-        templateInstance.pickr.destroy()
-        delete templateInstance.pickr
-      }
-      if (!getUserSetting('avatar') && templateInstance.$('#avatarColorPickr').length) {
-        const pickrOptions = {
-          el: '#avatarColorPickr',
-          theme: 'monolith',
-          lockOpacity: true,
-          comparison: false,
-          position: 'left-start',
-          default: (Meteor.user() && getUserSetting('avatarColor')
-            ? getUserSetting('avatarColor') : Template.instance().selectedAvatarColor.get()),
-          components: {
-            preview: true,
-            opacity: false,
-            hue: true,
-            interaction: {
-              hex: false,
-              input: false,
-              clear: false,
-              save: false,
-            },
-          },
-        }
-        templateInstance.pickr = Pickr.create(pickrOptions)
-        templateInstance.pickr.on('change', (color) => {
-          templateInstance.selectedAvatarColor.set(color.toHEXA().toString())
-          templateInstance.$('#avatarColor').val(color.toHEXA().toString())
-        })
-      }
     }
   })
-})
-Template.profile.onDestroyed(function settingsDestroyed() {
-  if (this.pickr) {
-    this.pickr.destroy()
-    delete this.pickr
-  }
 })

@@ -239,6 +239,7 @@ Template.detailtimetable.onRendered(() => {
               layout: 'ratio',
               showTotalRow: true,
               noDataMessage: t('tabular.sZeroRecords'),
+              inlineFilters: true,
               events: {
                 onSortColumn(column) {
                   if (column) {
@@ -246,6 +247,14 @@ Template.detailtimetable.onRendered(() => {
                   }
                 },
               },
+              headerDropdown: [
+                {
+                  label: 'Filter',
+                  action(column) {
+                    console.log(column)
+                  },
+                },
+              ],
             }
             if (getGlobalSetting('useState')) {
               datatableConfig

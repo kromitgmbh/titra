@@ -443,6 +443,7 @@
     "processing": "Récupération des données et traitement à l'aide d'OpenAI...",
     "authentication_missing": "Vous devez autoriser l'accès à votre compte Google Workspace pour traiter les données.",
     "authorize_now": "Autoriser maintenant",
-    "save_selected": "Enregistrer les entrées de temps sélectionnées"
+    "save_selected": "Enregistrer les entrées de temps sélectionnées",
+    "origin": "Origine"
   }
 }

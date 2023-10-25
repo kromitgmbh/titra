@@ -24,12 +24,9 @@
                     <div class="col-lg-3">
                         {{#unless currentUser.profile.avatar}}
                         <div class="mb-3">
-                            <div class="input-group" id="colpick">
-                                <div class="form-floating">
-                                    <input aria-label='{{t "globals.color"}}' name="avatarColor" id="avatarColor" type="text" value="{{avatarColor}}" data-color="{{avatarColor}}" class="form-control" />
-                                    <label class="form-label" for="color">{{t "globals.color"}}</label>
-                                </div>
-                                <button type="button" class="btn" id="avatarColorPickr"></button>
+                            <div class="form-floating">
+                                <input aria-label='{{t "globals.color"}}' name="avatarColor" id="avatarColor" type="color" value="{{avatarColor}}" class="form-control" />
+                                <label class="form-label" for="color">{{t "globals.color"}}</label>
                             </div>
                         </div>
                         <div class="mb-3">

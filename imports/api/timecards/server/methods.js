@@ -729,8 +729,8 @@ const getGoogleWorkspaceData = new ValidatedMethod({
       }))
       eventResponse = fetchedEvents
       if (await getGlobalSettingAsync('openai_apikey') && fetchedEvents.length > 0) {
-        eventResponse = await Promise.all(fetchedEvents.map(async (eventData) => getOpenAIResponse(`Based on the following JSON representation of a calendar event, respond with a JSON object summarizing the event with as few words as possible. Add the date of the event and the duration in hours and try to identify the customer based on the majority of attendee e-mail addresses. Use the following schema for the return JSON:
-        \`Interface event {summary: string, duration:number, customer: string, date:  date}\`
+        eventResponse = await Promise.all(fetchedEvents.map(async (eventData) => getOpenAIResponse(`Based on the following JSON representation of a calendar event, respond with a JSON object summarizing the event with as few words as possible. Add the date of the event and the duration in hours and try to identify the customer based on the majority of attendee e-mail addresses. Include the original un-altered summary in the origin field. Use the following schema for the return JSON:
+        \`Interface event {summary: string, duration:number, customer:string, date:date, origin:string}\`
         ${JSON.stringify(eventData)}`)))
       }
       const emails = await fetch(`https://www.googleapis.com/gmail/v1/users/me/messages?q=in:sent%20after:${Date.parse(startDate) / 1000}%20before:${Date.parse(endDate) / 1000}`, {
@@ -770,12 +770,13 @@ const getGoogleWorkspaceData = new ValidatedMethod({
               }
             }
             if (await getGlobalSettingAsync('openai_apikey')) {
-              return getOpenAIResponse(`Based on the email representation in JSON format, respond with a JSON object with the following schema where you estimate the time it took to write the email in hours based on the snippet and sizeEstimate in bytes where 0.25 hours is the minimum and add it to the duration field, use date format "YYYY-MM-DD" for dates, summarize the content with as few words as possible, do not include the snippet in the summary, guess the customer company name based on the majority of recipient's mail address domain:
-          \`Interface message {summary:string,customer:string,date:date,duration:number}\`
+              return getOpenAIResponse(`Based on the email representation in JSON format, respond with a JSON object with the following schema where you estimate the time it took to write the email in hours based on the snippet and sizeEstimate in bytes where 0.25 hours is the minimum and add it to the duration field, use date format "YYYY-MM-DD" for dates, summarize the content with as few words as possible, do not include the snippet in the summary, guess the customer company name based on the majority of recipient's mail address domain. Include the original un-altered summary in the origin field. Use the following schema for the return JSON:
+          \`Interface message {summary:string,customer:string,date:date,duration:number,origin:string}\`
           ${JSON.stringify(jsonMessage)}`)
             }
             returnMessage.summary = jsonMessage.snippet.substring(0, 50)
             returnMessage.duration = 0.25
+            returnMessage.origin = returnMessage.summary
             return returnMessage
           }
           return returnMessage

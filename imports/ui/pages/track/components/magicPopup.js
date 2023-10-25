@@ -1,5 +1,6 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import dayjs from 'dayjs'
+import bootstrap from 'bootstrap'
 import './magicPopup.html'
 import './projectsearch.js'
 import { t } from '../../../../utils/i18n.js'
@@ -31,6 +32,8 @@ const getMagicData = (templateInstance) => {
   googleAPI().then(() => {
     Meteor.call('getGoogleWorkspaceData', { startDate, endDate }, (error, result) => {
       if (!error) {
+        result.returnEvents = result.returnEvents.map((returnEvent) => ({ ...returnEvent, icon: 'fa-calendar' }))
+        result.returnMessages = result.returnMessages.map((returnMessage) => ({ ...returnMessage, icon: 'fa-envelope' }))
         templateInstance.magicData.set(result.returnEvents.concat(result.returnMessages)
           .sort((a, b) => (a.date > b.date ? 1 : -1)))
       } else {
@@ -83,6 +86,10 @@ Template.magicPopup.events({
   },
   'click .js-select-all': (event, templateInstance) => {
     templateInstance.$('.js-magic-select').prop('checked', event.currentTarget.checked)
+  },
+  'mouseover .js-origin-icon': (event) => {
+    const element = event.currentTarget
+    bootstrap.Popover.getOrCreateInstance(element)
   },
   'click .js-save': (event, templateInstance) => {
     event.preventDefault()

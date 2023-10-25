@@ -389,6 +389,7 @@
     "processing": "正在获取数据并使用 OpenAI 进行处理...",
     "authentication_missing": "你需要授权访问你的 Google Workspace 帐户才能处理数据。",
     "authorize_now": "现在授权",
-    "save_selected": "保存所选时间记录"
+    "save_selected": "保存所选时间记录",
+    "origin": "起源"
   }
 }
