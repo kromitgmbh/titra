@@ -281,7 +281,8 @@
     "billed": "Оплачено",
     "notBillable": "Не оплачивается",
     "charts": "Графики",
-    "markAsBilled": "Все оплачено"
+    "markAsBilled": "Все оплачено",
+    "quickFilter": "Быстрый фильтр"
   },
   "dashboard": {
     "share": "Поделиться",

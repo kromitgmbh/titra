@@ -281,7 +281,8 @@
       "billed": "Оплачено",
       "notBillable": "Не оплачується",
       "charts": "Графіки",
-      "markAsBilled": "Все оплачено"
+      "markAsBilled": "Все оплачено",
+      "quickFilter": "Швидкий фільтр"
     },
     "dashboard": {
       "share": "Поділитись",

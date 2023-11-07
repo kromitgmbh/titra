@@ -240,7 +240,8 @@
     "exported": "导出",
     "billed": "计费的",
     "notBillable": "不计费的",
-    "charts": "图表"
+    "charts": "图表",
+    "quickFilter": "快速过滤"
   },
   "dashboard": {
     "share": "分享项目大盘",

@@ -1,7 +1,7 @@
 <template name="filterbar">
     <div class="card mb-2 d-print-none">
-        <div class="card-header card-header-filter">Filter</div>
-        <div class="card-body">
+        <div class="card-header card-header-filter" data-bs-toggle="collapse" data-bs-target=".js-quickfilter-body" style="cursor:pointer;">{{t "details.quickFilter"}}</div>
+        <div class="card-body collapse show js-quickfilter-body">
           <div class="row">
             <div class="col-sm-3 mb-2 mb-md-0">
                 {{>multiselectfilter items=projects name="projectselect" all="overview.all_projects" label="globals.project"}}

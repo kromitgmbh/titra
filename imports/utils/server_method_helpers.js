@@ -4,6 +4,7 @@ import Projects from '../api/projects/projects.js'
 import Transactions from '../api/transactions/transactions.js'
 import { periodToDates } from './periodHelpers.js'
 import { Globalsettings } from '../api/globalsettings/globalsettings.js'
+import { getGlobalSetting } from './frontend_helpers.js'
 
 async function getGlobalSettingAsync(name) {
   const globalSetting = await Globalsettings.findOneAsync({ name })
@@ -432,7 +433,7 @@ async function workingTimeEntriesMapper(entry) {
  * @returns {Object} The selector for the detailedTimeEntries method.
  */
 function buildDetailedTimeEntriesForPeriodSelector({
-  projectId, search, customer, period, dates, userId, limit, page, sort,
+  projectId, search, customer, period, dates, userId, limit, page, sort, filters,
 }) {
   const detailedTimeArray = []
   let projectList = getProjectListById(projectId)
@@ -501,7 +502,34 @@ function buildDetailedTimeEntriesForPeriodSelector({
       query.userId = userId
     }
   }
-  detailedTimeArray.push(query)
+  let finalQuery = query
+  if (filters) {
+    finalQuery = {}
+    for (const filterKey in filters) {
+      if (filters.hasOwnProperty(filterKey)) {
+        const filterValue = filters[filterKey]
+        if (filterKey === 'customer') {
+          const projectIds = getProjectListByCustomer(filterValue).fetch().map((value) => value._id)
+          filters.projectId = { $in: projectIds }
+          delete filters[filterKey]
+        } else if (filterKey === 'state' && filterValue === 'new') {
+          filters['$or'] = [{ state: { $exists: false } }, { state: 'new' }]
+          delete filters[filterKey]
+        } else if (filterKey === 'date' && typeof filters[filterKey] === 'string') {
+          dayjs.extend(customParseFormat)
+          const startDate = dayjs(filterValue, getGlobalSetting('dateformat')).startOf('day').toDate()
+          const endDate = dayjs(filterValue, getGlobalSetting('dateformat')).endOf('day').toDate()
+          filters.date = { $gte: startDate, $lte: endDate }
+        } else if (filterKey === 'hours' && typeof filterValue === 'string') {
+          filters.hours = Number(filterValue)
+        }
+      }
+    }
+    finalQuery.$and = []
+    finalQuery.$and.push(query)
+    finalQuery.$and.push(filters)
+  }
+  detailedTimeArray.push(finalQuery)
   detailedTimeArray.push(options)
   return detailedTimeArray
 }

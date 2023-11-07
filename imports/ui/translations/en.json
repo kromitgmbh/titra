@@ -283,7 +283,8 @@
     "billed": "Billed",
     "notBillable": "Not Billable",
     "charts": "Charts",
-    "markAsBilled": "All billed"
+    "markAsBilled": "All billed",
+    "quickFilter": "Quick filter"
   },
   "dashboard": {
     "share": "Share project dashboard",

@@ -1,28 +1,31 @@
 <template name="detailtimetable">
     <div class="row d-print-none">
-        <div class="col-xl-6 col-lg-7 col-6 col-sm-12 mt-2">
+        <div class="col-xl-7 col-lg-7 col-6 col-sm-12 mt-2">
             <div class="btn-group">
-                <button type="button"  class="btn btn-primary border js-track-time"> <i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></button> 
+                <button type="button" class="btn btn-primary border js-track-time"> <i class="fa fa-plus"></i> <span class="d-none d-md-inline">{{t "navigation.track"}}</span></button> 
                 {{#if detailTimeEntries}}
-                    <button type="button"  class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
-                    <button type="button"  class="btn btn-secondary border js-export-xlsx"><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
-                    <button type="button"  class="btn btn-secondary border js-share" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{t 'dashboard.shareMessage'}}"><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
+                    <button type="button" class="btn btn-secondary border js-export-csv"><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
+                    <button type="button" class="btn btn-secondary border js-export-xlsx"><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
+                    <button type="button" class="btn btn-secondary border js-share" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{t 'dashboard.shareMessage'}}"><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
                     {{#if showInvoiceButton}}
-                        <button type="button"  class="btn btn-secondary border js-invoice"><i class="fa fa-upload"></i> <span class="d-none d-md-inline">{{t "navigation.invoice"}}</span></button>
+                        <button type="button" class="btn btn-secondary border js-invoice"><i class="fa fa-upload"></i> <span class="d-none d-md-inline">{{t "navigation.invoice"}}</span></button>
                     {{/if}}
                     {{#if showMarkAsBilledButton}}
-                        <button type="button"  class="btn btn-secondary border js-mark-billed"><i class="fa-regular fa-square-check"></i> <span class="d-none d-md-inline">{{t "details.markAsBilled"}}</span></button>
+                        <button type="button" class="btn btn-secondary border js-mark-billed"><i class="fa-regular fa-square-check"></i> <span class="d-none d-md-inline">{{t "details.markAsBilled"}}</span></button>
                     {{/if}}
                 {{else}}
-                    <button type="button"  class="btn btn-secondary border js-export-xlsx" disabled><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
-                    <button type="button"  class="btn btn-secondary border js-export-csv" disabled><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
-                    <button type="button"  class="btn btn-secondary border js-share" disabled><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
+                    <button type="button" class="btn btn-secondary border js-export-xlsx" disabled><i class="fa fa-download"></i> <span class="d-none d-md-inline">Excel</span></button>
+                    <button type="button" class="btn btn-secondary border js-export-csv" disabled><i class="fa fa-download"></i> <span class="d-none d-md-inline">CSV</span></button>
+                    <button type="button" class="btn btn-secondary border js-share" disabled><i class="fa fa-link"></i> <span class="d-none d-md-inline">{{t "navigation.share"}}</span></button>
                     {{#if showInvoiceButton}}
-                        <button type="button"  class="btn btn-secondary border js-invoice" disabled><i class="fa fa-upload"></i> <span class="d-none d-md-inline">{{t "navigation.invoice"}}</span></button>
+                        <button type="button" class="btn btn-secondary border js-invoice" disabled><i class="fa fa-upload"></i> <span class="d-none d-md-inline">{{t "navigation.invoice"}}</span></button>
                     {{/if}}
                     {{#if showMarkAsBilledButton}}
-                        <button type="button"  class="btn btn-secondary border js-mark-billed" disabled><i class="fa-regular fa-square-check"></i> <span class="d-none d-md-inline">{{t "details.markAsBilled"}}</span></button>
+                        <button type="button" class="btn btn-secondary border js-mark-billed" disabled><i class="fa-regular fa-square-check"></i> <span class="d-none d-md-inline">{{t "details.markAsBilled"}}</span></button>
                     {{/if}}
+                {{/if}}
+                {{#if filters}}
+                    <button type="button" class="btn btn-secondary border js-remove-filters"><i class="fa-solid fa-filter-circle-xmark"></i> Remove</button>
                 {{/if}}
             </div>
         </div>
@@ -41,13 +44,34 @@
     <div class="row">
     <div class="col-md-3 ">
         {{#if detailTimeEntries}}
-        {{>pagination totalEntries=totalDetailTimeEntries limit=limit}}
-    {{/if}}
+            {{>pagination totalEntries=totalDetailTimeEntries limit=limit}}
+        {{/if}}
     </div>
         <div class="col-md-3 ms-md-auto"> 
             {{>limitpicker}}
         </div>
     </div> 
     {{>editTimeEntryModal tcid=tcid selectedProjectId=project}}
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="filterModalLabel">{{t "details.filter"}}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="filterModalBody">
+                <div class="form-floating">
+                    <select id="genericFilter" type="text" class="form-control" placeholder="{{t "details.filter"}}" aria-label="{{t 'details.filter'}}">
+                    </select>
+                    <label class="form-label" for="genericFilter">{{t "details.filter"}}</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{t "navigation.close"}}</button>
+                <button type="button" id="saveFilter" class="btn btn-primary" data-bs-dismiss="modal">{{t "navigation.save"}}</button>
+            </div>
+            </div>
+        </div>
+    </div>
 </template>
 

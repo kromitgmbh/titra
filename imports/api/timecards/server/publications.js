@@ -67,6 +67,7 @@ Meteor.publish('getDetailedTimeEntriesForPeriodCount', function getDetailedTimeE
   period,
   dates,
   search,
+  filters,
 }) {
   check(projectId, Match.OneOf(String, Array))
   check(userId, Match.OneOf(String, Array))
@@ -81,7 +82,7 @@ Meteor.publish('getDetailedTimeEntriesForPeriodCount', function getDetailedTimeE
   let count = 0
   let initializing = true
   const selector = buildDetailedTimeEntriesForPeriodSelector({
-    projectId, search, customer, period, dates, userId,
+    projectId, search, customer, period, dates, userId, filters,
   })
   const countsId = projectId instanceof Array ? projectId.join('') : projectId
   const handle = Timecards.find(selector[0], selector[1]).observeChanges({
@@ -115,6 +116,7 @@ Meteor.publish('getDetailedTimeEntriesForPeriod', async function getDetailedTime
   sort,
   limit,
   page,
+  filters,
 }) {
   check(projectId, Match.OneOf(String, Array))
   check(userId, Match.OneOf(String, Array))
@@ -133,9 +135,10 @@ Meteor.publish('getDetailedTimeEntriesForPeriod', async function getDetailedTime
   }
   check(limit, Number)
   check(page, Match.Maybe(Number))
+  check(filters, Match.Maybe(Object))
   await checkAuthentication(this)
   const selector = buildDetailedTimeEntriesForPeriodSelector({
-    projectId, search, customer, period, dates, userId, limit, page, sort,
+    projectId, search, customer, period, dates, userId, limit, page, sort, filters,
   })
   return Timecards.find(selector[0], selector[1])
 })

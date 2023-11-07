@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { saveAs } from 'file-saver'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { NullXlsx } from '@neovici/nullxlsx'
@@ -27,14 +28,22 @@ import './limitpicker.js'
 const Counts = new Mongo.Collection('counts')
 
 dayjs.extend(utc)
+dayjs.extend(customParseFormat)
 
 const customFieldType = 'name'
-function detailedDataTableMapper(entry) {
+
+function detailedDataTableMapper(entry, forExport) {
   const project = Projects.findOne({ _id: entry.projectId })
-  const mapping = [project ? project.name : '',
+  let mapping = [entry.projectId,
     dayjs.utc(entry.date).format(getGlobalSetting('dateformat')),
     entry.task.replace(/^=/, '\\='),
-    projectResources.findOne() ? projectResources.findOne({ _id: entry.userId })?.name : '']
+    entry.userId]
+  if (forExport) {
+    mapping = [project?.name ? project.name : '',
+      dayjs.utc(entry.date).format(getGlobalSetting('dateformat')),
+      entry.task.replace(/^=/, '\\='),
+      projectResources.findOne() ? projectResources.findOne({ _id: entry.userId })?.name : '']
+  }
   if (getGlobalSetting('showCustomFieldsInDetails')) {
     if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
       for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
@@ -67,6 +76,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
   this.sort = new ReactiveVar()
   this.tcid = new ReactiveVar()
   this.selector = new ReactiveVar()
+  this.filters = new ReactiveVar({})
   this.subscribe('customfieldsForClass', { classname: 'time_entry' })
   this.subscribe('customfieldsForClass', { classname: 'project' })
   this.autorun(() => {
@@ -90,6 +100,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
         limit: this.data.limit.get(),
         page: Number(FlowRouter.getQueryParam('page')),
         sort: this.sort.get(),
+        filters: this.filters.get(),
       }))
       delete this.selector.get()[1].skip
       const subscriptionParameters = {
@@ -101,6 +112,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
         search: this.search.get(),
         sort: this.sort.get(),
         page: Number(FlowRouter.getQueryParam('page')),
+        filters: this.filters.get(),
       }
       if (this.data.period.get() === 'custom') {
         subscriptionParameters.dates = {
@@ -118,21 +130,38 @@ Template.detailtimetable.onRendered(() => {
   dayjs.extend(utc)
   templateInstance.autorun(() => {
     if (templateInstance.detailedTimeEntriesForPeriodHandle.ready()
+      && templateInstance.detailedEntriesPeriodCountHandle.ready()
       && templateInstance.projectResourcesHandle.ready() && i18nReady.get()) {
-      const data = Timecards.find(templateInstance.selector.get()[0], templateInstance.selector.get()[1])
-        .fetch().map(detailedDataTableMapper)
+      const data = Timecards.find(
+        templateInstance.selector.get()[0],
+        templateInstance.selector.get()[1],
+      )
+        .fetch().map((entry) => detailedDataTableMapper(entry, false))
       if (data.length === 0) {
         $('.dt-row-totalRow').remove()
       }
       const columns = [
-        { name: t('globals.project'), editable: false, format: addToolTipToTableCell },
+        {
+          name: t('globals.project'),
+          id: 'projectId',
+          editable: false,
+          format: (value) => addToolTipToTableCell(Projects.findOne({ _id: value })?.name),
+        },
         {
           name: t('globals.date'),
+          id: 'date',
           editable: false,
           format: addToolTipToTableCell,
         },
-        { name: t('globals.task'), editable: false, format: addToolTipToTableCell },
-        { name: t('globals.resource'), editable: false, format: addToolTipToTableCell }]
+        {
+          name: t('globals.task'), id: 'task', editable: false, format: addToolTipToTableCell,
+        },
+        {
+          name: t('globals.resource'),
+          id: 'userId',
+          editable: false,
+          format: (value) => addToolTipToTableCell(projectResources.findOne() ? projectResources.findOne({ _id: value })?.name : ''),
+        }]
       if (getGlobalSetting('showCustomFieldsInDetails')) {
         let customFieldColumnType = 'desc'
         if (getGlobalSetting('showNameOfCustomFieldInDetails')) {
@@ -142,6 +171,7 @@ Template.detailtimetable.onRendered(() => {
           for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {
             columns.push({
               name: customfield[customFieldColumnType],
+              id: customfield.name,
               editable: false,
               format: addToolTipToTableCell,
             })
@@ -151,6 +181,7 @@ Template.detailtimetable.onRendered(() => {
           for (const customfield of CustomFields.find({ classname: 'project' }).fetch()) {
             columns.push({
               name: customfield[customFieldColumnType],
+              id: customfield.name,
               editable: false,
               format: addToolTipToTableCell,
             })
@@ -159,13 +190,16 @@ Template.detailtimetable.onRendered(() => {
       }
       if (getGlobalSetting('showCustomerInDetails')) {
         columns.push(
-          { name: t('globals.customer'), editable: false, format: addToolTipToTableCell },
+          {
+            name: t('globals.customer'), id: 'customer', editable: false, format: addToolTipToTableCell,
+          },
         )
       }
       if (getGlobalSetting('useState')) {
         columns.push(
           {
             name: t('details.state'),
+            id: 'state',
             editable: true,
             format: (value) => {
               if (value === null) {
@@ -181,6 +215,7 @@ Template.detailtimetable.onRendered(() => {
         columns.push(
           {
             name: t('details.startTime'),
+            id: 'startTime',
             editable: false,
             format: addToolTipToTableCell,
           },
@@ -188,6 +223,7 @@ Template.detailtimetable.onRendered(() => {
         columns.push(
           {
             name: t('details.endTime'),
+            id: 'endTime',
             editable: false,
             format: addToolTipToTableCell,
           },
@@ -196,11 +232,13 @@ Template.detailtimetable.onRendered(() => {
       columns.push(
         {
           name: getUserTimeUnitVerbose(),
+          id: 'hours',
           editable: false,
           format: numberWithUserPrecision,
         },
         {
           name: t('navigation.edit'),
+          id: 'actions',
           editable: false,
           dropdown: false,
           focusable: false,
@@ -251,7 +289,32 @@ Template.detailtimetable.onRendered(() => {
                 {
                   label: 'Filter',
                   action(column) {
-                    console.log(column)
+                    const filterModal = new bootstrap.Modal('#filterModal')
+                    filterModal.show()
+                    templateInstance.$('#genericFilter').html('')
+                    const uniqueRowValues = new Map()
+                    for (const row of templateInstance.datatable.datamanager.rows) {
+                      if (column.id === 'state') {
+                        if (row[column.colIndex].content === undefined) {
+                          uniqueRowValues.set('new', t('details.new'))
+                        } else {
+                          uniqueRowValues.set(
+                            row[column.colIndex].content,
+                            $(row[column.colIndex].html).text(),
+                          )
+                        }
+                      } else {
+                        uniqueRowValues.set(
+                          row[column.colIndex].content,
+                          $(row[column.colIndex].html).text()
+                            ? $(row[column.colIndex].html).text() : row[column.colIndex].content,
+                        )
+                      }
+                    }
+                    for (const [key, value] of uniqueRowValues) {
+                      templateInstance.$('#genericFilter').append(new Option(value, key))
+                    }
+                    templateInstance.$('#genericFilter').data('filtertarget', column.id)
                   },
                 },
               ],
@@ -354,6 +417,10 @@ Template.detailtimetable.helpers({
   tcid() { return Template.instance().tcid },
   showInvoiceButton: () => (getGlobalSetting('enableSiwapp') && getUserSetting('siwappurl')),
   showMarkAsBilledButton: () => (getGlobalSetting('useState') && (!getGlobalSetting('enableSiwapp') || !getUserSetting('siwappurl'))),
+  filters() {
+    return !!(Template.instance().filters.get()
+    && Object.keys(Template.instance().filters.get()).length > 0)
+  },
 })
 Template.detailtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
@@ -383,7 +450,7 @@ Template.detailtimetable.events({
     selector.state = { $in: ['new', undefined] }
     for (const timeEntry of Timecards
       .find(templateInstance.selector.get()[0], templateInstance.selector.get()[1])
-      .fetch().map(detailedDataTableMapper)) {
+      .fetch().map((entry) => detailedDataTableMapper(entry, true))) {
       const row = []
       for (const attribute of timeEntry) {
         row.push(attribute)
@@ -436,7 +503,7 @@ Template.detailtimetable.events({
     selector.state = { $in: ['new', undefined] }
     for (const timeEntry of Timecards
       .find(templateInstance.selector.get()[0], templateInstance.selector.get()[1]).fetch()
-      .map(detailedDataTableMapper)) {
+      .map((entry) => detailedDataTableMapper(entry, true))) {
       const row = []
       let index = 0
       timeEntry.splice(timeEntry.length - 1, 1)
@@ -571,6 +638,17 @@ Template.detailtimetable.events({
       bubbles: true,
       cancelable: true,
     }))
+  },
+  'click #saveFilter': (event, templateInstance) => {
+    event.preventDefault()
+    const filter = templateInstance.filters.get()
+    const filterTarget = templateInstance.$('#genericFilter').data('filtertarget')
+    filter[filterTarget] = templateInstance.$('#genericFilter').val()
+    templateInstance.filters.set(filter)
+  },
+  'click .js-remove-filters': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.filters.set({})
   },
 })
 Template.detailtimetable.onDestroyed(() => {

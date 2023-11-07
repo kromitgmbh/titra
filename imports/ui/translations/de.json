@@ -283,7 +283,8 @@
     "billed": "Verrechnet",
     "notBillable": "Nicht Verrechenbar",
     "charts": "Diagramme",
-    "markAsBilled": "Alles verrechnet"
+    "markAsBilled": "Alles verrechnet",
+    "quickFilter": "Schnellfilter"
   },
   "dashboard": {
     "share": "Projekt Dashboard Freigeben",

@@ -273,7 +273,8 @@
     "billed": "Facturé",
     "notBillable": "Non-facturable",
     "charts": "Graphiques",
-	"markAsBilled": "Marquer comme facturé"
+	  "markAsBilled": "Marquer comme facturé",
+    "quickFilter": "Filtre rapide"
   },
   "dashboard": {
     "share": "Partager le dashboard",
