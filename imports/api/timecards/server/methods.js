@@ -90,13 +90,13 @@ async function insertTimeCard(projectId, task, date, hours, userId, customfields
     task: await emojify(task),
     ...customfields,
   }
-  if (!await Tasks.findOneAsync({ userId, name: await emojify(task) })) {
+  if (!await Tasks.findOneAsync({ $or: [{ userId }, { projectId }], name: await emojify(task) })) {
     await Tasks.insertAsync({
       userId, lastUsed: new Date(), name: await emojify(task), ...customfields,
     })
   } else {
     await Tasks.updateAsync(
-      { userId, name: await emojify(task) },
+      { $or: [{ userId }, { projectId }], name: await emojify(task) },
       { $set: { lastUsed: new Date(), ...customfields } },
     )
   }
