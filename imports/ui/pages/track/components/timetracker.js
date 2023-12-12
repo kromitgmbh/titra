@@ -133,6 +133,7 @@ Template.timetracker.events({
     templateInstance.project?.set($('.js-target-project').val())
     templateInstance.task?.set($('.js-tasksearch-input').val())
     templateInstance.startTime?.set($('#startTime').val())
+    templateInstance.$('[data-bs-toggle="tooltip"]').tooltip('hide')
     const customFields = CustomFields.find().fetch()
     const customFieldsToSave = []
     if (customFields.length > 0) {

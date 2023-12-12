@@ -14,7 +14,10 @@ if (!Meteor.settings.public.sandstorm) {
     }
   }], { except: ['dashboard', 'signIn', 'changePassword', 'register', 'reset-password', 'try'] })
   FlowRouter.triggers.exit([() => {
-    $("[data-toggle='popover']").popover('hide')
+    $("[data-bs-toggle='popover']").popover('hide')
+    $("[data-bs-toggle='tooltip']").tooltip('hide')
+    $('.tooltip').remove()
+    $('.popover').remove()
   }], { except: ['claimAdmin'] })
 }
 FlowRouter.route('*', {
