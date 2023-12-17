@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.95.9",
+  "version": "0.95.10",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -27,7 +27,7 @@
     "frappe-charts": "1.6.2",
     "frappe-datatable": "^1.17.5",
     "frappe-gantt": "^0.6.1",
-    "hotkeys-js": "^3.13.1",
+    "hotkeys-js": "^3.13.2",
     "is-dark": "^1.0.4",
     "jquery": "3.7.1",
     "jquery-serializejson": "^3.2.1",
@@ -46,11 +46,11 @@
   "devDependencies": {
     "@babel/core": "^7.23.6",
     "@babel/eslint-parser": "^7.23.3",
-    "eslint": "^8.55.0",
+    "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
     "eslint-plugin-i18next": "^6.0.3",
-    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-meteor": "^7.3.0"
   },
   "apidoc": {

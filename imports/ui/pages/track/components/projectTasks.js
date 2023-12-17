@@ -70,8 +70,9 @@ Template.projectTasks.onRendered(() => {
               noDataMessage: t('tabular.sZeroRecords'),
               getEditor(colIndex, rowIndex, value, parent, column, row, data) {
                 templateInstance.editTaskID.set(row[0].content)
+                templateInstance.$(parent.parentNode).removeClass('dt-cell--editing')
                 new Bootstrap.Modal(templateInstance.$('#task-modal')).show()
-                return false
+                return null
               },
             }
             window.requestAnimationFrame(() => {
@@ -139,6 +140,10 @@ Template.projectTasks.events({
     templateInstance.editTaskID.set(false)
     Bootstrap.Modal.getOrCreateInstance(templateInstance.$('#task-modal')).dispose()
     Bootstrap.Modal.getOrCreateInstance(templateInstance.$('#task-modal')).show()
+  },
+  'focusout #projectGantt': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.ganttchart.hide_popup()
   },
 })
 

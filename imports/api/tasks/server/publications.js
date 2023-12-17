@@ -1,21 +1,21 @@
 import { check } from 'meteor/check'
-import { checkAuthentication } from '../../../utils/server_method_helpers.js'
+import { checkAuthentication, getGlobalSettingAsync } from '../../../utils/server_method_helpers.js'
 import Tasks from '../tasks.js'
 
 Meteor.publish('mytasks', async function mytasks({ filter, projectId }) {
-  check(filter, Match.Optional(String))
-  check(projectId, Match.Optional(String))
   await checkAuthentication(this)
   const taskFilter = {
     $or: [{ userId: this.userId }],
   }
-  if (projectId) {
+  if (projectId && projectId !== undefined && projectId !== '') {
+    check(projectId, String)
     taskFilter.$or.push({ projectId })
   }
-  if (filter) {
+  if (filter && filter !== undefined && filter !== '') {
+    check(filter, String)
     taskFilter.name = { $regex: `.*${filter.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' }
   }
-  return Tasks.find(taskFilter, { sort: { projectId: -1, lastUsed: -1 }, limit: 10 })
+  return Tasks.find(taskFilter, { sort: { projectId: -1, lastUsed: -1 }, limit: await getGlobalSettingAsync('taskSearchNumResults') })
 })
 
 Meteor.publish('allmytasks', async function mytasks({ filter, limit }) {
