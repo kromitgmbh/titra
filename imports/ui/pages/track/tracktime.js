@@ -7,7 +7,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import bootstrap from 'bootstrap'
 import TinyDatePicker from 'tiny-date-picker'
 import 'tiny-date-picker/tiny-date-picker.css'
-import { t } from '../../../utils/i18n.js'
+import { t, weekDaysMin, months } from '../../../utils/i18n.js'
 import Timecards from '../../../api/timecards/timecards.js'
 import Projects from '../../../api/projects/projects.js'
 import CustomFields from '../../../api/customfields/customfields.js'
@@ -34,23 +34,6 @@ function isHoliday(date) {
 
 Template.tracktime.onRendered(() => {
   const templateInstance = Template.instance()
-  if (!templateInstance.tinydatepicker) {
-    templateInstance.tinydatepicker = TinyDatePicker(templateInstance.$('.js-date')[0], {
-      format(date) {
-        return date ? dayjs(date).format(getGlobalSetting('dateformatVerbose')) : dayjs().format(getGlobalSetting('dateformatVerbose'))
-      },
-      parse(date) {
-        return dayjs(date, [getGlobalSetting('dateformatVerbose'), undefined]).toDate()
-      },
-      appendTo: templateInstance.firstNode,
-      mode: 'dp-modal',
-      dayOffset: getUserSetting('startOfWeek'),
-    }).on('select', (_, dp) => {
-      if (!dp.state.selectedDate) {
-        templateInstance.$('.js-date').first().val(dayjs().format(getGlobalSetting('dateformatVerbose')))
-      }
-    })
-  }
   templateInstance.autorun(() => {
     const timeEntry = templateInstance.time_entry.get()
     if (timeEntry) {
@@ -59,6 +42,30 @@ Template.tracktime.onRendered(() => {
           element.value = timeEntry[customfield.name]
         })
       }
+    }
+    if (!templateInstance.tinydatepicker
+        && weekDaysMin.get().length > 0 && months.get().length > 0) {
+      templateInstance.tinydatepicker = TinyDatePicker(templateInstance.$('.js-date')[0], {
+        format(date) {
+          return date ? dayjs(date).format(getGlobalSetting('dateformatVerbose')) : dayjs().format(getGlobalSetting('dateformatVerbose'))
+        },
+        parse(date) {
+          return dayjs(date, [getGlobalSetting('dateformatVerbose'), undefined]).toDate()
+        },
+        lang: {
+          days: weekDaysMin.get(),
+          months: months.get(),
+          close: t('navigation.close'),
+          today: t('tracktime.today'),
+        },
+        appendTo: templateInstance.firstNode,
+        mode: 'dp-modal',
+        dayOffset: getUserSetting('startOfWeek'),
+      }).on('select', (_, dp) => {
+        if (!dp.state.selectedDate) {
+          templateInstance.$('.js-date').first().val(dayjs().format(getGlobalSetting('dateformatVerbose')))
+        }
+      })
     }
   })
 })
@@ -370,7 +377,7 @@ function isEditMode() {
   || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get())
 }
 Template.tracktime.helpers({
-  date: () => (isEditMode()
+  date: () => (Template.instance().tcid && Template.instance().tcid.get()
     ? dayjs.utc(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose'))
     : dayjs(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose'))),
   projectId: () => Template.instance().projectId.get(),

@@ -54,7 +54,7 @@ Template.projectTasks.onRendered(() => {
           width: 2,
         },
       ]
-      const data = tasks.fetch()?.map((task) => [task._id, task.name, dayjs(task.start).format(getGlobalSetting('dateformat')), dayjs(task.end).format(getGlobalSetting('dateformat')),
+      const data = tasks.fetch()?.map((task) => [task._id, task.name, dayjs.utc(task.start).format(getGlobalSetting('dateformat')), dayjs.utc(task.end).format(getGlobalSetting('dateformat')),
         task.dependencies?.map((dep) => Tasks.findOne({ _id: dep })?.name).join(','),
       ])
       if (!templateInstance.datatable) {
@@ -89,8 +89,8 @@ Template.projectTasks.onRendered(() => {
         {
           id: task._id,
           name: $('<span>')?.text(task.name).html(),
-          start: dayjs(task.start).format('YYYY-MM-DD'),
-          end: dayjs(task.end).format('YYYY-MM-DD'),
+          start: dayjs.utc(task.start).format('YYYY-MM-DD'),
+          end: dayjs.utc(task.end).format('YYYY-MM-DD'),
           dependencies: task.dependencies,
         }))
       const ganttOptions = {
