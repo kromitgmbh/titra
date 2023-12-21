@@ -5,6 +5,7 @@ import Bootstrap from 'bootstrap'
 import { i18nReady, t } from '../../../../utils/i18n.js'
 import './projectTasks.html'
 import Tasks from '../../../../api/tasks/tasks'
+import CustomFields from '../../../../api/customfields/customfields'
 import '../../overview/editproject/components/taskModal.js'
 import {
   addToolTipToTableCell, getGlobalSetting, showToast,
@@ -12,8 +13,24 @@ import {
 
 dayjs.extend(utc)
 
+function taskMapper(task) {
+  const mapping = 
+  [task._id,
+    task.name,
+    dayjs.utc(task.start).format(getGlobalSetting('dateformat')),
+    dayjs.utc(task.end).format(getGlobalSetting('dateformat')),
+    task.dependencies?.map((dep) => Tasks.findOne({ _id: dep })?.name).join(',')]
+    if (CustomFields.find({ classname: 'task' }).count() > 0) {
+      for (const customfield of CustomFields.find({ classname: 'task' }).fetch()) {
+        mapping.push(task[customfield.name])
+      }
+    }
+    return mapping
+}
+
 Template.projectTasks.onCreated(function projectTasksCreated() {
   this.subscribe('projectTasks', { projectId: FlowRouter.getParam('id') })
+  this.subscribe('customfieldsForClass', { classname: 'task' })
   this.editTaskID = new ReactiveVar(false)
 })
 
@@ -54,9 +71,17 @@ Template.projectTasks.onRendered(() => {
           width: 2,
         },
       ]
-      const data = tasks.fetch()?.map((task) => [task._id, task.name, dayjs.utc(task.start).format(getGlobalSetting('dateformat')), dayjs.utc(task.end).format(getGlobalSetting('dateformat')),
-        task.dependencies?.map((dep) => Tasks.findOne({ _id: dep })?.name).join(','),
-      ])
+      if (CustomFields.find({ classname: 'task' }).count() > 0) {
+        for (const customfield of CustomFields.find({ classname: 'task' }).fetch()) {
+          columns.push({
+            name: customfield.desc,
+            id: customfield.name,
+            editable: false,
+            format: addToolTipToTableCell,
+          })
+        }
+      }
+      const data = tasks.fetch()?.map((task) => taskMapper(task))
       if (!templateInstance.datatable) {
         import('frappe-datatable/dist/frappe-datatable.css').then(() => {
           import('frappe-datatable').then((datatable) => {

@@ -160,4 +160,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'openai_apikey', description: 'settings.openai', type: 'password', value: '', category: 'settings.categories.interfaces',
 })
+defaultSettings.push({
+  name: 'showResourceInDetails', description: 'settings.show_resource_in_details', type: 'checkbox', value: true, category: 'settings.categories.customization',
+})
 export { defaultSettings, Globalsettings }

@@ -36,13 +36,17 @@ function detailedDataTableMapper(entry, forExport) {
   const project = Projects.findOne({ _id: entry.projectId })
   let mapping = [entry.projectId,
     dayjs.utc(entry.date).format(getGlobalSetting('dateformat')),
-    entry.task.replace(/^=/, '\\='),
-    entry.userId]
+    entry.task.replace(/^=/, '\\=')]
+  if (getGlobalSetting('showResourceInDetails')) {
+    mapping.push(entry.userId)
+  }
   if (forExport) {
     mapping = [project?.name ? project.name : '',
       dayjs.utc(entry.date).format(getGlobalSetting('dateformat')),
-      entry.task.replace(/^=/, '\\='),
-      projectResources.findOne() ? projectResources.findOne({ _id: entry.userId })?.name : '']
+      entry.task.replace(/^=/, '\\=')]
+    if (getGlobalSetting('showResourceInDetails')) {
+      mapping.push(projectResources.findOne() ? projectResources.findOne({ _id: entry.userId })?.name : '')      
+    }
   }
   if (getGlobalSetting('showCustomFieldsInDetails')) {
     if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
@@ -155,13 +159,15 @@ Template.detailtimetable.onRendered(() => {
         },
         {
           name: t('globals.task'), id: 'task', editable: false, format: addToolTipToTableCell,
-        },
-        {
+        }]
+      if (getGlobalSetting('showResourceInDetails')) {
+        columns.push({
           name: t('globals.resource'),
           id: 'userId',
           editable: false,
           format: (value) => addToolTipToTableCell(projectResources.findOne() ? projectResources.findOne({ _id: value })?.name : ''),
-        }]
+        })
+      }
       if (getGlobalSetting('showCustomFieldsInDetails')) {
         let customFieldColumnType = 'desc'
         if (getGlobalSetting('showNameOfCustomFieldInDetails')) {
@@ -425,8 +431,10 @@ Template.detailtimetable.helpers({
 Template.detailtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
-    const csvArray = [`\uFEFF${t('globals.project')},${t('globals.date')},${t('globals.task')},${t('globals.resource')}`]
-
+    const csvArray = [`\uFEFF${t('globals.project')},${t('globals.date')},${t('globals.task')}`]
+    if (getGlobalSetting('showResourceInDetails')) {
+      csvArray[0] = `${csvArray[0]},${t('globals.resource')}`
+    }
     if (getGlobalSetting('showCustomFieldsInDetails')) {
       if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
         csvArray[0] = `${csvArray[0]},${CustomFields.find({ classname: 'time_entry' }).fetch().map((field) => field[customFieldType]).join(',')}`
@@ -475,7 +483,10 @@ Template.detailtimetable.events({
   },
   'click .js-export-xlsx': (event, templateInstance) => {
     event.preventDefault()
-    const data = [[t('globals.project'), t('globals.date'), t('globals.task'), t('globals.resource')]]
+    const data = [[t('globals.project'), t('globals.date'), t('globals.task')]]
+    if (getGlobalSetting('showResourceInDetails')) {
+      data[0].push(t('globals.resource'))
+    }
     if (getGlobalSetting('showCustomFieldsInDetails')) {
       if (CustomFields.find({ classname: 'time_entry' }).count() > 0) {
         for (const customfield of CustomFields.find({ classname: 'time_entry' }).fetch()) {

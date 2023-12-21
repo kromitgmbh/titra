@@ -223,7 +223,8 @@
     "enable_googleapi": "Google Workspace Schnittstelle aktivieren?",
     "google_clientid": "Google Workspace Client ID",
     "google_secret": "Google Workspace Client Secret",
-    "openai": "Open AI API Key"
+    "openai": "Open AI API Key",
+    "show_resource_in_details": "Ressource in Detailansicht anzeigen/exportieren?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

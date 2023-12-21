@@ -181,12 +181,16 @@ function dailyTimecardMapper(entry) {
       totalHours = Number(entry.totalHours * 60)
     }
   }
-  return {
+  const mapping = {
     date: entry._id.date,
     projectId: Projects.findOne({ _id: entry._id.projectId })?.name,
     userId: projectResources.findOne({ _id: entry._id.userId })?.name,
     totalHours,
   }
+  if (!getGlobalSetting('showResourceInDetails')) {
+    delete mapping.userId
+  }
+  return mapping
 }
 /**
  * Mapper function for the totalHoursForPeriod publication.
@@ -203,11 +207,15 @@ function totalHoursForPeriodMapper(entry) {
       totalHours = Number(entry.totalHours * 60)
     }
   }
-  return {
+  const mapping = {
     projectId: Projects.findOne({ _id: entry._id.projectId })?.name,
     userId: projectResources.findOne({ _id: entry._id.userId })?.name,
     totalHours,
   }
+  if (!getGlobalSetting('showResourceInDetails')) {
+    delete mapping.userId
+  }
+  return mapping
 }
 
 export {

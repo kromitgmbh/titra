@@ -76,19 +76,23 @@ Template.dailytimetable.onRendered(() => {
           width: 2,
           format: addToolTipToTableCell,
         },
-        {
+      ]
+      if (getGlobalSetting('showResourceInDetails')) {
+        columns.push({
           name: t('globals.resource'),
           editable: false,
           width: 2,
           format: addToolTipToTableCell,
-        },
+        })
+      }
+      columns.push(
         {
           name: getUserTimeUnitVerbose(),
           editable: false,
           width: 1,
           format: numberWithUserPrecision,
         },
-      ]
+      )
       if (!templateInstance.datatable) {
         import('frappe-datatable/dist/frappe-datatable.css').then(() => {
           import('frappe-datatable').then((datatable) => {
@@ -143,9 +147,16 @@ Template.dailytimetable.events({
     if (Meteor.user()) {
       unit = getUserTimeUnitVerbose()
     }
-    const csvArray = [`\uFEFF${t('globals.date')},${t('globals.project')},${t('globals.resource')},${unit}\r\n`]
+    let csvArray = [`\uFEFF${t('globals.date')},${t('globals.project')},${t('globals.resource')},${unit}\r\n`]
+    if (!getGlobalSetting('showResourceInDetails')) {
+      csvArray = [`\uFEFF${t('globals.date')},${t('globals.project')},${unit}\r\n`]
+    }
     for (const timeEntry of templateInstance.dailyTimecards.get().map(dailyTimecardMapper)) {
-      csvArray.push(`${dayjs.utc(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
+      if (getGlobalSetting('showResourceInDetails')) {
+        csvArray.push(`${dayjs.utc(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
+      } else {
+        csvArray.push(`${dayjs.utc(timeEntry.date).format(getGlobalSetting('dateformat'))},${timeEntry.projectId},${timeEntry.totalHours}\r\n`)
+      }
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_daily_time_${templateInstance.data.period.get()}.csv`)
   },
@@ -155,9 +166,16 @@ Template.dailytimetable.events({
     if (Meteor.user()) {
       unit = getUserTimeUnitVerbose()
     }
-    const data = [[t('globals.date'), t('globals.project'), t('globals.resource'), unit]]
+    let data = [[t('globals.date'), t('globals.project'), t('globals.resource'), unit]]
+    if (!getGlobalSetting('showResourceInDetails')) {
+      data = [[t('globals.date'), t('globals.project'), unit]]
+    }
     for (const timeEntry of templateInstance.dailyTimecards.get().map(dailyTimecardMapper)) {
-      data.push([dayjs.utc(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
+      if (getGlobalSetting('showResourceInDetails')) {
+        data.push([dayjs.utc(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
+      } else {
+        data.push([dayjs.utc(timeEntry.date).format(getGlobalSetting('dateformat')), timeEntry.projectId, timeEntry.totalHours])
+      }
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'daily').createDownloadUrl(), `titra_daily_time_${templateInstance.data.period.get()}.xlsx`)
   },

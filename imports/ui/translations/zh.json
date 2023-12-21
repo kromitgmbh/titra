@@ -181,7 +181,8 @@
     "xframe_options_origin": "X-Frame-Options header origin URL",
     "google_clientid": "Google Workspace Client ID",
     "google_secret": "Google Workspace Client Secret",
-    "openai": "Open AI API Key"
+    "openai": "Open AI API Key",
+    "show_resource_in_details": "在详细视图中显示/导出资源字段？"
   },
   "customer": {
     "select_customer": "请选一个客户",

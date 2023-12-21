@@ -223,7 +223,8 @@
     "enable_googleapi": "Enable Google Workspace integration?",
     "google_clientid": "Google Workspace Client ID",
     "google_secret": "Google Workspace Client Secret",
-    "openai": "Open AI API Key"
+    "openai": "Open AI API Key",
+    "show_resource_in_details": "Show/export resource field in details view?"
   },
   "customer": {
     "select_customer": "Select a customer",

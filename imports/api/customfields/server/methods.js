@@ -33,7 +33,7 @@ const addCustomField = new ValidatedMethod({
     if (await CustomFields.findOneAsync({ name })) {
       throw new Meteor.Error('error-custom-field-exists', 'Custom field already exists', { method: 'addCustomField' })
     }
-    if (type === 'global_setting' && await Globalsettings.findOneAsync({ name })) {
+    if (classname === 'global_setting' && await Globalsettings.findOneAsync({ name })) {
       throw new Meteor.Error('error-global-setting-exists', 'Global setting already exists', { method: 'addCustomField' })
     }
     const customField = {
@@ -53,7 +53,9 @@ const addCustomField = new ValidatedMethod({
       category,
       type,
     }
-    await Globalsettings.insertAsync(globalsetting)
+    if (classname === 'global_setting') {
+      await Globalsettings.insertAsync(globalsetting)
+    }
     return customField
   },
 })
@@ -78,7 +80,9 @@ const removeCustomField = new ValidatedMethod({
     if (!customfield) {
       throw new Meteor.Error('error-custom-field-not-found', 'Custom field not found', { method: 'removeCustomField' })
     }
-    await Globalsettings.removeAsync({ name: customfield.name })
+    if (customfield.classname === 'global_setting') {
+      await Globalsettings.removeAsync({ name: customfield.name })
+    }
     await CustomFields.removeAsync({ _id })
     return true
   },
@@ -121,13 +125,15 @@ const updateCustomField = new ValidatedMethod({
         },
       },
     )
-    await Globalsettings.updateAsync({ name: customfield.name }, {
-      $set: {
-        description: desc,
-        type,
-        category,
-      },
-    })
+    if (customfield.classname === 'global_setting') {
+      await Globalsettings.updateAsync({ name: customfield.name }, {
+        $set: {
+          description: desc,
+          type,
+          category,
+        },
+      })
+    }
     return true
   },
 })

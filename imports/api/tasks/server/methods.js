@@ -21,11 +21,12 @@ const insertProjectTask = new ValidatedMethod({
       start: Date,
       end: Date,
       dependencies: Match.Optional([String]),
+      customfields: Match.Optional(Object),
     })
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
-    projectId, name, start, end, dependencies,
+    projectId, name, start, end, dependencies, customfields,
   }) {
     await Tasks.insertAsync({
       projectId,
@@ -33,6 +34,7 @@ const insertProjectTask = new ValidatedMethod({
       start,
       end,
       dependencies,
+      ...customfields,
     })
   },
 })
@@ -58,28 +60,22 @@ const updateTask = new ValidatedMethod({
       start: Match.Optional(Date),
       end: Match.Optional(Date),
       dependencies: Match.Optional([String]),
+      customfields: Match.Optional(Object),
     })
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
-    taskId, name, start, end, dependencies,
+    taskId, name, start, end, dependencies, customfields,
   }) {
-    const updatedTask = {
-    }
-    if (name) updatedTask.name = name
-    if (start) updatedTask.start = start
-    if (end) updatedTask.end = end
-    if (dependencies) updatedTask.dependencies = dependencies
-    if (updatedTask) {
-      await Tasks.updateAsync(taskId, {
-        $set: {
-          name,
-          start,
-          end,
-          dependencies,
-        },
-      })
-    }
+    await Tasks.updateAsync(taskId, {
+      $set: {
+        name,
+        start,
+        end,
+        dependencies,
+        ...customfields,
+      },
+    })
   },
 })
 /**

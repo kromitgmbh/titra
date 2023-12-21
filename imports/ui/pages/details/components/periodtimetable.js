@@ -14,6 +14,7 @@ import {
   addToolTipToTableCell,
   totalHoursForPeriodMapper,
   waitForElement,
+  getGlobalSetting,
 } from '../../../../utils/frontend_helpers.js'
 
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
@@ -64,13 +65,17 @@ Template.periodtimetable.onRendered(() => {
       }
       const columns = [
         { name: t('globals.project'), editable: false, format: addToolTipToTableCell },
-        { name: t('globals.resource'), editable: false, format: addToolTipToTableCell },
-        {
-          name: getUserTimeUnitVerbose(),
-          editable: false,
-          format: numberWithUserPrecision,
-        },
       ]
+      if (getGlobalSetting('showResourceInDetails')) {
+        columns.push({
+          name: t('globals.resource'), editable: false, format: addToolTipToTableCell,
+        })
+      }
+      columns.push({
+        name: getUserTimeUnitVerbose(),
+        editable: false,
+        format: numberWithUserPrecision,
+      })
       if (!templateInstance.datatable) {
         import('frappe-datatable/dist/frappe-datatable.css').then(() => {
           import('frappe-datatable').then((datatable) => {
@@ -118,17 +123,32 @@ Template.periodtimetable.helpers({
 Template.periodtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
     event.preventDefault()
-    const csvArray = [`\uFEFF${t('globals.project')},${t('globals.resource')},${getUserTimeUnitVerbose()}\r\n`]
+    let csvArray = [`\uFEFF${t('globals.project')},${t('globals.resource')},${getUserTimeUnitVerbose()}\r\n`]
+    if (!getGlobalSetting('showResourceInDetails')) {
+      csvArray = [`\uFEFF${t('globals.project')},${getUserTimeUnitVerbose()}\r\n`]
+    }
     for (const timeEntry of templateInstance.periodTimecards.get().map(totalHoursForPeriodMapper)) {
-      csvArray.push(`${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
+      if (getGlobalSetting('showResourceInDetails')) {
+        csvArray.push(`${timeEntry.projectId},${timeEntry.userId},${timeEntry.totalHours}\r\n`)
+      } else {
+        csvArray.push(`${timeEntry.projectId},${timeEntry.totalHours}\r\n`)
+      }
     }
     saveAs(new Blob(csvArray, { type: 'text/csv;charset=utf-8;header=present' }), `titra_total_time_${templateInstance.data.period.get()}.csv`)
   },
   'click .js-export-xlsx': (event, templateInstance) => {
     event.preventDefault()
-    const data = [[t('globals.project'), t('globals.resource'), getUserTimeUnitVerbose()]]
+    const data = [[t('globals.project')]]
+    if (getGlobalSetting('showResourceInDetails')) {
+      data[0].push(t('globals.resource'))
+    }
+    data[0].push(getUserTimeUnitVerbose())
     for (const timeEntry of templateInstance.periodTimecards.get().map(totalHoursForPeriodMapper)) {
-      data.push([timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
+      if (getGlobalSetting('showResourceInDetails')) {
+        data.push([timeEntry.projectId, timeEntry.userId, timeEntry.totalHours])
+      } else {
+        data.push([timeEntry.projectId, timeEntry.totalHours])
+      }
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'total time').createDownloadUrl(), `titra_total_time_${templateInstance.data.period.get()}.xlsx`)
   },

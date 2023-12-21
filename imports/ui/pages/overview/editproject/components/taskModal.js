@@ -3,6 +3,7 @@ import Bootstrap from 'bootstrap'
 import { t } from '../../../../../utils/i18n.js'
 import './taskModal.html'
 import Tasks from '../../../../../api/tasks/tasks'
+import CustomFields from '../../../../../api/customfields/customfields.js'
 import { showToast } from '../../../../../utils/frontend_helpers.js'
 import BsDialogs from '../../../../shared components/bootstrapDialogs'
 
@@ -22,7 +23,7 @@ Template.taskModal.events({
     event.preventDefault()
     const newTask = { projectId: FlowRouter.getParam('id') }
     templateInstance.$('input').each(function (index) {
-      if ($(this).val()) {
+      if ($(this).val() && !$(this).hasClass('js-customfield')) {
         if ($(this).get(0).type === 'date') {
           newTask[$(this).get(0).name] = new Date($(this).val())
         } else {
@@ -36,6 +37,11 @@ Template.taskModal.events({
     }
     if (templateInstance.$('#dependencies').val()) {
       newTask.dependencies = [templateInstance.$('#dependencies').val()]
+    }
+    const customfields = {}
+    templateInstance.$('.js-customfield').each((i, el) => { customfields[$(el).attr('id')] = $(el).val() })
+    if (customfields) {
+      newTask.customfields = customfields
     }
     if (templateInstance.editTask.get()) {
       newTask.taskId = templateInstance.editTask.get()._id
@@ -87,4 +93,8 @@ Template.taskModal.helpers({
   end: () => (Template.instance().editTask.get() ? Template.instance().editTask.get().end?.toJSON().slice(0, 10) : ''),
   possibleDependencies: () => Tasks.find({ projectId: FlowRouter.getParam('id'), _id: { $ne: Template.instance().editTask.get()?._id } }),
   isSelectedDep: (dependency) => (Template.instance().editTask.get()?.dependencies?.includes(dependency) ? 'selected' : ''),
+  replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
+  getCustomFieldValue: (fieldId) => (Template.instance().editTask.get()
+    ? Template.instance().editTask.get()[fieldId] : false),
+  customfields: () => (CustomFields.find({ classname: 'task' }).fetch().length > 0 ? CustomFields.find({ classname: 'task' }) : false),
 })

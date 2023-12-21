@@ -221,7 +221,8 @@
     "enable_siwapp": "Активировать интеграцию с Siwapp?",
     "google_clientid": "Google Workspace Client ID",
     "google_secret": "Google Workspace Client Secret",
-    "openai": "Open AI API Key"
+    "openai": "Open AI API Key",
+    "show_resource_in_details": "Отображать/экспортировать поле ресурса на странице 'Детали'?"
   },
   "customer": {
     "select_customer": "Выберите клиента",
