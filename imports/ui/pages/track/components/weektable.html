@@ -15,13 +15,15 @@
         <table class="table table-sm mb-0">
           <thead class="thead">
             <th scope="col" style="min-width:200px;width:200px">{{t "globals.project"}} / {{t "globals.task"}}</th>
-            {{#each weekday in weekDays}}
-              {{#if isHoliday @index }}
-                <th scope="col" class="holiday" style="min-width:122px;">{{ isHoliday @index }}<br>{{weekday}}</th>
-              {{else}}
-                  <th scope="col" class="{{isTodayClass weekday}}" style="min-width:122px;">{{weekday}}</th>
-              {{/if}}
-            {{/each}}
+            {{#let resolvedWeekDays=weekDays}}
+              {{#each weekday in resolvedWeekDays}}
+                {{#if isHoliday @index }}
+                  <th scope="col" class="holiday" style="min-width:122px;">{{ isHoliday @index }}<br>{{weekday}}</th>
+                {{else}}
+                    <th scope="col" class="{{isTodayClass weekday}}" style="min-width:122px;">{{weekday}}</th>
+                {{/if}}
+              {{/each}}
+            {{/let}}
             <th scope="col"></th>
           </thead>
             {{#each project in projects}}
@@ -29,9 +31,11 @@
             {{/each}}
             <tfoot style="border-top-style:double;border-top-color:#dee2e6;">
             <td class="text-center">{{#if hasData}}{{getWeekTotal}}{{/if}}</td>
-            {{#each weekday in weekDays}}
-              <td class="ps-3">{{getTotalForDay weekday}}</td>
-            {{/each}}
+            {{#let resolvedWeekDays=weekDays}}
+              {{#each weekday in resolvedWeekDays}}
+                <td class="ps-3">{{getTotalForDay weekday}}</td>
+              {{/each}}
+            {{/let}}
             <td class="text-center">{{#if hasData}}
               <div data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{t 'weektable.sum_per_day'}}">
               Σ</div>{{/if}}</td>
@@ -50,11 +54,13 @@
       <td scope="row" style="color:inherit; border-left-color: {{getColorForProject projectId}} !important; border-left-width:thick;">
         <a href="#" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:165px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
       </td>
-      {{#if weekDays}}
-        {{#each weekday in weekDays}}
-          <td class="ps-3">{{getTotalForDayPerProject projectId weekday}}</td>
-        {{/each}}
-      {{/if}}
+      {{#let resolvedWeekDays=weekDays}}
+        {{#if resolvedWeekDays}}
+          {{#each weekday in resolvedWeekDays}}
+            <td class="ps-3">{{getTotalForDayPerProject projectId weekday}}</td>
+          {{/each}}
+        {{/if}}
+      {{/let}}
       <td class="text-center" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{t 'weektable.sumProject_message'}}">{{#if tasks}}Σ{{/if}}</td>
     </tr>
   <tbody data-project-id="{{projectId}}" class="collapse" >
@@ -71,11 +77,13 @@
             {{>tasksearch projectId=reactiveProjectId isComponent=true}}
           {{/if}}
         </td>
-        {{#each weekday in weekDays}}
-          <td>
-            <input aria-label="Weekday {{@index}}" type="number" value="{{getHoursForDay weekday task}}" data-task="{{task._id}}" data-project-id="{{projectId}}" data-week-day="{{@index}}" class="form-control js-hours" placeholder="0.00"/>
-          </td>
-        {{/each}}
+        {{#let resolvedWeekDays=weekDays}}
+          {{#each weekday in resolvedWeekDays}}
+            <td>
+              <input aria-label="Weekday {{@index}}" type="number" value="{{getHoursForDay weekday task}}" data-task="{{task._id}}" data-project-id="{{projectId}}" data-week-day="{{@index}}" class="form-control js-hours" placeholder="0.00"/>
+            </td>
+          {{/each}}
+        {{/let}}
         <td class="pt-2">{{getTotalForTask(task)}}</td>
       </tr>
     {{/each}}
