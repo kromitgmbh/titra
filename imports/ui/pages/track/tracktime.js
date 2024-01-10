@@ -44,7 +44,7 @@ Template.tracktime.onRendered(() => {
       }
     }
     if (!templateInstance.tinydatepicker
-        && weekDaysMin.get().length > 0 && months.get().length > 0) {
+        && weekDaysMin.get()?.length > 0 && months.get()?.length > 0) {
       templateInstance.tinydatepicker = TinyDatePicker(templateInstance.$('.js-date')[0], {
         format(date) {
           return date ? dayjs(date).format(getGlobalSetting('dateformatVerbose')) : dayjs().format(getGlobalSetting('dateformatVerbose'))
@@ -142,7 +142,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
   })
 })
 Template.tracktime.onDestroyed(() => {
-  Template.instance().tinydatepicker.destroy()
+  Template.instance().tinydatepicker?.destroy()
 })
 Template.tracktime.events({
   'click .js-save': (event, templateInstance) => {
