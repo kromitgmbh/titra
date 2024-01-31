@@ -28,6 +28,11 @@ const t = (key) => {
   }
   return translatedValue
 }
+let fallbackLocale = {}
+import(`dayjs/locale/en-gb`).then((locale) => {
+  fallbackLocale = locale
+})
+
 const loadLanguage = (language, i18nextDebugMode) => {
   // Meteor.js is not very smart
   // eslint-disable-next no-constant-condition
@@ -49,7 +54,11 @@ const loadLanguage = (language, i18nextDebugMode) => {
     i18nReady.set(false)
     setup(lang.default, language, i18nextDebugMode)
     import(`dayjs/locale/${language}`).then((locale) => {
-      weekDaysMin.set(locale.weekdaysMin)
+      if (!locale.weekdaysMin) {
+        weekDaysMin.set(fallbackLocale.weekdaysMin)
+      } else {
+        weekDaysMin.set(locale.weekdaysMin)
+      }
       months.set(locale.months)
       import('dayjs').then((dayjs) => {
         dayjs.locale(language)
@@ -64,7 +73,7 @@ const loadLanguage = (language, i18nextDebugMode) => {
       }
       i18nReady.set(false)
       setup(lang.default, 'en', i18nextDebugMode)
-      import('dayjs/locale/en').then((locale) => {
+      import('dayjs/locale/en-gb').then((locale) => {
         weekDaysMin.set(locale.weekdaysMin)
         months.set(locale.months)
         import('dayjs').then((dayjs) => {

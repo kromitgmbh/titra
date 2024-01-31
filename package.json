@@ -1,12 +1,12 @@
 {
   "name": "titra",
-  "version": "0.96.2",
+  "version": "0.96.3",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.23.8",
+    "@babel/runtime": "^7.23.9",
     "@dashboardcode/bsmultiselect": "^1.1.18",
     "@fortawesome/fontawesome-free": "^6.5.1",
     "@fullcalendar/core": "6.1.10",
@@ -19,7 +19,7 @@
     "bootstrap": "^5.3.2",
     "cl-editor": "^2.3.0",
     "content-type": "^1.0.5",
-    "date-holidays": "^3.23.3",
+    "date-holidays": "^3.23.7",
     "dayjs": "^1.11.10",
     "dayjs-precise-range": "^1.0.1",
     "docker-names": "^1.2.1",
@@ -27,7 +27,7 @@
     "frappe-charts": "1.6.2",
     "frappe-datatable": "^1.17.14",
     "frappe-gantt": "^0.6.1",
-    "hotkeys-js": "^3.13.3",
+    "hotkeys-js": "^3.13.5",
     "is-dark": "^1.0.4",
     "jquery": "3.7.1",
     "jquery-serializejson": "^3.2.1",
@@ -39,13 +39,13 @@
     "quill-delta-to-html": "^0.12.1",
     "randomcolor": "^0.6.2",
     "raw-body": "^2.5.2",
-    "sortablejs": "^1.15.1",
+    "sortablejs": "^1.15.2",
     "tiny-date-picker": "^3.2.8",
     "vm2": "^3.9.19"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.7",
-    "@babel/eslint-parser": "^7.23.3",
+    "@babel/core": "^7.23.9",
+    "@babel/eslint-parser": "^7.23.10",
     "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
