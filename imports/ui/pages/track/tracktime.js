@@ -4,6 +4,7 @@ import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import duration from 'dayjs/plugin/duration'
 import bootstrap from 'bootstrap'
 import TinyDatePicker from 'tiny-date-picker'
 import 'tiny-date-picker/tiny-date-picker.css'
@@ -75,6 +76,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
   })
   dayjs.extend(utc)
   dayjs.extend(customParseFormat)
+  dayjs.extend(duration)
   this.date = new ReactiveVar(dayjs().toDate())
   this.projectId = new ReactiveVar()
   this.tcid = new ReactiveVar()
@@ -166,7 +168,14 @@ Template.tracktime.events({
       showToast(t('notifications.enter_task'))
       return
     }
-    if (!hours && hours !== 0 && !Number.isNaN(hours)) {
+    if (hours?.includes(':')) {
+      const { 0: hoursString, 1: minutesString } = hours.split(':')
+      const duration = dayjs.duration({
+        hours: Number.parseInt(hoursString, 10),
+        minutes: Number.parseInt(minutesString, 10),
+      })
+      hours = duration.asHours().toString()
+    } else if (!hours && hours !== 0 && !Number.isNaN(hours)) {
       templateInstance.$('#hours').addClass('is-invalid')
       showToast(t('notifications.enter_time'))
       return
