@@ -36,7 +36,8 @@
     "ok": "Ok",
     "definition": "Definition",
     "user": "User",
-    "global_setting": "Global setting"
+    "global_setting": "Global setting",
+    "status": "Status"
   },
   "navigation": {
     "track": "Track time",

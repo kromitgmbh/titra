@@ -36,7 +36,8 @@
     "ok": "Ok",
     "definition": "Definition",
     "user": "Benutzer",
-    "global_setting": "Globale Einstellung"
+    "global_setting": "Globale Einstellung",
+    "status": "Status"
   },
   "navigation": {
     "track": "Zeit erfassen",

@@ -34,7 +34,8 @@
     "no": "否",
     "cancel": "取消",
     "ok": "确定",
-    "definition": "定义"
+    "definition": "定义",
+    "status": "状态"
   },
   "navigation": {
     "track": "记录",

@@ -30,13 +30,14 @@
     "time_entry": "Entrée de temps",
     "class": "Classe",
     "type": "Type",
-	"yes": "Oui",
+	  "yes": "Oui",
     "no": "Non",
     "cancel": "Annuler",
     "ok": "Ok",
     "definition": "Definition",
     "user": "Utilisateur",
-    "global_setting": "Réglage général"
+    "global_setting": "Réglage général",
+    "status": "Statut"
   },
   "navigation": {
     "track": "Suivi",

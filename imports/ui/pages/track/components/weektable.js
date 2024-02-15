@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import isoWeek from 'dayjs/plugin/isoWeek'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { t } from '../../../../utils/i18n.js'
@@ -20,18 +21,19 @@ function isHoliday(date) {
 Template.weektable.onCreated(function weekTableCreated() {
   dayjs.extend(utc)
   dayjs.extend(customParseFormat)
+  dayjs.extend(isoWeek)
   this.subscribe('myprojects', {})
 
   this.holidays = new ReactiveVar([])
   getHolidays().then((holidays) => {
     this.holidays.set(holidays)
   })
-  this.startDate = new ReactiveVar(dayjs.utc().startOf('week').add(getUserSetting('startOfWeek'), 'day'))
-  this.endDate = new ReactiveVar(dayjs.utc().endOf('week').add(getUserSetting('startOfWeek'), 'day'))
+  this.startDate = new ReactiveVar(dayjs.utc().isoWeekday(getUserSetting('startOfWeek')))
+  this.endDate = new ReactiveVar(dayjs.utc().isoWeekday(getUserSetting('startOfWeek')).add(6, 'day'))
   this.autorun(() => {
     if (FlowRouter.getQueryParam('date')) {
-      this.startDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).startOf('week').add(getUserSetting('startOfWeek'), 'day'), 'YYYY-MM-DD')
-      this.endDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).endOf('week').add(getUserSetting('startOfWeek'), 'day'), 'YYYY-MM-DD')
+      this.startDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).isoWeekday(getUserSetting('startOfWeek')), 'YYYY-MM-DD')
+      this.endDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).isoWeekday(getUserSetting('startOfWeek')).add(6, 'day'), 'YYYY-MM-DD')
     }
   })
 })
@@ -127,7 +129,9 @@ Template.weektable.events({
           hours /= 60
         }
         const projectId = $(element).data('project-id')
-        const date = dayjs.utc(startDate.add(Number(templateInstance.$(element).data('week-day')) + 1, 'day').format('YYYY-MM-DD')).toDate()
+        console.log(startDate)
+        const date = dayjs.utc(startDate.add(Number(templateInstance.$(element).data('week-day')), 'day').format('YYYY-MM-DD')).toDate()
+        console.log(date)
         const existingElement = weekArray
           .findIndex((arrayElement) => arrayElement.projectId === projectId
           && arrayElement.task === task && dayjs(arrayElement.date).isSame(dayjs(date)))
@@ -144,6 +148,7 @@ Template.weektable.events({
       }
     })
     if (weekArray.length > 0 && !inputError) {
+      console.log(weekArray)
       Meteor.call('upsertWeek', weekArray, (error) => {
         if (error) {
           console.error(error)
