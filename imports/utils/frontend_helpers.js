@@ -31,11 +31,14 @@ function addToolTipToTableCell(value) {
 }
 
 async function getWeekDays(date) {
-  const dayjs = await import('dayjs')
-  const isoWeek = await import('dayjs/plugin/isoWeek')
-  dayjs.default.extend(isoWeek.default)
-  const calendar = date.clone().isoWeekday(getUserSetting('startOfWeek'))
-  return new Array(7).fill(0).map((value, index) => (calendar.add(index, 'day').format(getGlobalSetting('weekviewDateFormat'))))
+  if (date) {
+    const dayjs = await import('dayjs')
+    const isoWeek = await import('dayjs/plugin/isoWeek')
+    dayjs.default.extend(isoWeek.default)
+    const calendar = date.clone().isoWeekday(getUserSetting('startOfWeek'))
+    return new Array(7).fill(0).map((value, index) => (calendar.add(index, 'day').format(getGlobalSetting('weekviewDateFormat'))))
+  }
+  return false
 }
 
 function numberWithUserPrecision(number) {

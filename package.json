@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.96.5",
+  "version": "0.96.6",
   "private": true,
   "scripts": {
     "start": "meteor run"

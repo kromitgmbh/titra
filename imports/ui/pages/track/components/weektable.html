@@ -48,9 +48,6 @@
 
 <template name="weektablerow">
     <tr>
-      <!-- <td scope="row">
-        <a href="#" style="color:inherit; border-left-color: {{project.color}}; border-left-width:thick" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:170px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
-      </td> -->
       <td scope="row" style="color:inherit; border-left-color: {{getColorForProject projectId}} !important; border-left-width:thick;">
         <a href="#" class="text-decoration-none week-row js-collapse" data-bs-toggle="collapse" data-bs-target='[data-project-id="{{projectId}}"]' aria-expanded="false"><span class="d-inline-block text-truncate" style="width:165px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{projectName}}">{{projectName}}</span> <i class="fa fa-chevron-right d-inline-block"></i></a>
       </td>
@@ -66,28 +63,28 @@
   <tbody data-project-id="{{projectId}}" class="collapse" >
     <tr class="js-new-line-placeholder"></tr>
     <tr><td colspan="9"><button type="button" class="btn btn-sm btn-primary js-newline"><i class="fa fa-plus"></i> {{t "navigation.newLine"}}</button></td></tr> 
-    {{#each task in tasks}}
-      <tr>
-        <td>
-          {{#if task._id}}
-            <div class="input-group-text bg-secondary text-start" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{task._id}}">
-              <span class="d-inline-block" style="overflow:hidden;text-overflow:ellipsis; max-width:10rem;">{{task._id}}</span> <a href="#" class="d-inline-block ms-auto js-delete-task" data-task="{{task._id}}" data-project-id="{{projectId}}"><i class="fa fa-trash"></i></a>
-            </div>
-          {{else}}
-            {{>tasksearch projectId=reactiveProjectId isComponent=true}}
-          {{/if}}
-        </td>
-        {{#let resolvedWeekDays=weekDays}}
-          {{#each weekday in resolvedWeekDays}}
-            <td>
-              <input aria-label="Weekday {{@index}}" type="number" value="{{getHoursForDay weekday task}}" data-task="{{task._id}}" data-project-id="{{projectId}}" data-week-day="{{@index}}" class="form-control js-hours" placeholder="0.00"/>
-            </td>
-          {{/each}}
-        {{/let}}
-        <td class="pt-2">{{getTotalForTask(task)}}</td>
-      </tr>
-    {{/each}}
-    <!-- <tr class="js-new-line-placeholder"></tr>
-    <tr><td colspan="9"><button type="button" class="btn btn-sm btn-primary js-newline"><i class="fa fa-plus"></i> {{t "navigation.newLine"}}</button></td></tr>  -->
+    {{#if tasks}}
+      {{#each task in tasks}}
+        <tr>
+          <td>
+            {{#if task._id}}
+              <div class="input-group-text bg-secondary text-start" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{task._id}}">
+                <span class="d-inline-block" style="overflow:hidden;text-overflow:ellipsis; max-width:10rem;">{{task._id}}</span> <a href="#" class="d-inline-block ms-auto js-delete-task" data-task="{{task._id}}" data-project-id="{{projectId}}"><i class="fa fa-trash"></i></a>
+              </div>
+            {{else}}
+              {{>tasksearch projectId=reactiveProjectId isComponent=true}}
+            {{/if}}
+          </td>
+          {{#let resolvedWeekDays=weekDays}}
+            {{#each weekday in resolvedWeekDays}}
+              <td>
+                <input aria-label="Weekday {{@index}}" type="number" value="{{getHoursForDay weekday task}}" data-task="{{task._id}}" data-project-id="{{projectId}}" data-week-day="{{@index}}" class="form-control js-hours" placeholder="0.00"/>
+              </td>
+            {{/each}}
+          {{/let}}
+          <td class="pt-2">{{getTotalForTask(task)}}</td>
+        </tr>
+      {{/each}}
+    {{/if}}
   </tbody>
 </template>
