@@ -104,7 +104,7 @@ Template.weektable.events({
   },
   'click .js-today': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: dayjs.utc().startOf('week').add(getUserSetting('startOfWeek'), 'day').format('YYYY-MM-DD') })
+    FlowRouter.setQueryParams({ date: dayjs.utc().isoWeekday(getUserSetting('startOfWeek')).format('YYYY-MM-DD') })
   },
   'keyup .js-hours': (event, templateInstance) => {
     if (event.keyCode === 13) {
@@ -116,7 +116,7 @@ Template.weektable.events({
     const weekArray = []
     let inputError = false
     templateInstance.$('.js-hours').each((index, element) => {
-      const startDate = templateInstance.startDate.get().clone().startOf('week')
+      const startDate = templateInstance.startDate.get().clone().startOf('day').isoWeekday(getUserSetting('startOfWeek'))
       const value = templateInstance.$(element).val()
       if (value) {
         const newTaskInput = templateInstance.$(element.parentElement.parentElement).find('.js-tasksearch-input').val()

@@ -1,16 +1,19 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { getGlobalSetting } from './frontend_helpers'
+import isoWeek from 'dayjs/plugin/isoWeek'
+import { getGlobalSetting, getUserSetting } from './frontend_helpers'
 
 function periodToDates(period) {
   check(period, String)
   dayjs.extend(utc)
+  dayjs.extend(isoWeek)
   let startDate
   let endDate
   switch (period) {
     case 'currentWeek':
-      startDate = dayjs.utc().startOf('week').toDate()
-      endDate = dayjs.utc().endOf('week').toDate()
+      startDate = dayjs.utc().startOf('day').isoWeekday(getUserSetting('startOfWeek')).toDate()
+      endDate = dayjs.utc().endOf('day').isoWeekday(getUserSetting('startOfWeek')).add(6, 'day')
+        .toDate()
       break
     case 'lastMonth':
       startDate = dayjs.utc().subtract(1, 'month').startOf('month').toDate()
@@ -21,8 +24,11 @@ function periodToDates(period) {
       endDate = dayjs.utc().toDate()
       break
     case 'lastWeek':
-      startDate = dayjs.utc().subtract(1, 'week').startOf('week').toDate()
-      endDate = dayjs.utc().subtract(1, 'week').endOf('week').toDate()
+      startDate = dayjs.utc().subtract(1, 'week').startOf('day').isoWeekday(getUserSetting('startOfWeek'))
+        .toDate()
+      endDate = dayjs.utc().subtract(1, 'week').endOf('day').isoWeekday(getUserSetting('startOfWeek'))
+        .add(6, 'day')
+        .toDate()
       break
     case 'currentYear':
       startDate = dayjs.utc().startOf('year').toDate()

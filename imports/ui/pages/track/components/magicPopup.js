@@ -1,5 +1,6 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import dayjs from 'dayjs'
+import isoWeek from 'dayjs/plugin/isoWeek'
 import bootstrap from 'bootstrap'
 import './magicPopup.html'
 import './projectsearch.js'
@@ -11,16 +12,18 @@ import Projects from '../../../../api/projects/projects'
 Template.magicPopup.onCreated(function magicPopupCreated() {
   this.magicData = new ReactiveVar([])
   this.showPopup = new ReactiveVar(false)
+  dayjs.extend(isoWeek)
   this.subscribe('myProjects')
 })
 const getMagicData = (templateInstance) => {
   let startDate = FlowRouter.getQueryParam('date') ? dayjs.utc(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate() : dayjs.utc().startOf('day').toDate()
   let endDate = dayjs.utc(startDate).add(1, 'day').toDate()
   if (FlowRouter.getQueryParam('view') === 'w') {
-    startDate = FlowRouter.getQueryParam('date') ? dayjs.utc(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').startOf('week').toDate() : dayjs.utc().startOf('week').toDate()
+    startDate = FlowRouter.getQueryParam('date') ? dayjs.utc(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').startOf('day').isoWeekday(getUserSetting('startOfWeek')).toDate() : dayjs.utc().startOf('day').isoWeekday(getUserSetting('startOfWeek')).toDate()
     endDate = FlowRouter.getQueryParam('date')
-      ? dayjs.utc(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').endOf('week').add(getUserSetting('startOfWeek'), 'day').toDate()
-      : dayjs.utc().endOf('week').add(getUserSetting('startOfWeek'), 'day').toDate()
+      ? dayjs.utc(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').add(6, 'day').toDate()
+      : dayjs.utc().endOf('day').isoWeekday(getUserSetting('startOfWeek')).add(6, 'day')
+        .toDate()
   }
   if (FlowRouter.getQueryParam('view') === 'm') {
     startDate = FlowRouter.getQueryParam('date') ? dayjs.utc(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').startOf('month').toDate() : dayjs.utc().startOf('month').toDate()
