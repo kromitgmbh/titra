@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.96.6",
+  "version": "0.96.7",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -9,14 +9,14 @@
     "@babel/runtime": "^7.23.9",
     "@dashboardcode/bsmultiselect": "^1.1.18",
     "@fortawesome/fontawesome-free": "^6.5.1",
-    "@fullcalendar/core": "6.1.10",
-    "@fullcalendar/daygrid": "6.1.10",
-    "@fullcalendar/interaction": "6.1.10",
+    "@fullcalendar/core": "6.1.11",
+    "@fullcalendar/daygrid": "6.1.11",
+    "@fullcalendar/interaction": "6.1.11",
     "@neovici/nullxlsx": "^3.1.0",
     "@popperjs/core": "^2.11.8",
     "adm-zip": "^0.5.10",
     "bcrypt": "^5.1.1",
-    "bootstrap": "^5.3.2",
+    "bootstrap": "^5.3.3",
     "cl-editor": "^2.3.0",
     "content-type": "^1.0.5",
     "date-holidays": "^3.23.8",

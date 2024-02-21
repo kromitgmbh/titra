@@ -32,8 +32,8 @@ Template.weektable.onCreated(function weekTableCreated() {
   this.endDate = new ReactiveVar()
   this.autorun(() => {
     if (this.subscriptionsReady()) {
-      this.startDate.set(dayjs().isoWeekday(getUserSetting('startOfWeek')))
-      this.endDate.set(dayjs().isoWeekday(getUserSetting('startOfWeek')).add(6, 'day'))
+      this.startDate.set(dayjs().startOf('day').isoWeekday(getUserSetting('startOfWeek')))
+      this.endDate.set(dayjs().endOf('day').isoWeekday(getUserSetting('startOfWeek')).add(6, 'day'))
     }
   })
   this.autorun(() => {
