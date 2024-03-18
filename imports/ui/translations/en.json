@@ -359,7 +359,8 @@
     "zammad_error": "Could not retrieve Zammad tickets, please check your project settings!",
     "user_inactive": "This user has been de-activated, please activate it to continue.",
     "extensionAlreadyLaunched": "The extension is already running.",
-    "no_entry_selected": "No entry selected. Please select at least one entry to continue."
+    "no_entry_selected": "No entry selected. Please select at least one entry to continue.",
+    "unknown_error": "An unknown error occurred."
   },
   "login": {
     "password": "Password",

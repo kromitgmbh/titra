@@ -348,7 +348,8 @@
     "zammad_error": "Impossible de récupérer les tickets Zammad. Vérifiez vos réglages!",
     "user_inactive": "Cet utilisateur a été désactivé, veuillez l'activer pour continuer.",
     "extensionAlreadyLaunched": "L'extension est déjà en cours d'exécution.",
-    "no_entry_selected": "Aucune entrée sélectionnée. Veuillez sélectionner au moins une entrée pour continuer."
+    "no_entry_selected": "Aucune entrée sélectionnée. Veuillez sélectionner au moins une entrée pour continuer.",
+    "unknown_error" : "Une erreur inconnue s'est produite. Veuillez réessayer."
   },
   "login": {
     "password": "Mot de passe",

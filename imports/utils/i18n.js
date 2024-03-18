@@ -14,6 +14,9 @@ const setup = (language, lang, debugMode) => {
 }
 const getLanguage = () => _lang
 const t = (key) => {
+  if (!key) {
+    return false
+  }
   const keys = key.split('.')
   let translatedValue = _i18n
   keys.forEach((innerKey) => {

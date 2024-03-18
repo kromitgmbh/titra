@@ -153,7 +153,11 @@ Template.projectAccessRights.events({
     if (newmembermail && validateEmail(newmembermail)) {
       Meteor.call('addTeamMember', { projectId: FlowRouter.getParam('id'), eMail: templateInstance.$('#newmembermail').val() }, (error, result) => {
         if (error) {
-          showToast(t(error.error))
+          if (error.error) {
+            showToast(t(error?.error))
+          } else {
+            showToast(t('notifications.unknown_error'))
+          }
         } else {
           templateInstance.$('#newmembermail').val('')
           showToast(t(result))
