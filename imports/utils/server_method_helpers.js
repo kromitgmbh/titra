@@ -29,21 +29,27 @@ function getProjectListById(projectId) {
   if (projectId.includes('all')) {
     projectList = Projects.find(
       {
-        $or: [{ userId }, { public: true }, { team: userId }],
+        $and: [
+          { $or: [{ userId }, { public: true }, { team: userId }] },
+          { $or: [{ archived: false }, { archived: { $exists: false } }] },
+        ],
       },
-      { $fields: { _id: 1 } },
+      { fields: { _id: 1 } },
     ).fetch().map((value) => value._id)
   } else {
     const projectSelector = {
       _id: projectId,
-      $or: [{ userId }, { public: true }, { team: userId }],
+      $and: [
+        { $or: [{ userId }, { public: true }, { team: userId }] },
+        { $or: [{ archived: false }, { archived: { $exists: false } }] },
+      ],
     }
     if (projectId instanceof Array) {
       projectSelector._id = { $in: projectId }
     }
     projectList = Projects.find(
       projectSelector,
-      { $fields: { _id: 1 } },
+      { fields: { _id: 1 } },
     ).fetch().map((value) => value._id)
   }
   return projectList
@@ -85,13 +91,20 @@ function getProjectListByCustomer(customer) {
   if (customer.includes('all')) {
     projects = Projects.find(
       {
-        $or: [{ userId }, { public: true }, { team: userId }],
+        $and: [
+          { $or: [{ userId }, { public: true }, { team: userId }] },
+          { $or: [{ archived: false }, { archived: { $exists: false } }] },
+        ],
       },
       { _id: 1, name: 1 },
     )
   } else {
     const selector = {
-      customer, $or: [{ userId }, { public: true }, { team: userId }],
+      customer,
+      $and: [
+        { $or: [{ userId }, { public: true }, { team: userId }] },
+        { $or: [{ archived: false }, { archived: { $exists: false } }] },
+      ],
     }
     if (customer instanceof Array) {
       selector.customer = { $in: customer }
@@ -513,7 +526,7 @@ function buildDetailedTimeEntriesForPeriodSelector({
           filters.projectId = { $in: projectIds }
           delete filters[filterKey]
         } else if (filterKey === 'state' && filterValue === 'new') {
-          filters['$or'] = [{ state: { $exists: false } }, { state: 'new' }]
+          filters.$or = [{ state: { $exists: false } }, { state: 'new' }]
           delete filters[filterKey]
         } else if (filterKey === 'date' && typeof filters[filterKey] === 'string') {
           dayjs.extend(customParseFormat)

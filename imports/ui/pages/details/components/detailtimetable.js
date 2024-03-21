@@ -71,6 +71,14 @@ function detailedDataTableMapper(entry, forExport) {
     mapping.push(dayjs.utc(entry.date).local().add(entry.hours, 'hour').format('HH:mm'))
   }
   mapping.push(Number(timeInUserUnit(entry.hours)))
+  if (getGlobalSetting('showRateInDetails')) {
+    let resourceRate
+    if (project.rates) {
+      resourceRate = project.rates[entry.userId]
+    }
+    const rate = entry.taskRate || resourceRate || project.rate || 0
+    mapping.push(rate)
+  }
   mapping.push(entry._id)
   return mapping
 }
@@ -235,13 +243,21 @@ Template.detailtimetable.onRendered(() => {
           },
         )
       }
-      columns.push(
-        {
-          name: getUserTimeUnitVerbose(),
-          id: 'hours',
+      columns.push({
+        name: getUserTimeUnitVerbose(),
+        id: 'hours',
+        editable: false,
+        format: numberWithUserPrecision,
+      })
+      if (getGlobalSetting('showRateInDetails')) {
+        columns.push({
+          name: t('project.rate'),
+          id: 'rate',
           editable: false,
           format: numberWithUserPrecision,
-        },
+        })
+      }
+      columns.push(
         {
           name: t('navigation.edit'),
           id: 'actions',
@@ -453,7 +469,11 @@ Template.detailtimetable.events({
       csvArray[0] = `${csvArray[0]},${t('details.startTime')}`
       csvArray[0] = `${csvArray[0]},${t('details.endTime')}`
     }
-    csvArray[0] = `${csvArray[0]},${getUserTimeUnitVerbose()}\r\n`
+    csvArray[0] = `${csvArray[0]},${getUserTimeUnitVerbose()}`
+    if (getGlobalSetting('showRateInDetails')) {
+      csvArray[0] = `${csvArray[0]},${t('project.rate')}`
+    }
+    csvArray[0] = `${csvArray[0]}\r\n`
     const selector = structuredClone(templateInstance.selector.get()[0])
     selector.state = { $in: ['new', undefined] }
     for (const timeEntry of Timecards
@@ -510,6 +530,9 @@ Template.detailtimetable.events({
       data[0].push(t('details.endTime'))
     }
     data[0].push(getUserTimeUnitVerbose())
+    if (getGlobalSetting('showRateInDetails')) {
+      data[0].push(t('project.rate'))
+    }
     const selector = structuredClone(templateInstance.selector.get()[0])
     selector.state = { $in: ['new', undefined] }
     for (const timeEntry of Timecards

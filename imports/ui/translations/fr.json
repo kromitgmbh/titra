@@ -132,7 +132,7 @@
     "zh": "Chinois",
     "ru": "Russe",
     "ukr": "Ukrainien",
-	"es": "Espagnol",
+	  "es": "Espagnol",
     "user_interface": "Interface utilisateur",
     "theme": "Thème",
     "auto_detect": "Détection automatique",
@@ -216,7 +216,9 @@
     "google_clientid": "Google Workspace Client ID",
     "google_secret": "Google Workspace Client Secret",
     "openai": "Open AI API Key",
-    "show_resource_in_details": "Afficher/exporter le champ ressource dans la vue détaillée ?"
+    "show_resource_in_details": "Afficher/exporter le champ ressource dans la vue détaillée ?",
+    "allow_individual_task_rates": "Autoriser des taux de tâche individuels?",
+    "show_rate_in_details": "Afficher/exporter le champ taux dans la vue détaillée ?"
   },
   "customer": {
     "select_customer": "Selectionner un client",

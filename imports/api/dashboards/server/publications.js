@@ -13,7 +13,7 @@ Meteor.publish('dashboardById', async function dashboardById(_id) {
       {
         customer: dashboard.customer,
       },
-      { $fields: { _id: 1 } },
+      { fields: { _id: 1 } },
     ).fetchAsync()
     projectList = projectList.map((value) => value._id)
     if (dashboard.resourceId.includes('all')) {

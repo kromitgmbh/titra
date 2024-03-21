@@ -158,6 +158,12 @@ Template.tracktime.events({
     const selectedProjectElement = templateInstance.$('.js-tracktime-projectselect > div > div > .js-target-project')
     templateInstance.projectId.set(selectedProjectElement.get(0).getAttribute('data-value'))
     let hours = templateInstance.$('#hours').val()
+    let taskRate
+    if (getGlobalSetting('allowIndividualTaskRates')) {
+      if (templateInstance.$('#taskRate').val() && templateInstance.$('#taskRate').val() !== '0' && templateInstance.$('#taskRate').val() !== '') {
+        taskRate = Number(templateInstance.$('#taskRate').val())
+      }
+    }
     if (!templateInstance.projectId.get()) {
       selectedProjectElement.addClass('is-invalid')
       showToast(t('notifications.select_project'))
@@ -224,7 +230,14 @@ Template.tracktime.events({
         }
       }
       Meteor.call('updateTimeCard', {
-        _id: templateInstance.tcid.get(), projectId, date, hours, task, customfields, user,
+        _id: templateInstance.tcid.get(),
+        projectId,
+        date,
+        hours,
+        task,
+        customfields,
+        user,
+        taskRate,
       }, (error) => {
         if (error) {
           console.error(error)
@@ -244,7 +257,7 @@ Template.tracktime.events({
       })
     } else {
       Meteor.call('insertTimeCard', {
-        projectId, date, hours, task, customfields, user,
+        projectId, date, hours, task, customfields, user, taskRate,
       }, (error) => {
         if (error) {
           console.error(error)

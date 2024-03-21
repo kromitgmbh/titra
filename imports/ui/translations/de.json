@@ -140,7 +140,7 @@
     "zh": "Chinesisch",
     "ru": "Russisch",
     "ukr": "Ukrainisch",
-	"es": "Spanisch",
+	  "es": "Spanisch",
     "user_interface": "Benutzeroberfläche",
     "theme": "Thema",
     "auto_detect": "Automatisch",
@@ -226,7 +226,9 @@
     "google_clientid": "Google Workspace Client ID",
     "google_secret": "Google Workspace Client Secret",
     "openai": "Open AI API Key",
-    "show_resource_in_details": "Ressource in Detailansicht anzeigen/exportieren?"
+    "show_resource_in_details": "Ressource in Detailansicht anzeigen/exportieren?",
+    "allow_individual_task_rates": "Individuelle Stundensätze für Tätigkeiten erlauben?",
+    "show_rate_in_details": "Rate in Detailansicht anzeigen/exportieren?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

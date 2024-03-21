@@ -13,6 +13,13 @@
           <i class="fas fa-list-alt text-body"></i>
       </button>
     {{/if}}
+    {{#if getGlobalSetting "allowIndividualTaskRates"}}
+      <button type="button" class="btn btn-outline-secondary js-show-task-rate"><i class="fa-solid fa-money-bill-1 text-body"></i></button>
+      <div class="form-floating js-task-rate-container d-none" style="max-width:10rem">
+        <input type="number" class="form-control" name="taskRate" id="taskRate" value="{{taskRate}}" placeholder="{{t "project.rate"}}"/>
+        <label class="form-label" for="taskRate">{{t "project.rate"}}</label>
+      </div>
+    {{/if}}
   </div>
   {{/if}}
 </template>

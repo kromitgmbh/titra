@@ -10,8 +10,13 @@ Meteor.publish('periodTimecards', async function periodTimecards({ startDate, en
   check(userId, String)
   await checkAuthentication(this)
   let projectList = await Projects.find(
-    { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
-    { $fields: { _id: 1 } },
+    {
+      $and: [
+        { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
+        { $or: [{ archived: false }, { archived: { $exists: false } }] },
+      ],
+    },
+    { fields: { _id: 1 } },
   ).fetchAsync()
   projectList = projectList.map((value) => value._id)
 

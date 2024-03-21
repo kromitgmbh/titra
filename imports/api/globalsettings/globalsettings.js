@@ -143,10 +143,10 @@ defaultSettings.push({
   name: 'enableTransactions', description: 'transactions.enable_transactions', type: 'checkbox', value: false, category: 'settings.categories.global',
 })
 defaultSettings.push({
-  name: 'enableLogForOtherUsers', description: 'settings.enable_log_for_other_users', type: 'checkbox', value: false,  category: 'settings.categories.time_tracking',
+  name: 'enableLogForOtherUsers', description: 'settings.enable_log_for_other_users', type: 'checkbox', value: false, category: 'settings.categories.time_tracking',
 })
 defaultSettings.push({
-  name: 'userSearchNumResults', description: 'settings.user_search_num_results', type: 'number', value: 5,  category: 'settings.categories.time_tracking',
+  name: 'userSearchNumResults', description: 'settings.user_search_num_results', type: 'number', value: 5, category: 'settings.categories.time_tracking',
 })
 defaultSettings.push({
   name: 'customLogo', description: 'settings.custom_logo', type: 'textarea', value: '', category: 'settings.categories.customization',
@@ -162,5 +162,11 @@ defaultSettings.push({
 })
 defaultSettings.push({
   name: 'showResourceInDetails', description: 'settings.show_resource_in_details', type: 'checkbox', value: true, category: 'settings.categories.customization',
+})
+defaultSettings.push({
+  name: 'allowIndividualTaskRates', description: 'settings.allow_individual_task_rates', type: 'checkbox', value: false, category: 'settings.categories.time_tracking',
+})
+defaultSettings.push({
+  name: 'showRateInDetails', description: 'settings.show_rate_in_details', type: 'checkbox', value: false, category: 'settings.categories.customization',
 })
 export { defaultSettings, Globalsettings }

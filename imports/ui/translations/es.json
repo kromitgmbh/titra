@@ -140,12 +140,11 @@
     "zh": "Chino",
     "ru": "Ruso",
     "ukr": "Ucraniano",
-	"es": "Español",
+	  "es": "Español",
     "user_interface": "Interfaz de Usuario",
     "theme": "Tema",
     "auto_detect": "Detectar Automáticamente",
-    "light_theme":
-	    "Claro",
+    "light_theme": "Claro",
     "dark_theme": "Oscuro",
     "time_tracking": "Seguimiento de Tiempo",
     "track_time_view": "Vista Predeterminada del Seguimiento de Tiempo",
@@ -227,7 +226,9 @@
     "google_clientid": "ID de Cliente de Google Workspace",
     "google_secret": "Secreto de Cliente de Google Workspace",
     "openai": "Clave API de Open AI",
-    "show_resource_in_details": "¿Mostrar/exportar campo de recurso en la vista de detalles?"
+    "show_resource_in_details": "¿Mostrar/exportar campo de recurso en la vista de detalles?",
+    "allow_individual_task_rates": "¿Permitir tarifas individuales por tarea?",
+    "show_rate_in_details": "¿Mostrar/exportar campo de tarifa en la vista de detalles?"
 	},
 	"customer": {
 		"select_customer": "Seleccionar un Cliente",

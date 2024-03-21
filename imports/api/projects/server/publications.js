@@ -4,7 +4,7 @@ import isBetween from 'dayjs/plugin/isBetween'
 import { check } from 'meteor/check'
 import Projects from '../projects'
 import Timecards from '../../timecards/timecards.js'
-import { checkAuthentication } from '../../../utils/server_method_helpers.js'
+import { checkAuthentication, getGlobalSettingAsync } from '../../../utils/server_method_helpers.js'
 
 Meteor.publish('myprojects', async function myProjects({ projectLimit }) {
   await checkAuthentication(this)
@@ -64,11 +64,25 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
   }, {
     $group: { _id: '$userId', totalHours: { $sum: '$hours' } },
   }]).toArray()
-  for (const revenue of totalTimecardsRawForRevenue) {
-    totalRevenue = project.rates && project.rates[revenue._id]
-      ? totalRevenue += Number.parseFloat(revenue.totalHours)
+  if (await getGlobalSettingAsync('allowIndividualTaskRates')) {
+    const individualRateRevenue = await Timecards.find({ projectId }).fetchAsync()
+    for (const timecard of individualRateRevenue) {
+      if (timecard.taskRate) {
+        totalRevenue += Number.parseFloat(timecard.hours) * Number.parseFloat(timecard.taskRate)
+      } else {
+        totalRevenue = project.rates && project.rates[timecard.userId]
+          ? totalRevenue += Number.parseFloat(timecard.hours)
+        * Number.parseFloat(project.rates[timecard.userId])
+          : totalRevenue += Number.parseFloat(timecard.hours) * Number.parseFloat(project.rate)
+      }
+    }
+  } else {
+    for (const revenue of totalTimecardsRawForRevenue) {
+      totalRevenue = project.rates && project.rates[revenue._id]
+        ? totalRevenue += Number.parseFloat(revenue.totalHours)
       * Number.parseFloat(project.rates[revenue._id])
-      : totalRevenue += Number.parseFloat(revenue.totalHours) * Number.parseFloat(project.rate)
+        : totalRevenue += Number.parseFloat(revenue.totalHours) * Number.parseFloat(project.rate)
+    }
   }
   totalHours = Number.parseFloat(totalTimecardsRaw[0]?.totalHours)
   const currentMonthTimeCardsRaw = await Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: currentMonthStart, $lte: currentMonthEnd } } }, { $group: { _id: null, currentMonthHours: { $sum: '$hours' } } }]).toArray()
@@ -171,7 +185,7 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
             .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
             beforePreviousMonthHours += Number.parseFloat(timecard.hours)
           }
-          if (project.rates[timecard.userId]) {
+          if (project?.rates[timecard.userId]) {
             totalRevenue += Number.parseFloat(timecard.hours)
               * Number.parseFloat(project.rates[timecard.userId])
           } else {

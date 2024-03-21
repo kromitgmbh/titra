@@ -26,7 +26,7 @@ Template.usersearch.onCreated(function usersearchcreated() {
       const handle = this.subscribe('singleTimecard', tcid)
       if (handle.ready()) {
         const card = Timecards.findOne({ _id: tcid })
-        const user = this.users.get().find((u) => u._id === card.userId)
+        const user = this.users?.get()?.find((u) => u._id === card.userId)
         if (user?.profile) {
           this.$('.js-usersearch-input').val(user.profile.name)
         }

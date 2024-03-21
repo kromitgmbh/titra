@@ -75,13 +75,14 @@ async function checkTimeEntryRule({
  * @param {Date} args.date - The date of the timecard.
  * @param {number} args.hours - The number of hours for the timecard.
  * @param {string} [args.userId] - The ID of the user for the timecard.
+ * @param {number} taskRate - The rate of the task for the time card.
  * @param {Object} [args.customfields] - The custom fields for the timecard.
  * @throws {Meteor.Error} If user is not authenticated.
  * @returns {String} 'notifications.success' if successful
  * @throws {Meteor.Error} If time entry rule fails.
  * @throws {Meteor.Error} If time entry rule throws an error.
  */
-async function insertTimeCard(projectId, task, date, hours, userId, customfields) {
+async function insertTimeCard(projectId, task, date, hours, userId, taskRate, customfields) {
   const newTimeCard = {
     userId,
     projectId,
@@ -89,6 +90,9 @@ async function insertTimeCard(projectId, task, date, hours, userId, customfields
     hours,
     task: await emojify(task),
     ...customfields,
+  }
+  if (taskRate) {
+    newTimeCard.taskRate = taskRate
   }
   if (!await Tasks.findOneAsync({ $or: [{ userId }, { projectId }], name: await emojify(task) })) {
     await Tasks.insertAsync({
@@ -203,12 +207,13 @@ const insertTimeCardMethod = new ValidatedMethod({
     check(args.task, String)
     check(args.date, Date)
     check(args.hours, Number)
+    check(args.taskRate, Match.Maybe(Number))
     check(args.customfields, Match.Maybe(Object))
     check(args.user, String)
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
-    projectId, task, date, hours, customfields, user,
+    projectId, task, date, hours, taskRate, customfields, user,
   }) {
     let { userId } = this
     if (user !== userId) {
@@ -217,7 +222,7 @@ const insertTimeCardMethod = new ValidatedMethod({
     const check = await checkTimeEntryRule({
       userId, projectId, task, state: 'new', date, hours,
     })
-    await insertTimeCard(projectId, task, date, hours, userId, customfields)
+    await insertTimeCard(projectId, task, date, hours, userId, taskRate, customfields)
   },
 })
 /**
@@ -287,12 +292,13 @@ const updateTimeCard = new ValidatedMethod({
     check(args.task, String)
     check(args.date, Date)
     check(args.hours, Number)
+    check(args.taskRate, Match.Maybe(Number))
     check(args.customfields, Match.Maybe(Object))
     check(args.user, String)
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
-    projectId, _id, task, date, hours, customfields, user,
+    projectId, _id, task, date, hours, taskRate, customfields, user,
   }) {
     let { userId } = this
     if (user !== userId) {
@@ -305,15 +311,24 @@ const updateTimeCard = new ValidatedMethod({
     if (!await Tasks.findOneAsync({ userId, name: await emojify(task) })) {
       await Tasks.insertAsync({ userId, name: await emojify(task), ...customfields })
     }
-    await Timecards.updateAsync({ _id }, {
-      $set: {
-        projectId,
-        date,
-        hours,
-        task: await emojify(task),
-        ...customfields,
-      },
-    })
+    const fieldsToSet = {
+      projectId,
+      date,
+      hours,
+      task: await emojify(task),
+      ...customfields,
+    }
+    if (taskRate) {
+      fieldsToSet.taskRate = taskRate
+      await Timecards.updateAsync({ _id }, {
+        $set: fieldsToSet,
+      })
+    } else {
+      await Timecards.updateAsync({ _id }, {
+        $set: fieldsToSet,
+        $unset: { taskRate: '' },
+      })
+    }
   },
 })
 /**

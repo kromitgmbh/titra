@@ -140,7 +140,7 @@
       "zh": "Китайська",
       "ru": "Російська",
       "ukr": "Українська",
-	  "es": "Іспанська",
+	    "es": "Іспанська",
       "user_interface": "Інтерфейс користувача",
       "theme": "Тема",
       "auto_detect": "Автоматичне визначення",
@@ -224,7 +224,9 @@
       "google_clientid": "Google Workspace Client ID",
       "google_secret": "Google Workspace Client Secret",
       "openai": "Open AI API Key",
-      "show_resource_in_details": "Відображати/експортувати поле ресурсу на сторінці 'Деталі'?"
+      "show_resource_in_details": "Відображати/експортувати поле ресурсу на сторінці 'Деталі'?",
+      "allow_individual_task_rates": "Дозволити індивідуальні ставки за завдання?",
+      "show_rate_in_details": "Відображати/експортувати ставку на сторінці 'Деталі'?"
     },
     "customer": {
       "select_customer": "Виберіть клієнта",

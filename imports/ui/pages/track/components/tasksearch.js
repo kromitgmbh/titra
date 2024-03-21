@@ -26,6 +26,10 @@ Template.tasksearch.events({
     templateInstance.filter.set('')
     templateInstance.targetTask.renderIfNeeded()
   },
+  'click .js-show-task-rate': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.$('.js-task-rate-container').toggleClass('d-none')
+  },
 })
 
 Template.tasksearch.onCreated(function tasksearchcreated() {
@@ -207,6 +211,7 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
 Template.tasksearch.helpers({
   displayTaskSelectionIcon: () => (Template.instance()?.data?.projectId
     ? Template.instance()?.data?.projectId?.get() : false),
+  taskRate: () => Timecards.findOne({ _id: Template.instance().data.tcid?.get() })?.taskRate,
 })
 Template.tasksearch.onRendered(() => {
   Template.instance().$('#edit-tc-entry-modal').on('hidden.bs.modal', () => {

@@ -124,7 +124,7 @@
     "zh": "中文",
     "ru": "俄语",
     "ukr": "乌克兰语",
-	"es": "西班牙语",
+	  "es": "西班牙语",
     "user_interface": "用户界面",
     "theme": "主题",
     "auto_detect": "自动探测",
@@ -184,7 +184,9 @@
     "google_clientid": "Google Workspace Client ID",
     "google_secret": "Google Workspace Client Secret",
     "openai": "Open AI API Key",
-    "show_resource_in_details": "在详细视图中显示/导出资源字段？"
+    "show_resource_in_details": "在详细视图中显示/导出资源字段",
+    "allow_individual_task_rates": "允许单独任务费率",
+    "show_rate_in_details": "在详细视图中显示/导出费率字段"
   },
   "customer": {
     "select_customer": "请选一个客户",
