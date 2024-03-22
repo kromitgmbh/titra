@@ -384,7 +384,12 @@
     "extension_removed": "扩展已删除",
     "edit_custom_field": "编辑自定义字段",
     "oidc": "OpenID Connect",
-    "oidc_configure": "你需要创建一个 OpenID Connect 客户端配置，并设置应用回调地址"
+    "oidc_configure": "你需要创建一个 OpenID Connect 客户端配置，并设置应用回调地址",
+    "active": "启用传入接口？",
+    "total_users": "总用户数",
+    "new_users": "新用户（过去7天）",
+    "admin_users": "管理员用户",
+    "inactive_users": "非活跃用户"
   },
   "wekan": {
     "list": "Wekan 列表",

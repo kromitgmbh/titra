@@ -11,16 +11,43 @@ Template.userscomponent.onCreated(function userscomponentCreated() {
 })
 Template.userscomponent.onRendered(() => {
   const templateInstance = Template.instance()
+  templateInstance.userSearch = new ReactiveVar('')
   templateInstance.autorun(() => {
     if (FlowRouter.getQueryParam('limit')) {
       templateInstance.limit.set(Number(FlowRouter.getQueryParam('limit')))
       templateInstance.$('#limitpicker').val(FlowRouter.getQueryParam('limit'))
     }
-    templateInstance.subscribe('adminUserList', { limit: templateInstance.limit.get() })
+    templateInstance.subscribe('adminUserList', { limit: templateInstance.limit.get(), search: templateInstance.userSearch.get() })
+  })
+  Meteor.call('adminUserStats', (error, result) => {
+    if (error) {
+      console.error(error)
+    } else {
+      templateInstance.$('.js-total-users').text(result.totalUsers)
+      templateInstance.$('.js-new-users').text(result.newUsers)
+      templateInstance.$('.js-admin-users').text(result.adminUsers)
+      templateInstance.$('.js-inactive-users').text(result.inactiveUsers)
+    }
   })
 })
 Template.userscomponent.helpers({
-  users: () => Meteor.users.find({}, { sort: { createdAt: -1 } }),
+  users: () => {
+    const templateInstance = Template.instance()
+    let query = {}
+    const options = { sort: { createdAt: -1 } }
+    if (templateInstance.userSearch?.get()) {
+      query = {
+        $or: [
+          { 'profile.name': { $regex: `.*${templateInstance.userSearch?.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' } },
+          { 'emails.address': { $regex: `.*${templateInstance.userSearch?.get().replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' } },
+        ],
+      }
+    }
+    if (templateInstance.limit?.get()) {
+      options.limit = templateInstance.limit?.get()
+    }
+    return Meteor.users.find(query, options)
+  },
   avatar: (meteorUser) => displayUserAvatar(meteorUser),
   dayjs: (date) => dayjs(date).format('DD.MM.YYYY (HH:mm)'),
 })
@@ -111,5 +138,15 @@ Template.userscomponent.events({
         showToast(t('administration.user_updated'))
       }
     })
+  },
+  'focusout #userSearch': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.userSearch.set(event.currentTarget.value)
+  },
+  'keyup #userSearch': (event, templateInstance) => {
+    event.preventDefault()
+    if (event.keyCode === 13) {
+      templateInstance.userSearch.set(event.currentTarget.value)
+    }
   },
 })

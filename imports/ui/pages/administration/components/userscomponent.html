@@ -1,5 +1,29 @@
 <template name="userscomponent">
     <div class="card mb-3">
+        <div class="card-block">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col">
+                        <h1 class="js-total-users">0</h1>
+                        {{t "administration.total_users"}}
+                    </div>
+                    <div class="col">
+                        <h1 class="js-new-users">0</h1>
+                        {{t "administration.new_users"}}
+                    </div>
+                    <div class="col">
+                        <h1 class="js-admin-users">0</h1>
+                        {{t "administration.admin_users"}}
+                    </div>
+                    <div class="col">
+                        <h1 class="js-inactive-users">0</h1>
+                        {{t "administration.inactive_users"}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-3">
         <div class="card-header">
             <a href="#" class="text-reset text-decoration-none week-row" data-bs-toggle="collapse" data-bs-target="#createUser"> {{t "administration.create_user"}} <i class="float-end fa fa-chevron-right"></i></a>
         </div>
@@ -40,7 +64,17 @@
             </div>
         </div>
     </div>
-    {{>limitpicker}}
+    <div class="row">
+        <div class="col">
+            <div class="input-group">
+                <input class="form-control" name="userSearch" id="userSearch" type="text" placeholder="{{t 'details.search'}}"/>
+                <button class="btn btn-outline-secondary rounded-end " type="button"><i class="fa fa-search text-body"></i></button>
+            </div>
+        </div>
+        <div class="col-3">
+            {{>limitpicker}}
+        </div>
+    </div>
     <br/>
     <div class="table-responsive">
         <table class="table">

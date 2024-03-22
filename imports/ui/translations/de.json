@@ -449,7 +449,11 @@
     "add_update_inbound_interface": "Eingehende Schnittstelle hinzufügen/bearbeiten",
     "process_data": "Script für die Datenverarbeitung",
     "processdata_hint": "Dieser JavaScript Code wird immer ausgeführt, wenn Daten über die eingehende Schnittstelle abgerufen werden. Das Script muss ein JSON Objekt (oder ein Promise, die ein solches Objekt zurückgibt) mit folgender Struktur zurückgeben: [{name: 'name', description:'description'}].",
-    "active": "Eingehende Schnittstelle aktivieren?"
+    "active": "Eingehende Schnittstelle aktivieren?",
+    "total_users": "Benutzer insgesamt",
+    "new_users": "Neue Benutzer (letzte 7 Tage)",
+    "admin_users": "Administrative Benutzer",
+    "inactive_users": "Inaktive Benutzer"
   },
   "wekan": {
     "list": "Wekan Liste",

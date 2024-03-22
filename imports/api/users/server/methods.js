@@ -120,19 +120,11 @@ const updateTimeUnit = new ValidatedMethod({
   }) {
     await Meteor.users.updateAsync({ _id: this.userId }, {
       $set: {
-        'profile.timeunit': timeunit
+        'profile.timeunit': timeunit,
       },
     })
   },
 })
-
-
-
-
-
-
-
-
 
 /**
  * Resets a user's settings.
@@ -393,6 +385,26 @@ const setTimer = new ValidatedMethod({
     }
   },
 })
+/**
+ * Get user statistics for the admininistration > users page
+ * @throws {Meteor.Error} If user is not authenticated.
+ * @returns {Object} The user statistics
+ */
+const adminUserStats = new ValidatedMethod({
+  name: 'adminUserStats',
+  validate: null,
+  mixins: [adminAuthenticationMixin],
+  async run() {
+    return {
+      totalUsers: await Meteor.users.find({}).countAsync(),
+      newUsers: await Meteor.users
+        .find({ createdAt: { $gt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } })
+        .countAsync(),
+      adminUsers: await Meteor.users.find({ isAdmin: true }).countAsync(),
+      inactiveUsers: await Meteor.users.find({ inactive: true }).countAsync(),
+    }
+  },
+})
 
 export {
   claimAdmin,
@@ -405,4 +417,5 @@ export {
   updateProfile,
   updateSettings,
   resetUserSettings,
+  adminUserStats,
 }

@@ -441,7 +441,11 @@
     "add_update_inbound_interface": "Add or update inbound interface",
     "process_data": "Process data script",
     "processdata_hint":"This JavaScript will be executed whenever inbound interface data is requested. The script must return a JSON object (or a promise returning such an object) with the following structure: [{name: 'name', description:'description'}].",
-    "active": "Inbound interface active?"
+    "active": "Inbound interface active?",
+    "total_users": "Total users",
+    "new_users": "New users (last 7 days)",
+    "admin_users": "Administrative users",
+    "inactive_users": "Inactive users"
   },
   "wekan": {
     "list": "Wekan list",

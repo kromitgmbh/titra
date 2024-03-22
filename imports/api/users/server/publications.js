@@ -97,9 +97,10 @@ Meteor.publish('userRoles', async function userRoles() {
   return Meteor.users.find({ _id: this.userId }, { fields: { profile: 1, isAdmin: 1 } })
 })
 
-Meteor.publish('adminUserList', async function adminUserList({ limit }) {
+Meteor.publish('adminUserList', async function adminUserList({ limit, search }) {
   await checkAdminAuthentication(this)
   check(limit, Match.Maybe(Number))
+  check(search, Match.Maybe(String))
   const options = {}
   options.fields = {
     profile: 1, emails: 1, isAdmin: 1, createdAt: 1, inactive: 1,
@@ -107,6 +108,14 @@ Meteor.publish('adminUserList', async function adminUserList({ limit }) {
   options.sort = { createdAt: -1 }
   if (limit) {
     options.limit = limit
+  }
+  if (search) {
+    options.filter = {
+      $or: [
+        { 'profile.name': { $regex: `.*${search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' } },
+        { 'emails.address': { $regex: `.*${search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' } },
+      ],
+    }
   }
   return Meteor.users.find({}, options)
 })

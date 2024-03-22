@@ -412,7 +412,7 @@
         "creation_date": "Fecha de Creación",
         "users": "Usuarios",
         "user_created": "El usuario ha sido creado.",
-		"user_updated": "La información del usuario ha sido actualizada.",
+		    "user_updated": "La información del usuario ha sido actualizada.",
         "user_deleted": "Los usuarios han sido eliminados",
         "user_deletion_confirmation": "¿Realmente quieres eliminar a este usuario (no se puede deshacer)?",
         "user_inactive": "¿Inactivo?",
@@ -440,7 +440,11 @@
         "add_update_inbound_interface": "Agregar o actualizar interfaz de entrada",
         "process_data": "Script de Procesamiento de Datos",
         "processdata_hint": "Este JavaScript se ejecutará siempre que se soliciten datos de la interfaz de entrada. El script debe devolver un objeto JSON (o una promesa que devuelva dicho objeto) con la siguiente estructura: [{name: 'nombre', description:'descripción'}].",
-        "active": "¿Interfaz de Entrada Activa?"
+        "active": "¿Interfaz de Entrada Activa?",
+        "total_users": "Usuarios totales",
+        "new_users": "Nuevos usuarios (últimos 7 días)",
+        "admin_users": "Usuarios administrativos",
+        "inactive_users": "Usuarios inactivos"
     },
     "wekan": {
         "list": "Lista de Wekan",

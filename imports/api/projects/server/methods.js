@@ -359,7 +359,7 @@ const addTeamMember = new ValidatedMethod({
     const targetProject = await Projects.findOneAsync({ _id: projectId })
     if (!targetProject
       || !(targetProject.userId === this.userId
-        || targetProject.admins.indexOf(this.userId) >= 0)) {
+        || targetProject.admins?.indexOf(this.userId) >= 0)) {
       throw new Meteor.Error('notifications.only_owner_can_add_team_members')
     }
     const targetUser = await Meteor.users.findOneAsync({ 'emails.0.address': eMail, inactive: { $ne: true } })

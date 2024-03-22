@@ -430,7 +430,11 @@
     "add_update_inbound_interface": "Ajouter ou mettre à jour une interface entrante",
     "process_data": "Script de traitement des données",
     "processdata_hint":"Ce JavaScript sera exécuté chaque fois que des données d'interface entrantes seront demandées. Le script doit renvoyer un objet JSON (ou une promesse renvoyant un tel objet) avec la structure suivante : [{name:'name', description:'description'}].",
-    "active": "Interface entrante active ?"
+    "active": "Interface entrante active ?",
+    "total_users": "Utilisateurs totaux",
+    "new_users": "Nouveaux utilisateurs (7 derniers jours)",
+    "admin_users": "Utilisateurs administratifs",
+    "inactive_users": "Utilisateurs inactifs"
   },
   "wekan": {
     "list": "Liste Wekan",
