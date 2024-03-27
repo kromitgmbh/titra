@@ -150,23 +150,25 @@ async function upsertTimecard(projectId, task, date, hours, userId) {
       task: await emojify(task),
     })
   }
-  await Timecards.updateAsync(
-    {
-      userId,
-      projectId,
-      date,
-      task: await emojify(task),
-    },
-    {
-      userId,
-      projectId,
-      date,
-      hours,
-      task: await emojify(task),
-    },
+  if (hours !== 0) {
+    await Timecards.updateAsync(
+      {
+        userId,
+        projectId,
+        date,
+        task: await emojify(task),
+      },
+      {
+        userId,
+        projectId,
+        date,
+        hours,
+        task: await emojify(task),
+      },
 
-    { upsert: true },
-  )
+      { upsert: true },
+    )
+  }
   return 'notifications.success'
 }
 async function checkProjectAdministratorAndUser(projectId, administratorId, userId) {

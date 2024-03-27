@@ -105,19 +105,20 @@ Meteor.publish('adminUserList', async function adminUserList({ limit, search }) 
   options.fields = {
     profile: 1, emails: 1, isAdmin: 1, createdAt: 1, inactive: 1,
   }
+  let query = {}
   options.sort = { createdAt: -1 }
   if (limit) {
     options.limit = limit
   }
   if (search) {
-    options.filter = {
+    query = {
       $or: [
         { 'profile.name': { $regex: `.*${search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' } },
         { 'emails.address': { $regex: `.*${search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' } },
       ],
     }
   }
-  return Meteor.users.find({}, options)
+  return Meteor.users.find(query, options)
 })
 
 Meteor.publish('projectResources', async function projectResources({ projectId }) {

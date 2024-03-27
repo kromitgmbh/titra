@@ -96,11 +96,11 @@ Template.weektable.helpers({
 Template.weektable.events({
   'click .js-previous-week': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: dayjs.utc(templateInstance.startDate.get()).subtract(1, 'week').format('YYYY-MM-DD') })
+    FlowRouter.setQueryParams({ date: templateInstance.startDate.get().subtract(1, 'week').format('YYYY-MM-DD') })
   },
   'click .js-next-week': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: dayjs.utc(templateInstance.startDate.get()).add(1, 'week').format('YYYY-MM-DD') })
+    FlowRouter.setQueryParams({ date: templateInstance.startDate.get().add(1, 'week').format('YYYY-MM-DD') })
   },
   'click .js-today': (event, templateInstance) => {
     event.preventDefault()
