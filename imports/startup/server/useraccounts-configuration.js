@@ -10,7 +10,7 @@ Accounts.setAdditionalFindUserOnExternalLogin(({ serviceName, serviceData }) => 
   return undefined
 })
 Accounts.validateLoginAttempt((attempt) => !attempt.user?.inactive)
-Accounts.onCreateUser((options, user) => {
+Accounts.onCreateUser(async (options, user) => {
   if (options.anonymous) {
     options.profile = {
       name: dockerNames.getRandomName(),
@@ -24,7 +24,7 @@ Accounts.onCreateUser((options, user) => {
     }
   }
 
-  initNewUser(user._id, options)
+  await initNewUser(user._id, options)
 
   const localUser = user
   if (options.profile) {

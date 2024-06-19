@@ -11,16 +11,16 @@ if (Meteor.release) {
   userAgent += `/${Meteor.release}`
 }
 
-function getConfiguration() {
-  const config = ServiceConfiguration.configurations.findOne({ service: SERVICE_NAME })
+async function getConfiguration() {
+  const config = await(ServiceConfiguration.configurations.findOneAsync({ service: SERVICE_NAME }))
   if (!config) {
     throw new ServiceConfiguration.ConfigError('Service oidc not configured.')
   }
   return config
 }
 
-function getToken(query) {
-  const config = getConfiguration()
+async function getToken(query) {
+  const config = await getConfiguration()
   const serverTokenEndpoint = `${config.serverUrl}${config.tokenEndpoint}`
   let response
 
@@ -111,8 +111,8 @@ function getUserInfoFromToken(accessToken) {
   }
 }
 
-function getUserInfo(accessToken, expiresAt) {
-  const config = getConfiguration()
+async function getUserInfo(accessToken, expiresAt) {
+  const config = await getConfiguration()
 
   if (config.userinfoEndpoint) {
     return getUserInfoFromEndpoint(accessToken, config, expiresAt)
@@ -120,15 +120,13 @@ function getUserInfo(accessToken, expiresAt) {
   return getUserInfoFromToken(accessToken)
 }
 
-function registerOidc() {
+async function registerOidc() {
   Accounts.oauth.registerService(SERVICE_NAME)
-
-  OAuth.registerService(SERVICE_NAME, 2, null, (query) => {
-    const token = getToken(query)
+  OAuth.registerService(SERVICE_NAME, 2, null, async (query) => {
+    const token = await getToken(query)
     const accessToken = token.access_token || token.id_token
     const expiresAt = (+new Date()) + (1000 * parseInt(token.expires_in, 10))
-    const userinfo = getUserInfo(accessToken, expiresAt)
-
+    const userinfo = await getUserInfo(accessToken, expiresAt)
     const serviceData = {
       id: userinfo.id,
       username: userinfo.username,
@@ -136,27 +134,23 @@ function registerOidc() {
       expiresAt: userinfo.expiresAt,
       email: userinfo.email,
     }
-
     if (accessToken) {
       const tokenContent = getTokenContent(accessToken)
-      getConfiguration().idTokenWhitelistFields.forEach((key) => {
+      const config = await getConfiguration()
+      config.idTokenWhitelistFields.forEach((key) => {
         serviceData[key] = tokenContent[key]
       })
     }
-
     if (token.refresh_token) {
       serviceData.refreshToken = token.refresh_token
     }
-
     const profile = {
       name: userinfo.name,
     }
-
     const email = {
       address: userinfo.email,
       verified: true,
     }
-
     return {
       serviceData,
       options: { profile, emails: [email] },

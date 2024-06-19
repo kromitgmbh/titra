@@ -11,7 +11,7 @@ Meteor.publish('myprojects', async function myProjects({ projectLimit }) {
   check(projectLimit, Match.Maybe(Number))
   return projectLimit ? Projects.find({
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
-  }, { projectLimit }) : Projects.find({
+  }, { limit: projectLimit }) : Projects.find({
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
   })
 })
@@ -96,11 +96,11 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
   // have run. Until then, we don't want to send a lot of
   // `self.changed()` messages - hence tracking the
   // `initializing` state.
-  const handle = Timecards.find({ projectId, date: { $gte: beforePreviousMonthStart } })
-    .observeChanges({
-      added: (timecardId) => {
+  const handle = await Timecards.find({ projectId, date: { $gte: beforePreviousMonthStart } })
+    .observeChangesAsync({
+      added: async (timecardId) => {
         if (!initializing) {
-          const timecard = Timecards.findOne({ _id: timecardId })
+          const timecard = await Timecards.findOneAsync({ _id: timecardId })
           if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
             currentMonthHours += Number.parseFloat(timecard.hours)
           }
@@ -134,9 +134,9 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
           )
         }
       },
-      removed: (timecardId) => {
+      removed: async (timecardId) => {
         if (!initializing) {
-          const timecard = Timecards.findOne({ _id: timecardId })
+          const timecard = await Timecards.findOneAsync({ _id: timecardId })
           if (timecard) {
             if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
               currentMonthHours += Number.parseFloat(timecard.hours)
@@ -172,9 +172,9 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
           )
         }
       },
-      changed: (timecardId) => {
+      changed: async (timecardId) => {
         if (!initializing) {
-          const timecard = Timecards.findOne({ _id: timecardId })
+          const timecard = await Timecards.findOneAsync({ _id: timecardId })
           if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
             currentMonthHours += Number.parseFloat(timecard.hours)
           }
@@ -185,7 +185,7 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
             .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
             beforePreviousMonthHours += Number.parseFloat(timecard.hours)
           }
-          if (project?.rates[timecard.userId]) {
+          if (project?.rates && project?.rates[timecard.userId]) {
             totalRevenue += Number.parseFloat(timecard.hours)
               * Number.parseFloat(project.rates[timecard.userId])
           } else {

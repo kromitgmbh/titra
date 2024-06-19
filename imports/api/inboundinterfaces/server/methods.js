@@ -82,7 +82,7 @@ const getInboundInterfaces = new ValidatedMethod({
   mixins: [authenticationMixin],
   async run() {
     return InboundInterfaces
-      .find({ active: true }, { fields: { processData: 0, prepareRequest: 0 } }).fetch()
+      .find({ active: true }, { fields: { processData: 0, prepareRequest: 0 } }).fetchAsync()
   },
 })
 const getTasksFromInboundInterface = new ValidatedMethod({

@@ -12,11 +12,11 @@ import { timeInUserUnit } from '../../../utils/periodHelpers.js'
 import {
   authenticationMixin,
   transactionLogMixin,
-  buildTotalHoursForPeriodSelector,
-  buildDailyHoursSelector,
-  buildworkingTimeSelector,
+  buildTotalHoursForPeriodSelectorAsync,
+  buildDailyHoursSelectorAsync,
+  buildworkingTimeSelectorAsync,
   workingTimeEntriesMapper,
-  buildDetailedTimeEntriesForPeriodSelector,
+  buildDetailedTimeEntriesForPeriodSelectorAsync,
   getGlobalSettingAsync,
   calculateSimilarity,
 } from '../../../utils/server_method_helpers.js'
@@ -172,7 +172,7 @@ async function upsertTimecard(projectId, task, date, hours, userId) {
   return 'notifications.success'
 }
 async function checkProjectAdministratorAndUser(projectId, administratorId, userId) {
-  const targetProject = Projects.findOne({ _id: projectId })
+  const targetProject = await Projects.findOneAsync({ _id: projectId })
   if (!targetProject
       || !(targetProject.userId === administratorId
       || targetProject.admins.indexOf(administratorId) >= 0)) {
@@ -399,7 +399,7 @@ const sendToSiwapp = new ValidatedMethod({
       throw new Meteor.Error(t('notifications.siwapp_configuration'))
     }
     const timeEntries = []
-    const selector = buildDetailedTimeEntriesForPeriodSelector({
+    const selector = await buildDetailedTimeEntriesForPeriodSelectorAsync({
       projectId,
       search: undefined,
       customer,
@@ -505,7 +505,7 @@ const getDailyTimecards = new ValidatedMethod({
   async run({
     projectId, userId, period, dates, customer, limit, page,
   }) {
-    const aggregationSelector = buildDailyHoursSelector(
+    const aggregationSelector = await buildDailyHoursSelectorAsync(
       projectId,
       period,
       dates,
@@ -516,7 +516,7 @@ const getDailyTimecards = new ValidatedMethod({
     )
     const dailyHoursObject = {}
     const totalTimeCardsRawCollection = await Timecards.rawCollection()
-      .aggregate(buildDailyHoursSelector(projectId, period, dates, userId, customer, 0))
+      .aggregate(await buildDailyHoursSelectorAsync(projectId, period, dates, userId, customer, 0))
       .toArray()
     const totalEntries = totalTimeCardsRawCollection.length
     const dailyHours = await Timecards.rawCollection().aggregate(aggregationSelector)
@@ -559,7 +559,7 @@ const getTotalHoursForPeriod = new ValidatedMethod({
   async run({
     projectId, userId, period, dates, customer, limit, page,
   }) {
-    const aggregationSelector = buildTotalHoursForPeriodSelector(
+    const aggregationSelector = await buildTotalHoursForPeriodSelectorAsync(
       projectId,
       period,
       dates,
@@ -570,7 +570,7 @@ const getTotalHoursForPeriod = new ValidatedMethod({
     )
     const totalHoursObject = {}
     const totalEntriesTimecardsRaw = await Timecards.rawCollection()
-      .aggregate(buildTotalHoursForPeriodSelector(projectId, period, dates, userId, customer, 0))
+      .aggregate(await buildTotalHoursForPeriodSelectorAsync(projectId, period, dates, userId, customer, 0))
       .toArray()
     const totalEntries = totalEntriesTimecardsRaw.length
     const totalHours = await Timecards.rawCollection().aggregate(aggregationSelector)
@@ -614,7 +614,7 @@ const getWorkingHoursForPeriod = new ValidatedMethod({
   async run({
     projectId, userId, period, dates, limit, page,
   }) {
-    const aggregationSelector = buildworkingTimeSelector(
+    const aggregationSelector = await buildworkingTimeSelectorAsync(
       projectId,
       period,
       dates,
@@ -623,7 +623,7 @@ const getWorkingHoursForPeriod = new ValidatedMethod({
       page,
     )
     const totalEntriesTimecardsRaw = await Timecards.rawCollection()
-      .aggregate(buildworkingTimeSelector(projectId, period, dates, userId, limit, page)).toArray()
+      .aggregate(await buildworkingTimeSelectorAsync(projectId, period, dates, userId, limit, page)).toArray()
     const totalEntries = totalEntriesTimecardsRaw.length
     const workingHoursObject = {}
     workingHoursObject.totalEntries = totalEntries

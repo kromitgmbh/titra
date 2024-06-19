@@ -484,10 +484,13 @@ Template.detailtimetable.events({
         row.push(attribute)
       }
       row.splice(row.length - 1, 1)
-      if (getGlobalSetting('useState') && !getGlobalSetting('useStartTime')) {
+      if (getGlobalSetting('useState') && !getGlobalSetting('useStartTime') && !getGlobalSetting('showRateInDetails')) {
         row[row.length - 2] = t(`details.${timeEntry[timeEntry.length - 3] ? timeEntry[timeEntry.length - 3] : 'new'}`)
-      } else if (getGlobalSetting('useState') && getGlobalSetting('useStartTime')) {
+      } else if (getGlobalSetting('useState') && getGlobalSetting('useStartTime') && !getGlobalSetting('showRateInDetails')) {
         row[row.length - 4] = t(`details.${timeEntry[timeEntry.length - 5] ? timeEntry[timeEntry.length - 5] : 'new'}`)
+      }
+      else if (getGlobalSetting('useState') && getGlobalSetting('useStartTime') && getGlobalSetting('showRateInDetails')) {
+        row[row.length - 5] = t(`details.${timeEntry[timeEntry.length - 6] ? timeEntry[timeEntry.length - 6] : 'new'}`)
       }
       csvArray.push(`${row.join(',')}\r\n`)
     }
@@ -542,11 +545,14 @@ Template.detailtimetable.events({
       let index = 0
       timeEntry.splice(timeEntry.length - 1, 1)
       for (const attribute of timeEntry) {
-        if (index === timeEntry.length - 2 && getGlobalSetting('useState') && !getGlobalSetting('useStartTime')) {
+        if (index === timeEntry.length - 2 && getGlobalSetting('useState') && !getGlobalSetting('useStartTime') && !getGlobalSetting('showRateInDetails')) {
           row.push(t(`details.${attribute !== undefined ? attribute : 'new'}`))
-        } else if (index === timeEntry.length - 4 && getGlobalSetting('useState') && getGlobalSetting('useStartTime')) {
+        } else if (index === timeEntry.length - 4 && getGlobalSetting('useState') && getGlobalSetting('useStartTime') && !getGlobalSetting('showRateInDetails')) {
           row.push(t(`details.${attribute !== undefined ? attribute : 'new'}`))
-        } else {
+        } else if (index === timeEntry.length - 5 && getGlobalSetting('useState') && getGlobalSetting('useStartTime') && getGlobalSetting('showRateInDetails')) {
+          row.push(t(`details.${attribute !== undefined ? attribute : 'new'}`))
+        }
+        else {
           row.push(attribute || '')
         }
         index += 1

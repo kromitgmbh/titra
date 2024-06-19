@@ -1,3 +1,4 @@
+import $ from 'jquery'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { AccountsAnonymous } from 'meteor/faburem:accounts-anonymous'
 import '../../ui/layouts/appLayout.js'
@@ -14,10 +15,10 @@ if (!Meteor.settings.public.sandstorm) {
     }
   }], { except: ['dashboard', 'signIn', 'changePassword', 'register', 'reset-password', 'try'] })
   FlowRouter.triggers.exit([() => {
-    $("[data-bs-toggle='popover']").popover('hide')
-    $("[data-bs-toggle='tooltip']").tooltip('hide')
-    $('.tooltip').remove()
-    $('.popover').remove()
+    $("[data-bs-toggle='popover']").length > 0 ? $("[data-bs-toggle='popover']").popover('hide') : null
+    $("[data-bs-toggle='tooltip']").length > 0 ? $("[data-bs-toggle='tooltip']").tooltip('hide') : null
+    $('.tooltip').length > 0 ? $('.tooltip').remove() : null
+    $('.popover').length > 0 ? $('.popover').remove() : null
   }], { except: ['claimAdmin'] })
 }
 FlowRouter.route('*', {
@@ -172,6 +173,7 @@ FlowRouter.route('/try', {
       FlowRouter.go('/')
     } else if (getGlobalSetting('enableAnonymousLogins')) {
       AccountsAnonymous.login((error) => {
+        console.log(error)
         if (!error) {
           FlowRouter.go('/')
         } else {

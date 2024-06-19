@@ -35,7 +35,8 @@ function getProjectListById(projectId) {
         ],
       },
       { fields: { _id: 1 } },
-    ).fetch().map((value) => value._id)
+    ).fetch()
+    projectList = projectList.map((value) => value._id)
   } else {
     const projectSelector = {
       _id: projectId,
@@ -50,7 +51,41 @@ function getProjectListById(projectId) {
     projectList = Projects.find(
       projectSelector,
       { fields: { _id: 1 } },
-    ).fetch().map((value) => value._id)
+    ).fetch()
+    projectList = projectList.map((value) => value._id)
+  }
+  return projectList
+}
+async function getProjectListByIdAsync(projectId) {
+  let projectList = []
+  const userId = Meteor.userId()
+  if (projectId.includes('all')) {
+    projectList = await(Projects.find(
+      {
+        $and: [
+          { $or: [{ userId }, { public: true }, { team: userId }] },
+          { $or: [{ archived: false }, { archived: { $exists: false } }] },
+        ],
+      },
+      { fields: { _id: 1 } },
+    ).fetchAsync())
+    projectList = projectList.map((value) => value._id)
+  } else {
+    const projectSelector = {
+      _id: projectId,
+      $and: [
+        { $or: [{ userId }, { public: true }, { team: userId }] },
+        { $or: [{ archived: false }, { archived: { $exists: false } }] },
+      ],
+    }
+    if (projectId instanceof Array) {
+      projectSelector._id = { $in: projectId }
+    }
+    projectList = await(Projects.find(
+      projectSelector,
+      { fields: { _id: 1 } },
+    ).fetchAsync())
+    projectList = projectList.map((value) => value._id)
   }
   return projectList
 }
@@ -158,9 +193,95 @@ function buildTotalHoursForPeriodSelector(projectId, period, dates, userId, cust
     $limit: limit,
   }
   if (!customer.includes('all')) {
-    projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
+    projectList = getProjectListByCustomer(customer).fetch()
+    projectList = projectList.map((value) => value._id)
   } else {
     projectList = getProjectListById(projectId)
+  }
+  if (period && period.includes('custom')) {
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+        date: { $gte: dates.startDate, $lte: dates.endDate },
+      },
+    }
+    if (!userId.includes('all')) {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+          userId,
+        },
+      }
+    }
+  } else if (period && period !== 'all') {
+    const { startDate, endDate } = periodToDates(period)
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+        date: { $gte: startDate, $lte: endDate },
+      },
+    }
+    if (!userId.includes('all')) {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: startDate, $lte: endDate },
+          userId,
+        },
+      }
+    }
+  } else if (userId.includes('all')) {
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+      },
+    }
+  }
+  periodArray.push(addFields)
+  periodArray.push(matchSelector)
+  periodArray.push(groupSelector)
+  periodArray.push(sortSelector)
+  periodArray.push(skipSelector)
+  if (limit > 0) {
+    periodArray.push(limitSelector)
+  }
+  return periodArray
+}
+async function buildTotalHoursForPeriodSelectorAsync(projectId, period, dates, userId, customer, limit, page) {
+  let projectList = []
+  const periodArray = []
+  let matchSelector = {}
+  const addFields = {
+    $addFields: {
+      convertedHours: { $toDecimal: '$hours' },
+    },
+  }
+  const groupSelector = {
+    $group: {
+      _id: { userId: '$userId', projectId: '$projectId' },
+      totalHours: { $sum: '$convertedHours' },
+    },
+  }
+  const sortSelector = {
+    $sort: {
+      date: -1,
+    },
+  }
+  const skipSelector = {
+    $skip: 0,
+  }
+  if (page) {
+    skipSelector.$skip = (page - 1) * limit
+  }
+  const limitSelector = {
+    $limit: limit,
+  }
+  if (!customer.includes('all')) {
+    projectList = await getProjectListByCustomer(customer).fetchAsync()
+    projectList = projectList.map((value) => value._id)
+  } else {
+    projectList = await getProjectListByIdAsync(projectId)
   }
   if (period && period.includes('custom')) {
     matchSelector = {
@@ -226,9 +347,99 @@ function buildTotalHoursForPeriodSelector(projectId, period, dates, userId, cust
 function buildDailyHoursSelector(projectId, period, dates, userId, customer, limit, page) {
   let projectList = []
   if (!customer.includes('all')) {
-    projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
+    projectList = getProjectListByCustomer(customer).fetch()
+    projectList = projectList.map((value) => value._id)
   } else {
     projectList = getProjectListById(projectId)
+  }
+  const dailyArray = []
+  let matchSelector = {}
+  const skipSelector = {
+    $skip: 0,
+  }
+  if (page) {
+    skipSelector.$skip = (page - 1) * limit
+  }
+  const sortSelector = {
+    $sort: {
+      date: -1,
+    },
+  }
+  const groupSelector = {
+    $group: {
+      _id: { userId: '$userId', projectId: '$projectId', date: '$date' },
+      totalHours: { $sum: '$hours' },
+    },
+  }
+  const limitSelector = {
+    $limit: limit,
+  }
+  if (period && period === 'custom') {
+    if (userId.includes('all')) {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+        },
+      }
+    } else {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+          userId,
+        },
+      }
+    }
+  } else if (period && period !== 'all') {
+    const { startDate, endDate } = periodToDates(period)
+    if (userId.includes('all')) {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: startDate, $lte: endDate },
+        },
+      }
+    } else {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: startDate, $lte: endDate },
+          userId,
+        },
+      }
+    }
+  } else if (userId.includes('all')) {
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+      },
+    }
+  } else {
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+        userId,
+      },
+    }
+  }
+  dailyArray.push(matchSelector)
+  dailyArray.push(groupSelector)
+  dailyArray.push(sortSelector)
+  dailyArray.push(skipSelector)
+  if (limit > 0) {
+    dailyArray.push(limitSelector)
+  }
+  return dailyArray
+}
+
+async function buildDailyHoursSelectorAsync(projectId, period, dates, userId, customer, limit, page) {
+  let projectList = []
+  if (!customer.includes('all')) {
+    projectList = await getProjectListByCustomer(customer).fetchAsync()
+    projectList = projectList.map((value) => value._id)
+  } else {
+    projectList = await getProjectListByIdAsync(projectId)
   }
   const dailyArray = []
   let matchSelector = {}
@@ -403,6 +614,89 @@ function buildworkingTimeSelector(projectId, period, dates, userId, limit, page)
   }
   return workingTimeArray
 }
+async function buildworkingTimeSelectorAsync(projectId, period, dates, userId, limit, page) {
+  let projectList = []
+  projectList = await getProjectListByIdAsync(projectId)
+  const workingTimeArray = []
+  const skipSelector = {
+    $skip: 0,
+  }
+  if (page) {
+    skipSelector.$skip = (page - 1) * limit
+  }
+  let matchSelector = {}
+  const sortSelector = {
+    $sort: {
+      date: -1,
+    },
+  }
+  const groupSelector = {
+    $group: {
+      _id: { userId: '$userId', date: '$date' },
+      totalTime: { $sum: '$hours' },
+    },
+  }
+  const limitSelector = {
+    $limit: limit,
+  }
+  if (period && period === 'custom') {
+    if (userId.includes('all')) {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+        },
+      }
+    } else {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: dates.startDate, $lte: dates.endDate },
+          userId,
+        },
+      }
+    }
+  } else if (period && period !== 'all') {
+    const { startDate, endDate } = periodToDates(period)
+    if (userId.includes('all')) {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: startDate, $lte: endDate },
+        },
+      }
+    } else {
+      matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+          date: { $gte: startDate, $lte: endDate },
+          userId,
+        },
+      }
+    }
+  } else if (userId.includes('all')) {
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+      },
+    }
+  } else {
+    matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+        userId,
+      },
+    }
+  }
+  workingTimeArray.push(matchSelector)
+  workingTimeArray.push(groupSelector)
+  workingTimeArray.push(skipSelector)
+  workingTimeArray.push(sortSelector)
+  if (limit > 0) {
+    workingTimeArray.push(limitSelector)
+  }
+  return workingTimeArray
+}
 /**
  * Mapper function for the working time entries publication
  * @param {Object} entry - The entry to map.
@@ -451,7 +745,8 @@ function buildDetailedTimeEntriesForPeriodSelector({
   const detailedTimeArray = []
   let projectList = getProjectListById(projectId)
   if (!customer.includes('all') && projectId.includes('all')) {
-    projectList = getProjectListByCustomer(customer).fetch().map((value) => value._id)
+    projectList = getProjectListByCustomer(customer).fetch()
+    projectList = projectList.map((value) => value._id)
   }
   const query = { projectId: { $in: projectList } }
   if (search) {
@@ -522,7 +817,112 @@ function buildDetailedTimeEntriesForPeriodSelector({
       if (filters.hasOwnProperty(filterKey)) {
         const filterValue = filters[filterKey]
         if (filterKey === 'customer') {
-          const projectIds = getProjectListByCustomer(filterValue).fetch().map((value) => value._id)
+          let projectIds = getProjectListByCustomer(filterValue).fetch()
+          projectIds = projectIds.map((value) => value._id)
+          filters.projectId = { $in: projectIds }
+          delete filters[filterKey]
+        } else if (filterKey === 'state' && filterValue === 'new') {
+          filters.$or = [{ state: { $exists: false } }, { state: 'new' }]
+          delete filters[filterKey]
+        } else if (filterKey === 'date' && typeof filters[filterKey] === 'string') {
+          dayjs.extend(customParseFormat)
+          const startDate = dayjs(filterValue, getGlobalSetting('dateformat')).startOf('day').toDate()
+          const endDate = dayjs(filterValue, getGlobalSetting('dateformat')).endOf('day').toDate()
+          filters.date = { $gte: startDate, $lte: endDate }
+        } else if (filterKey === 'hours' && typeof filterValue === 'string') {
+          filters.hours = Number(filterValue)
+        }
+      }
+    }
+    finalQuery.$and = []
+    finalQuery.$and.push(query)
+    finalQuery.$and.push(filters)
+  }
+  detailedTimeArray.push(finalQuery)
+  detailedTimeArray.push(options)
+  return detailedTimeArray
+}
+
+async function buildDetailedTimeEntriesForPeriodSelectorAsync({
+  projectId, search, customer, period, dates, userId, limit, page, sort, filters,
+}) {
+  const detailedTimeArray = []
+  let projectList = await getProjectListByIdAsync(projectId)
+  if (!customer.includes('all') && projectId.includes('all')) {
+    projectList = await getProjectListByCustomer(customer).fetchAsync()
+    projectList = projectList.map((value) => value._id)
+  }
+  const query = { projectId: { $in: projectList } }
+  if (search) {
+    query.task = { $regex: `.*${search.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}.*`, $options: 'i' }
+  }
+  const options = { sort: {} }
+  if (limit && limit > 0) {
+    options.limit = limit
+  }
+  if (sort) {
+    let field
+    let order
+    switch (sort.column) {
+      case 0:
+        field = 'projectId'
+        break
+      case 1:
+        field = 'date'
+        break
+      case 2:
+        field = 'task'
+        break
+      case 3:
+        field = 'userId'
+        break
+      case 4:
+        field = 'hours'
+        break
+      default:
+        field = 'date'
+    }
+    switch (sort.order) {
+      case 'asc':
+        order = 1
+        break
+      case 'desc':
+        order = -1
+        break
+      default:
+        order = -1
+        break
+    }
+    options.sort[field] = order
+  } else {
+    options.sort = { date: -1 }
+  }
+
+  if (page) {
+    options.skip = (page - 1) * limit
+  }
+  if (period === 'custom') {
+    query.date = { $gte: dates.startDate, $lte: dates.endDate }
+  } else if (period !== 'all') {
+    const { startDate, endDate } = periodToDates(period)
+    query.date = { $gte: startDate, $lte: endDate }
+  }
+  if (!userId.includes('all')) {
+    if (userId instanceof Array) {
+      query.userId = { $in: userId }
+    } else {
+      query.userId = userId
+    }
+  }
+  let finalQuery = query
+  if (filters) {
+    finalQuery = {}
+    for (const filterKey in filters) {
+      if (filters.hasOwnProperty(filterKey)) {
+        const filterValue = filters[filterKey]
+        if (filterKey === 'customer') {
+          let projectIds = await getProjectListByCustomer(filterValue).fetchAsync()
+          projectIds = projectIds.map((value) => value._id)
           filters.projectId = { $in: projectIds }
           delete filters[filterKey]
         } else if (filterKey === 'state' && filterValue === 'new') {
@@ -645,10 +1045,14 @@ export {
   getProjectListById,
   getProjectListByCustomer,
   buildTotalHoursForPeriodSelector,
+  buildTotalHoursForPeriodSelectorAsync,
   buildDailyHoursSelector,
+  buildDailyHoursSelectorAsync,
   workingTimeEntriesMapper,
   buildworkingTimeSelector,
+  buildworkingTimeSelectorAsync,
   buildDetailedTimeEntriesForPeriodSelector,
+  buildDetailedTimeEntriesForPeriodSelectorAsync,
   getGlobalSettingAsync,
   getUserSettingAsync,
   calculateSimilarity,

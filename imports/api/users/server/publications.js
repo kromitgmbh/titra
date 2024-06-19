@@ -12,31 +12,32 @@ Meteor.publish('projectUsers', async function projectUsers({ projectId }) {
   let initializing = true
   let uniqueUsers
   if (projectId === 'all') {
-    const projectList = Projects.find(
+    let projectList = await Projects.find(
       { $or: [{ userId: this.userId }, { public: true }, { team: this.userId }] },
       { _id: 1 },
-    ).fetch().map((value) => value._id)
+    ).fetchAsync()
+    projectList = projectList.map((value) => value._id)
     if (Timecards.find({ projectId: { $in: projectList } }).count() <= 0) {
       return this.ready()
     }
     Timecards.find({ projectId: { $in: projectList } }).forEach((timecard) => {
       userIds.push(timecard.userId)
     })
-    handle = Timecards.find({ projectId: { $in: projectList } }).observeChanges({
-      added: (_id) => {
+    handle = await Timecards.find({ projectId: { $in: projectList } }).observeChangesAsync({
+      added: async (_id) => {
         if (!initializing) {
-          userIds.push(Timecards.findOne(_id).userId)
+          userIds.push(await Timecards.findOneAsync(_id).userId)
           uniqueUsers = [...new Set(userIds)]
-          this.added('projectUsers', projectId, { users: Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetch() })
+          this.added('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetchAsync() })
         }
       },
-      removed: () => {
+      removed: async() => {
         if (!initializing) {
           userIds = []
           Timecards.find({ projectId: { $in: projectList } }).forEach((timecard) => {
             userIds.push(timecard.userId)
           })
-          this.changed('projectUsers', projectId, { users: Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetch() })
+          this.changed('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetchAsync() })
         }
       },
       // don't care about changed
@@ -45,29 +46,29 @@ Meteor.publish('projectUsers', async function projectUsers({ projectId }) {
     Timecards.find({ projectId }).forEach((timecard) => {
       userIds.push(timecard.userId)
     })
-    handle = Timecards.find({ projectId }).observeChanges({
-      added: (_id) => {
+    handle = await Timecards.find({ projectId }).observeChangesAsync({
+      added: async (_id) => {
         if (!initializing) {
-          userIds.push(Timecards.findOne(_id).userId)
+          userIds.push(await Timecards.findOneAsync(_id).userId)
           uniqueUsers = [...new Set(userIds)]
-          this.added('projectUsers', projectId, { users: Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetch() })
+          this.added('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetchAsync() })
         }
       },
-      removed: () => {
+      removed: async () => {
         if (!initializing) {
           userIds = []
           Timecards.find({ projectId }).forEach((timecard) => {
             userIds.push(timecard.userId)
           })
           uniqueUsers = [...new Set(userIds)]
-          this.changed('projectUsers', projectId, { users: Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetch() })
+          this.changed('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetchAsync() })
         }
       },
     })
   }
   uniqueUsers = [...new Set(userIds)]
   initializing = false
-  this.added('projectUsers', projectId, { users: Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetch() })
+  this.added('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetchAsync() })
   this.ready()
   this.onStop(() => {
     handle.stop()

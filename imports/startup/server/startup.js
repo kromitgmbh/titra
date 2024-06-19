@@ -27,7 +27,7 @@ Meteor.startup(async () => {
     })
   }
   if (await getGlobalSettingAsync('google_clientid') && await getGlobalSettingAsync('google_secret')) {
-    ServiceConfiguration.configurations.upsert({
+    await ServiceConfiguration.configurations.upsertAsync({
       service: 'googleapi',
     }, {
       $set: {
@@ -39,7 +39,7 @@ Meteor.startup(async () => {
       registerGoogleAPI.default()
     })
   }
-  for (const extension of Extensions.find({})) {
+  for (const extension of await Extensions.find({})) {
     if (extension.isActive) {
       if (extension.id === 'titra_ldap') {
         // extensions should bundle all their dependencies, however this does not work

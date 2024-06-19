@@ -2,7 +2,7 @@ import { ReactiveAggregate } from 'meteor/tunguska:reactive-aggregate'
 import { Match } from 'meteor/check'
 import Timecards from '../timecards.js'
 import Projects from '../../projects/projects.js'
-import { checkAuthentication, buildDetailedTimeEntriesForPeriodSelector } from '../../../utils/server_method_helpers.js'
+import { checkAuthentication, buildDetailedTimeEntriesForPeriodSelectorAsync } from '../../../utils/server_method_helpers.js'
 
 Meteor.publish('periodTimecards', async function periodTimecards({ startDate, endDate, userId }) {
   check(startDate, Date)
@@ -65,7 +65,7 @@ Meteor.publish('myTimecardsForDate', async function myTimecardsForDate({ date })
     date: { $gte: startDate, $lte: endDate },
   })
 })
-Meteor.publish('getDetailedTimeEntriesForPeriodCount', function getDetailedTimeEntriesForPeriodCount({
+Meteor.publish('getDetailedTimeEntriesForPeriodCount', async function getDetailedTimeEntriesForPeriodCount({
   projectId,
   userId,
   customer,
@@ -86,7 +86,7 @@ Meteor.publish('getDetailedTimeEntriesForPeriodCount', function getDetailedTimeE
   check(search, Match.Maybe(String))
   let count = 0
   let initializing = true
-  const selector = buildDetailedTimeEntriesForPeriodSelector({
+  const selector = await buildDetailedTimeEntriesForPeriodSelectorAsync({
     projectId, search, customer, period, dates, userId, filters,
   })
   const countsId = projectId instanceof Array ? projectId.join('') : projectId
@@ -142,7 +142,7 @@ Meteor.publish('getDetailedTimeEntriesForPeriod', async function getDetailedTime
   check(page, Match.Maybe(Number))
   check(filters, Match.Maybe(Object))
   await checkAuthentication(this)
-  const selector = buildDetailedTimeEntriesForPeriodSelector({
+  const selector = await buildDetailedTimeEntriesForPeriodSelectorAsync({
     projectId, search, customer, period, dates, userId, limit, page, sort, filters,
   })
   return Timecards.find(selector[0], selector[1])

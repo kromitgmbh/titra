@@ -92,7 +92,7 @@ const getProjectUsers = new ValidatedMethod({
   mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId }) {
     const data = []
-    const project = Projects.findOne({ _id: projectId })
+    const project = await Projects.findOneAsync({ _id: projectId })
     if (project?.public) {
       for (const user of Meteor.users.find({})) {
         if (user.inactive !== true) {
