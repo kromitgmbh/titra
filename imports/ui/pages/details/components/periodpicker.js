@@ -58,7 +58,14 @@ Template.periodpicker.onRendered(() => {
       Template.instance().period.set(FlowRouter.getQueryParam('period'))
       Template.instance().$('#period').val(FlowRouter.getQueryParam('period'))
     } else {
-      Template.instance().period.set('currentMonth')
+      if (FlowRouter.getRouteName() === 'timecards') {
+        Template.instance().period.set('currentMonth')
+      }
+      if (FlowRouter.getRouteName() === 'projectlist') {
+        Template.instance().period.set('all')
+        Template.instance().$('#period').val(Template.instance().period.get())
+
+      }
     }
   })
 })

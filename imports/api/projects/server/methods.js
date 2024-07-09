@@ -8,6 +8,7 @@ import Projects from '../projects.js'
 import Tasks from '../../tasks/tasks.js'
 import { addNotification } from '../../notifications/notifications.js'
 import { emojify } from '../../../utils/frontend_helpers'
+import { periodToDates } from '../../../utils/periodHelpers.js'
 import { authenticationMixin, transactionLogMixin, calculateSimilarity } from '../../../utils/server_method_helpers'
 
 /**
@@ -23,9 +24,10 @@ const getAllProjectStats = new ValidatedMethod({
   validate(args) {
     check(args.includeNotBillableTime, Match.Maybe(Boolean))
     check(args.showArchived, Match.Maybe(Boolean))
+    check(args.period, Match.Maybe(String))
   },
   mixins: [authenticationMixin],
-  async run({ includeNotBillableTime, showArchived }) {
+  async run({ includeNotBillableTime, showArchived, period }) {
     const notbillable = includeNotBillableTime
     dayjs.extend(utc)
     dayjs.extend(isBetween)
@@ -54,7 +56,16 @@ const getAllProjectStats = new ValidatedMethod({
     const previousMonthEnd = dayjs.utc().subtract(1, 'month').endOf('month')
     const beforePreviousMonthStart = dayjs.utc().subtract(2, 'month').startOf('month')
     const beforePreviousMonthEnd = dayjs.utc().subtract(2, 'month').endOf('month')
-    const timecardAggregation = await Timecards.rawCollection().aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: null, totalHours: { $sum: '$hours' } } }]).toArray()
+    const matchSelector = {
+      $match: {
+        projectId: { $in: projectList },
+      },
+    }
+    if (period && period !== 'all') {
+      const {startDate, endDate} = periodToDates(period)
+      matchSelector.$match.date = { $gte: startDate, $lte: endDate }
+    }
+    const timecardAggregation = await Timecards.rawCollection().aggregate([matchSelector, { $group: { _id: null, totalHours: { $sum: '$hours' } } }]).toArray()
     totalHours = Number.parseFloat(timecardAggregation[0]?.totalHours)
     for (const timecard of
       await Timecards.find({
@@ -157,6 +168,12 @@ const updateProject = new ValidatedMethod({
     } else {
       updateJSON.notbillable = true
     }
+    if(updateJSON.startDate) {
+      updateJSON.startDate = new Date(updateJSON.startDate)
+    }
+    if(updateJSON.endDate) {
+      updateJSON.endDate = new Date(updateJSON.endDate)
+    }
     await Projects.updateAsync({
       $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
       _id: projectId,
@@ -188,6 +205,12 @@ const createProject = new ValidatedMethod({
       updateJSON.public = false
     } else {
       updateJSON.public = true
+    }
+    if(updateJSON.startDate) {
+      updateJSON.startDate = new Date(updateJSON.startDate)
+    }
+    if(updateJSON.endDate) {
+      updateJSON.endDate = new Date(updateJSON.endDate)
     }
     updateJSON.name = await emojify(updateJSON.name)
     updateJSON._id = Random.id()
@@ -313,10 +336,11 @@ const getProjectDistribution = new ValidatedMethod({
       projectId: String,
       includeNotBillableTime: Match.Maybe(Boolean),
       showArchived: Match.Maybe(Boolean),
+      period: Match.Maybe(String),
     })
   },
   mixins: [authenticationMixin],
-  async run({ projectId, includeNotBillableTime, showArchived }) {
+  async run({ projectId, includeNotBillableTime, showArchived, period }) {
     const rawCollection = Timecards.rawCollection()
     if (projectId === 'all') {
       const notbillable = includeNotBillableTime
@@ -332,9 +356,25 @@ const getProjectDistribution = new ValidatedMethod({
       let projectList = await Projects.find({ $and: andCondition }, { _id: 1 })
         .fetchAsync()
       projectList = projectList.map((value) => value._id)
-      return rawCollection.aggregate([{ $match: { projectId: { $in: projectList } } }, { $group: { _id: '$projectId', count: { $sum: '$hours' } } }, { $sort: { projectId: 1 } }]).toArray()
+      const matchSelector = {
+        $match: {
+          projectId: { $in: projectList },
+        },
+      }
+      if (period && period !== 'all') {
+        const {startDate, endDate} = periodToDates(period)
+        matchSelector.$match.date = { $gte: startDate, $lte: endDate }
+      }
+      return rawCollection.aggregate([matchSelector, { $group: { _id: '$projectId', count: { $sum: '$hours' } } }, { $sort: { projectId: 1 } }]).toArray()
     }
-    return rawCollection.aggregate([{ $match: { projectId } }, { $group: { _id: '$projectId', count: { $sum: '$hours' } } }, { $sort: { projectId: 1 } }]).toArray()
+    const matchSelector = {
+      $match: { projectId },
+    }
+    if (period) {
+      const {startDate, endDate} = periodToDates(period)
+      matchSelector.$match.date = { $gte: startDate, $lte: endDate }
+    }
+    return rawCollection.aggregate([matchSelector, { $group: { _id: '$projectId', count: { $sum: '$hours' } } }, { $sort: { projectId: 1 } }]).toArray()
   },
 })
 /**

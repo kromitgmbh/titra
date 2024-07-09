@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import 'jquery-serializejson'
+import dayjs from 'dayjs'
 import { t } from '../../../../utils/i18n.js'
 import './editproject.html'
 import Projects from '../../../../api/projects/projects.js'
@@ -312,9 +313,9 @@ Template.editproject.helpers({
   target: () => (Template.instance().project.get()
     ? Template.instance().project.get().target : false),
   startDate: () => (Template.instance().project.get()
-    ? Template.instance().project.get().startDate : false),
+    ? dayjs(Template.instance().project.get().startDate).format('YYYY-MM-DD') : false),
   endDate: () => (Template.instance().project.get()
-    ? Template.instance().project.get().endDate : false),
+    ? dayjs(Template.instance().project.get().endDate).format('YYYY-MM-DD') : false),
   notbillable: () => Template.instance().notbillable.get(),
   customfields: () => (CustomFields.find({ classname: 'project' }).fetch().length > 0 ? CustomFields.find({ classname: 'project' }) : false),
   getCustomFieldValue: (fieldId) => (Template.instance().project.get()

@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.97.3",
+  "version": "0.97.4",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -46,10 +46,10 @@
   "devDependencies": {
     "@babel/core": "^7.24.7",
     "@babel/eslint-parser": "^7.24.7",
-    "eslint": "^9.5.0",
+    "eslint": "^9.6.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-import-resolver-meteor": "^0.4.0",
-    "eslint-plugin-i18next": "^6.0.3",
+    "eslint-plugin-i18next": "^6.0.7",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-meteor": "^7.3.0"
   },

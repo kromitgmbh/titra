@@ -9,12 +9,18 @@ import './components/allprojectschart.js'
 import './components/projectProgress.js'
 import './components/dashboardModal.js'
 import hex2rgba from '../../../utils/hex2rgba.js'
+import { periodToDates } from '../../../utils/periodHelpers.js'
 import { showToast } from '../../../utils/frontend_helpers.js'
 
 Template.projectlist.onCreated(function createProjectList() {
   this.subscribe('myprojects', {})
-  this.data.showArchived = new ReactiveVar(false)
+  this.showArchived = new ReactiveVar(false)
   this.projectId = new ReactiveVar(null)
+  this.period = new ReactiveVar('all')
+  this.autorun(() => {
+    this.showArchived.set(FlowRouter.getQueryParam('showArchived') === 'true')
+    this.period.set(FlowRouter.getQueryParam('period') || 'all')
+  })
 })
 Template.projectlist.onRendered(() => {
   Meteor.setTimeout(() => {
@@ -55,17 +61,36 @@ Template.projectlist.onRendered(() => {
 Template.projectlist.helpers({
   projects() {
     const limit = FlowRouter.getQueryParam('limit') ? Number(FlowRouter.getQueryParam('limit')) : 25
-    return Template.instance().data.showArchived && Template.instance().data.showArchived.get()
-      ? Projects.find({}, { sort: { priority: 1, name: 1 }, limit })
-      : Projects.find(
-        { $or: [{ archived: { $exists: false } }, { archived: false }] },
-        { sort: { priority: 1, name: 1 }, limit },
-      )
+    const selector = {}
+    if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
+      const {startDate, endDate} = periodToDates(Template.instance().period.get())
+      selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
+      { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
+    }
+    if(!Template.instance().showArchived?.get()) {
+      if(selector.$and) {
+        selector.$and.push({ $or: [{ archived: { $exists: false } }, { archived: false }] })
+      } else {
+      selector.$or = [{ archived: { $exists: false } }, { archived: false }]
+      }
+    }
+    return Projects.find(selector, { sort: { priority: 1, name: 1 }, limit })
   },
   moreThanOneProject() {
-    return Template.instance().data.showArchived && Template.instance().data.showArchived.get()
-      ? Projects.find({}).count() > 1
-      : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count() > 1
+    const selector = {}
+    if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
+      const {startDate, endDate} = periodToDates(Template.instance().period.get())
+      selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
+      { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
+    }
+    if(!Template.instance().showArchived?.get()) {
+      if(selector.$and) {
+        selector.$and.push({ $or: [{ archived: { $exists: false } }, { archived: false }] })
+      } else {
+      selector.$or = [{ archived: { $exists: false } }, { archived: false }]
+      }
+    }
+    return Projects.find(selector, { sort: { priority: 1, name: 1 } }).count() > 1
   },
   hasArchivedProjects: () => Projects.find({}).count()
     !== Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count(),
@@ -80,9 +105,22 @@ Template.projectlist.helpers({
   archived(_id) {
     return Projects.findOne({ _id }).archived
   },
-  projectCount: () => (Template.instance().data?.showArchived?.get()
-    ? Projects.find({}).count()
-    : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count()),
+  projectCount() {
+    const selector = {}
+    if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
+      const {startDate, endDate} = periodToDates(Template.instance().period.get())
+      selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
+      { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
+    }
+    if(!Template.instance().showArchived?.get()) {
+      if(selector.$and) {
+        selector.$and.push({ $or: [{ archived: { $exists: false } }, { archived: false }] })
+      } else {
+      selector.$or = [{ archived: { $exists: false } }, { archived: false }]
+      }
+    }
+    return Projects.find(selector, { sort: { priority: 1, name: 1 } }).count()
+  },
   projectId: () => Template.instance().projectId,
 })
 
@@ -135,9 +173,6 @@ Template.projectlist.events({
     event.preventDefault()
     templateInstance.projectId.set(event.currentTarget.dataset.id)
     const dashboardModal = new bootstrap.Modal($('.js-dashboard-modal')[0], { focus: false }).toggle()
-  },
-  'change #showArchived': (event) => {
-    Template.instance().data.showArchived.set($(event.currentTarget).is(':checked'))
   },
 })
 

@@ -2,16 +2,19 @@ import './allprojectschart.html'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import Projects from '../../../../api/projects/projects.js'
 import { getUserSetting, getUserTimeUnitVerbose } from '../../../../utils/frontend_helpers'
+import { periodToDates } from '../../../../utils/periodHelpers.js'
+import '../../details/components/periodpicker.js'
 
 Template.allprojectschart.onCreated(function allprojectschartCreated() {
-  this.topTasks = new ReactiveVar()
   this.projectStats = new ReactiveVar()
   this.projectDistribution = new ReactiveVar()
   this.includeNotBillableTime = new ReactiveVar(false)
+  this.showArchived = new ReactiveVar(false)
+  this.period = new ReactiveVar('all')
   this.autorun(() => {
     const precision = getUserSetting('precision')
     const timeUnit = getUserSetting('timeunit')
-    Meteor.call('getAllProjectStats', { includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived?.get() }, (error, result) => {
+    Meteor.call('getAllProjectStats', { includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.showArchived?.get(), period: this.period?.get() }, (error, result) => {
       if (error) {
         console.error(error)
       } else if (result instanceof Object) {
@@ -34,14 +37,7 @@ Template.allprojectschart.onCreated(function allprojectschartCreated() {
         this.projectStats.set(stats)
       }
     })
-    Meteor.call('getTopTasks', { projectId: 'all', includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived?.get() }, (error, result) => {
-      if (error) {
-        console.error(error)
-      } else {
-        this.topTasks.set(result)
-      }
-    })
-    Meteor.call('getProjectDistribution', { projectId: 'all', includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.data.showArchived?.get() }, (error, result) => {
+    Meteor.call('getProjectDistribution', { projectId: 'all', includeNotBillableTime: this.includeNotBillableTime.get(), showArchived: this.showArchived?.get(), period: this.period?.get() }, (error, result) => {
       if (error) {
         console.error(error)
       } else {
@@ -51,17 +47,27 @@ Template.allprojectschart.onCreated(function allprojectschartCreated() {
   })
 })
 Template.allprojectschart.helpers({
-  topTasks() {
-    return Template.instance().topTasks.get()
-  },
   totalHours() {
     return Template.instance().projectStats.get()
-      ? Template.instance().projectStats.get().totalHours : false
+      ? Template.instance().projectStats.get().totalHours : 0
   },
   showNotBillableTime: () => Template.instance().includeNotBillableTime.get(),
-  projectCount: () => (Template.instance().data?.showArchived?.get()
-    ? Projects.find({}).count()
-    : Projects.find({ $or: [{ archived: { $exists: false } }, { archived: false }] }).count()),
+  projectCount() {
+    const selector = {}
+    if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
+      const {startDate, endDate} = periodToDates(Template.instance().period.get())
+      selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
+      { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
+    }
+    if(!Template.instance().showArchived?.get()) {
+      if(selector.$and) {
+        selector.$and.push({ $or: [{ archived: { $exists: false } }, { archived: false }] })
+      } else {
+      selector.$or = [{ archived: { $exists: false } }, { archived: false }]
+      }
+    }
+    return Projects.find(selector, { sort: { priority: 1, name: 1 } }).count()
+    },
 })
 Template.allprojectschart.events({
   'change #showNotBillableTime': (event, templateInstance) => {
@@ -70,17 +76,26 @@ Template.allprojectschart.events({
   },
   'change #showArchived': (event, templateInstance) => {
     event.preventDefault()
-    templateInstance.data.showArchived.set(templateInstance.$(event.currentTarget).is(':checked'))
+    templateInstance.showArchived?.set(templateInstance.$(event.currentTarget).is(':checked'))
+    FlowRouter.setQueryParams({ showArchived: templateInstance.showArchived?.get() })
   },
   'change #limit': (event, templateInstance) => {
     event.preventDefault()
     FlowRouter.setQueryParams({ limit: templateInstance.$(event.currentTarget).val() })
   },
+  'change #period': (event, templateInstance) => {
+    event.preventDefault()
+    templateInstance.period.set(templateInstance.$(event.currentTarget).val())
+  }
 })
 Template.allprojectschart.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
     templateInstance.$('#limit').val(FlowRouter.getQueryParam('limit') ? FlowRouter.getQueryParam('limit') : 25)
+    templateInstance.period.set(FlowRouter.getQueryParam('period') ? FlowRouter.getQueryParam('period') : 'all')
+    templateInstance.$('#period').val(templateInstance.period.get())
+    templateInstance.showArchived?.set(FlowRouter.getQueryParam('showArchived') === 'true')
+    templateInstance.$('#showArchived').prop('checked', templateInstance.showArchived?.get())
   })
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
