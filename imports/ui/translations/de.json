@@ -446,14 +446,17 @@
     "oidc_configure": "Sie müssen bei Ihrem Anbieter eine OpenID Connect-Clientkonfiguration erstellen. Legen Sie App-Callback-URLs fest auf",
     "custom_field_name_hint": "Leerzeichen und Sonderzeichen sind nicht erlaubt.",
     "inboundinterfaces": "Eingehende Schnittstellen",
-    "add_update_inbound_interface": "Eingehende Schnittstelle hinzufügen/bearbeiten",
-    "process_data": "Script für die Datenverarbeitung",
-    "processdata_hint": "Dieser JavaScript Code wird immer ausgeführt, wenn Daten über die eingehende Schnittstelle abgerufen werden. Das Script muss ein JSON Objekt (oder ein Promise, die ein solches Objekt zurückgibt) mit folgender Struktur zurückgeben: [{name: 'name', description:'description'}].",
-    "active": "Eingehende Schnittstelle aktivieren?",
-    "total_users": "Benutzer insgesamt",
+    "outboundinterfaces": "Ausgehende Schnittstellen",
+    "create_edit_interface": "Schnittstelle erstellen oder bearbeiten",
+    "process_data": "Datenverarbeitungsskript",
+    "inbound_processdata_hint": "Dieses JavaScript wird ausgeführt, wann immer Daten für die eingehende Schnittstelle angefordert werden. Das Skript muss ein JSON-Objekt zurückgeben (oder ein Promise, das ein solches Objekt zurückgibt) mit der folgenden Struktur: [{name: 'name', description: 'description'}].",
+    "active": "Schnittstelle aktiv?",
+    "total_users": "Gesamtbenutzer",
     "new_users": "Neue Benutzer (letzte 7 Tage)",
     "admin_users": "Administrative Benutzer",
-    "inactive_users": "Inaktive Benutzer"
+    "inactive_users": "Inaktive Benutzer",
+    "icon": "Symbol",
+    "outbound_processdata_hint": "Dieses JavaScript wird auf dem Server ausgeführt, wenn der entsprechende Button von einem Benutzer auf der Detailseite geklickt wird. Das Skript erhält die aktuell angezeigten Daten in der Variable 'data' und hat Zugriff auf die node fetch Funktion, um Daten an ein externes System zu senden. Es ist nicht erforderlich, einen Wert zurückzugeben. Alle Fehler werden erfasst und dem Benutzer als '500 interner Serverfehler' angezeigt."
   },
   "wekan": {
     "list": "Wekan Liste",

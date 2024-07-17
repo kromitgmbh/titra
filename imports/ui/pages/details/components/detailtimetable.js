@@ -89,6 +89,7 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
   this.tcid = new ReactiveVar()
   this.selector = new ReactiveVar()
   this.filters = new ReactiveVar({})
+  this.outboundInterfaces = new ReactiveVar([])
   this.subscribe('customfieldsForClass', { classname: 'time_entry' })
   this.subscribe('customfieldsForClass', { classname: 'project' })
   this.autorun(() => {
@@ -134,6 +135,14 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
       }
       this.detailedEntriesPeriodCountHandle = this.subscribe('getDetailedTimeEntriesForPeriodCount', subscriptionParameters)
       this.detailedTimeEntriesForPeriodHandle = this.subscribe('getDetailedTimeEntriesForPeriod', subscriptionParameters)
+    }
+  })
+  Meteor.call('outboundinterfaces.get', (error, result) => {
+    if (error) {
+      showToast(error)
+      console.error(error)
+    } else {
+      this.outboundInterfaces.set(result)
     }
   })
 })
@@ -395,6 +404,7 @@ Template.detailtimetable.onRendered(() => {
       } else {
         try {
           templateInstance.datatable.refresh(data, columns)
+          $('.dt-scrollable').height(`${parseInt(document.querySelector('.dt-row.vrow:last-of-type')?.style.top, 10) + 40}px`)
         } catch (error) {
           console.error(`Caught error: ${error}`)
         }
@@ -443,6 +453,7 @@ Template.detailtimetable.helpers({
     return !!(Template.instance().filters.get()
     && Object.keys(Template.instance().filters.get()).length > 0)
   },
+  outboundInterfaces: () => Template.instance().outboundInterfaces?.get(),
 })
 Template.detailtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
@@ -689,6 +700,23 @@ Template.detailtimetable.events({
   'click .js-remove-filters': (event, templateInstance) => {
     event.preventDefault()
     templateInstance.filters.set({})
+  },
+  'mouseup .dt-cell--header > .dt-cell__content': (event, templateInstance) => {
+    event.preventDefault()
+    window.setTimeout(() => {
+      templateInstance.$('.dt-scrollable').height(`${parseInt(document.querySelector('.dt-row.vrow:last-of-type')?.style.top, 10) + 40}px`)
+    }, 100)
+  },
+  'click .js-outbound-interface': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('outboundinterfaces.run', { data: Timecards.find(structuredClone(templateInstance.selector.get()[0]), templateInstance.selector.get()[1]).fetch().map((entry) => detailedDataTableMapper(entry, true)), _id: templateInstance.$(event.currentTarget).data('interface-id') }, (error, result) => {
+      if (error) {
+        showToast(error)
+        console.error(error)
+      } else {
+        showToast(result)
+      }
+    })
   },
 })
 Template.detailtimetable.onDestroyed(() => {

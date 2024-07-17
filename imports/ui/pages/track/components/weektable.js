@@ -8,7 +8,7 @@ import './weektable.html'
 import './tasksearch'
 import Projects from '../../../../api/projects/projects'
 import {
-  clientTimecards, getWeekDays, timeInUserUnit, getGlobalSetting, getUserSetting, showToast,
+  getWeekDays, timeInUserUnit, getGlobalSetting, getUserSetting, showToast,
 } from '../../../../utils/frontend_helpers'
 import { checkHoliday, getHolidays } from '../../../../utils/holiday'
 
@@ -30,6 +30,8 @@ Template.weektable.onCreated(function weekTableCreated() {
   })
   this.startDate = new ReactiveVar()
   this.endDate = new ReactiveVar()
+  this.weekTotal = new ReactiveVar(0)
+  this.totalForWeekPerDay = new ReactiveVar([])
   this.autorun(() => {
     if (this.subscriptionsReady()) {
       this.startDate.set(dayjs().startOf('day').isoWeekday(getUserSetting('startOfWeek')))
@@ -40,6 +42,30 @@ Template.weektable.onCreated(function weekTableCreated() {
     if (FlowRouter.getQueryParam('date')) {
       this.startDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).isoWeekday(getUserSetting('startOfWeek')), 'YYYY-MM-DD')
       this.endDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).isoWeekday(getUserSetting('startOfWeek')).add(6, 'day'), 'YYYY-MM-DD')
+    }
+  })
+  this.autorun(() => {
+    if(this.startDate.get() && this.endDate.get() && this.weekTotal.get() === 0){
+      Meteor.call('getWeekTotal', {
+        startDate: this.startDate.get().toDate(),
+        endDate: this.endDate.get().toDate(),
+      }, (error, result) => {
+        if (error) {
+          console.error(error)
+        } else {
+          this.weekTotal.set(result)
+        }
+      })
+      Meteor.call('getTotalForWeekPerDay', {
+        startDate: this.startDate.get().toDate(),
+        endDate: this.endDate.get().toDate(),
+      }, (error, result) => {
+        if (error) {
+          console.error(error)
+        } else {
+          this.totalForWeekPerDay.set(result)
+        }
+      })
     }
   })
 })
@@ -54,34 +80,15 @@ Template.weektable.helpers({
   startDate() { return Template.instance().startDate },
   endDate() { return Template.instance().endDate },
   getTotalForDay(day) {
-    let total = 0
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      clientTimecards.find().fetch().forEach((element) => {
-        if (element.entries) {
-          total += element.entries.filter((entry) => dayjs.utc(entry.date).format(getGlobalSetting('weekviewDateFormat')) === day)
-            .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
-        }
-      })
-      return total !== 0 ? timeInUserUnit(total) : false
+    for (const element of Template.instance().totalForWeekPerDay.get()) {
+      if (dayjs.utc(new Date(element._id.date)).format(getGlobalSetting('weekviewDateFormat')) === day) {
+        return element.totalForDate !== 0 ? timeInUserUnit(element.totalForDate) : false
+      }
     }
     return false
   },
-  getWeekTotal() {
-    let total = 0
-    if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      clientTimecards.find().fetch().forEach((element) => {
-        if (element.entries) {
-          total += element.entries
-            .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
-        }
-      })
-      return total !== 0 ? timeInUserUnit(total) : false
-    }
-    return false
-  },
-  hasData() {
-    return clientTimecards.find().fetch().length > 0
-  },
+  getWeekTotal: () => Template.instance().weekTotal.get() !== 0 ? timeInUserUnit(Template.instance().weekTotal.get()) : false,
+  hasData: () => Template.instance().totalForWeekPerDay.get().length > 0,
   isHoliday(weekday) {
     const start = Template.instance().startDate.get()
     const holiday = isHoliday(start.add(weekday, 'd'))
@@ -160,6 +167,7 @@ Template.weektable.events({
             .val('')
           showToast(t('notifications.time_entry_updated'))
           $('tr').trigger('save')
+          weekTotal.set(0)
         }
       })
     }
@@ -178,6 +186,7 @@ Template.weektable.events({
           console.error(error)
         } else {
           showToast(t('notifications.time_entry_deleted'))
+          weekTotal.set(0)
         }
       })
     }
@@ -189,16 +198,21 @@ Template.weektablerow.onCreated(function weektablerowCreated() {
   dayjs.extend(customParseFormat)
   dayjs.extend(isoWeek)
   this.tempTimeEntries = new ReactiveVar([])
+  this.methodTimeEntries = new ReactiveVar([])
   this.reactiveProjectId = new ReactiveVar()
   this.autorun(() => {
     if (Template.instance().data.projectId && Template.instance().data.startDate.get() && Template.instance().data.endDate.get()) {
-      this.subscribe(
-        'userTimeCardsForPeriodByProjectByTask',
-        {
-          projectId: Template.instance().data.projectId,
-          startDate: Template.instance().data.startDate.get().toDate(),
-          endDate: Template.instance().data.endDate.get().toDate(),
-        },
+      Meteor.call('userTimeCardsForPeriodByProjectByTask', {
+        projectId: Template.instance().data.projectId,
+        startDate: Template.instance().data.startDate.get().toDate(),
+        endDate: Template.instance().data.endDate.get().toDate(),
+      }, (error, result) => {
+        if (error) {
+          console.error(error)
+        } else {
+          this.methodTimeEntries.set(result)
+        }
+      }
       )
     }
   })
@@ -244,17 +258,7 @@ Template.weektablerow.helpers({
     return getWeekDays(Template.instance().data.startDate.get())
   },
   tasks() {
-    return clientTimecards.find(
-      {
-        entries:
-        {
-          $elemMatch:
-          {
-            projectId: Template.instance().data.projectId,
-          },
-        },
-      },
-    ).fetch().map((entry) => ({ _id: entry._id.split('|')[1], entries: entry.entries })).concat(Template.instance().tempTimeEntries.get())
+    return Template.instance().methodTimeEntries.get().map((entry) => ({ _id: entry._id.split('|')[1], entries: entry.entries })).concat(Template.instance().tempTimeEntries.get())
   },
   getHoursForDay(day, task) {
     if (task.entries && getGlobalSetting('weekviewDateFormat') && i18nReady.get()) {
@@ -278,17 +282,7 @@ Template.weektablerow.helpers({
   getTotalForDayPerProject(projectId, day) {
     let total = 0
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
-      clientTimecards.find(
-        {
-          entries:
-          {
-            $elemMatch:
-            {
-              projectId,
-            },
-          },
-        },
-      ).fetch().concat(Template.instance().tempTimeEntries.get()).forEach((element) => {
+      Template.instance().methodTimeEntries.get().concat(Template.instance().tempTimeEntries.get()).forEach((element) => {
         if (element.entries) {
           total += element.entries.filter((entry) => dayjs.utc(entry.date).format(getGlobalSetting('weekviewDateFormat')) === dayjs.utc(day, getGlobalSetting('weekviewDateFormat')).format(getGlobalSetting('weekviewDateFormat')))
             .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)

@@ -27,6 +27,9 @@
                 {{#if filters}}
                     <button type="button" class="btn btn-secondary border js-remove-filters"><i class="fa-solid fa-filter-circle-xmark"></i> Remove</button>
                 {{/if}}
+                {{#each outboundInterface in outboundInterfaces}}
+                    <button type="button" class="btn btn-secondary border js-outbound-interface" data-interface-id="{{outboundInterface._id}}"><i class="fa {{outboundInterface.faIcon}}"></i> <span class="d-none d-md-inline">{{outboundInterface.description}}</span></button>
+                {{/each}}
             </div>
         </div>
         <div class="col-lg-3 col-lg-2 offset-lg-0 col-sm-12 mt-2 ms-auto">
@@ -39,11 +42,11 @@
     <div id="datatable-container" class="my-3">
     </div>
     <div class="row">
-    <div class="col-md-3 ">
-        {{#if detailTimeEntries}}
-            {{>pagination totalEntries=totalDetailTimeEntries limit=limit}}
-        {{/if}}
-    </div>
+        <div class="col-md-3 ">
+            {{#if detailTimeEntries}}
+                {{>pagination totalEntries=totalDetailTimeEntries limit=limit}}
+            {{/if}}
+        </div>
         <div class="col-md-3 ms-md-auto"> 
             {{>limitpicker}}
         </div>

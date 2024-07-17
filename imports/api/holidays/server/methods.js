@@ -5,6 +5,10 @@ import { authenticationMixin, getUserSettingAsync } from '../../../utils/server_
 
 const hd = new Holidays()
 
+/**
+ * Retrieves the current holiday based on user settings.
+ * @returns {Holidays} The current holiday object.
+ */
 async function getCurrentHoliday() {
   const country = await getUserSettingAsync('holidayCountry')
   const state = await getUserSettingAsync('holidayState')

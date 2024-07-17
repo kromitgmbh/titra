@@ -3,7 +3,11 @@ import Timecards from '../../timecards/timecards.js'
 import Projects from '../../projects/projects.js'
 import { Dashboards } from '../../dashboards/dashboards'
 import { checkAuthentication, checkAdminAuthentication } from '../../../utils/server_method_helpers.js'
-
+/**
+ * Publishes the users who tracked time on a project based on the provided project ID.
+ * @param {String} projectId - The project ID.
+ * @returns {Array} - The list of users that have time tracked for the project ID.
+ */
 Meteor.publish('projectUsers', async function projectUsers({ projectId }) {
   check(projectId, String)
   await checkAuthentication(this)
@@ -74,7 +78,11 @@ Meteor.publish('projectUsers', async function projectUsers({ projectId }) {
     handle.stop()
   })
 })
-
+/** 
+ * Publishes the users who are part of a project team based on the provided user IDs.
+ * @param {Array} userIds - The list of user IDs.
+ * @returns {Array} - The list of users that are part of the project team.
+ */
 Meteor.publish('projectTeam', async function projectTeam({ userIds }) {
   check(userIds, Array)
   await checkAuthentication(this)
@@ -85,19 +93,31 @@ Meteor.publish('projectTeam', async function projectTeam({ userIds }) {
     },
   )
 })
-
+/** 
+ * Publishes the user who is the resource of a dashboard based on the provided dashboard ID.
+ * @param {String} _id - The dashboard ID.
+ * @returns {Object} - The user that is the resource of the dashboard.
+ */
 Meteor.publish('dashboardUser', async function dashboardUser({ _id }) {
   check(_id, String)
   await checkAuthentication(this)
   const dashboard = await Dashboards.findOneAsync({ _id })
   return Meteor.users.find({ _id: dashboard.resourceId }, { fields: { 'profile.name': 1 } })
 })
-
+/**
+ * Publishes the user roles based on current user ID.
+ * @returns {Object} - The user roles of the current user.
+ */
 Meteor.publish('userRoles', async function userRoles() {
   await checkAuthentication(this)
   return Meteor.users.find({ _id: this.userId }, { fields: { profile: 1, isAdmin: 1 } })
 })
-
+/** 
+ * Publishes user list for administrators based on the provided limit and search string.
+ * @param {Number} limit - The limit of users to return.
+ * @param {String} search - The search string.
+ * @returns {Array} - The list of users that match the search string.
+ */
 Meteor.publish('adminUserList', async function adminUserList({ limit, search }) {
   await checkAdminAuthentication(this)
   check(limit, Match.Maybe(Number))
@@ -122,6 +142,11 @@ Meteor.publish('adminUserList', async function adminUserList({ limit, search }) 
   return Meteor.users.find(query, options)
 })
 
+/**
+ * Publishes the users who tracked time on a project based on the provided project ID.
+ * @param {String} projectId - The project ID.
+ * @returns {Array} - The list of users that have time tracked for the project ID.
+ */
 Meteor.publish('projectResources', async function projectResources({ projectId }) {
   check(projectId, Match.OneOf(String, Array))
   await checkAuthentication(this)

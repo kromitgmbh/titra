@@ -385,11 +385,18 @@
     "edit_custom_field": "编辑自定义字段",
     "oidc": "OpenID Connect",
     "oidc_configure": "你需要创建一个 OpenID Connect 客户端配置，并设置应用回调地址",
-    "active": "启用传入接口？",
+    "inboundinterfaces": "入站接口",
+    "outboundinterfaces": "出站接口",
+    "create_edit_interface": "创建或编辑接口",
+    "process_data": "处理数据脚本",
+    "inbound_processdata_hint":"每当请求入站接口数据时，将执行此JavaScript。脚本必须返回具有以下结构的JSON对象（或返回此类对象的Promise）：[{name: 'name', description:'description'}]。",
+    "active": "接口是否激活？",
     "total_users": "总用户数",
-    "new_users": "新用户（过去7天）",
+    "new_users": "新用户（最近7天）",
     "admin_users": "管理员用户",
-    "inactive_users": "非活跃用户"
+    "inactive_users": "非活跃用户",
+    "icon": "图标",
+    "outbound_processdata_hint": "当用户在详细页面点击相应按钮时，此JavaScript将在服务器上执行。脚本将在'data'变量中接收当前显示的数据，并可以使用节点fetch函数将数据发送到外部系统。无需返回值，所有错误都将被捕获并显示给用户为'500内部服务器错误'。"
   },
   "wekan": {
     "list": "Wekan 列表",

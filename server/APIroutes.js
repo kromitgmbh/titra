@@ -1,4 +1,5 @@
 import { Match, check } from 'meteor/check'
+import { WebApp } from 'meteor/webapp';
 import { getJson } from './bodyparser'
 import { insertTimeCard } from '../imports/api/timecards/server/methods'
 import Timecards from '../imports/api/timecards/timecards'
@@ -53,6 +54,8 @@ async function checkAuthorization(req, res) {
  * @apiBody {String} task The task description of the new time entry.
  * @apiBody {Date} date The date for the new time entry in format YYYY-MM-DD.
  * @apiBody {Number} hours The number of hours to track.
+ * @apiBody {Number} [taskRate] The rate for the task.
+ * @apiBody {Object} [customfields] An object containing custom fields for the time entry.
  * @apiParamExample {json} Request-Example:
  *                  {
  *                    "projectId": "123456",
@@ -87,11 +90,13 @@ WebApp.connectHandlers.use('/timeentry/create/', async (req, res, next) => {
       check(json.task, String)
       check(new Date(json.date), Date)
       check(json.hours, Number)
+      check(json.taskRate, Match.Maybe(Number))
+      check(json.customfields, Match.Maybe(Object))
     } catch (error) {
       sendResponse(res, 500, `Invalid parameters received.${error}`)
       return
     }
-    const timecardId = await insertTimeCard(json.projectId, json.task, new Date(json.date), json.hours, meteorUser._id)
+    const timecardId = await insertTimeCard(json.projectId, json.task, new Date(json.date), json.hours, meteorUser._id, json.taskRate, json.customfields)
     const payload = {}
     payload.timecardId = timecardId
     sendResponse(res, 200, 'Time entry created.', payload)

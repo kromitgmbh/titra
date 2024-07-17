@@ -869,7 +869,105 @@ const getGoogleWorkspaceData = new ValidatedMethod({
     throw new Meteor.Error('You need to authorize Google API access for titra first.')
   },
 })
-
+/**
+ * Retrieves user time cards for a specific period, filtered by project and task.
+ *
+ * @method userTimeCardsForPeriodByProjectByTask
+ * @param {Object} args - The arguments for the method.
+ * @param {Date} args.startDate - The start date of the period.
+ * @param {Date} args.endDate - The end date of the period.
+ * @param {String} args.projectId - The ID of the project.
+ * @returns {Promise<Array>} - A promise that resolves to an array of time card entries.
+ */
+const userTimeCardsForPeriodByProjectByTaskMethod = new ValidatedMethod({
+  name: 'userTimeCardsForPeriodByProjectByTask',
+  validate(args) {
+    check(args.startDate, Date)
+    check(args.endDate, Date)
+    check(args.projectId, String)
+  },
+  mixins: [authenticationMixin],
+  async run({ startDate, endDate, projectId }) {
+    return Timecards.rawCollection().aggregate([
+      {
+        $match: {
+          projectId,
+          userId: this.userId,
+          date: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: { $concat: ['$projectId', '|', '$task'] },
+          entries: { $push: '$$ROOT' },
+        },
+      },]).toArray()
+  },
+})
+/**
+ * Calculates the total hours worked per day for a given week.
+ *
+ * @method getTotalForWeekPerDay
+ * @param {Object} args - The arguments for the method.
+ * @param {Date} args.startDate - The start date of the week.
+ * @param {Date} args.endDate - The end date of the week.
+ * @returns {Promise<Array>} - A promise that resolves to an array of objects containing the date and the total hours worked for each day.
+ */
+const getTotalForWeekPerDay = new ValidatedMethod({
+  name: 'getTotalForWeekPerDay',
+  validate(args) {
+    check(args.startDate, Date)
+    check(args.endDate, Date)
+  },
+  mixins: [authenticationMixin],
+  async run({ startDate, endDate }) {
+    return Timecards.rawCollection().aggregate([
+      {
+        $match: {
+          userId: this.userId,
+          date: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: { date: '$date' },
+          totalForDate: { $sum: '$hours' },
+        },
+      },]).toArray()
+  },
+})
+/**
+ * Calculates the total number of hours tracked in a given week.
+ *
+ * @param {Object} args - The arguments for calculating the week total.
+ * @param {Date} args.startDate - The start date of the week.
+ * @param {Date} args.endDate - The end date of the week.
+ * @returns {number} The total number of hours tracked in the week.
+ */
+const getWeekTotal = new ValidatedMethod({
+  name: 'getWeekTotal',
+  validate(args) {
+    check(args.startDate, Date)
+    check(args.endDate, Date)
+  },
+  mixins: [authenticationMixin],
+  async run({ startDate, endDate }) {
+    const aggregatedweek = await Timecards.rawCollection().aggregate([
+      {
+        $match: {
+          userId: this.userId,
+          date: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: `${startDate}-${endDate}`,
+          total: { $sum: '$hours'},
+        },
+      },]).toArray()
+    return aggregatedweek[0]?.total
+  },
+})
 export {
   insertTimeCard,
   insertTimeCardMethod,
@@ -885,4 +983,7 @@ export {
   sendToSiwapp,
   checkProjectAdministratorAndUser,
   getGoogleWorkspaceData,
+  userTimeCardsForPeriodByProjectByTaskMethod,
+  getWeekTotal,
+  getTotalForWeekPerDay
 }

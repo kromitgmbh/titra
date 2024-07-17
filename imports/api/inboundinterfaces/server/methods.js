@@ -8,6 +8,17 @@ import {
 import InboundInterfaces from '../inboundinterfaces.js'
 import Projects from '../../projects/projects.js'
 
+/**
+ * Method for inserting a new inbound interface.
+ *
+ * @method inboundinterfacesinsert
+ * @param {Object} options - The options for inserting a new inbound interface.
+ * @param {string} options.name - The name of the inbound interface.
+ * @param {string} options.description - The description of the inbound interface.
+ * @param {string} [options.processData] - The process data of the inbound interface (optional).
+ * @param {boolean} options.active - The active status of the inbound interface.
+ * @returns {string} - The success notification message.
+ */
 const inboundinterfacesinsert = new ValidatedMethod({
   name: 'inboundinterfaces.insert',
   validate({
@@ -31,6 +42,18 @@ const inboundinterfacesinsert = new ValidatedMethod({
     return 'notifications.success'
   },
 })
+/**
+ * Updates an inbound interface.
+ *
+ * @method inboundinterfacesupdate
+ * @param {Object} options - The options for updating the inbound interface.
+ * @param {string} options._id - The ID of the inbound interface.
+ * @param {string} options.name - The name of the inbound interface.
+ * @param {string} options.description - The description of the inbound interface.
+ * @param {string} options.processData - The process data of the inbound interface.
+ * @param {boolean} options.active - The active status of the inbound interface.
+ * @returns {string} - The success notification message.
+ */
 const inboundinterfacesupdate = new ValidatedMethod({
   name: 'inboundinterfaces.update',
   validate({
@@ -65,6 +88,14 @@ const inboundinterfacesupdate = new ValidatedMethod({
     return 'notifications.success'
   },
 })
+/**
+ * Removes an inbound interface.
+ *
+ * @method inboundinterfacesremove
+ * @param {Object} options - The options for removing the inbound interface.
+ * @param {string} options._id - The ID of the inbound interface to be removed.
+ * @returns {string} - A success notification message.
+ */
 const inboundinterfacesremove = new ValidatedMethod({
   name: 'inboundinterfaces.remove',
   validate({ _id }) {
@@ -76,6 +107,13 @@ const inboundinterfacesremove = new ValidatedMethod({
     return 'notifications.success'
   },
 })
+/**
+ * Retrieves the active inbound interfaces.
+ *
+ * @method inboundinterfaces.get
+ * @mixes authenticationMixin
+ * @returns {Array} An array of active inbound interfaces.
+ */
 const getInboundInterfaces = new ValidatedMethod({
   name: 'inboundinterfaces.get',
   validate: null,
@@ -85,6 +123,16 @@ const getInboundInterfaces = new ValidatedMethod({
       .find({ active: true }, { fields: { processData: 0, prepareRequest: 0 } }).fetchAsync()
   },
 })
+/**
+ * Retrieves tasks from the inbound interface.
+ *
+ * @method inboundinterfaces.getTasks
+ * @param {Object} options - The options for retrieving tasks.
+ * @param {string} options._id - The ID of the inbound interface.
+ * @param {string} options.projectId - The ID of the project.
+ * @throws {Meteor.Error} If there is an error retrieving tasks.
+ * @returns {Array} An array of tasks.
+ */
 const getTasksFromInboundInterface = new ValidatedMethod({
   name: 'inboundinterfaces.getTasks',
   validate({ _id, projectId }) {

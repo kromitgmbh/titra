@@ -427,14 +427,17 @@
     "oidc_configure": "Vous devrez créer une configuration client OpenID Connect avec votre fournisseur. Définissez les URL de rappel d'application sur",
     "custom_field_name_hint": "Les espaces et les caractères spéciaux ne sont pas autorisés.",
     "inboundinterfaces": "Interfaces entrantes",
-    "add_update_inbound_interface": "Ajouter ou mettre à jour une interface entrante",
+    "outboundinterfaces": "Interfaces sortantes",
+    "create_edit_interface": "Créer ou modifier l'interface",
     "process_data": "Script de traitement des données",
-    "processdata_hint":"Ce JavaScript sera exécuté chaque fois que des données d'interface entrantes seront demandées. Le script doit renvoyer un objet JSON (ou une promesse renvoyant un tel objet) avec la structure suivante : [{name:'name', description:'description'}].",
-    "active": "Interface entrante active ?",
-    "total_users": "Utilisateurs totaux",
+    "inbound_processdata_hint": "Ce JavaScript sera exécuté chaque fois que des données pour l'interface entrante sont demandées. Le script doit retourner un objet JSON (ou une promesse retournant un tel objet) avec la structure suivante : [{name: 'nom', description: 'description'}].",
+    "active": "Interface active ?",
+    "total_users": "Nombre total d'utilisateurs",
     "new_users": "Nouveaux utilisateurs (7 derniers jours)",
     "admin_users": "Utilisateurs administratifs",
-    "inactive_users": "Utilisateurs inactifs"
+    "inactive_users": "Utilisateurs inactifs",
+    "icon": "Icône",
+    "outbound_processdata_hint": "Ce JavaScript sera exécuté sur le serveur chaque fois que le bouton correspondant sera cliqué par un utilisateur dans la page de détails. Le script recevra les données actuellement affichées dans la variable 'data' et aura accès à la fonction fetch du nœud pour envoyer des données vers un système externe. Il n'est pas nécessaire de retourner une valeur, toutes les erreurs seront capturées et affichées à l'utilisateur sous la forme d'une 'erreur interne du serveur 500'."
   },
   "wekan": {
     "list": "Liste Wekan",

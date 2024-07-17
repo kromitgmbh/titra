@@ -23,7 +23,6 @@ ostrio:loggerconsole
 faburem:client-server-logger
 email@2.2.6
 http@2.0.0
-tunguska:reactive-aggregate
 ostrio:flow-router-extra
 jquery@3.0.0
 faburem:accounts-anonymous

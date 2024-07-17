@@ -6,6 +6,11 @@ import Projects from '../projects'
 import Timecards from '../../timecards/timecards.js'
 import { checkAuthentication, getGlobalSettingAsync } from '../../../utils/server_method_helpers.js'
 
+/**
+ * Publishes all projects for the current user.
+ * @param {Number} projectLimit - The number of projects to return.
+ * @returns {Array} - The list of projects for the current user.
+ */
 Meteor.publish('myprojects', async function myProjects({ projectLimit }) {
   await checkAuthentication(this)
   check(projectLimit, Match.Maybe(Number))
@@ -15,6 +20,11 @@ Meteor.publish('myprojects', async function myProjects({ projectLimit }) {
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],
   })
 })
+/**
+ * Publishes a single project based on a provided projectId.
+ * @param {String} projectId - The project ID to filter projects by.
+ * @returns {Object} - The project that matches the projectId.
+ */
 Meteor.publish('singleProject', async function singleProject(projectId) {
   check(projectId, String)
   await checkAuthentication(this)
@@ -25,7 +35,11 @@ Meteor.publish('singleProject', async function singleProject(projectId) {
     _id: projectId,
   })
 })
-
+/**
+ * Publishes the calculated statistics for a project.
+ * @param {String} projectId - The project ID to filter statistics by.
+ * @returns {Object} - The statistics object for the project.
+ */
 Meteor.publish('projectStats', async function projectStats(projectId) {
   check(projectId, String)
   await checkAuthentication(this)
@@ -227,7 +241,11 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
   })
   return this.ready()
 })
-
+/**
+ * Publishes the project name based on the provided projectId.
+ * @param {String} _id - The project ID to filter projects by.
+ * @returns {String} - The name of the project that matches the projectId.
+ */
 Meteor.publish('publicProjectName', (_id) => {
   check(_id, String)
   return Projects.find({ _id }, { name: 1 })

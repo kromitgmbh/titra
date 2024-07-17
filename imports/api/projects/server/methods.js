@@ -569,6 +569,13 @@ const setRateForUser = new ValidatedMethod({
   },
 })
 
+/**
+ * Searches for a project based on the provided query.
+ *
+ * @param {Object} args - The arguments for the method.
+ * @param {string} args.query - The query string to search for.
+ * @returns {string|null} - The ID of the project with the highest similarity score to the query, or null if no projects are found.
+ */
 const searchForProject = new ValidatedMethod({
   name: 'searchForProject',
   validate(args) {

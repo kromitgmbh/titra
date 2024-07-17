@@ -15,12 +15,14 @@ import {
   totalHoursForPeriodMapper,
   waitForElement,
   getGlobalSetting,
+  showToast,
 } from '../../../../utils/frontend_helpers.js'
 
 Template.periodtimetable.onCreated(function periodtimetableCreated() {
   dayjs.extend(utc)
   this.periodTimecards = new ReactiveVar()
   this.totalPeriodTimeCards = new ReactiveVar()
+  this.outboundInterfaces = new ReactiveVar([])
   this.autorun(() => {
     if (this.data.project.get()
       && this.data.resource.get()
@@ -50,6 +52,14 @@ Template.periodtimetable.onCreated(function periodtimetableCreated() {
           this.totalPeriodTimeCards.set(result.totalEntries)
         }
       })
+    }
+  })
+  Meteor.call('outboundinterfaces.get', (error, result) => {
+    if (error) {
+      showToast(error)
+      console.error(error)
+    } else {
+      this.outboundInterfaces.set(result)
     }
   })
 })
@@ -119,6 +129,7 @@ Template.periodtimetable.helpers({
   totalPeriodTimeCards() {
     return Template.instance().totalPeriodTimeCards
   },
+  outboundInterfaces: () => Template.instance().outboundInterfaces?.get(),
 })
 Template.periodtimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
@@ -151,6 +162,17 @@ Template.periodtimetable.events({
       }
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'total time').createDownloadUrl(), `titra_total_time_${templateInstance.data.period.get()}.xlsx`)
+  },
+  'click .js-outbound-interface': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('outboundinterfaces.run', { data: templateInstance.periodTimecards.get().map(totalHoursForPeriodMapper), _id: templateInstance.$(event.currentTarget).data('interface-id') }, (error, result) => {
+      if (error) {
+        showToast(error)
+        console.error(error)
+      } else {
+        showToast(result)
+      }
+    })
   },
 })
 Template.periodtimetable.onDestroyed(() => {

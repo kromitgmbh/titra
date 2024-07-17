@@ -3,6 +3,10 @@ import { MongoInternals } from 'meteor/mongo'
 import os from 'os'
 import { authenticationMixin } from '/imports/utils/server_method_helpers'
 
+/**
+ * Retrieves statistics related to the host running the titra application.
+ * @returns {Object} The statistics object containing information about the host running the titra application.
+ */
 const getStatistics = new ValidatedMethod({
   name: 'getStatistics',
   validate: null,

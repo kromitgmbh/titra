@@ -1,4 +1,4 @@
-<template name="inboundinterfacescomponent">
+<template name="outboundinterfacescomponent">
     <div class="container">
         <div class="card mb-3">
             <div class="card-header">
@@ -7,6 +7,10 @@
             <div class="card-block" id="addCustomField">
                 <form class="form">
                     <input class="d-none" type="text" id="_id" name="_id"/>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="faIcon" name="faIcon"/>
+                        <label for="name" class="form-label">{{t "administration.icon"}}</label>
+                    </div>
                     <div class="mb-3 form-floating">
                         <input class="form-control" type="text" id="name" name="name"/>
                         <label for="name" class="form-label">{{t "globals.name"}}</label>
@@ -18,37 +22,43 @@
                     <div class="mb-3 form-floating">
                         <textarea class="form-control mb-3" name="processData" id="processData" style="min-height:10rem;"></textarea>
                         <label for="processData" class="form-label">{{t "administration.process_data"}}</label>
-                        <span class="form-text">{{t "administration.inbound_processdata_hint"}}</span>
+                        <span class="form-text">{{t "administration.outbound_processdata_hint"}}</span>
                     </div>
                     <div class="form-check form-switch mb-3">
                         <input id="isActive" name="isActive" aria-label="Inbound interface active" class="form-check-input js-inbound-interface-state" type="checkbox">
                         <label for="isActive" class="form-label">{{t "administration.active"}}</label>
                     </div>
-                    <button type="reset" class="btn btn-secondary js-reset">{{t "globals.cancel"}}</button>
-                    <button type="button" class="btn btn-primary js-add-inbound-interface">{{t "administration.create"}}</button>
-                    <button type="button" class="btn btn-primary js-update-inbound-interface d-none ms-auto">{{t "navigation.save"}}</button>
+                    <button type="reset" class="btn btn-secondary">{{t "globals.cancel"}}</button>
+                    <button type="button" class="btn btn-primary js-create-outbound-interface">{{t "administration.create"}}</button>
+                    <button type="button" class="btn btn-primary js-update-outbound-interface d-none ms-auto">{{t "navigation.save"}}</button>
                 </form>
             </div>
         </div>
-        <h6>{{t "administration.inboundinterfaces"}}</h6>
-        <table class="table">
+        <h6>{{t "administration.outboundinterfaces"}}</h6>
+        <table class="table table-striped">
             <thead>
                 <tr>
+                    <th>{{t "administration.icon"}}</th>
                     <th>{{t "globals.name"}}</th>
                     <th>{{t "globals.description"}}</th>
+                    <th>{{t "administration.active"}}</th>
                     <th>{{t "tracktime.actions"}}</th>
                 </tr>
             </thead>
-            {{#each inboundInterface in inboundInterfaces}}
-                <tr>
-                    <td>{{inboundInterface.name}}</td>
-                    <td>{{inboundInterface.description}}</td>
-                    <td>
-                        <button class="btn js-edit-inbound-interface" data-interface-id="{{inboundInterface._id}}"><i class="fa fa-pencil"></i></button>
-                        <button class="btn js-remove-inbound-interface" data-interface-id="{{inboundInterface._id}}"><i class="fa fa-trash"></i></button>
-                    </td>
-                </tr>
-            {{/each}}
+            <tbody>
+                {{#each outboundInterface in outboundInterfaces}}
+                    <tr>
+                        <td>{{outboundInterface.faIcon}}</td>
+                        <td>{{outboundInterface.name}}</td>
+                        <td>{{outboundInterface.description}}</td>
+                        <td>{{outboundInterface.status}}</td>
+                        <td>
+                            <button class="btn btn-primary js-edit-outbound-interface" data-interface-id="{{outboundInterface._id}}"><i class="fa fa-pencil"></i></button>
+                            <button class="btn btn-danger js-delete-outbound-interface" data-interface-id="{{outboundInterface._id}}"><i class="fa fa-trash"></i></button>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
         </table>
     </div>
 </template>

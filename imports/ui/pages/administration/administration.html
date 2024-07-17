@@ -18,7 +18,10 @@
             <a class="nav-link" id="extensions-tab" data-bs-toggle="tab" href="#extensions" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.extensions"}}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="inboundinterfaces-tab" data-bs-toggle="tab" href="#inboundinterfaces" role="tab" aria-controls="extensions" aria-selected="false">{{t "administration.inboundinterfaces"}}</a>
+            <a class="nav-link" id="inboundinterfaces-tab" data-bs-toggle="tab" href="#inboundinterfaces" role="tab" aria-controls="outboundfinterfaces" aria-selected="false">{{t "administration.inboundinterfaces"}}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="outboundinterfaces-tab" data-bs-toggle="tab" href="#outboundinterfaces" role="tab" aria-controls="outboundinterfaces" aria-selected="false">{{t "administration.outboundinterfaces"}}</a>
         </li>
         {{#if getGlobalSetting "enableTransactions"}}
             <li class="nav-item">
@@ -66,6 +69,13 @@
             {{#if isActive "inboundinterfaces-tab"}}
                 {{#if i18nReady}}
                     {{>inboundinterfacescomponent}}
+                {{/if}}
+            {{/if}}
+        </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="outboundinterfaces">
+            {{#if isActive "outboundinterfaces-tab"}}
+                {{#if i18nReady}}
+                    {{>outboundinterfacescomponent}}
                 {{/if}}
             {{/if}}
         </div>

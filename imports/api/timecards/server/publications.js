@@ -1,9 +1,17 @@
-import { ReactiveAggregate } from 'meteor/tunguska:reactive-aggregate'
 import { Match } from 'meteor/check'
 import Timecards from '../timecards.js'
 import Projects from '../../projects/projects.js'
 import { checkAuthentication, buildDetailedTimeEntriesForPeriodSelectorAsync } from '../../../utils/server_method_helpers.js'
 
+/**
+   * Publishes the project list based on the provided period.
+   *
+   * @name periodTimecards
+   * @param {Object} this - The context of the current publication.
+   * @param {Date} startDate - The start date of the timecards.
+   * @param {Date} endDate - The end date of the timecards.
+   * @returns {Array} - The list of projects that match the period.
+   */
 Meteor.publish('periodTimecards', async function periodTimecards({ startDate, endDate, userId }) {
   check(startDate, Date)
   check(endDate, Date)
@@ -32,27 +40,11 @@ Meteor.publish('periodTimecards', async function periodTimecards({ startDate, en
     date: { $gte: startDate, $lte: endDate },
   })
 })
-Meteor.publish('userTimeCardsForPeriodByProjectByTask', async function periodTimecards({ projectId, startDate, endDate }) {
-  check(startDate, Date)
-  check(endDate, Date)
-  check(projectId, String)
-  await checkAuthentication(this)
-  return ReactiveAggregate(this, Timecards, [
-    {
-      $match: {
-        projectId,
-        userId: this.userId,
-        date: { $gte: startDate, $lte: endDate },
-      },
-    },
-    {
-      $group: {
-        _id: { $concat: ['$projectId', '|', '$task'] },
-        entries: { $push: '$$ROOT' },
-      },
-    },
-  ], { clientCollection: 'clientTimecards', specificWarnings: { objectId: false } })
-})
+/**
+ * Publishes timecards based on the provided start date.
+ *
+ * @param {Date} date - The start date for filtering timecards.
+ */
 Meteor.publish('myTimecardsForDate', async function myTimecardsForDate({ date }) {
   check(date, String)
   await checkAuthentication(this)
@@ -65,6 +57,18 @@ Meteor.publish('myTimecardsForDate', async function myTimecardsForDate({ date })
     date: { $gte: startDate, $lte: endDate },
   })
 })
+/**
+ * Publishes the counts of time entries for the provided period.
+ * @name getDetailedTimeEntriesForPeriodCount
+ * @param {string} projectId - The ID of the project.
+ * @param {string} userId - The ID of the user.
+ * @param {string} customer - The ID of the customer.
+ * @param {string} period - The period to filter the time entries.
+ * @param {Object} dates - The start and end dates for the custom period.
+ * @param {string} search - The search string.
+ * @param {Object} filters - The filters to apply.
+ * @returns {number} - The number of time entries that match the period.
+ */
 Meteor.publish('getDetailedTimeEntriesForPeriodCount', async function getDetailedTimeEntriesForPeriodCount({
   projectId,
   userId,
@@ -110,7 +114,21 @@ Meteor.publish('getDetailedTimeEntriesForPeriodCount', async function getDetaile
 
   this.onStop(() => handle.stop())
 })
-
+/**
+ * Publishes time entries for the provided period.
+ * @name getDetailedTimeEntriesForPeriod
+ * @param {string} projectId - The ID of the project.
+ * @param {string} userId - The ID of the user.
+ * @param {string} customer - The ID of the customer.
+ * @param {string} period - The period to filter the time entries.
+ * @param {Object} dates - The start and end dates for the custom period.
+ * @param {string} search - The search string.
+ * @param {Object} sort - The sort object.
+ * @param {number} limit - The number of time entries to return.
+ * @param {number} page - The page number.
+ * @param {Object} filters - The filters to apply.
+ * @returns {Array} - The list of time entries that match the period.
+ */
 Meteor.publish('getDetailedTimeEntriesForPeriod', async function getDetailedTimeEntriesForPeriod({
   projectId,
   userId,
@@ -147,7 +165,11 @@ Meteor.publish('getDetailedTimeEntriesForPeriod', async function getDetailedTime
   })
   return Timecards.find(selector[0], selector[1])
 })
-
+/**
+ * Publishes a single timecard based on the provided ID.
+ * @name singleTimecard
+ * @param {string} _id - The ID of the timecard.
+ */
 Meteor.publish('singleTimecard', async function singleTimecard(_id) {
   check(_id, String)
   await checkAuthentication(this)

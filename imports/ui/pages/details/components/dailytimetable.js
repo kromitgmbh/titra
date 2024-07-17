@@ -14,6 +14,7 @@ import {
   addToolTipToTableCell,
   dailyTimecardMapper,
   waitForElement,
+  showToast
 } from '../../../../utils/frontend_helpers'
 import { i18nReady, t } from '../../../../utils/i18n.js'
 
@@ -21,6 +22,7 @@ Template.dailytimetable.onCreated(function dailytimetablecreated() {
   dayjs.extend(utc)
   this.dailyTimecards = new ReactiveVar()
   this.totalEntries = new ReactiveVar()
+  this.outboundInterfaces = new ReactiveVar([])
   this.autorun(() => {
     if (this.data.project.get()
       && this.data.resource.get()
@@ -50,6 +52,14 @@ Template.dailytimetable.onCreated(function dailytimetablecreated() {
           this.totalEntries.set(result.totalEntries)
         }
       })
+    }
+  })
+  Meteor.call('outboundinterfaces.get', (error, result) => {
+    if (error) {
+      showToast(error)
+      console.error(error)
+    } else {
+      this.outboundInterfaces.set(result)
     }
   })
 })
@@ -133,12 +143,9 @@ Template.dailytimetable.onRendered(() => {
   })
 })
 Template.dailytimetable.helpers({
-  dailyTimecards() {
-    return Template.instance().dailyTimecards.get()
-  },
-  totalEntries() {
-    return Template.instance().totalEntries
-  },
+  dailyTimecards: () => Template.instance().dailyTimecards.get(),
+  totalEntries: () => Template.instance().totalEntries,
+  outboundInterfaces: () => Template.instance().outboundInterfaces?.get(),
 })
 Template.dailytimetable.events({
   'click .js-export-csv': (event, templateInstance) => {
@@ -178,6 +185,17 @@ Template.dailytimetable.events({
       }
     }
     saveAs(new NullXlsx('temp.xlsx', { frozen: 1, filter: 1 }).addSheetFromData(data, 'daily').createDownloadUrl(), `titra_daily_time_${templateInstance.data.period.get()}.xlsx`)
+  },
+  'click .js-outbound-interface': (event, templateInstance) => {
+    event.preventDefault()
+    Meteor.call('outboundinterfaces.run', { data: templateInstance.dailyTimecards.get().map(dailyTimecardMapper), _id: templateInstance.$(event.currentTarget).data('interface-id') }, (error, result) => {
+      if (error) {
+        showToast(error)
+        console.error(error)
+      } else {
+        showToast(result)
+      }
+    })
   },
 })
 Template.dailytimetable.onDestroyed(() => {

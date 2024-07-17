@@ -4,8 +4,6 @@ import { Globalsettings } from '../api/globalsettings/globalsettings.js'
 import { projectResources } from '../api/users/users.js'
 import Projects from '../api/projects/projects.js'
 
-const clientTimecards = new Mongo.Collection('clientTimecards')
-
 function getGlobalSetting(name) {
   return Globalsettings.findOne({ name }) ? Globalsettings.findOne({ name }).value : false
 }
@@ -227,7 +225,6 @@ function totalHoursForPeriodMapper(entry) {
 export {
   addToolTipToTableCell,
   getWeekDays,
-  clientTimecards,
   timeInUserUnit,
   displayUserAvatar,
   validateEmail,
