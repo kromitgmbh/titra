@@ -465,9 +465,8 @@ const sendToSiwapp = new ValidatedMethod({
         await Timecards.updateAsync({ _id: { $in: timeEntries } }, { $set: { state: 'billed' } }, { multi: true })
         return 'notifications.siwapp_success'
       }
-      return 'notifications.siwapp_configuration'
+      return response.statusText
     } catch (error) {
-      console.error(error)
       throw new Meteor.Error(error)
     }
   },
@@ -895,6 +894,11 @@ const userTimeCardsForPeriodByProjectByTaskMethod = new ValidatedMethod({
           userId: this.userId,
           date: { $gte: startDate, $lte: endDate },
         },
+      },
+      {
+        $sort: {
+          task: -1,
+        }
       },
       {
         $group: {

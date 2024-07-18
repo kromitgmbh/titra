@@ -45,7 +45,7 @@ Template.weektable.onCreated(function weekTableCreated() {
     }
   })
   this.autorun(() => {
-    if(this.startDate.get() && this.endDate.get() && this.weekTotal.get() === 0){
+    if(this.startDate?.get() !== undefined && this.endDate?.get() && this.weekTotal?.get() === 0){
       Meteor.call('getWeekTotal', {
         startDate: this.startDate.get().toDate(),
         endDate: this.endDate.get().toDate(),
@@ -167,15 +167,18 @@ Template.weektable.events({
             .val('')
           showToast(t('notifications.time_entry_updated'))
           $('tr').trigger('save')
-          weekTotal.set(0)
+          const tempStartDate = templateInstance.startDate.get()
+          templateInstance.startDate.set(undefined)
+          templateInstance.startDate.set(tempStartDate)
+          templateInstance.weekTotal.set(0)
         }
       })
     }
   },
   'click .js-delete-task': (event, templateInstance) => {
     event.preventDefault()
-    const startDate = templateInstance.startDate.get().toDate()
-    const endDate = templateInstance.endDate.get().toDate()
+    const startDate = templateInstance.startDate.get()?.toDate()
+    const endDate = templateInstance.endDate.get()?.toDate()
     const projectId = $(event.currentTarget).data('project-id')
     const task = $(event.currentTarget).data('task')
     if (confirm(t('notifications.delete_confirm'))) {
@@ -186,7 +189,10 @@ Template.weektable.events({
           console.error(error)
         } else {
           showToast(t('notifications.time_entry_deleted'))
-          weekTotal.set(0)
+          const tempStartDate = templateInstance.startDate.get()
+          templateInstance.startDate.set(undefined)
+          templateInstance.startDate.set(tempStartDate)
+          templateInstance.weekTotal.set(0)
         }
       })
     }
@@ -201,11 +207,11 @@ Template.weektablerow.onCreated(function weektablerowCreated() {
   this.methodTimeEntries = new ReactiveVar([])
   this.reactiveProjectId = new ReactiveVar()
   this.autorun(() => {
-    if (Template.instance().data.projectId && Template.instance().data.startDate.get() && Template.instance().data.endDate.get()) {
+    if (Template.instance().data.projectId && Template.instance().data.startDate?.get() && Template.instance().data.endDate?.get()) {
       Meteor.call('userTimeCardsForPeriodByProjectByTask', {
         projectId: Template.instance().data.projectId,
-        startDate: Template.instance().data.startDate.get().toDate(),
-        endDate: Template.instance().data.endDate.get().toDate(),
+        startDate: Template.instance().data.startDate?.get()?.toDate(),
+        endDate: Template.instance().data.endDate?.get()?.toDate(),
       }, (error, result) => {
         if (error) {
           console.error(error)
@@ -232,9 +238,33 @@ Template.weektablerow.events({
       timeEntries.push({ _id: '' })
       templateInstance.tempTimeEntries.set(timeEntries)
     }
+    Meteor.call('userTimeCardsForPeriodByProjectByTask', {
+      projectId: Template.instance().data.projectId,
+      startDate: Template.instance().data.startDate?.get()?.toDate(),
+      endDate: Template.instance().data.endDate?.get()?.toDate(),
+    }, (error, result) => {
+      if (error) {
+        console.error(error)
+      } else {
+        templateInstance.methodTimeEntries.set(result)
+      }
+    }
+    )
   },
   'click .js-collapse': (event, templateInstance) => {
     event.preventDefault()
+    Meteor.call('userTimeCardsForPeriodByProjectByTask', {
+      projectId: Template.instance().data.projectId,
+      startDate: Template.instance().data.startDate?.get()?.toDate(),
+      endDate: Template.instance().data.endDate?.get()?.toDate(),
+    }, (error, result) => {
+      if (error) {
+        console.error(error)
+      } else {
+        templateInstance.methodTimeEntries.set(result)
+      }
+    }
+    )
     templateInstance.$(event.currentTarget)
     templateInstance.$(templateInstance.$(event.currentTarget).data('target')).collapse('toggle')
     templateInstance.$(event.currentTarget).children('svg').toggleClass('fa-chevron-right')
@@ -255,10 +285,12 @@ Template.weektablerow.helpers({
     return Projects.findOne({ _id: projectId })?.color
   },
   weekDays() {
-    return getWeekDays(Template.instance().data.startDate.get())
+    return getWeekDays(Template.instance().data.startDate?.get())
   },
   tasks() {
-    return Template.instance().methodTimeEntries.get().map((entry) => ({ _id: entry._id.split('|')[1], entries: entry.entries })).concat(Template.instance().tempTimeEntries.get())
+    const sortedResult = Template.instance().methodTimeEntries?.get()
+    .map((entry) => ({ _id: entry._id.split('|')[1], entries: entry.entries })).concat(Template.instance().tempTimeEntries.get()).sort((a, b) => a._id.localeCompare(b._id))
+    return sortedResult
   },
   getHoursForDay(day, task) {
     if (task.entries && getGlobalSetting('weekviewDateFormat') && i18nReady.get()) {
