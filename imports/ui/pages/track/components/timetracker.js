@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import preciseDiff from 'dayjs-precise-range'
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import './timetracker.html'
-import { getGlobalSetting, getUserSetting } from '../../../../utils/frontend_helpers'
+import { getGlobalSetting, getUserSetting, timeInUserUnit } from '../../../../utils/frontend_helpers'
 import CustomFields from '../../../../api/customfields/customfields'
 import Projects from '../../../../api/projects/projects'
 
@@ -89,7 +89,11 @@ Template.timetracker.events({
     if (getGlobalSetting('useStartTime')) {
       $('#startTime').val(templateInstance.startTime.get())
     }
-    $('#hours').val(Number(hours).toFixed(getUserSetting('precision'))).trigger('change')
+    if (getUserSetting('timeunit')==='m') {
+      $('#hours').val(duration.minutes)
+    } else {
+      $('#hours').val(Number(hours).toFixed(getUserSetting('precision'))).trigger('change')
+    }
     if (project) {
       $('.js-target-project').get(0).setAttribute('data-value', project)
       $('.js-target-project').val(Projects.findOne({ _id: project })?.name).trigger('change')
