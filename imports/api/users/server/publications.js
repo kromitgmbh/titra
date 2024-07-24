@@ -166,7 +166,7 @@ Meteor.publish('projectResources', async function projectResources({ projectId }
     Timecards.find({ projectId: { $in: projectList } }).forEach((timecard) => {
       userIds.push(timecard.userId)
     })
-    handle = Timecards.find({ projectId: { $in: projectList } }).observeChanges({
+    handle = await Timecards.find({ projectId: { $in: projectList } }).observeChangesAsync({
       added: async (_id) => {
         if (!initializing) {
           const newUserId = await Timecards.findOneAsync(_id).userId
@@ -207,7 +207,7 @@ Meteor.publish('projectResources', async function projectResources({ projectId }
     Timecards.find(selector).forEach((timecard) => {
       userIds.push(timecard.userId)
     })
-    handle = Timecards.find(selector).observeChanges({
+    handle = await Timecards.find(selector).observeChangesAsync({
       added: async (_id) => {
         let newUserId = await Timecards.findOneAsync(_id)
         newUserId = newUserId?.userId

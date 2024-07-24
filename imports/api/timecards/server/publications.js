@@ -94,7 +94,7 @@ Meteor.publish('getDetailedTimeEntriesForPeriodCount', async function getDetaile
     projectId, search, customer, period, dates, userId, filters,
   })
   const countsId = projectId instanceof Array ? projectId.join('') : projectId
-  const handle = Timecards.find(selector[0], selector[1]).observeChanges({
+  const handle = await Timecards.find(selector[0], selector[1]).observeChangesAsync({
     added: () => {
       count += 1
 

@@ -13,10 +13,10 @@
       {{/unless}}
       <div class="col">
         {{#if isEdit}}
-        <label>{{t "globals.date"}}</label>
+        <label for="date">{{t "globals.date"}}</label>
         {{/if}}
         <div class="input-group">
-          <input type="text" class="js-date form-control text-center bg-primary text-white" value="{{date}}" aria-label="Date">
+          <input type="text" name="date" class="js-date form-control text-center bg-primary text-white" value="{{date}}" aria-label="Date">
           <span class="input-group-text bg-primary text-white js-open-calendar" style="cursor:pointer"><i class="fa fa-calendar"></i></span>
         </div>
       </div>

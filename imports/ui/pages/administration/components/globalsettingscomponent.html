@@ -1,7 +1,10 @@
 <template name="globalsettingscomponent">
     <div class="container">
         <div class="input-group my-3">
-            <input type="text" class="form-control js-globalsetting-search" placeholder="{{t 'details.search'}}"/>
+             <div class="form-floating">
+                <input type="text" id="search" class="form-control js-globalsetting-search" placeholder="{{t 'details.search'}}"/>
+                <label class="form-label" for="search">{{t 'details.search'}}</label>
+            </div>
             <button class="btn btn-outline-secondary rounded-end" type="button"><i class="fa fa-search"></i></button>
         </div>
     </div>

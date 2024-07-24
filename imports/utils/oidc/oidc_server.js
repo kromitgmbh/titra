@@ -2,7 +2,6 @@
 import { Meteor } from 'meteor/meteor'
 import { OAuth } from 'meteor/oauth'
 import { ServiceConfiguration } from 'meteor/service-configuration'
-import { HTTP } from 'meteor/http'
 
 const SERVICE_NAME = 'oidc'
 
@@ -25,23 +24,22 @@ async function getToken(query) {
   let response
 
   try {
-    response = HTTP.post(
-      serverTokenEndpoint,
-      {
-        headers: {
-          Accept: 'application/json',
-          'User-Agent': userAgent,
-        },
-        params: {
-          code: query.code,
-          client_id: config.clientId,
-          client_secret: OAuth.openSecret(config.secret),
-          redirect_uri: OAuth._redirectUri(SERVICE_NAME, config),
-          grant_type: 'authorization_code',
-          state: query.state,
-        },
+    response = await fetch(serverTokenEndpoint, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': userAgent,
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
-    )
+      body: new URLSearchParams({
+        code: query.code,
+        client_id: config.clientId,
+        client_secret: OAuth.openSecret(config.secret),
+        redirect_uri: OAuth._redirectUri(SERVICE_NAME, config),
+        grant_type: 'authorization_code',
+        state: query.state,
+      })
+    })
   } catch (err) {
     const error = new Error(`Failed to get token from OIDC ${serverTokenEndpoint}: ${err.message}`)
     error.response = err.response
@@ -55,14 +53,15 @@ async function getToken(query) {
   }
 }
 
-function getUserInfoFromEndpoint(accessToken, config, expiresAt) {
+async function getUserInfoFromEndpoint(accessToken, config, expiresAt) {
   const serverUserinfoEndpoint = `${config.serverUrl}${config.userinfoEndpoint}`
   let response
   try {
-    response = HTTP.get(serverUserinfoEndpoint, {
+    response = await fetch(serverUserinfoEndpoint, {
+      method: 'GET',
       headers: {
         'User-Agent': userAgent,
-        Authorization: `Bearer ${accessToken}`,
+        'Authorization': `Bearer ${accessToken}`,
       },
     })
   } catch (err) {
@@ -115,7 +114,7 @@ async function getUserInfo(accessToken, expiresAt) {
   const config = await getConfiguration()
 
   if (config.userinfoEndpoint) {
-    return getUserInfoFromEndpoint(accessToken, config, expiresAt)
+    return await getUserInfoFromEndpoint(accessToken, config, expiresAt)
   }
   return getUserInfoFromToken(accessToken)
 }

@@ -52,10 +52,10 @@ Template.allprojectschart.helpers({
       ? Template.instance().projectStats.get().totalHours : 0
   },
   showNotBillableTime: () => Template.instance().includeNotBillableTime.get(),
-  projectCount() {
+  async projectCount() {
     const selector = {}
     if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
-      const {startDate, endDate} = periodToDates(Template.instance().period.get())
+      const {startDate, endDate} = await periodToDates(Template.instance().period.get())
       selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
       { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
     }

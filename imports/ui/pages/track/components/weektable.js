@@ -44,28 +44,24 @@ Template.weektable.onCreated(function weekTableCreated() {
       this.endDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).isoWeekday(getUserSetting('startOfWeek')).add(6, 'day'), 'YYYY-MM-DD')
     }
   })
-  this.autorun(() => {
-    if(this.startDate?.get() !== undefined && this.endDate?.get() && this.weekTotal?.get() === 0){
-      Meteor.call('getWeekTotal', {
-        startDate: this.startDate.get().toDate(),
-        endDate: this.endDate.get().toDate(),
-      }, (error, result) => {
-        if (error) {
+  this.autorun(async () => {
+    if(this.startDate?.get() !== undefined && this.endDate?.get()){
+      try {
+        this.weekTotal.set(await Meteor.callAsync('getWeekTotal', {
+          startDate: this.startDate.get().toDate(),
+          endDate: this.endDate.get().toDate(),
+        }))
+      } catch (error) {
+        console.error(error)
+      }
+      try {
+        this.totalForWeekPerDay.set(await Meteor.callAsync('getTotalForWeekPerDay', {
+          startDate: this.startDate.get().toDate(),
+          endDate: this.endDate.get().toDate(),
+        }))
+        } catch (error) {
           console.error(error)
-        } else {
-          this.weekTotal.set(result)
-        }
-      })
-      Meteor.call('getTotalForWeekPerDay', {
-        startDate: this.startDate.get().toDate(),
-        endDate: this.endDate.get().toDate(),
-      }, (error, result) => {
-        if (error) {
-          console.error(error)
-        } else {
-          this.totalForWeekPerDay.set(result)
-        }
-      })
+      }
     }
   })
 })

@@ -13,7 +13,7 @@
       <!-- <option value="custom">Custom</option> -->
     </select>
     <i class="fas fa-chevron-down fa-xs position-absolute top-0 end-0 m-3 opacity-50"></i>
-    <label>{{t "period.time_period"}}</label>
+    <label for="period">{{t "period.time_period"}}</label>
   </div>
   <div class="modal fade js-custom-period-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -25,11 +25,11 @@
         </div>
         <div class="modal-body">
           <div class="mb-3">
-            <label>{{t "details.startTime"}}:</label>
+            <label for="customStartDate">{{t "details.startTime"}}:</label>
             <input aria-label='{{t "details.startTime"}}' class="form-control" name="customStartDate" id="customStartDate" type="date" value="{{startDate}}"/>
           </div>
           <div class="mb-3">
-            <label>{{t "details.endTime"}}:</label>
+            <label for="customEndDate">{{t "details.endTime"}}:</label>
             <input class="form-control" aria-label='{{t "details.endTime"}}' name="customEndDate" id="customEndDate" type="date" value="{{endDate}}"/>
           </div>
         </div>

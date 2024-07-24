@@ -725,7 +725,8 @@ const getGoogleWorkspaceData = new ValidatedMethod({
   },
   mixins: [authenticationMixin],
   async run({ startDate, endDate }) {
-    const { serviceData } = Meteor.user().services.googleapi
+    const meteorUser = await Meteor.userAsync()
+    const { serviceData } = meteorUser.services.googleapi
     let eventResponse = []
     if (serviceData) {
       const events = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?singleEvents=true&timeMax=${encodeURIComponent(endDate.toISOString())}&timeMin=${encodeURIComponent(startDate.toISOString())}`, {

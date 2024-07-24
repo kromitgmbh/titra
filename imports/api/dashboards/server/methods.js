@@ -28,7 +28,7 @@ const addDashboard = new ValidatedMethod({
   async run({
     projectId, resourceId, customer, timePeriod,
   }) {
-    const { startDate, endDate } = periodToDates(timePeriod)
+    const { startDate, endDate } = await periodToDates(timePeriod)
     const meteorUser = await Meteor.users.findOneAsync({ _id: this.userId })
     let timeunit = await getGlobalSettingAsync('timeunit')
     let hoursToDays = await getGlobalSettingAsync('hoursToDays')

@@ -39,7 +39,7 @@ Meteor.startup(async () => {
       registerGoogleAPI.default()
     })
   }
-  for (const extension of await Extensions.find({})) {
+  for (const extension of await Extensions.find({}).fetchAsync()) {
     if (extension.isActive) {
       if (extension.id === 'titra_ldap') {
         // extensions should bundle all their dependencies, however this does not work

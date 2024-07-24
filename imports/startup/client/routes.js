@@ -21,6 +21,8 @@ if (!Meteor.settings.public.sandstorm) {
     $('.popover').length > 0 ? $('.popover').remove() : null
   }], { except: ['claimAdmin'] })
 }
+// FlowRouter.decodeQueryParamsOnce = true;
+
 FlowRouter.route('*', {
   action: () => {
     this.render('appLayout', '404')

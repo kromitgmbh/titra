@@ -59,11 +59,11 @@ Template.projectlist.onRendered(() => {
   }, 1000)
 })
 Template.projectlist.helpers({
-  projects() {
+  async projects() {
     const limit = FlowRouter.getQueryParam('limit') ? Number(FlowRouter.getQueryParam('limit')) : 25
     const selector = {}
     if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
-      const {startDate, endDate} = periodToDates(Template.instance().period.get())
+      const {startDate, endDate} = await periodToDates(Template.instance().period.get())
       selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
       { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
     }
@@ -76,10 +76,10 @@ Template.projectlist.helpers({
     }
     return Projects.find(selector, { sort: { priority: 1, name: 1 }, limit })
   },
-  moreThanOneProject() {
+  async moreThanOneProject() {
     const selector = {}
     if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
-      const {startDate, endDate} = periodToDates(Template.instance().period.get())
+      const {startDate, endDate} = await periodToDates(Template.instance().period.get())
       selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
       { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
     }
@@ -105,10 +105,10 @@ Template.projectlist.helpers({
   archived(_id) {
     return Projects.findOne({ _id }).archived
   },
-  projectCount() {
+  async projectCount() {
     const selector = {}
     if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
-      const {startDate, endDate} = periodToDates(Template.instance().period.get())
+      const {startDate, endDate} = await periodToDates(Template.instance().period.get())
       selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
       { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
     }

@@ -62,7 +62,7 @@ const getAllProjectStats = new ValidatedMethod({
       },
     }
     if (period && period !== 'all') {
-      const {startDate, endDate} = periodToDates(period)
+      const {startDate, endDate} = await periodToDates(period)
       matchSelector.$match.date = { $gte: startDate, $lte: endDate }
     }
     const timecardAggregation = await Timecards.rawCollection().aggregate([matchSelector, { $group: { _id: null, totalHours: { $sum: '$hours' } } }]).toArray()
@@ -362,7 +362,7 @@ const getProjectDistribution = new ValidatedMethod({
         },
       }
       if (period && period !== 'all') {
-        const {startDate, endDate} = periodToDates(period)
+        const {startDate, endDate} = await periodToDates(period)
         matchSelector.$match.date = { $gte: startDate, $lte: endDate }
       }
       return rawCollection.aggregate([matchSelector, { $group: { _id: '$projectId', count: { $sum: '$hours' } } }, { $sort: { projectId: 1 } }]).toArray()
@@ -371,7 +371,7 @@ const getProjectDistribution = new ValidatedMethod({
       $match: { projectId },
     }
     if (period) {
-      const {startDate, endDate} = periodToDates(period)
+      const {startDate, endDate} = await periodToDates(period)
       matchSelector.$match.date = { $gte: startDate, $lte: endDate }
     }
     return rawCollection.aggregate([matchSelector, { $group: { _id: '$projectId', count: { $sum: '$hours' } } }, { $sort: { projectId: 1 } }]).toArray()

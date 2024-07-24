@@ -35,9 +35,9 @@ Template.navbar.events({
     event.preventDefault()
     Meteor.logout()
   },
-  'change #timeunit': (event, templateInstance) => {
+  'change #timeunitnavbar': (event, templateInstance) => {
     event.preventDefault()
-    Meteor.call('updateTimeUnit', { timeunit: templateInstance.$('#timeunit').val() }, (error, result) => {
+    Meteor.call('updateTimeUnit', { timeunit: templateInstance.$('#timeunitnavbar').val() }, (error, result) => {
       if (error) {
         console.error(error)
       }

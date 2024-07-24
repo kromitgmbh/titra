@@ -15,7 +15,7 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
     restart: always
   mongodb:
-    image: mongo:5.0
+    image: mongo:7.0
     container_name: titra_db
     restart: always
     environment:

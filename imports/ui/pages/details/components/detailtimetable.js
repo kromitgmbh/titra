@@ -20,7 +20,7 @@ import {
 } from '../../../../utils/frontend_helpers'
 import { projectResources } from '../../../../api/users/users.js'
 import Projects from '../../../../api/projects/projects'
-import { buildDetailedTimeEntriesForPeriodSelector } from '../../../../utils/server_method_helpers'
+import { buildDetailedTimeEntriesForPeriodSelectorAsync } from '../../../../utils/server_method_helpers'
 import './detailtimetable.html'
 import './pagination.js'
 import './limitpicker.js'
@@ -98,9 +98,36 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
       && this.data.customer.get()
       && this.data.period.get()
       && this.data.limit.get()) {
-      this.myProjectsHandle = this.subscribe('myprojects', {})
-      this.projectResourcesHandle = this.subscribe('projectResources', { projectId: this.data.project.get() })
-      this.selector.set(buildDetailedTimeEntriesForPeriodSelector({
+        this.myProjectsHandle = this.subscribe('myprojects', {})
+        this.projectResourcesHandle = this.subscribe('projectResources', { projectId: this.data.project.get() })
+        const subscriptionParameters = {
+          projectId: this.data.project.get(),
+          userId: this.data.resource.get(),
+          customer: this.data.customer.get(),
+          period: this.data.period.get(),
+          limit: this.data.limit.get(),
+          search: this.search.get(),
+          sort: this.sort.get(),
+          page: Number(FlowRouter.getQueryParam('page')),
+          filters: this.filters.get(),
+        }
+        if (this.data.period.get() === 'custom') {
+          subscriptionParameters.dates = {
+            startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
+            endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
+          }
+        }
+        this.detailedEntriesPeriodCountHandle = this.subscribe('getDetailedTimeEntriesForPeriodCount', subscriptionParameters)
+        this.detailedTimeEntriesForPeriodHandle = this.subscribe('getDetailedTimeEntriesForPeriod', subscriptionParameters)
+    }
+  })
+  this.autorun(async () => {
+    if (this.data.project.get()
+      && this.data.resource.get()
+      && this.data.customer.get()
+      && this.data.period.get()
+      && this.data.limit.get()) {
+      this.selector.set(await buildDetailedTimeEntriesForPeriodSelectorAsync({
         projectId: this.data.project.get(),
         search: this.search.get(),
         customer: this.data.customer.get(),
@@ -116,25 +143,6 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
         filters: this.filters.get(),
       }))
       delete this.selector.get()[1].skip
-      const subscriptionParameters = {
-        projectId: this.data.project.get(),
-        userId: this.data.resource.get(),
-        customer: this.data.customer.get(),
-        period: this.data.period.get(),
-        limit: this.data.limit.get(),
-        search: this.search.get(),
-        sort: this.sort.get(),
-        page: Number(FlowRouter.getQueryParam('page')),
-        filters: this.filters.get(),
-      }
-      if (this.data.period.get() === 'custom') {
-        subscriptionParameters.dates = {
-          startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
-          endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
-        }
-      }
-      this.detailedEntriesPeriodCountHandle = this.subscribe('getDetailedTimeEntriesForPeriodCount', subscriptionParameters)
-      this.detailedTimeEntriesForPeriodHandle = this.subscribe('getDetailedTimeEntriesForPeriod', subscriptionParameters)
     }
   })
   Meteor.call('outboundinterfaces.get', (error, result) => {
@@ -150,9 +158,10 @@ Template.detailtimetable.onRendered(() => {
   const templateInstance = Template.instance()
   dayjs.extend(utc)
   templateInstance.autorun(() => {
-    if (templateInstance.detailedTimeEntriesForPeriodHandle.ready()
-      && templateInstance.detailedEntriesPeriodCountHandle.ready()
-      && templateInstance.projectResourcesHandle.ready() && i18nReady.get()) {
+    if (templateInstance.detailedTimeEntriesForPeriodHandle?.ready()
+      && templateInstance.detailedEntriesPeriodCountHandle?.ready()
+      && templateInstance.projectResourcesHandle?.ready() && i18nReady.get()
+      && templateInstance.selector.get()) {
       const data = Timecards.find(
         templateInstance.selector.get()[0],
         templateInstance.selector.get()[1],
@@ -428,20 +437,26 @@ Template.detailtimetable.onRendered(() => {
 })
 Template.detailtimetable.helpers({
   detailTimeEntries() {
-    return Timecards
-      .find(
-        Template.instance().selector.get()[0],
-        Template.instance().selector.get()[1],
-      ).count() > 0
-      ? Timecards.find(
-        Template.instance().selector.get()[0],
-        Template.instance().selector.get()[1],
-      ) : false
+    if(Template.instance().selector.get()) {
+      return Timecards
+        .find(
+          Template.instance().selector.get()[0],
+          Template.instance().selector.get()[1],
+        ).count() > 0
+        ? Timecards.find(
+          Template.instance().selector.get()[0],
+          Template.instance().selector.get()[1],
+        ) : false
+    }
+    return false
   },
   detailTimeSum() {
-    return timeInUserUnit(Timecards
-      .find(Template.instance().selector.get()[0], Template.instance().selector.get()[1])
-      .fetch().reduce(((total, element) => total + element.hours), 0))
+    if(Template.instance().selector.get()) {
+      return timeInUserUnit(Timecards
+        .find(Template.instance().selector.get()[0], Template.instance().selector.get()[1])
+        .fetch().reduce(((total, element) => total + element.hours), 0))
+      }
+    return 0
   },
   totalDetailTimeEntries() {
     return Template.instance().totalDetailTimeEntries
@@ -704,6 +719,7 @@ Template.detailtimetable.events({
   'mouseup .dt-cell--header > .dt-cell__content': (event, templateInstance) => {
     event.preventDefault()
     window.setTimeout(() => {
+      templateInstance.datatable.setDimensions()
       templateInstance.$('.dt-scrollable').height(`${parseInt(document.querySelector('.dt-row.vrow:last-of-type')?.style.top, 10) + 40}px`)
     }, 100)
   },
