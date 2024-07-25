@@ -17,57 +17,33 @@ Template.projectlist.onCreated(function createProjectList() {
   this.showArchived = new ReactiveVar(false)
   this.projectId = new ReactiveVar(null)
   this.period = new ReactiveVar('all')
+  this.startDate = new ReactiveVar(null)
+  this.endDate = new ReactiveVar(null)
   this.autorun(() => {
     this.showArchived.set(FlowRouter.getQueryParam('showArchived') === 'true')
     this.period.set(FlowRouter.getQueryParam('period') || 'all')
   })
+  this.autorun(async () => {
+    if(this.period.get() !== 'all') {
+      const {startDate, endDate} = await periodToDates(templateInstance.period.get())
+      this.startDate.set(startDate)
+      this.endDate.set(endDate)
+    }
+  })
 })
 Template.projectlist.onRendered(() => {
-  Meteor.setTimeout(() => {
-    import('sortablejs').then((sortableImport) => {
-      const Sortable = sortableImport.default
-      const el = document.querySelector('.js-project-list')
-      if (el) {
-        Sortable.create(el, {
-          handle: '.handle',
-          onChoose: (evt) => {
-            document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
-              element.classList.add('d-none')
-            })
-            document.querySelectorAll('.progress-bar').forEach((element) => {
-              element.classList.add('d-none')
-            })
-          },
-          onEnd: (evt) => {
-            document.querySelectorAll('.js-project-list .card-body').forEach((element) => {
-              element.classList.remove('d-none')
-            })
-            document.querySelectorAll('.progress-bar').forEach((element) => {
-              element.classList.remove('d-none')
-            })
-            const projectId = $(evt.item).children('.card-body').children('.row.mt-2')[0].id
-            const priority = evt.newIndex
-            Meteor.call('updatePriority', { projectId, priority }, (error, result) => {
-              if (error) {
-                console.error(error)
-              }
-            })
-          },
-        })
-      }
-    })
-  }, 1000)
+  // Template.instance().subscribe('myprojects', {})
 })
 Template.projectlist.helpers({
-  async projects() {
+  projects() {
+    const templateInstance = Template.instance()
     const limit = FlowRouter.getQueryParam('limit') ? Number(FlowRouter.getQueryParam('limit')) : 25
     const selector = {}
-    if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
-      const {startDate, endDate} = await periodToDates(Template.instance().period.get())
-      selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
-      { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
+    if(templateInstance.period?.get() && templateInstance.period.get() !== 'all'){
+      selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: templateInstance.startDate.get() } }] },
+      { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: templateInstance.endDate.get() } }] }]
     }
-    if(!Template.instance().showArchived?.get()) {
+    if(!templateInstance.showArchived?.get()) {
       if(selector.$and) {
         selector.$and.push({ $or: [{ archived: { $exists: false } }, { archived: false }] })
       } else {
@@ -76,14 +52,14 @@ Template.projectlist.helpers({
     }
     return Projects.find(selector, { sort: { priority: 1, name: 1 }, limit })
   },
-  async moreThanOneProject() {
+  moreThanOneProject() {
     const selector = {}
-    if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
-      const {startDate, endDate} = await periodToDates(Template.instance().period.get())
-      selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
-      { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
+    const templateInstance = Template.instance()
+    if(templateInstance.period?.get() && templateInstance.period.get() !== 'all'){
+      selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: templateInstance.startDate.get() } }] },
+      { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: templateInstance.endDate.get() } }] }]
     }
-    if(!Template.instance().showArchived?.get()) {
+    if(!templateInstance.showArchived?.get()) {
       if(selector.$and) {
         selector.$and.push({ $or: [{ archived: { $exists: false } }, { archived: false }] })
       } else {
@@ -105,14 +81,14 @@ Template.projectlist.helpers({
   archived(_id) {
     return Projects.findOne({ _id }).archived
   },
-  async projectCount() {
+  projectCount() {
     const selector = {}
-    if(Template.instance().period?.get() && Template.instance().period.get() !== 'all'){
-      const {startDate, endDate} = await periodToDates(Template.instance().period.get())
-      selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: startDate } }] },
-      { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: endDate } }] }]
+    const templateInstance = Template.instance()
+    if(templateInstance.period?.get() && templateInstance.period.get() !== 'all'){
+      selector.$and = [{ $or: [ { startDate: { $exists: false } }, { startDate: { $gte: templateInstance.startDate.get() } }] },
+      { $or: [{ endDate: {$exists: false } }, { endDate: { $lte: templateInstance.endDate.get() } }] }]
     }
-    if(!Template.instance().showArchived?.get()) {
+    if(!templateInstance.showArchived?.get()) {
       if(selector.$and) {
         selector.$and.push({ $or: [{ archived: { $exists: false } }, { archived: false }] })
       } else {

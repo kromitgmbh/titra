@@ -12,7 +12,11 @@ import { checkAuthentication, getGlobalSettingAsync } from '../../../utils/serve
  * @returns {Array} - The list of projects for the current user.
  */
 Meteor.publish('myprojects', async function myProjects({ projectLimit }) {
-  await checkAuthentication(this)
+  if(this.userId) {
+    await checkAuthentication(this)
+  } else {
+    return this.ready()
+  }
   check(projectLimit, Match.Maybe(Number))
   return projectLimit ? Projects.find({
     $or: [{ userId: this.userId }, { public: true }, { team: this.userId }],

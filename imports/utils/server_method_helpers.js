@@ -99,6 +99,7 @@ async function checkAuthentication(context) {
   if (!context.userId || meteorUser?.inactive) {
     throw new Meteor.Error('notifications.auth_error_method')
   }
+  return true
 }
 /**
  * Checks if the current user is authenticated and an admin.

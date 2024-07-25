@@ -144,7 +144,7 @@ Template.allprojectschart.onRendered(() => {
             }
             const colors = []
             for (const project of templateInstance.projectDistribution.get()) {
-              colors.push(Projects.findOne({ _id: project._id }).color ? Projects.findOne({ _id: project._id }).color : '#009688')
+              colors.push(Projects.findOne({ _id: project._id })?.color ? Projects.findOne({ _id: project._id })?.color : '#009688')
             }
             templateInstance.piechart = new Chart(templateInstance.$('.js-pie-chart-container')[0], {
               type: 'pie',
@@ -152,7 +152,7 @@ Template.allprojectschart.onRendered(() => {
               height: 230,
               data: {
                 labels: templateInstance.projectDistribution.get()
-                  .map((project) => $('<span>').text(Projects.findOne({ _id: project._id }).name).html()),
+                  .map((project) => $('<span>').text(Projects.findOne({ _id: project._id })?.name).html()),
                 datasets: [{
                   values: templateInstance.projectDistribution.get().map((project) => project.count),
                 }],
