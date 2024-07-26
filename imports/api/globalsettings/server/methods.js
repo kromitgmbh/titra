@@ -54,7 +54,7 @@ const resetGlobalsetting = new ValidatedMethod({
   },
   mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({ name }) {
-    Globalsettings.remove({ name })
+    await Globalsettings.removeAsync({ name })
     for (const setting of defaultSettings) {
       if (setting.name === name) {
         // eslint-disable-next-line no-await-in-loop

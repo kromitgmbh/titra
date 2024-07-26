@@ -43,7 +43,7 @@ const addExtension = new ValidatedMethod({
     }
     const existingExtension = await Extensions.findOneAsync({ name: newExtension.name })
     if (!existingExtension) {
-      Extensions.insert(newExtension)
+      await Extensions.insertAsync(newExtension)
       return 'notifications.success'
     }
     throw new Meteor.Error('Extension has been added before.')
@@ -68,7 +68,7 @@ const removeExtension = new ValidatedMethod({
   async run({ extensionId }) {
     const extension = await Extensions.findOneAsync({ _id: extensionId })
     if (extension) {
-      Extensions.remove({ _id: extension._id })
+      await Extensions.removeAsync({ _id: extension._id })
       return 'notifications.success'
     }
     return new Meteor.Error('Extension does not exist.')

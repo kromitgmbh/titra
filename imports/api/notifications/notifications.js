@@ -19,8 +19,8 @@ async function addNotification(message, userId) {
     recipient = meteorUser.emails[0].address
     await Notifications.removeAsync({ userId })
     await Notifications.insertAsync({ _id: id, userId, message })
-    Meteor.setTimeout(() => {
-      Notifications.remove({ _id: id })
+    Meteor.setTimeout(async () => {
+      await Notifications.removeAsync({ _id: id })
     }, 60000)
   } else {
     recipient = userId
