@@ -21,7 +21,7 @@ Meteor.publish('projectUsers', async function projectUsers({ projectId }) {
       { _id: 1 },
     ).fetchAsync()
     projectList = projectList.map((value) => value._id)
-    if (Timecards.find({ projectId: { $in: projectList } }).count() <= 0) {
+    if (await Timecards.find({ projectId: { $in: projectList } }).countAsync() <= 0) {
       return this.ready()
     }
     Timecards.find({ projectId: { $in: projectList } }).forEach((timecard) => {
