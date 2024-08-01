@@ -82,4 +82,4 @@ async function timeInUserUnitAsync(time, meteorUser) {
   }
   return Number(time).toFixed(precision)
 }
-export { periodToDates, timeInUserUnit, timeInUserUnitAsyncs }
+export { periodToDates, timeInUserUnit, timeInUserUnitAsync }
