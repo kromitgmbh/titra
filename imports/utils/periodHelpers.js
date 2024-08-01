@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import isoWeek from 'dayjs/plugin/isoWeek'
-import { getGlobalSetting, getUserSetting } from './frontend_helpers'
+import { getGlobalSetting, getGlobalSettingAsync, getUserSetting } from './frontend_helpers'
 import { getUserSettingAsync } from './server_method_helpers'
 
 async function periodToDates(period) {
@@ -66,4 +66,20 @@ function timeInUserUnit(time, meteorUser) {
   }
   return Number(time).toFixed(precision)
 }
-export { periodToDates, timeInUserUnit }
+async function timeInUserUnitAsync(time, meteorUser) {
+  const precision = meteorUser?.profile?.precision ? meteorUser.profile.precision : await getGlobalSettingAsync('precision')
+  if (meteorUser?.profile?.timeunit === 'd') {
+    let hoursToDays = await getGlobalSettingAsync('hoursToDays')
+    if (meteorUser?.profile?.hoursToDays) {
+      hoursToDays = meteorUser.profile.hoursToDays
+    }
+    const convertedTime = Number(time / hoursToDays).toFixed(precision)
+    return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
+  }
+  if (meteorUser?.profile?.timeunit === 'm') {
+    const convertedTime = Number(time * 60).toFixed(precision)
+    return convertedTime !== Number(0).toFixed(precision) ? convertedTime : undefined
+  }
+  return Number(time).toFixed(precision)
+}
+export { periodToDates, timeInUserUnit, timeInUserUnitAsyncs }

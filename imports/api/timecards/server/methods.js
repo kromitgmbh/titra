@@ -8,7 +8,7 @@ import Tasks from '../../tasks/tasks.js'
 import Projects from '../../projects/projects.js'
 import { t } from '../../../utils/i18n.js'
 import { emojify } from '../../../utils/frontend_helpers'
-import { timeInUserUnit } from '../../../utils/periodHelpers.js'
+import { timeInUserUnitAsync } from '../../../utils/periodHelpers.js'
 import {
   authenticationMixin,
   transactionLogMixin,
@@ -441,11 +441,11 @@ const sendToSiwapp = new ValidatedMethod({
     for await (const [project, resources] of projectMap.entries()) {
       const projectElement = await Projects.findOneAsync({ _id: project })
       if (resources.size > 0) {
-        for (const [resource, hours] of resources) {
+        for (const [resource, hours] of resourcses) {
           invoiceJSON.data.relationships.items.data.push({
             attributes: {
               description: `${projectElement.name} (${resource})`,
-              quantity: timeInUserUnit(hours, meteorUser),
+              quantity: await timeInUserUnitAsync(hours, meteorUser),
               unitary_cost: 0,
             },
           })
