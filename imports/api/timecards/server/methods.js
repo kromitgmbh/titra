@@ -441,7 +441,7 @@ const sendToSiwapp = new ValidatedMethod({
     for await (const [project, resources] of projectMap.entries()) {
       const projectElement = await Projects.findOneAsync({ _id: project })
       if (resources.size > 0) {
-        for (const [resource, hours] of resourcses) {
+        for (const [resource, hours] of resources) {
           invoiceJSON.data.relationships.items.data.push({
             attributes: {
               description: `${projectElement.name} (${resource})`,
