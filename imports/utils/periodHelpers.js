@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import isoWeek from 'dayjs/plugin/isoWeek'
-import { getGlobalSetting, getGlobalSettingAsync, getUserSetting } from './frontend_helpers'
-import { getUserSettingAsync } from './server_method_helpers'
+import { getGlobalSetting, getUserSetting } from './frontend_helpers'
+import { getUserSettingAsync, getGlobalSettingAsync } from './server_method_helpers'
 
 async function periodToDates(period) {
   check(period, String)
