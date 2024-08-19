@@ -122,12 +122,12 @@ const getProjectUsers = new ValidatedMethod({
         team.push(project.userId)
       }
       team = team.filter((value, index, self) => self.indexOf(value) === index)
-      for (const member of team) {
+      await Promise.all(team.map(async (member) => {
         const user = await Meteor.users.findOneAsync({ _id: member })
         if (user && user.inactive !== true) {
           data.push({ _id: user._id, profile: user.profile })
         }
-      }
+      }))
     }
     return data
   },
@@ -168,10 +168,10 @@ const updateProject = new ValidatedMethod({
     } else {
       updateJSON.notbillable = true
     }
-    if(updateJSON.startDate) {
+    if (updateJSON.startDate) {
       updateJSON.startDate = new Date(updateJSON.startDate)
     }
-    if(updateJSON.endDate) {
+    if (updateJSON.endDate) {
       updateJSON.endDate = new Date(updateJSON.endDate)
     }
     await Projects.updateAsync({
@@ -362,7 +362,7 @@ const getProjectDistribution = new ValidatedMethod({
         },
       }
       if (period && period !== 'all') {
-        const {startDate, endDate} = await periodToDates(period)
+        const { startDate, endDate } = await periodToDates(period)
         matchSelector.$match.date = { $gte: startDate, $lte: endDate }
       }
       return rawCollection.aggregate([matchSelector, { $group: { _id: '$projectId', count: { $sum: '$hours' } } }, { $sort: { projectId: 1 } }]).toArray()
@@ -371,7 +371,7 @@ const getProjectDistribution = new ValidatedMethod({
       $match: { projectId },
     }
     if (period) {
-      const {startDate, endDate} = await periodToDates(period)
+      const { startDate, endDate } = await periodToDates(period)
       matchSelector.$match.date = { $gte: startDate, $lte: endDate }
     }
     return rawCollection.aggregate([matchSelector, { $group: { _id: '$projectId', count: { $sum: '$hours' } } }, { $sort: { projectId: 1 } }]).toArray()
@@ -574,7 +574,8 @@ const setRateForUser = new ValidatedMethod({
  *
  * @param {Object} args - The arguments for the method.
  * @param {string} args.query - The query string to search for.
- * @returns {string|null} - The ID of the project with the highest similarity score to the query, or null if no projects are found.
+ * @returns {string|null} - The ID of the project with the highest
+ * similarity score to the query, or null if no projects are found.
  */
 const searchForProject = new ValidatedMethod({
   name: 'searchForProject',

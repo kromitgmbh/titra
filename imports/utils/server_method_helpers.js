@@ -641,7 +641,7 @@ function transactionLogMixin(methodOptions) {
         args: JSON.stringify(args),
         timestamp: new Date(),
       }
-      Transactions.insert(transaction)
+      await Transactions.insertAsync(transaction)
     }
     return runFunc.call(this, args)
   }

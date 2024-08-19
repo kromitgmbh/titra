@@ -10,7 +10,7 @@ Meteor.startup(async () => {
   AccountsAnonymous.init()
   for await (const setting of defaultSettings) {
     if (!await Globalsettings.findOneAsync({ name: setting.name })) {
-      Globalsettings.insert(setting)
+      await Globalsettings.insertAsync(setting)
     }
   }
   if (Meteor.settings.disablePublic) {
