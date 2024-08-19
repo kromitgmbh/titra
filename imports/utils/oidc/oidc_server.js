@@ -21,64 +21,56 @@ async function getConfiguration() {
 async function getToken(query) {
   const config = await getConfiguration()
   const serverTokenEndpoint = `${config.serverUrl}${config.tokenEndpoint}`
-  let response
 
-  try {
-    response = await fetch(serverTokenEndpoint, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': userAgent,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-        code: query.code,
-        client_id: config.clientId,
-        client_secret: OAuth.openSecret(config.secret),
-        redirect_uri: OAuth._redirectUri(SERVICE_NAME, config),
-        grant_type: 'authorization_code',
-        state: query.state,
-      })
+  const request = await fetch(serverTokenEndpoint, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'User-Agent': userAgent,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      code: query.code,
+      client_id: config.clientId,
+      client_secret: OAuth.openSecret(config.secret),
+      redirect_uri: OAuth._redirectUri(SERVICE_NAME, config),
+      grant_type: 'authorization_code',
+      state: query.state,
     })
-  } catch (err) {
-    const error = new Error(`Failed to get token from OIDC ${serverTokenEndpoint}: ${err.message}`)
-    error.response = err.response
-    throw error
-  }
-  if (response.data.error) {
-    // if the http response was a json object with an error attribute
-    throw new Error(`Failed to complete handshake with OIDC ${serverTokenEndpoint}: ${response.data.error}`)
+  });
+
+  const response = await request.json();
+
+  if(response.error) {
+    throw new Error(`Failed to get token from OIDC ${serverTokenEndpoint}: ${response.error}`);
   } else {
-    return response.data
+    return response;
   }
 }
 
 async function getUserInfoFromEndpoint(accessToken, config, expiresAt) {
   const serverUserinfoEndpoint = `${config.serverUrl}${config.userinfoEndpoint}`
-  let response
-  try {
-    response = await fetch(serverUserinfoEndpoint, {
-      method: 'GET',
-      headers: {
-        'User-Agent': userAgent,
-        'Authorization': `Bearer ${accessToken}`,
-      },
-    })
-  } catch (err) {
-    const error = new Error(`Failed to fetch userinfo from OIDC ${serverUserinfoEndpoint}: ${err.message}`)
-    error.response = err.response
-    throw error
-  }
+  const request = await fetch(serverUserinfoEndpoint, {
+    method: 'GET',
+    headers: {
+      'User-Agent': userAgent,
+      'Authorization': `Bearer ${accessToken}`,
+    },
+  });
 
-  const userinfo = response.data
-  return {
-    id: userinfo.id || userinfo.sub,
-    username: userinfo.username || userinfo.preferred_username,
-    accessToken: OAuth.sealSecret(accessToken),
-    expiresAt,
-    email: userinfo.email,
-    name: userinfo.name,
-  }
+  const response = await request.json();
+
+  if(response.error) {
+    throw new Error(`Failed to get userinfo from OIDC ${serverUserinfoEndpoint}: ${response.error}`);
+  } else
+    return {
+      id: response.id || response.sub,
+      username: response.username || response.preferred_username,
+      accessToken: OAuth.sealSecret(accessToken),
+      expiresAt,
+      email: response.email,
+      name: response.name,
+    }
 }
 
 function getTokenContent(token) {
