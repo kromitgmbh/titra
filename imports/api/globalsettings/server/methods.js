@@ -1,6 +1,7 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { defaultSettings, Globalsettings } from '../globalsettings.js'
 import { adminAuthenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers.js'
+import { Oidc } from '../../../utils/oidc/oidc_server.js'
 
 /**
 @summary Updates global settings
@@ -75,11 +76,22 @@ const updateOidcSettings = new ValidatedMethod({
     check(configuration, Object)
   },
   mixins: [adminAuthenticationMixin, transactionLogMixin],
-  async run({ configuration }) {
-    await ServiceConfiguration.configurations.removeAsync({
-      service: 'oidc',
-    })
-    await ServiceConfiguration.configurations.insertAsync(configuration)
+  async run({ configuration }) {    
+    if(configuration.secret && configuration.secret.length > 0) {
+      try {
+        await Oidc.registerOidc()
+      } catch (ignored) {}
+    } else {
+      delete configuration.secret
+    }
+
+    for (const [key, value] of Object.entries(configuration)) {
+      await ServiceConfiguration.configurations.updateAsync({ service: 'oidc' }, {
+        $set: {
+          [key]: value,
+        },
+      })
+    }
   },
 })
 /**
