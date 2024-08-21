@@ -41,11 +41,6 @@ Meteor.startup(async () => {
   }
   for (const extension of await Extensions.find({}).fetchAsync()) {
     if (extension.isActive) {
-      if (extension.id === 'titra_ldap') {
-        // extensions should bundle all their dependencies, however this does not work
-        // for ldapjs because the maintainer refuses to support transpilation
-        import('ldapjs')
-      }
       // eslint-disable-next-line no-eval
       eval(extension.server)
     }

@@ -20,7 +20,7 @@
     "cl-editor": "^2.3.0",
     "content-type": "^1.0.5",
     "date-holidays": "^3.23.12",
-    "dayjs": "^1.11.12",
+    "dayjs": "^1.11.13",
     "dayjs-precise-range": "^1.0.1",
     "docker-names": "^1.2.1",
     "file-saver": "^2.0.5",
