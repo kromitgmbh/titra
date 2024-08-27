@@ -228,7 +228,8 @@
     "openai": "Open AI API Key",
     "show_resource_in_details": "Show/export resource field in details view?",
     "allow_individual_task_rates": "Allow individual task rates?",
-    "show_rate_in_details": "Show/export rate field in details view?"
+    "show_rate_in_details": "Show/export rate field in details view?",
+    "enable_LDAP": "Enable LDAP login?"
   },
   "customer": {
     "select_customer": "Select a customer",

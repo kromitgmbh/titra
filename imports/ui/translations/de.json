@@ -228,7 +228,8 @@
     "openai": "Open AI API Key",
     "show_resource_in_details": "Ressource in Detailansicht anzeigen/exportieren?",
     "allow_individual_task_rates": "Individuelle Stundensätze für Tätigkeiten erlauben?",
-    "show_rate_in_details": "Rate in Detailansicht anzeigen/exportieren?"
+    "show_rate_in_details": "Rate in Detailansicht anzeigen/exportieren?",
+    "enable_LDAP": "LDAP Anmeldung aktivieren?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

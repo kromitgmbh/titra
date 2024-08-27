@@ -218,7 +218,8 @@
     "openai": "Open AI API Key",
     "show_resource_in_details": "Afficher/exporter le champ ressource dans la vue détaillée ?",
     "allow_individual_task_rates": "Autoriser des taux de tâche individuels?",
-    "show_rate_in_details": "Afficher/exporter le champ taux dans la vue détaillée ?"
+    "show_rate_in_details": "Afficher/exporter le champ taux dans la vue détaillée ?",
+    "enable_LDAP": "Activer l'intégration LDAP ?"
   },
   "customer": {
     "select_customer": "Selectionner un client",

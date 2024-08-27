@@ -169,4 +169,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'showRateInDetails', description: 'settings.show_rate_in_details', type: 'checkbox', value: false, category: 'settings.categories.customization',
 })
+defaultSettings.push({
+  name: 'enableLDAP', description: 'settings.enable_LDAP', type: 'checkbox', value: false, category: 'settings.categories.login',
+})
 export { defaultSettings, Globalsettings }

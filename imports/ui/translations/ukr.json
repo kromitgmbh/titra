@@ -226,7 +226,8 @@
       "openai": "Open AI API Key",
       "show_resource_in_details": "Відображати/експортувати поле ресурсу на сторінці 'Деталі'?",
       "allow_individual_task_rates": "Дозволити індивідуальні ставки за завдання?",
-      "show_rate_in_details": "Відображати/експортувати ставку на сторінці 'Деталі'?"
+      "show_rate_in_details": "Відображати/експортувати ставку на сторінці 'Деталі'?",
+      "enable_LDAP": "Активувати LDAP?"
     },
     "customer": {
       "select_customer": "Виберіть клієнта",

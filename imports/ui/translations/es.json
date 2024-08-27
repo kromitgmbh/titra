@@ -228,7 +228,8 @@
     "openai": "Clave API de Open AI",
     "show_resource_in_details": "¿Mostrar/exportar campo de recurso en la vista de detalles?",
     "allow_individual_task_rates": "¿Permitir tarifas individuales por tarea?",
-    "show_rate_in_details": "¿Mostrar/exportar campo de tarifa en la vista de detalles?"
+    "show_rate_in_details": "¿Mostrar/exportar campo de tarifa en la vista de detalles?",
+    "enable_LDAP": "¿Habilitar Integración con LDAP?"
 	},
 	"customer": {
 		"select_customer": "Seleccionar un Cliente",
