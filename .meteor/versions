@@ -1,4 +1,4 @@
-accounts-base@3.0.1
+accounts-base@3.0.2
 accounts-oauth@1.4.5
 accounts-password@3.0.1
 allow-deny@2.0.0
@@ -58,8 +58,8 @@ mobile-status-bar@1.1.1
 modern-browsers@0.1.11
 modules@0.20.1
 modules-runtime@0.13.2
-mongo@2.0.1
-mongo-decimal@0.1.4-beta300.7
+mongo@2.0.2
+mongo-decimal@0.1.4
 mongo-dev-server@1.1.1
 mongo-id@1.0.9
 npm-mongo@4.17.4

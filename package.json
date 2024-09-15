@@ -1,12 +1,12 @@
 {
   "name": "titra",
-  "version": "0.99.12",
+  "version": "0.99.13",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.25.0",
+    "@babel/runtime": "^7.25.6",
     "@dashboardcode/bsmultiselect": "^1.1.18",
     "@fortawesome/fontawesome-free": "^6.6.0",
     "@fullcalendar/core": "6.1.15",
@@ -14,7 +14,7 @@
     "@fullcalendar/interaction": "6.1.15",
     "@neovici/nullxlsx": "^3.1.0",
     "@popperjs/core": "^2.11.8",
-    "adm-zip": "^0.5.15",
+    "adm-zip": "^0.5.16",
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
     "cl-editor": "^2.3.0",
@@ -33,13 +33,13 @@
     "jquery-serializejson": "^3.2.1",
     "ldapjs": "3.0.7",
     "math-expression-evaluator": "^2.0.5",
-    "meteor-node-stubs": "^1.2.9",
+    "meteor-node-stubs": "^1.2.10",
     "namedavatar": "^1.2.0",
     "node-emoji": "^2.1.3",
     "quill-delta-to-html": "^0.12.1",
     "randomcolor": "^0.6.2",
     "raw-body": "^3.0.0",
-    "sortablejs": "^1.15.2",
+    "sortablejs": "^1.15.3",
     "tiny-date-picker": "^3.2.8",
     "vm2": "^3.9.19"
   },
@@ -47,8 +47,8 @@
     "eslint": "^8.5.7",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-import-resolver-meteor": "^0.4.0",
-    "eslint-plugin-i18next": "^6.0.9",
-    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-i18next": "^6.1.0",
+    "eslint-plugin-import": "^2.30.0",
     "eslint-plugin-meteor": "^7.3.0"
   },
   "apidoc": {

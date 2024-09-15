@@ -73,7 +73,7 @@ async function checkAuthorization(req, res) {
  *  }
  * @apiUse AuthError
  */
-WebApp.connectHandlers.use('/timeentry/create/', async (req, res, next) => {
+WebApp.handlers.use('/timeentry/create/', async (req, res, next) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -107,7 +107,7 @@ WebApp.connectHandlers.use('/timeentry/create/', async (req, res, next) => {
 
 /**
   * @api {get} /timeentry/list/:date Get time entries for date
-  * @apiDescription Create a new time entry for the user assigned to the provided API token
+  * @apiDescription list time entries for the provided date
   * @apiName getTimeEntriesForDate
   * @apiGroup TimeEntry
   *
@@ -118,7 +118,7 @@ WebApp.connectHandlers.use('/timeentry/create/', async (req, res, next) => {
   * for the provided date.
   * @apiUse AuthError
   */
-WebApp.connectHandlers.use('/timeentry/list/', async (req, res, next) => {
+WebApp.handlers.use('/timeentry/list/', async (req, res, next) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -131,11 +131,45 @@ WebApp.connectHandlers.use('/timeentry/list/', async (req, res, next) => {
     sendResponse(res, 500, `Invalid parameters received.${error}`)
     return
   }
-  const payload = Timecards.find({
+  const payload = await Timecards.find({
     userId: meteorUser._id,
     date,
-  }).fetch()
+  }).fetchAsync()
   sendResponse(res, 200, `Returning user time entries for date ${date}`, payload)
+})
+/**
+  * @api {get} /timeentry/list/daterange/:fromDate/:toDate Get time entries for daterange
+  * @apiDescription list time entries for the provided date range
+  * @apiName getTimeEntriesForDateRange
+  * @apiGroup TimeEntry
+  *
+  * @apiHeader {String} Token The authorization header Bearer API token.
+  * @apiParam {Date} fromDate The date to list time entries starting from in format YYYY-MM-DD.
+  * @apiParam {Date} toDate The date to list time entries ending at in format YYYY-MM-DD.
+  * @apiSuccess {json} response An array of time entries tracked for the user with the provided API token
+  * for the provided date range.
+  * @apiUse AuthError
+  */
+WebApp.handlers.use('/timeentry/daterange/', async (req, res, next) => {
+  const meteorUser = await checkAuthorization(req, res)
+  if (!meteorUser) {
+    return
+  }
+  const url = req._parsedUrl.pathname.split('/')
+  const fromDate = new Date(url[3])
+  const toDate = new Date(url[4])
+  try {
+    check(fromDate, Date)
+    check(toDate, Date)
+  } catch (error) {
+    sendResponse(res, 500, `Invalid parameters received.${error}`)
+    return
+  }
+  const payload = await Timecards.find({
+    userId: meteorUser._id,
+    date: { $gte: fromDate, $lte: toDate },
+  }).fetchAsync()
+  sendResponse(res, 200, `Returning user time entries for date range ${fromDate} to ${toDate}`, payload)
 })
 
 /**
@@ -148,7 +182,7 @@ WebApp.connectHandlers.use('/timeentry/list/', async (req, res, next) => {
    * @apiSuccess {json} response An array of all projects visible for the user with the provided API token.
    * @apiUse AuthError
    */
-WebApp.connectHandlers.use('/project/list/', async (req, res, next) => {
+WebApp.handlers.use('/project/list/', async (req, res, next) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -194,7 +228,7 @@ WebApp.connectHandlers.use('/project/list/', async (req, res, next) => {
    * @apiExample {curl} Example usage:
  *     curl -d '{"name":"api-test-project", "description":"fabians api project"}' -H "Content-Type: application/json" -H "Authorization: Token abcdefgHIJKLMNOP" -X POST http://localhost:3000/project/create
    */
-WebApp.connectHandlers.use('/project/create/', async (req, res, next) => {
+WebApp.handlers.use('/project/create/', async (req, res, next) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -247,7 +281,7 @@ WebApp.connectHandlers.use('/project/create/', async (req, res, next) => {
     *     }
    * @apiUse AuthError
    */
-WebApp.connectHandlers.use('/timer/start/', async (req, res, next) => {
+WebApp.handlers.use('/timer/start/', async (req, res, next) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -286,7 +320,7 @@ WebApp.connectHandlers.use('/timer/start/', async (req, res, next) => {
     *     }
    * @apiUse AuthError
    */
-WebApp.connectHandlers.use('/timer/get/', async (req, res, next) => {
+WebApp.handlers.use('/timer/get/', async (req, res, next) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -326,7 +360,7 @@ WebApp.connectHandlers.use('/timer/get/', async (req, res, next) => {
     *     }
    * @apiUse AuthError
    */
-WebApp.connectHandlers.use('/timer/stop/', async (req, res, next) => {
+WebApp.handlers.use('/timer/stop/', async (req, res, next) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
