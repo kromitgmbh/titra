@@ -856,7 +856,7 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
         loginRequest.ldapPass = undefined
       }
 
-      const result = await addLdapUser(ldapUser, username, loginRequest.ldapPass)
+      const result = await addLdapUser(ldapUser, username[0], loginRequest.ldapPass)
 
       if (LDAP.getSettings('LDAP_SYNC_ADMIN_STATUS') === true) {
         logDebug('Updating admin status')
