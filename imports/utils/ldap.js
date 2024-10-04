@@ -1106,8 +1106,8 @@ async function addLdapUser(ldapUser, username, password) {
   try {
     // This creates the account with password service
     userObject.ldap = true
-    userObject._id = Accounts.createUser(userObject)
-
+    userObject._id = await Accounts.createUserAsync(userObject)
+    logDebug('New user created through LDAP login: ', userObject._id)
     // Add the services.ldap identifiers
     await Meteor.users.updateAsync({ _id: userObject._id }, {
       $set: {
