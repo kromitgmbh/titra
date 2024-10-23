@@ -138,7 +138,7 @@ WebApp.handlers.use('/timeentry/list/', async (req, res, next) => {
   sendResponse(res, 200, `Returning user time entries for date ${date}`, payload)
 })
 /**
-  * @api {get} /timeentry/list/daterange/:fromDate/:toDate Get time entries for daterange
+  * @api {get} /timeentry/daterange/:fromDate/:toDate Get time entries for daterange
   * @apiDescription list time entries for the provided date range
   * @apiName getTimeEntriesForDateRange
   * @apiGroup TimeEntry
