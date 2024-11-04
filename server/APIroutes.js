@@ -107,7 +107,7 @@ WebApp.handlers.use('/timeentry/create/', async (req, res, next) => {
 
 /**
   * @api {get} /timeentry/list/:date Get time entries for date
-  * @apiDescription list time entries for the provided date
+  * @apiDescription list time entries of the authorized user for the provided date
   * @apiName getTimeEntriesForDate
   * @apiGroup TimeEntry
   *
@@ -139,7 +139,7 @@ WebApp.handlers.use('/timeentry/list/', async (req, res, next) => {
 })
 /**
   * @api {get} /timeentry/daterange/:fromDate/:toDate Get time entries for daterange
-  * @apiDescription list time entries for the provided date range
+  * @apiDescription list time entries of the authorized user for the provided date range
   * @apiName getTimeEntriesForDateRange
   * @apiGroup TimeEntry
   *
@@ -191,6 +191,73 @@ WebApp.handlers.use('/project/list/', async (req, res, next) => {
     $or: [{ userId: meteorUser._id }, { public: true }, { team: meteorUser._id }],
   }).fetchAsync()
   sendResponse(res, 200, 'Returning projects', payload)
+})
+
+/**
+ * @api {get} /project/timeentries/:projectId Get time entries for project
+ * @apiDescription List time entries for the specified project
+ * @apiName getTimeEntriesForProject
+ * @apiGroup Project
+ *
+ * @apiHeader {String} Token The authorization header Bearer API token.
+ * @apiParam {String} projectId The ID of the project to list time entries for.
+ * @apiSuccess {json} response An array of time entries for the specified project.
+ * @apiUse AuthError
+ */
+WebApp.handlers.use('/project/timeentries/', async (req, res, next) => {
+  const meteorUser = await checkAuthorization(req, res)
+  if (!meteorUser) {
+    return
+  }
+  const url = req._parsedUrl.pathname.split('/')
+  const projectId = url[3]
+  const payload = await Timecards.find({
+    projectId,
+  }).fetchAsync()
+  sendResponse(res, 200, 'Returning time entries for project', payload)
+})
+/**
+ * @api {get} /project/timeentriesfordaterange/:projectId/:fromDate/:toDate Get time entries for a project within a date range
+ * @apiName GetTimeEntriesForDateRange
+ * @apiGroup Project
+ * 
+ * @apiParam {String} projectId The ID of the project.
+ * @apiParam {String} fromDate The start date of the range (ISO 8601 format).
+ * @apiParam {String} toDate The end date of the range (ISO 8601 format).
+ * 
+ * @apiSuccess {Object[]} payload A list of time entries for the specified project and date range.
+ * @apiSuccess {String} payload.projectId The ID of the project.
+ * @apiSuccess {String} payload.date The date of the time entry.
+ * @apiSuccess {Number} payload.hours The number of hours logged.
+ * @apiSuccess {String} payload.description A description of the work done.
+ * 
+ * @apiError (500) InvalidParameters Invalid parameters received.
+ * 
+ * @apiExample {curl} Example usage:
+ *     curl -i http://localhost:3000/project/timeentriesfordaterange/12345/2023-01-01/2023-01-31
+ */
+WebApp.handlers.use('/project/timeentriesfordaterange/', async (req, res, next) => {
+  const meteorUser = await checkAuthorization(req, res)
+  if (!meteorUser) {
+    return
+  }
+  const url = req._parsedUrl.pathname.split('/')
+  const projectId = url[3]
+  const fromDate = new Date(url[4])
+  const toDate = new Date(url[5])
+  try {
+    check(projectId, String)
+    check(fromDate, Date)
+    check(toDate, Date)
+  } catch (error) {
+    sendResponse(res, 500, `Invalid parameters received.${error}`)
+    return
+  }
+  const payload = await Timecards.find({
+    projectId,
+    date: { $gte: fromDate, $lte: toDate },
+  }).fetchAsync()
+  sendResponse(res, 200, `Returning project time entries for date range ${fromDate} to ${toDate}`, payload)
 })
 
 /**
