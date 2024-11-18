@@ -180,7 +180,11 @@ Template.tracktime.events({
         hours: Number.parseInt(hoursString, 10),
         minutes: Number.parseInt(minutesString, 10),
       })
-      hours = duration.asHours().toString()
+      if (getUserSetting('timeunit') === 'h') {
+        hours = duration.asHours().toString()
+      } else if (getUserSetting('timeunit') === 'm') {
+        hours = duration.asMinutes().toString()
+      }
     } else if (!hours && hours !== 0 && !Number.isNaN(hours)) {
       templateInstance.$('#hours').addClass('is-invalid')
       showToast(t('notifications.enter_time'))

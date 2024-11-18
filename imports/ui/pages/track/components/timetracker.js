@@ -77,6 +77,7 @@ Template.timetracker.events({
       return
     }
     const duration = dayjs.preciseDiff(dayjs(), templateInstance.timer.get(), true)
+    const dayjsDuration = dayjs.duration(dayjs().diff(templateInstance.timer.get()))
     const hours = (Number(duration.days * 24))
       + Number(duration.hours) + Number((duration.minutes / 60))
     const project = templateInstance.project.get()
@@ -90,7 +91,7 @@ Template.timetracker.events({
       $('#startTime').val(templateInstance.startTime.get())
     }
     if (getUserSetting('timeunit')==='m') {
-      $('#hours').val(duration.minutes)
+      $('#hours').val(dayjsDuration.asMinutes().toFixed(0).toString())
     } else {
       $('#hours').val(Number(hours).toFixed(getUserSetting('precision'))).trigger('change')
     }

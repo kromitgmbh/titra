@@ -7,7 +7,7 @@ babel-compiler@7.11.1
 babel-runtime@1.5.2
 base64@1.0.13
 binary-heap@1.0.12
-blaze@3.0.0
+blaze@3.0.1
 blaze-html-templates@3.0.0
 blaze-tools@2.0.0
 boilerplate-generator@2.0.0
@@ -59,7 +59,7 @@ modern-browsers@0.1.11
 modules@0.20.2
 modules-runtime@0.13.2
 mongo@2.0.2
-mongo-decimal@0.1.4
+mongo-decimal@0.2.0
 mongo-dev-server@1.1.1
 mongo-id@1.0.9
 npm-mongo@4.17.4
@@ -89,7 +89,7 @@ standard-minifier-css@1.9.3
 standard-minifier-js@3.0.0
 templating@1.4.4
 templating-compiler@2.0.0
-templating-runtime@2.0.0
+templating-runtime@2.0.1
 templating-tools@2.0.0
 tracker@1.3.4
 typescript@5.4.3
