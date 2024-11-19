@@ -203,7 +203,7 @@ Template.weektablerow.onCreated(function weektablerowCreated() {
   this.methodTimeEntries = new ReactiveVar([])
   this.reactiveProjectId = new ReactiveVar()
   this.autorun(() => {
-    if (Template.instance().data.projectId && Template.instance().data.startDate?.get() && Template.instance().data.endDate?.get()) {
+    if (Template.instance().data?.projectId && Template.instance().data?.startDate?.get() && Template.instance().data?.endDate?.get()) {
       Meteor.call('userTimeCardsForPeriodByProjectByTask', {
         projectId: Template.instance().data.projectId,
         startDate: Template.instance().data.startDate?.get()?.toDate(),
@@ -219,10 +219,10 @@ Template.weektablerow.onCreated(function weektablerowCreated() {
     }
   })
   this.autorun(() => {
-    if (this.data.timeEntries) {
+    if (this.data?.timeEntries) {
       this.tempTimeEntries = this.timeEntries
     }
-    this.reactiveProjectId.set(this.data.projectId)
+    this.reactiveProjectId.set(this.data?.projectId)
   })
 })
 Template.weektablerow.events({
@@ -235,9 +235,9 @@ Template.weektablerow.events({
       templateInstance.tempTimeEntries.set(timeEntries)
     }
     Meteor.call('userTimeCardsForPeriodByProjectByTask', {
-      projectId: Template.instance().data.projectId,
-      startDate: Template.instance().data.startDate?.get()?.toDate(),
-      endDate: Template.instance().data.endDate?.get()?.toDate(),
+      projectId: Template.instance().data?.projectId,
+      startDate: Template.instance().data?.startDate?.get()?.toDate(),
+      endDate: Template.instance().data?.endDate?.get()?.toDate(),
     }, (error, result) => {
       if (error) {
         console.error(error)
@@ -250,9 +250,9 @@ Template.weektablerow.events({
   'click .js-collapse': (event, templateInstance) => {
     event.preventDefault()
     Meteor.call('userTimeCardsForPeriodByProjectByTask', {
-      projectId: Template.instance().data.projectId,
-      startDate: Template.instance().data.startDate?.get()?.toDate(),
-      endDate: Template.instance().data.endDate?.get()?.toDate(),
+      projectId: Template.instance().data?.projectId,
+      startDate: Template.instance().data?.startDate?.get()?.toDate(),
+      endDate: Template.instance().data?.endDate?.get()?.toDate(),
     }, (error, result) => {
       if (error) {
         console.error(error)
@@ -281,7 +281,7 @@ Template.weektablerow.helpers({
     return Projects.findOne({ _id: projectId })?.color
   },
   weekDays() {
-    return getWeekDays(Template.instance().data.startDate?.get())
+    return getWeekDays(Template.instance().data?.startDate?.get())
   },
   tasks() {
     const sortedResult = Template.instance().methodTimeEntries?.get()

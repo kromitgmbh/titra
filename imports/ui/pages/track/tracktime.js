@@ -90,20 +90,20 @@ Template.tracktime.onCreated(function tracktimeCreated() {
   this.subscribe('customfieldsForClass', { classname: 'time_entry' })
   let handle
   this.autorun(() => {
-    if (this.data.tcid && this.data.tcid.get()) {
+    if (this.data?.tcid && this.data.tcid.get()) {
       this.tcid.set(this.data.tcid.get())
     } else if (FlowRouter.getParam('tcid')) {
       this.tcid.set(FlowRouter.getParam('tcid'))
     }
-    if (this.data.dateArg && this.data.dateArg.get()) {
+    if (this.data?.dateArg && this.data.dateArg.get()) {
       this.date.set(this.data.dateArg.get())
-    } else if (!(this.data.dateArg && this.data.dateArg.get())
-      && !(this.data.tcid && this.data.tcid.get()) && FlowRouter.getQueryParam('date')) {
+    } else if (!(this.data?.dateArg && this.data.dateArg.get())
+      && !(this.data?.tcid && this.data.tcid.get()) && FlowRouter.getQueryParam('date')) {
       this.date.set(dayjs(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate())
     }
-    if (this.data.projectIdArg && this.data.projectIdArg.get()) {
+    if (this.data?.projectIdArg && this.data.projectIdArg.get()) {
       this.projectId.set(this.data.projectIdArg.get())
-    } else if (!((this.data.projectIdArg && this.data.projectIdArg.get()) || (this.data.tcid && this.data.tcid.get())) && FlowRouter.getParam('projectId')) {
+    } else if (!((this.data?.projectIdArg && this.data.projectIdArg.get()) || (this.data?.tcid && this.data.tcid.get())) && FlowRouter.getParam('projectId')) {
       this.projectId.set(FlowRouter.getParam('projectId'))
     }
     if (this.tcid.get()) {
@@ -399,8 +399,8 @@ Template.tracktime.events({
 })
 function isEditMode() {
   return (Template.instance().tcid && Template.instance().tcid.get())
-  || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
-  || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get())
+  || (Template.instance().data?.dateArg && Template.instance().data.dateArg.get())
+  || (Template.instance().data?.projectIdArg && Template.instance().data.projectIdArg.get())
 }
 Template.tracktime.helpers({
   date: () => (Template.instance().tcid && Template.instance().tcid.get()
@@ -430,8 +430,8 @@ Template.tracktime.helpers({
   previousDay: () => dayjs(Template.instance().date.get()).subtract(1, 'day').format(getGlobalSetting('dateformatVerbose')),
   nextDay: () => dayjs(Template.instance().date.get()).add(1, 'day').format(getGlobalSetting('dateformatVerbose')),
   borderClass: () => (Template.instance().tcid.get()
-    || (Template.instance().data.dateArg && Template.instance().data.dateArg.get())
-    || (Template.instance().data.projectIdArg && Template.instance().data.projectIdArg.get()) ? '' : 'tab-borders'),
+    || (Template.instance().dat?.dateArg && Template.instance().data.dateArg.get())
+    || (Template.instance().data?.projectIdArg && Template.instance().data.projectIdArg.get()) ? '' : 'tab-borders'),
   edittcid: () => Template.instance().edittcid,
   startTime: () => dayjs(Template.instance().date.get()).format('HH:mm'),
   customfields: () => CustomFields.find({ classname: 'time_entry' }),
