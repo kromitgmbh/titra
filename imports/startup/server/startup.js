@@ -23,7 +23,9 @@ Meteor.startup(async () => {
   }
   if (await getGlobalSettingAsync('enableOpenIDConnect')) {
     import('../../utils/oidc/oidc_server').then((Oidc) => {
-      Oidc.registerOidc()
+      if(Accounts.oauth.serviceNames().indexOf('oidc') === -1) {
+        Oidc.registerOidc()
+      }
     })
   }
   if (await getGlobalSettingAsync('google_clientid') && await getGlobalSettingAsync('google_secret')) {

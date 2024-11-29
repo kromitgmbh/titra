@@ -114,6 +114,7 @@ async function getUserInfo(accessToken, expiresAt) {
 async function registerOidc() {
   Accounts.oauth.registerService(SERVICE_NAME)
   OAuth.registerService(SERVICE_NAME, 2, null, async (query) => {
+    console.log('here')
     const token = await getToken(query)
     const accessToken = token.access_token || token.id_token
     const expiresAt = (+new Date()) + (1000 * parseInt(token.expires_in, 10))
@@ -125,6 +126,7 @@ async function registerOidc() {
       expiresAt: userinfo.expiresAt,
       email: userinfo.email,
     }
+    console.log(userinfo)
     if (accessToken) {
       const tokenContent = getTokenContent(accessToken)
       const config = await getConfiguration()
