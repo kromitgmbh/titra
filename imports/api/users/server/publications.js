@@ -209,15 +209,14 @@ Meteor.publish('projectResources', async function projectResources({ projectId }
     })
     handle = await Timecards.find(selector).observeChangesAsync({
       added: async (_id) => {
-        let newUserId = await Timecards.findOneAsync(_id)
-        newUserId = newUserId?.userId
-        if (!userIds.includes(newUserId)) {
+        let newUser = await Timecards.findOneAsync(_id)
+        if (!userIds.includes(newUser?.userId)) {
           let meteorUser = await Meteor.users
-            .findOneAsync({ _id: newUserId, inactive: { $ne: true } }, { profile: 1 })
+            .findOneAsync({ _id: newUser?.userId, inactive: { $ne: true } }, { profile: 1 })
           meteorUser = meteorUser?.profile
-          if (meteorUser) {
-            userIds.push(newUserId)
-            this.added('projectResources', newUserId)
+          if (meteorUser && newUser?.userId) {
+            userIds.push(newUser.userId)
+            this.added('projectResources', newUser.userId, newUser)
           }
         }
       },
