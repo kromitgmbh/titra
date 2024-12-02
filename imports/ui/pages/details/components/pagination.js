@@ -5,7 +5,7 @@ Template.pagination.onCreated(function paginationCreated() {
   this.currentPage = new ReactiveVar(1)
   this.numPages = new ReactiveVar(1)
   this.autorun(() => {
-    this.numPages.set(Math.ceil(Number((this.data.totalEntries.get() / this.data.limit.get())))
+    this.numPages.set(Math.ceil(Number((this.data?.totalEntries.get() / this.data?.limit.get())))
       .toFixed(0))
     if (FlowRouter.getQueryParam('page')) {
       this.currentPage.set(FlowRouter.getQueryParam('page'))

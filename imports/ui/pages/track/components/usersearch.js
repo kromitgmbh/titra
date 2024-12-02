@@ -17,8 +17,8 @@ Template.usersearch.onCreated(function usersearchcreated() {
   this.users = new ReactiveVar()
   this.autorun(() => {
     let tcid
-    if (this.data.tcid && this.data.tcid.get()) {
-      tcid = this.data.tcid.get()
+    if (this.data?.tcid && this.data?.tcid.get()) {
+      tcid = this.data?.tcid.get()
     } else if (FlowRouter.getParam('tcid')) {
       tcid = FlowRouter.getParam('tcid')
     }
@@ -48,8 +48,8 @@ Template.usersearch.onCreated(function usersearchcreated() {
     if (FlowRouter.getParam('projectId')) {
       loadUsers(FlowRouter.getParam('projectId'))
     }
-    if (this.data.projectId.get()) {
-      loadUsers(this.data.projectId.get())
+    if (this.data?.projectId.get()) {
+      loadUsers(this.data?.projectId.get())
     }
   })
 })

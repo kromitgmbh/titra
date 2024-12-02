@@ -21,19 +21,19 @@ Template.workingtimetable.onCreated(function workingtimetableCreated() {
   this.totalWorkingTimeEntries = new ReactiveVar()
 
   this.autorun(() => {
-    if (this.data.project.get()
-      && this.data.resource.get()
-      && this.data.period.get()
-      && this.data.limit.get()) {
-      this.projectUsersHandle = this.subscribe('projectResources', { projectId: this.data.project.get() })
+    if (this.data?.project.get()
+      && this.data?.resource.get()
+      && this.data?.period.get()
+      && this.data?.limit.get()) {
+      this.projectUsersHandle = this.subscribe('projectResources', { projectId: this.data?.project.get() })
       const methodParameters = {
-        projectId: this.data.project.get(),
-        userId: this.data.resource.get(),
-        period: this.data.period.get(),
-        limit: this.data.limit.get(),
+        projectId: this.data?.project.get(),
+        userId: this.data?.resource.get(),
+        period: this.data?.period.get(),
+        limit: this.data?.limit.get(),
         page: Number(FlowRouter.getQueryParam('page')),
       }
-      if (this.data.period.get() === 'custom') {
+      if (this.data?.period.get() === 'custom') {
         methodParameters.dates = {
           startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
           endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),

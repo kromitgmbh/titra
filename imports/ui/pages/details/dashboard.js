@@ -77,18 +77,18 @@ Template.dashboard.onCreated(function dashboardCreated() {
           }
         }
       }
-    } else if (this.data.project.get()
-      && this.data.resource.get()
-      && this.data.customer.get()
-      && this.data.period.get() && this.data.period.get() !== 'all') {
-      if (this.data.period.get() === 'custom') {
+    } else if (this.data?.project.get()
+      && this.data?.resource.get()
+      && this.data?.customer.get()
+      && this.data?.period.get() && this.data?.period.get() !== 'all') {
+      if (this.data?.period.get() === 'custom') {
         this.detailedTimeEntriesHandle = this.subscribe(
           'getDetailedTimeEntriesForPeriod',
           {
-            projectId: this.data.project.get(),
-            userId: this.data.resource.get(),
-            customer: this.data.customer.get(),
-            period: this.data.period.get(),
+            projectId: this.data?.project.get(),
+            userId: this.data?.resource.get(),
+            customer: this.data?.customer.get(),
+            period: this.data?.period.get(),
             dates: {
               startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
               endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
@@ -100,10 +100,10 @@ Template.dashboard.onCreated(function dashboardCreated() {
         this.detailedTimeEntriesHandle = this.subscribe(
           'getDetailedTimeEntriesForPeriod',
           {
-            projectId: this.data.project.get(),
-            userId: this.data.resource.get(),
-            customer: this.data.customer.get(),
-            period: this.data.period.get(),
+            projectId: this.data?.project.get(),
+            userId: this.data?.resource.get(),
+            customer: this.data?.customer.get(),
+            period: this.data?.period.get(),
             limit: -1,
           },
         )

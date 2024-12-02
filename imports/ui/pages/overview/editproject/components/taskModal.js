@@ -10,8 +10,8 @@ import BsDialogs from '../../../../shared components/bootstrapDialogs'
 Template.taskModal.onCreated(function taskModalCreated() {
   this.editTask = new ReactiveVar(false)
   this.autorun(() => {
-    if (this.data.editTaskID.get()) {
-      this.editTask.set(Tasks.findOne({ _id: this.data.editTaskID.get() }))
+    if (this.data?.editTaskID.get()) {
+      this.editTask.set(Tasks.findOne({ _id: this.data?.editTaskID.get() }))
     } else {
       this.editTask.set(false)
     }

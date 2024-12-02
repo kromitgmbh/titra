@@ -165,9 +165,9 @@ Template.wekanInterfaceSettings.onCreated(function wekanInterfaceSettingsCreated
   this.wekanSwimlanes = new ReactiveVar()
   this.project = new ReactiveVar()
   this.autorun(() => {
-    if (this.data.projectId) {
-      this.project.set(Projects.findOne({ _id: this.data.projectId }))
-      this.handle = this.subscribe('singleProject', this.data.projectId)
+    if (this.data?.projectId) {
+      this.project.set(Projects.findOne({ _id: this.data?.projectId }))
+      this.handle = this.subscribe('singleProject', this.data?.projectId)
     }
   })
 })

@@ -56,8 +56,8 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
   })
   this.autorun(() => {
     let tcid
-    if (this.data.tcid && this.data.tcid.get()) {
-      tcid = this.data.tcid.get()
+    if (this.data?.tcid && this.data?.tcid.get()) {
+      tcid = this.data?.tcid.get()
     } else if (FlowRouter.getParam('tcid')) {
       tcid = FlowRouter.getParam('tcid')
     }
@@ -145,13 +145,13 @@ Template.tasksearch.onCreated(function tasksearchcreated() {
     }
   })
   this.autorun(() => {
-    this.subscribe('mytasks', { filter: this.filter.get(), projectId: this.data.projectId.get() ? this.data.projectId.get() : FlowRouter.getParam('projectId') })
+    this.subscribe('mytasks', { filter: this.filter.get(), projectId: this.data?.projectId.get() ? this.data?.projectId.get() : FlowRouter.getParam('projectId') })
   })
   this.autorun(() => {
-    if (this.data.projectId.get()) {
+    if (this.data?.projectId.get()) {
       this.taskSelectPopup = Blaze.renderWithData(
         Template.taskSelectPopup,
-        { projectId: this.data.projectId },
+        { projectId: this.data?.projectId },
         document.body,
       )
     }

@@ -9,9 +9,9 @@ import Projects from '../../../../../api/projects/projects.js'
 Template.projectAccessRights.onCreated(function projectAccessRightsCreated() {
   this.project = new ReactiveVar()
   this.autorun(() => {
-    if (this.data.projectId) {
-      this.project.set(Projects.findOne({ _id: this.data.projectId }))
-      this.handle = this.subscribe('singleProject', this.data.projectId)
+    if (this.data?.projectId) {
+      this.project.set(Projects.findOne({ _id: this.data?.projectId }))
+      this.handle = this.subscribe('singleProject', this.data?.projectId)
       if (this.handle.ready()) {
         const userIds = this.project.get().team ? this.project.get().team : []
         this.subscribe('projectTeam', { userIds })

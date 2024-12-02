@@ -93,25 +93,25 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
   this.subscribe('customfieldsForClass', { classname: 'time_entry' })
   this.subscribe('customfieldsForClass', { classname: 'project' })
   this.autorun(() => {
-    if (this.data.project.get()
-      && this.data.resource.get()
-      && this.data.customer.get()
-      && this.data.period.get()
-      && this.data.limit.get()) {
+    if (this.data?.project.get()
+      && this.data?.resource.get()
+      && this.data?.customer.get()
+      && this.data?.period.get()
+      && this.data?.limit.get()) {
         this.myProjectsHandle = this.subscribe('myprojects', {})
-        this.projectResourcesHandle = this.subscribe('projectResources', { projectId: this.data.project.get() })
+        this.projectResourcesHandle = this.subscribe('projectResources', { projectId: this.data?.project.get() })
         const subscriptionParameters = {
-          projectId: this.data.project.get(),
-          userId: this.data.resource.get(),
-          customer: this.data.customer.get(),
-          period: this.data.period.get(),
-          limit: this.data.limit.get(),
+          projectId: this.data?.project.get(),
+          userId: this.data?.resource.get(),
+          customer: this.data?.customer.get(),
+          period: this.data?.period.get(),
+          limit: this.data?.limit.get(),
           search: this.search.get(),
           sort: this.sort.get(),
           page: Number(FlowRouter.getQueryParam('page')),
           filters: this.filters.get(),
         }
-        if (this.data.period.get() === 'custom') {
+        if (this.data?.period.get() === 'custom') {
           subscriptionParameters.dates = {
             startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
             endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
@@ -122,22 +122,22 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
     }
   })
   this.autorun(async () => {
-    if (this.data.project.get()
-      && this.data.resource.get()
-      && this.data.customer.get()
-      && this.data.period.get()
-      && this.data.limit.get()) {
+    if (this.data?.project.get()
+      && this.data?.resource.get()
+      && this.data?.customer.get()
+      && this.data?.period.get()
+      && this.data?.limit.get()) {
       this.selector.set(await buildDetailedTimeEntriesForPeriodSelectorAsync({
-        projectId: this.data.project.get(),
+        projectId: this.data?.project.get(),
         search: this.search.get(),
-        customer: this.data.customer.get(),
-        period: this.data.period.get(),
+        customer: this.data?.customer.get(),
+        period: this.data?.period.get(),
         dates: {
           startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
           endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
         },
-        userId: this.data.resource.get(),
-        limit: this.data.limit.get(),
+        userId: this.data?.resource.get(),
+        limit: this.data?.limit.get(),
         page: Number(FlowRouter.getQueryParam('page')),
         sort: this.sort.get(),
         filters: this.filters.get(),

@@ -90,20 +90,20 @@ Template.tracktime.onCreated(function tracktimeCreated() {
   this.subscribe('customfieldsForClass', { classname: 'time_entry' })
   let handle
   this.autorun(() => {
-    if (this.data?.tcid && this.data.tcid.get()) {
-      this.tcid.set(this.data.tcid.get())
+    if (this.data?.tcid && this.data?.tcid.get()) {
+      this.tcid.set(this.data?.tcid.get())
     } else if (FlowRouter.getParam('tcid')) {
       this.tcid.set(FlowRouter.getParam('tcid'))
     }
-    if (this.data?.dateArg && this.data.dateArg.get()) {
-      this.date.set(this.data.dateArg.get())
-    } else if (!(this.data?.dateArg && this.data.dateArg.get())
-      && !(this.data?.tcid && this.data.tcid.get()) && FlowRouter.getQueryParam('date')) {
+    if (this.data?.dateArg && this.data?.dateArg.get()) {
+      this.date.set(this.data?.dateArg.get())
+    } else if (!(this.data?.dateArg && this.data?.dateArg.get())
+      && !(this.data?.tcid && this.data?.tcid.get()) && FlowRouter.getQueryParam('date')) {
       this.date.set(dayjs(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate())
     }
-    if (this.data?.projectIdArg && this.data.projectIdArg.get()) {
-      this.projectId.set(this.data.projectIdArg.get())
-    } else if (!((this.data?.projectIdArg && this.data.projectIdArg.get()) || (this.data?.tcid && this.data.tcid.get())) && FlowRouter.getParam('projectId')) {
+    if (this.data?.projectIdArg && this.data?.projectIdArg.get()) {
+      this.projectId.set(this.data?.projectIdArg.get())
+    } else if (!((this.data?.projectIdArg && this.data?.projectIdArg.get()) || (this.data?.tcid && this.data?.tcid.get())) && FlowRouter.getParam('projectId')) {
       this.projectId.set(FlowRouter.getParam('projectId'))
     }
     if (this.tcid.get()) {

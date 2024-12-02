@@ -13,8 +13,8 @@ Template.projectsearch.onCreated(function createProjectSearch() {
   this.tcid = new ReactiveVar()
   this.projects = new ReactiveVar([])
   this.autorun(() => {
-    if (this.data.tcid && this.data.tcid?.get()) {
-      this.tcid.set(this.data.tcid?.get())
+    if (this.data?.tcid && this.data?.tcid?.get()) {
+      this.tcid.set(this.data?.tcid?.get())
     } else if (FlowRouter.getParam('tcid')) {
       this.tcid.set(FlowRouter.getParam('tcid'))
     }
@@ -25,11 +25,11 @@ Template.projectsearch.onCreated(function createProjectSearch() {
 
   this.autorun(() => {
     if (this.subscriptionsReady()) {
-      if (this.data.projectId && this.data.projectId.get() && this.data.projectId.get() !== 'all') {
-        const project = Projects.findOne({ _id: this.data.projectId.get() })
+      if (this.data?.projectId && this.data?.projectId.get() && this.data?.projectId.get() !== 'all') {
+        const project = Projects.findOne({ _id: this.data?.projectId.get() })
         this.$('.js-target-project').val(project?.name)
         this.$('.js-target-project').get(0).setAttribute('data-value', project?._id)
-        this.selectedId.set(this.data.projectId.get())
+        this.selectedId.set(this.data?.projectId.get())
       } else if (FlowRouter.getParam('projectId')) {
         const project = Projects.findOne({ _id: FlowRouter.getParam('projectId') })
         if (FlowRouter.getParam('projectId') !== 'all') {
