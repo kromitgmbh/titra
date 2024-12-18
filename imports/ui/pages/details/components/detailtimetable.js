@@ -67,8 +67,8 @@ function detailedDataTableMapper(entry, forExport) {
     mapping.push(entry.state)
   }
   if (getGlobalSetting('useStartTime')) {
-    mapping.push(dayjs.utc(entry.date).local().format('HH:mm'))
-    mapping.push(dayjs.utc(entry.date).local().add(entry.hours, 'hour').format('HH:mm'))
+    mapping.push(dayjs.utc(entry.date).local().format('HH:mm')) // Ensure consistent timezone usage
+    mapping.push(dayjs.utc(entry.date).local().add(entry.hours, 'hour').format('HH:mm')) // Ensure consistent timezone usage
   }
   mapping.push(Number(timeInUserUnit(entry.hours)))
   if (getGlobalSetting('showRateInDetails')) {
@@ -113,8 +113,8 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
         }
         if (this.data?.period.get() === 'custom') {
           subscriptionParameters.dates = {
-            startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
-            endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
+            startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(), // Ensure consistent timezone usage
+            endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(), // Ensure consistent timezone usage
           }
         }
         this.detailedEntriesPeriodCountHandle = this.subscribe('getDetailedTimeEntriesForPeriodCount', subscriptionParameters)
@@ -133,8 +133,8 @@ Template.detailtimetable.onCreated(function workingtimetableCreated() {
         customer: this.data?.customer.get(),
         period: this.data?.period.get(),
         dates: {
-          startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(),
-          endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(),
+          startDate: getUserSetting('customStartDate') ? getUserSetting('customStartDate') : dayjs.utc().startOf('month').toDate(), // Ensure consistent timezone usage
+          endDate: getUserSetting('customEndDate') ? getUserSetting('customEndDate') : dayjs.utc().toDate(), // Ensure consistent timezone usage
         },
         userId: this.data?.resource.get(),
         limit: this.data?.limit.get(),

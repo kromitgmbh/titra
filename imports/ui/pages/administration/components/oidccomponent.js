@@ -15,7 +15,6 @@ Template.oidccomponent.events({
     event.preventDefault()
     const configuration = {
       service: 'oidc',
-      loginStyle: 'popup',
     }
     for (const element of templateInstance.$('.js-setting-input')) {
       const { name } = element

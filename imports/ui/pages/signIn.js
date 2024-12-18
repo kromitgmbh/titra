@@ -1,6 +1,7 @@
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra'
 import { validateEmail, getGlobalSetting } from '../../utils/frontend_helpers'
-import { isOidcConfigured, disableDefaultLoginForm } from '../../utils/oidc/oidc_helper'
+import { isOidcConfigured, disableDefaultLoginForm, isAutoLoginEnabled } from '../../utils/oidc/oidc_helper'
+import { oidcReady } from '../../utils/oidc/oidc_client'
 import { t } from '../../utils/i18n.js'
 import './signIn.html'
 
@@ -80,4 +81,15 @@ Template.signIn.events({
     event.preventDefault()
     FlowRouter.go('register', {}, { email: templateInstance.$('#at-field-email').val() })
   },
+})
+
+Template.signIn.onRendered(function signInRendered() {
+  const templateInstance = this
+  this.autorun(() => {
+    if(oidcReady.get() && isAutoLoginEnabled()) {
+      Meteor.loginWithOidc((error) => {
+        handleLoginResult(error, templateInstance)
+      })
+    }
+  })
 })

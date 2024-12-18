@@ -166,7 +166,7 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
               .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
               beforePreviousMonthHours += Number.parseFloat(timecard.hours)
             }
-            if (project.rates[timecard.userId]) {
+            if (project?.rates && project.rates[timecard.userId]) {
               totalRevenue += Number.parseFloat(timecard.hours)
                 * Number.parseFloat(project.rates[timecard.userId])
             } else {

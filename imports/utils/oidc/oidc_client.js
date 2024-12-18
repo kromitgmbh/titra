@@ -4,7 +4,7 @@ import { Random } from 'meteor/random'
 import { ServiceConfiguration } from 'meteor/service-configuration'
 
 const SERVICE_NAME = 'oidc'
-
+const oidcReady = new ReactiveVar(false)
 function registerOidc() {
   Accounts.oauth.registerService(SERVICE_NAME)
 
@@ -66,5 +66,6 @@ function registerOidc() {
       popupOptions,
     })
   }
+  oidcReady.set(true)
 }
-export { registerOidc }
+export { registerOidc, oidcReady }

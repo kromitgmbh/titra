@@ -8,6 +8,9 @@ const oidcFields = [
     property: 'disableDefaultLoginForm', label: 'Disable Default Login Form', type: 'checkbox', value: false,
   },
   {
+    property: 'autoInitiateLogin', label: 'Automatically initiate login', type: 'checkbox', value: false,
+  },
+  {
     property: 'clientId', label: 'Client ID', type: 'text', value: '',
   },
   {
@@ -31,6 +34,9 @@ const oidcFields = [
   {
     property: 'requestPermissions', label: 'Request Permissions', type: 'text', value: '"openid", "profile", "email"',
   },
+  {
+    property: 'loginStyle', label: 'Login style (popup or redirect)', type: 'text', value: 'popup',
+  },
 ]
 
 function isOidcConfigured() {
@@ -39,7 +45,16 @@ function isOidcConfigured() {
   }
   return false
 }
-
+function isAutoLoginEnabled() {
+  if (!getGlobalSetting('enableOpenIDConnect')) {
+    return false
+  }
+  const configuration = ServiceConfiguration.configurations.findOne({ service: SERVICE_NAME })
+  if (configuration === undefined) {
+    return false
+  }
+  return configuration.autoInitiateLogin
+}
 function disableDefaultLoginForm() {
   if (!getGlobalSetting('enableOpenIDConnect')) {
     return false
@@ -61,5 +76,5 @@ function getOidcConfiguration(name) {
   return ''
 }
 export {
-  oidcFields, isOidcConfigured, disableDefaultLoginForm, getOidcConfiguration,
+  oidcFields, isOidcConfigured, disableDefaultLoginForm, getOidcConfiguration, isAutoLoginEnabled
 }

@@ -14,8 +14,8 @@ import { getHolidays } from '../../../../utils/holiday.js'
 Template.calendar.onCreated(function calendarCreated() {
   dayjs.extend(utc)
   this.subscribe('myprojects', {})
-  this.startDate = new ReactiveVar(dayjs.utc().startOf('month').toDate())
-  this.endDate = new ReactiveVar(dayjs.utc().endOf('month').toDate())
+  this.startDate = new ReactiveVar(dayjs.utc().startOf('month').toDate()) // Ensure consistent timezone usage
+  this.endDate = new ReactiveVar(dayjs.utc().endOf('month').toDate()) // Ensure consistent timezone usage
   this.tcid = new ReactiveVar()
   this.selectedProjectId = new ReactiveVar()
   this.selectedDate = new ReactiveVar()
@@ -42,7 +42,7 @@ Template.calendar.onRendered(() => {
         droppable: true,
         aspectRatio: 2,
         height: 'auto',
-        timeZone: 'UTC',
+        timeZone: 'UTC', // Ensure consistent timezone usage
         firstDay: getUserSetting('startOfWeek'),
         themeSystem: 'bootstrap',
         events: (fetchInfo, successCallback) => {
@@ -119,7 +119,7 @@ Template.calendar.onRendered(() => {
           new bootstrap.Modal($('#edit-tc-entry-modal')[0], { focus: false }).show()
         },
         datesSet: (dateInfo) => {
-          FlowRouter.setQueryParams({ date: dayjs(dateInfo.view.currentStart).format('YYYY-MM-DD') })
+          FlowRouter.setQueryParams({ date: dayjs.utc(dateInfo.view.currentStart).format('YYYY-MM-DD') }) // Ensure consistent timezone usage
         },
       })
       templateInstance.calendar.render()

@@ -34,14 +34,14 @@ Template.weektable.onCreated(function weekTableCreated() {
   this.totalForWeekPerDay = new ReactiveVar([])
   this.autorun(() => {
     if (this.subscriptionsReady()) {
-      this.startDate.set(dayjs().startOf('day').isoWeekday(getUserSetting('startOfWeek')))
-      this.endDate.set(dayjs().endOf('day').isoWeekday(getUserSetting('startOfWeek')).add(6, 'day'))
+      this.startDate.set(dayjs.utc().startOf('day').isoWeekday(getUserSetting('startOfWeek'))) // Ensure consistent timezone usage
+      this.endDate.set(dayjs.utc().endOf('day').isoWeekday(getUserSetting('startOfWeek')).add(6, 'day')) // Ensure consistent timezone usage
     }
   })
   this.autorun(() => {
     if (FlowRouter.getQueryParam('date')) {
-      this.startDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).isoWeekday(getUserSetting('startOfWeek')), 'YYYY-MM-DD')
-      this.endDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).isoWeekday(getUserSetting('startOfWeek')).add(6, 'day'), 'YYYY-MM-DD')
+      this.startDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).isoWeekday(getUserSetting('startOfWeek')), 'YYYY-MM-DD') // Ensure consistent timezone usage
+      this.endDate.set(dayjs.utc(FlowRouter.getQueryParam('date')).isoWeekday(getUserSetting('startOfWeek')).add(6, 'day'), 'YYYY-MM-DD') // Ensure consistent timezone usage
     }
   })
   this.autorun(async () => {
@@ -77,7 +77,7 @@ Template.weektable.helpers({
   endDate() { return Template.instance().endDate },
   getTotalForDay(day) {
     for (const element of Template.instance().totalForWeekPerDay.get()) {
-      if (dayjs.utc(new Date(element._id.date)).format(getGlobalSetting('weekviewDateFormat')) === day) {
+      if (dayjs.utc(new Date(element._id.date)).format(getGlobalSetting('weekviewDateFormat')) === day) { // Ensure consistent timezone usage
         return element.totalForDate !== 0 ? timeInUserUnit(element.totalForDate) : false
       }
     }
@@ -93,7 +93,7 @@ Template.weektable.helpers({
     }
     return false
   },
-  isTodayClass: (weekday) => (dayjs.utc(weekday, getGlobalSetting('weekviewDateFormat')).isSame(dayjs.utc(), 'day') ? 'text-primary' : ''),
+  isTodayClass: (weekday) => (dayjs.utc(weekday, getGlobalSetting('weekviewDateFormat')).isSame(dayjs.utc(), 'day') ? 'text-primary' : ''), // Ensure consistent timezone usage
 })
 
 Template.weektable.events({
@@ -107,7 +107,7 @@ Template.weektable.events({
   },
   'click .js-today': (event, templateInstance) => {
     event.preventDefault()
-    FlowRouter.setQueryParams({ date: dayjs.utc().isoWeekday(getUserSetting('startOfWeek')).format('YYYY-MM-DD') })
+    FlowRouter.setQueryParams({ date: dayjs.utc().isoWeekday(getUserSetting('startOfWeek')).format('YYYY-MM-DD') }) // Ensure consistent timezone usage
   },
   'keyup .js-hours': (event, templateInstance) => {
     if (event.keyCode === 13) {
@@ -137,7 +137,7 @@ Template.weektable.events({
           hours /= 60
         }
         const projectId = $(element).data('project-id')
-        const date = dayjs.utc(startDate.add(Number(templateInstance.$(element).data('week-day')), 'day').format('YYYY-MM-DD')).toDate()
+        const date = dayjs.utc(startDate.add(Number(templateInstance.$(element).data('week-day')), 'day').format('YYYY-MM-DD')).toDate() // Ensure consistent timezone usage
         const existingElement = weekArray
           .findIndex((arrayElement) => arrayElement.projectId === projectId
           && arrayElement.task === task && dayjs(arrayElement.date).isSame(dayjs(date)))
@@ -291,7 +291,7 @@ Template.weektablerow.helpers({
   getHoursForDay(day, task) {
     if (task.entries && getGlobalSetting('weekviewDateFormat') && i18nReady.get()) {
       const entryForDay = task.entries
-        .filter((entry) => dayjs.utc(entry.date).format(getGlobalSetting('weekviewDateFormat')) === dayjs.utc(day, getGlobalSetting('weekviewDateFormat')).format(getGlobalSetting('weekviewDateFormat')))
+        .filter((entry) => dayjs.utc(entry.date).format(getGlobalSetting('weekviewDateFormat')) === dayjs.utc(day, getGlobalSetting('weekviewDateFormat')).format(getGlobalSetting('weekviewDateFormat'))) // Ensure consistent timezone usage
         .reduce(((total, element) => total + element.hours), 0)
       return entryForDay !== 0 ? timeInUserUnit(entryForDay) : ''
     }
@@ -312,7 +312,7 @@ Template.weektablerow.helpers({
     if (!Meteor.loggingIn() && Meteor.user() && Meteor.user().profile) {
       Template.instance().methodTimeEntries.get().concat(Template.instance().tempTimeEntries.get()).forEach((element) => {
         if (element.entries) {
-          total += element.entries.filter((entry) => dayjs.utc(entry.date).format(getGlobalSetting('weekviewDateFormat')) === dayjs.utc(day, getGlobalSetting('weekviewDateFormat')).format(getGlobalSetting('weekviewDateFormat')))
+          total += element.entries.filter((entry) => dayjs.utc(entry.date).format(getGlobalSetting('weekviewDateFormat')) === dayjs.utc(day, getGlobalSetting('weekviewDateFormat')).format(getGlobalSetting('weekviewDateFormat'))) // Ensure consistent timezone usage
             .reduce((tempTotal, current) => tempTotal + Number(current.hours), 0)
         }
       })
