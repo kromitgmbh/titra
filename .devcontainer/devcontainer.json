@@ -1,0 +1,7 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+  },
+  "forwardedPorts": [3000],
+  "postCreateCommand": "npm i meteor -g && meteor npm install"
+}
