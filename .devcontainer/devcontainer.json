@@ -1,7 +1,6 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "image": "geoffreybooth/meteor-base",
   "features": {
   },
-  "forwardedPorts": [3000],
-  "postCreateCommand": ["curl https://install.meteor.com/ | sh", "meteor npm install"]
+  "forwardedPorts": [3000]
 }
