@@ -3,8 +3,6 @@
   "features": {
   },
   "forwardedPorts": [3000],
-  "onCreateCommand": "adduser meteor",
-  "remoteUser": "meteor",
   "postCreateCommand": "meteor npm install",
   "postAttachCommand": "ROOT_URL=`echo https://$CODESPACE_NAME-3000.app.github.dev/`"
 }
