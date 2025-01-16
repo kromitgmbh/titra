@@ -4,6 +4,6 @@
   },
   "forwardedPorts": [3000],
   "remoteUser": "meteor",
-  "postCreateCommand": "meteor npm install",
+  "postCreateCommand": "adduser meteor && meteor npm install",
   "postAttachCommand": "ROOT_URL=`echo https://$CODESPACE_NAME-3000.app.github.dev/`"
 }
