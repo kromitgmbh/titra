@@ -77,7 +77,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
   dayjs.extend(utc)
   dayjs.extend(customParseFormat)
   dayjs.extend(duration)
-  this.date = new ReactiveVar(dayjs.utc().toDate()) // Ensure consistent timezone usage
+  this.date = new ReactiveVar(dayjs().toDate()) // Ensure consistent timezone usage
   this.projectId = new ReactiveVar()
   this.tcid = new ReactiveVar()
   this.totalTime = new ReactiveVar(0)
@@ -99,7 +99,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
       this.date.set(this.data?.dateArg.get())
     } else if (!(this.data?.dateArg && this.data?.dateArg.get())
       && !(this.data?.tcid && this.data?.tcid.get()) && FlowRouter.getQueryParam('date')) {
-      this.date.set(dayjs.utc(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate()) // Ensure consistent timezone usage
+      this.date.set(dayjs(FlowRouter.getQueryParam('date'), 'YYYY-MM-DD').toDate()) // Ensure consistent timezone usage
     }
     if (this.data?.projectIdArg && this.data?.projectIdArg.get()) {
       this.projectId.set(this.data?.projectIdArg.get())
@@ -111,7 +111,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
       if (this.subscriptionsReady()) {
         this.time_entry.set(Timecards.findOne(this.tcid.get()))
         this.date.set(Timecards.findOne({ _id: this.tcid.get() })
-          ? dayjs.utc(Timecards.findOne({ _id: this.tcid.get() }).date).toDate() // Ensure consistent timezone usage
+          ? dayjs(Timecards.findOne({ _id: this.tcid.get() }).date).toDate() // Ensure consistent timezone usage
           : dayjs().toDate())
         this.projectId.set(Timecards.findOne({ _id: this.tcid.get() }) ? Timecards.findOne({ _id: this.tcid.get() }).projectId : '')
       }
@@ -404,7 +404,7 @@ function isEditMode() {
 }
 Template.tracktime.helpers({
   date: () => (Template.instance().tcid && Template.instance().tcid.get()
-    ? dayjs.utc(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose')) // Ensure consistent timezone usage
+    ? dayjs(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose')) // Ensure consistent timezone usage
     : dayjs(Template.instance().date.get()).format(getGlobalSetting('dateformatVerbose'))),
   projectId: () => Template.instance().projectId.get(),
   reactiveProjectId: () => Template.instance().projectId,
