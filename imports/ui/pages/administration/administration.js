@@ -22,7 +22,7 @@ Template.administration.onRendered(() => {
   const templateInstance = Template.instance()
   templateInstance.autorun(() => {
     if (templateInstance.subscriptionsReady()) {
-      if (!Meteor.loggingIn() && !Meteor.user().isAdmin) {
+      if (!Meteor.loggingIn() && !Meteor.user()?.isAdmin) {
         FlowRouter.go('/')
       }
       if (FlowRouter.getQueryParam('activeTab')) {

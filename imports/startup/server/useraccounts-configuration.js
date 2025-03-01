@@ -38,7 +38,7 @@ Accounts.onCreateUser(async (options, user) => {
   }
 
   // the first user registered on a server will automatically receive the isAdmin flag
-  if (await Meteor.users.find().countAsync() === 0) {
+  if (localUser && await Meteor.users.find().countAsync() === 0) {
     localUser.isAdmin = true
   }
   return localUser

@@ -110,7 +110,7 @@ async function checkAdminAuthentication(context) {
   const meteorUser = await Meteor.users.findOneAsync({ _id: context.userId })
   if (!context.userId || meteorUser?.inactive) {
     throw new Meteor.Error('notifications.auth_error_method')
-  } else if (!meteorUser.isAdmin) {
+  } else if (meteorUser && !meteorUser.isAdmin) {
     throw new Meteor.Error('notifications.auth_error_method')
   }
 }
@@ -633,15 +633,17 @@ function transactionLogMixin(methodOptions) {
       const user = await Meteor.users.findOneAsync({ _id: this.userId }, {
         _id: 1, 'profile.name': 1, emails: 1, isAdmin: 1,
       })
-      const transaction = {
-        user: JSON.stringify({
-          _id: user._id, name: user.profile.name, emails: user.emails, isAdmin: user.isAdmin,
-        }),
-        method: this.name,
-        args: JSON.stringify(args),
-        timestamp: new Date(),
+      if(user) {
+        const transaction = {
+          user: JSON.stringify({
+            _id: user._id, name: user.profile.name, emails: user.emails, isAdmin: user.isAdmin,
+          }),
+          method: this.name,
+          args: JSON.stringify(args),
+          timestamp: new Date(),
+        }
+        await Transactions.insertAsync(transaction)
       }
-      await Transactions.insertAsync(transaction)
     }
     return runFunc.call(this, args)
   }

@@ -20,7 +20,7 @@ random@1.2.2
 dynamic-import@0.7.4
 ostrio:loggerconsole
 faburem:client-server-logger
-email@3.1.1
+email@3.1.2
 ostrio:flow-router-extra@3.11.0-rc300.1
 jquery@3.0.0
 faburem:accounts-anonymous
