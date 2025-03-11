@@ -41,4 +41,4 @@ Checkout our [wiki](https://wiki.titra.io) for best practices and to learn how t
 
 
 
-Built with ❤️ by [kromit](https://kromit.at) in 🇦🇹
+Built with ❤️ in 🇦🇹
