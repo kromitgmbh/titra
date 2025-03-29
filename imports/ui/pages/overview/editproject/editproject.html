@@ -8,6 +8,9 @@
       <li class="nav-item">
         <a class="nav-link" id="tasks-tab" data-bs-toggle="tab" href="#tasks" role="tab" aria-controls="tasks">{{t "globals.task_plural"}}</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" id="importCSV-tab" data-bs-toggle="tab" href="#importCSV" role="tab" aria-controls="importCSV">{{t "project.import"}}</a>
+      </li>
     </ul>
     {{/unless}}
     <div class="tab-content" id="project-tab-content">
@@ -182,6 +185,11 @@
       <div class="tab-pane fade hide table-responsive p-3 tab-borders" id="tasks">
         {{#if isActiveTab "tasks-tab"}}
           {{>projectTasks}}
+        {{/if}}
+      </div>
+      <div class="tab-pane fade hide table-responsive p-3 tab-borders" id="importCSV">
+        {{#if isActiveTab "importCSV-tab"}}
+          {{>importProjectCSV}}
         {{/if}}
       </div>
     </div>

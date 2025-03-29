@@ -14,6 +14,7 @@ import {
 import CustomFields from '../../../../api/customfields/customfields.js'
 import BsDialogs from '../../../shared components/bootstrapDialogs.js'
 import '../../track/components/projectTasks.js'
+import './components/importcsv.js'
 
 Template.editproject.onCreated(function editprojectSetup() {
   this.deletion = new ReactiveVar(false)
