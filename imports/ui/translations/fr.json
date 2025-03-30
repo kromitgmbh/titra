@@ -121,7 +121,29 @@
     "default_task_help": "Cette valeur sera utilisée comme tâche par défaut lors du suivi du temps sur ce projet.",
     "gitlab_integration": "Intégration de GitLab",
     "gitlab_query": "Paramètre de la requête",
-    "gitlab_help": "Vous pouvez utiliser tous les paramètres de requête disponibles dans l'API GitLab Issues, par exemple"
+    "gitlab_help": "Vous pouvez utiliser tous les paramètres de requête disponibles dans l'API GitLab Issues, par exemple",
+    "import": "Importer",
+    "importCSV": {
+      "title": "Importer des données CSV",
+      "chooseFile": "Choisir un fichier",
+      "removeFile.title": "Supprimer le fichier",
+      "parsing": "Analyse en cours...",
+      "parseCSV": "Analyser le CSV",
+      "previewData": "Aperçu des données",
+      "importing": "Importation...",
+      "importData": "Importer les données",
+      "success": "Succès !",
+      "successMessage": "Vos données ont été importées avec succès.",
+      "error": "Erreur !",
+      "errorsInvalidHeader": "Format d'en-tête CSV invalide. Attendu : Task, Date, Hours",
+      "errorsInvalidDataFormat": "Format de données invalide à la ligne",
+      "errorsInvalidDateFormat": "Format de date invalide à la ligne",
+      "errorsInvalidHours": "Valeur d'heures invalide à la ligne",
+      "errorsNoFileSelected": "Veuillez sélectionner un fichier à télécharger.",
+      "errorsFileReadFailed": "Échec de la lecture du fichier.",
+      "errorsImportFailed": "Impossible d'importer les données.",
+      "generalNoData": "Aucune donnée à afficher."
+    }
   },
   "settings": {
     "user_profile": "Profil utilisateur",

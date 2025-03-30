@@ -10,6 +10,9 @@ Template.importProjectCSV.onCreated(function importProjectCSVOnCreated() {
     this.isUploaded = new ReactiveVar(false);
     this.loading = new ReactiveVar(false);
 })
+Template.importProjectCSV.onRendered(function importProjectCSVOnRendered() {
+  
+})
 Template.importProjectCSV.events({
   'change #file-input'(event, instance) {
     const selectedFile = event.target.files?.[0]
@@ -24,7 +27,7 @@ Template.importProjectCSV.events({
     event.preventDefault()
     const file = instance.file.get();
     if (!file) {
-      instance.error.set(t('errors.noFileSelected'))
+      instance.error.set(t('project.importCSV.noFileSelected'))
       return;
     }
 
@@ -38,16 +41,16 @@ Template.importProjectCSV.events({
         const parsedData = parseCSV(text)
         instance.csvData.set(parsedData)
         instance.loading.set(false)
-        renderDataTable(instance, parsedData);
+        Meteor.setTimeout(() => { renderDataTable(instance, parsedData) }, 500);
       } catch (err) {
-        instance.error.set(err.message || t('errors.fileReadFailed'))
+        instance.error.set(err.message || t('project.importCSV.fileReadFailed'))
         instance.loading.set(false)
         instance.csvData.set(null)
       }
     };
 
     reader.onerror = () => {
-      instance.error.set(t('errors.fileReadFailed'))
+      instance.error.set(t('project.importCSV.fileReadFailed'))
       instance.loading.set(false)
       instance.csvData.set(null)
     };
@@ -57,7 +60,7 @@ Template.importProjectCSV.events({
     event.preventDefault()
     const csvData = instance.csvData.get()
     if (!csvData) {
-      instance.error.set(t('errors.noFileSelected'))
+      instance.error.set(t('project.importCSV.noFileSelected'))
       return
     }
 
@@ -84,28 +87,29 @@ function parseCSV(text) {
 
     // Basic header validation
     if (headers.length !== 3 || headers[0] !== 'Task' || headers[1] !== 'Date' || headers[2] !== 'Hours') {
-        throw new Meteor.Error(t('errors.invalidHeader'));
+        throw new Meteor.Error(t('project.importCSV.invalidHeader'));
     }
 
     const data = [];
     for (let i = 1; i < lines.length; i++) {
         const values = lines[i].split(',').map(v => v.trim());
         if (values.length !== 3) {
-            throw new Meteor.Error(t('errors.invalidDataFormat') + ` ${i + 1}.`);
+            throw new Meteor.Error(t('project.importCSV.invalidDataFormat') + ` ${i + 1}.`);
         }
 
         const task = values[0];
         const date = values[1];
         const hours = Number(values[2]);
 
-        // Date validation: ISO 8601
+        // Date validation:  Allow YYYY-MM-DD or ISO 8601 UTC
         const utcDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-        if (!utcDateRegex.test(date)) {
-            throw new Meteor.Error(t('errors.invalidDateFormat') + ` ${i + 1}. Expected UTC format (YYYY-MM-DDTHH:mm:ss.sssZ).`);
+        const simpleDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!utcDateRegex.test(date) && !simpleDateRegex.test(date)) {
+            throw new Meteor.Error(t('project.importCSV.invalidDateFormat') + ` ${i + 1}. Expected UTC format (YYYY-MM-DDTHH:mm:ss.sssZ) or YYYY-MM-DD.`);
         }
 
         if (isNaN(hours) || hours < 0) {
-            throw new Meteor.Error(t('errors.invalidHours') + ` ${i + 1}.`);
+            throw new Meteor.Error(t('project.importCSV.invalidHours') + ` ${i + 1}.`);
         }
 
         data.push({ Task: task, Date: date, Hours: hours });
@@ -113,53 +117,39 @@ function parseCSV(text) {
     return data;
 }
 
-function renderDataTable(data) {
-  const instance = Template.instance()
+function renderDataTable(instance, data) {
   const container = $('#data-table-container')[0];
   if (!container) {
     console.error('Data table container not found');
     return;
   }
-
   container.innerHTML = '';
-
   if (!data || data.length === 0) {
-    container.innerHTML = `<div class="text-gray-400 text-center py-4">${t('general.noData')}</div>`;
+    container.innerHTML = `<div class="text-gray-400 text-center py-4">${t('project.importCSV.noData')}</div>`;
     return;
   }
+  console.log(data)
+  // Transform data into an array of arrays
+  const transformedData = data.map(row => [row.Task, row.Date, row.Hours]);
 
-  const table = document.createElement('table');
-  table.className = 'table table-striped table-bordered';
-
-  const thead = document.createElement('thead');
-  thead.className = 'thead-light';
-  const headerRow = document.createElement('tr');
   const columns = [
-    { key: 'Task', label: t('tableHeaders.task') },
-    { key: 'Date', label: t('tableHeaders.date') },
-    { key: 'Hours', label: t('tableHeaders.hours') },
+    { id: 'Task', name: t('globals.task') },
+    { id: 'Date', name: t('globals.date') },
+    { id: 'Hours', name: t('globals.hour_plural') },
   ];
-
-  columns.forEach(column => {
-    const th = document.createElement('th');
-    th.textContent = column.label;
-    headerRow.appendChild(th);
-  });
-  thead.appendChild(headerRow);
-  table.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
-  data.forEach(row => {
-    const tr = document.createElement('tr');
-    columns.forEach(column => {
-      const td = document.createElement('td');
-      td.textContent = row[column.key];
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-  container.appendChild(table);
+  import('frappe-datatable/dist/frappe-datatable.css').then(() => {
+    import('frappe-datatable').then((datatable) => {
+      const DataTable = datatable.default
+        new DataTable('#data-table-container', {
+          columns,
+          data: transformedData,
+          layout: 'fluid', // Makes the table responsive
+          pagination: true, // Enables pagination
+          inlineFilters: true, // Enables inline filters
+          resizable: true, // Allows resizing of columns
+        })
+    })
+  })
 }
 
 Template.importProjectCSV.helpers({

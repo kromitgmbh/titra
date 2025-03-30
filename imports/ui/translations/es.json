@@ -128,7 +128,29 @@
     "default_task_help": "Este valor se usará como la tarea predeterminada al registrar tiempo en este proyecto.",
     "gitlab_integration": "Integración con GitLab",
     "gitlab_query": "Parámetro de Consulta",
-    "gitlab_help": "Puedes usar todos los parámetros de consulta disponibles en la API de Problemas de GitLab, por ejemplo,"
+    "gitlab_help": "Puedes usar todos los parámetros de consulta disponibles en la API de Problemas de GitLab, por ejemplo,",
+    "import": "Importar",
+    "importCSV": {
+      "title": "Importar datos CSV",
+      "chooseFile": "Elegir archivo",
+      "removeFile.title": "Eliminar archivo",
+      "parsing": "Analizando...",
+      "parseCSV": "Analizar CSV",
+      "previewData": "Vista previa de datos",
+      "importing": "Importando...",
+      "importData": "Importar datos",
+      "success": "¡Éxito!",
+      "successMessage": "Sus datos se han importado con éxito.",
+      "error": "¡Error!",
+      "errorsInvalidHeader": "Formato de encabezado CSV no válido. Se esperaba: Task, Date, Hours",
+      "errorsInvalidDataFormat": "Formato de datos no válido en la fila",
+      "errorsInvalidDateFormat": "Formato de fecha no válido en la fila",
+      "errorsInvalidHours": "Valor de horas no válido en la fila",
+      "errorsNoFileSelected": "Por favor, seleccione un archivo para subir.",
+      "errorsFileReadFailed": "Error al leer el archivo.",
+      "errorsImportFailed": "No se pudieron importar los datos.",
+      "generalNoData": "No hay datos para mostrar."
+    }
   },
   "settings": {
     "user_profile": "Perfil de Usuario",

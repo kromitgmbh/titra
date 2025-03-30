@@ -128,7 +128,29 @@
       "default_task_help": "Це значення буде використовуватись як завдання за замовчуванням при обліку часу в цьому проекті.",
       "gitlab_integration": "Інтеграція з GitLab",
       "gitlab_query": "Параметр запиту",
-      "gitlab_help": "Ви можете використовувати всі параметри запиту, доступні у списку API завдань/проблем у GitLab."
+      "gitlab_help": "Ви можете використовувати всі параметри запиту, доступні у списку API завдань/проблем у GitLab.",
+      "import": "Імпорт",
+      "importCSV": {
+        "title": "Імпорт даних CSV",
+        "chooseFile": "Вибрати файл",
+        "removeFile.title": "Видалити файл",
+        "parsing": "Аналіз...",
+        "parseCSV": "Аналізувати CSV",
+        "previewData": "Попередній перегляд даних",
+        "importing": "Імпорт...",
+        "importData": "Імпортувати дані",
+        "success": "Успіх!",
+        "successMessage": "Ваші дані було успішно імпортовано.",
+        "error": "Помилка!",
+        "errorsInvalidHeader": "Невірний формат заголовка CSV. Очікується: Task, Date, Hours",
+        "errorsInvalidDataFormat": "Невірний формат даних у рядку",
+        "errorsInvalidDateFormat": "Невірний формат дати у рядку",
+        "errorsInvalidHours": "Невірне значення годин у рядку",
+        "errorsNoFileSelected": "Будь ласка, виберіть файл для завантаження.",
+        "errorsFileReadFailed": "Не вдалося прочитати файл.",
+        "errorsImportFailed": "Не вдалося імпортувати дані.",
+        "generalNoData": "Немає даних для відображення."
+      }
     },
     "settings": {
       "user_profile": "Профіль користувача",

@@ -128,7 +128,29 @@
     "default_task_help": "This value will be used as the default task when tracking time on this project.",
     "gitlab_integration": "GitLab integration",
     "gitlab_query": "Query parameter",
-    "gitlab_help": "You can use all query parameters available in the GitLab Issues API e.g."
+    "gitlab_help": "You can use all query parameters available in the GitLab Issues API e.g.",
+    "import": "Import",
+    "importCSV": {
+      "title": "Import CSV Data",
+      "chooseFile": "Choose File",
+      "removeFile.title": "Remove File",
+      "parsing": "Parsing...",
+      "parseCSV": "Parse CSV",
+      "previewData": "Preview Data",
+      "importing": "Importing...",
+      "importData": "Import Data",
+      "success": "Success!",
+      "successMessage": "Your data has been imported successfully.",
+      "error": "Error!",
+      "errorsInvalidHeader": "Invalid CSV header format. Expected: Task, Date, Hours",
+      "errorsInvalidDataFormat": "Invalid data format in row",
+      "errorsInvalidDateFormat": "Invalid date format in row",
+      "errorsInvalidHours": "Invalid hours value in row",
+      "errorsNoFileSelected": "Please select a file to upload.",
+      "errorsFileReadFailed": "Failed to read the file.",
+      "errorsImportFailed": "Failed to import data.",
+      "generalNoData": "No data to display."
+    }
   },
   "settings": {
     "user_profile": "User profile",
