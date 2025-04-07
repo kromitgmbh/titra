@@ -172,4 +172,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableLDAP', description: 'settings.enable_LDAP', type: 'checkbox', value: false, category: 'settings.categories.login',
 })
+defaultSettings.push({
+  name: 'enableProjectCSVImport', description: 'settings.enable_project_CSV_import', type: 'checkbox', value: true, category: 'settings.categories.customization',
+})
 export { defaultSettings, Globalsettings }

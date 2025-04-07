@@ -8,9 +8,11 @@
       <li class="nav-item">
         <a class="nav-link" id="tasks-tab" data-bs-toggle="tab" href="#tasks" role="tab" aria-controls="tasks">{{t "globals.task_plural"}}</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" id="importCSV-tab" data-bs-toggle="tab" href="#importCSV" role="tab" aria-controls="importCSV">{{t "project.import"}}</a>
-      </li>
+      {{#if getGlobalSetting "enableProjectCSVImport"}}
+        <li class="nav-item">
+          <a class="nav-link" id="importCSV-tab" data-bs-toggle="tab" href="#importCSV" role="tab" aria-controls="importCSV">{{t "project.import"}}</a>
+        </li>
+      {{/if}}
     </ul>
     {{/unless}}
     <div class="tab-content" id="project-tab-content">

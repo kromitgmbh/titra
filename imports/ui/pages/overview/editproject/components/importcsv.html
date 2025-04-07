@@ -1,73 +1,106 @@
 <template name="importProjectCSV">
     <div class="container mt-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white d-flex align-items-center">
+                <i class="fas fa-info-circle mr-2"></i>
+                <h5 class="mb-0">{{t 'project.importCSV.expectedFormatTitle'}}</h5>
+            </div>
+            <div class="card-body">
+                <p>{{t 'project.importCSV.expectedFormatDescription'}}</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>{{t 'project.importCSV.columnName'}}</th>
+                                <th>{{t 'project.importCSV.description'}}</th>
+                                <th>{{t 'project.importCSV.example'}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{t 'project.importCSV.expectedFormatTask'}}</td>
+                                <td>{{t 'project.importCSV.taskDescription'}}</td>
+                                <td>{{t 'project.importCSV.taskExample'}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{t 'project.importCSV.expectedFormatDate'}}</td>
+                                <td>{{t 'project.importCSV.dateDescription'}}</td>
+                                <td>{{t 'project.importCSV.dateExample'}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{t 'project.importCSV.expectedFormatHours'}}</td>
+                                <td>{{t 'project.importCSV.hoursDescription'}}</td>
+                                <td>{{t 'project.importCSV.hoursExample'}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         {{#unless isUploaded}}
         <div class="space-y-4">
+            {{#unless csvData}}
             <div class="form-group">
-            <label for="file-input" class="btn btn-outline-primary">
-                <i class="fas fa-upload mr-2"></i>
-                {{t 'project.importCSV.chooseFile'}}
-            </label>
-            <input type="file" accept=".csv" id="file-input" class="d-none" />
-            {{#if file}}
+                <label for="file-input" class="btn btn-outline-primary">
+                    <i class="fas fa-upload mr-2"></i>
+                    {{t 'project.importCSV.chooseFile'}}
+                </label>
+                <input type="file" accept=".csv" id="file-input" class="d-none" />
+                {{#if file}}
                 <div class="d-flex align-items-center mt-2">
-                <i class="fas fa-file text-green-500 mr-2"></i>
-                <span class="text-sm font-medium">{{file.name}}</span>
-                <button type="button" class="btn btn-link text-danger ml-2 p-0" id="remove-file-button" title="{{t 'project.importCSV.removeFile.title'}}">
-                    <i class="fas fa-times"></i>
-                </button>
+                    <i class="fas fa-file text-green-500 mr-2"></i>
+                    <span class="text-sm font-medium">{{file.name}}</span>
+                    <button type="button" class="btn btn-link text-danger ml-2 p-0" id="remove-file-button" title="{{t 'project.importCSV.removeFile.title'}}">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-            {{/if}}
+                {{/if}}
             </div>
-            
-            <button id="parse-csv-button" class="btn {{#if file}}btn-primary{{else}}btn-secondary disabled{{/if}}">
-            {{#if loading}}
-                <i class="fas fa-spinner fa-spin mr-2"></i>
-                {{t 'project.importCSV.parsing'}}
-            {{else}}
-                {{t 'project.importCSV.parseCSV'}}
-            {{/if}}
-            </button>
-            
+            {{/unless}}
             {{#if csvData}}
             <div class="space-y-4">
-                <h3 class="text-lg font-semibold d-flex align-items-center">
-                <i class="fas fa-table mr-2 text-muted"></i>
-                {{t 'project.importCSV.previewData'}}
-                </h3>
-                <div id="data-table-container" class="table-responsive">
+                <p class="font-semibold d-flex align-items-center">
+                    {{t 'project.importCSV.previewData'}}
+                </p>
+                <div id="data-table-container" class="table-responsive mb-3">
                 </div>
-                <div class="d-flex justify-content-end">
-                <button id="import-data-button" class="btn btn-success">
-                    {{#if loading}}
-                    <i class="fas fa-spinner fa-spin mr-2"></i>
-                    {{t 'project.importCSV.importing'}}
-                    {{else}}
-                    {{t 'project.importCSV.importData'}}
-                    {{/if}}
-                </button>
-                </div>
-                <pre class="bg-light p-3 rounded overflow-auto text-sm">{{jsonCsvData}}</pre>
+
+                {{#if loading}}
+                    <p class="text-sm text-gray-500">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                        {{t 'project.importCSV.importing'}}
+                    </p>
+                {{else}}
+                    <div class="d-flex justify-content-between">
+                        <button id="cancel-import-button" class="btn btn-danger">
+                            {{t 'navigation.cancel'}}
+                        </button>
+                        <button id="import-data-button" class="btn btn-success">
+                            {{t 'project.importCSV.importData'}}
+                        </button>
+                    </div>
+                {{/if}}
             </div>
             {{/if}}
-        
         </div>
         {{/unless}}
+
         {{#if isUploaded}}
-        <div class="alert alert-success d-flex align-items-center" role="alert">
-            <i class="fas fa-check-circle mr-2"></i>
-            <div>
-            <strong class="font-bold">{{t 'project.importCSV.success'}}</strong>
-            <span class="block">{{t 'project.importCSV.successMessage'}}</span>
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <i class="fas fa-check-circle mr-2"></i>
+                <div>
+                    <strong class="font-bold">{{t 'project.importCSV.success'}}</strong>
+                    <span class="block">{{t 'project.importCSV.successMessage'}}</span>
+                </div>
             </div>
-        </div>
         {{/if}}
 
         {{#if error}}
         <div class="alert alert-danger d-flex align-items-center" role="alert">
             <i class="fas fa-exclamation-triangle mr-2"></i>
             <div>
-            <strong class="font-bold">{{t 'project.importCSV.error'}}</strong>
-            <span class="block">{{error}}</span>
+                <strong class="font-bold">{{t 'project.importCSV.error'}}</strong>
+                <span class="block">{{error}}</span>
             </div>
         </div>
         {{/if}}

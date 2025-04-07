@@ -124,6 +124,20 @@
     "gitlab_help": "Vous pouvez utiliser tous les paramètres de requête disponibles dans l'API GitLab Issues, par exemple",
     "import": "Importer",
     "importCSV": {
+      "expectedFormatTitle": "Formato CSV Esperado",
+      "expectedFormatDescription": "Le fichier CSV téléchargé doit être séparé par des virgules. La première ligne doit être un en-tête avec les valeurs : Tâche, Date, Heures.",
+      "columnName": "Nombre de la Columna",
+      "description": "Descripción",
+      "example": "Ejemplo",
+      "expectedFormatTask": "Tarea",
+      "taskDescription": "Una descripción de la tarea.",
+      "taskExample": "Corregir errores, Escribir documentación",
+      "expectedFormatDate": "Fecha",
+      "dateDescription": "La fecha en formato AAAA-MM-DD o como marca de tiempo UTC ISO completa (por ejemplo, AAAA-MM-DDTHH:mm:ss.sssZ).",
+      "dateExample": "2025-04-07, 2025-04-07T14:30:00.000Z",
+      "expectedFormatHours": "Horas",
+      "hoursDescription": "El número de horas trabajadas (numérico).",
+      "hoursExample": "8, 4.5",
       "title": "Importer des données CSV",
       "chooseFile": "Choisir un fichier",
       "removeFile.title": "Supprimer le fichier",
@@ -241,7 +255,8 @@
     "show_resource_in_details": "Afficher/exporter le champ ressource dans la vue détaillée ?",
     "allow_individual_task_rates": "Autoriser des taux de tâche individuels?",
     "show_rate_in_details": "Afficher/exporter le champ taux dans la vue détaillée ?",
-    "enable_LDAP": "Activer l'intégration LDAP ?"
+    "enable_LDAP": "Activer l'intégration LDAP ?",
+    "enable_project_CSV_import": "Activer l'importation CSV du projet"
   },
   "customer": {
     "select_customer": "Selectionner un client",

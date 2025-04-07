@@ -116,6 +116,20 @@
     "default_task_help": "这个任务将被用作该项目的默认任务",
     "import": "导入",
     "importCSV": {
+      "expectedFormatTitle": "预期的 CSV 格式",
+      "expectedFormatDescription": "上传的 CSV 文件必须使用逗号分隔。第一行应为标题，包含以下值：任务, 日期, 小时。",
+      "columnName": "列名",
+      "description": "描述",
+      "example": "示例",
+      "expectedFormatTask": "任务",
+      "taskDescription": "任务的描述。",
+      "taskExample": "修复错误，撰写文档",
+      "expectedFormatDate": "日期",
+      "dateDescription": "日期格式为 YYYY-MM-DD 或完整的 UTC ISO 时间戳（例如 YYYY-MM-DDTHH:mm:ss.sssZ）。",
+      "dateExample": "2025-04-07, 2025-04-07T14:30:00.000Z",
+      "expectedFormatHours": "小时",
+      "hoursDescription": "工作的小时数（数字）。",
+      "hoursExample": "8, 4.5",
       "title": "导入CSV数据",
       "chooseFile": "选择文件",
       "removeFile.title": "删除文件",
@@ -209,7 +223,8 @@
     "show_resource_in_details": "在详细视图中显示/导出资源字段",
     "allow_individual_task_rates": "允许单独任务费率",
     "show_rate_in_details": "在详细视图中显示/导出费率字段",
-    "enable_LDAP": "启用 LDAP"
+    "enable_LDAP": "启用 LDAP",
+    "enable_project_CSV_import": "启用项目 CSV 导入"
   },
   "customer": {
     "select_customer": "请选一个客户",

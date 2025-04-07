@@ -973,6 +973,65 @@ const getWeekTotal = new ValidatedMethod({
     return aggregatedweek[0]?.total
   },
 })
+/**
+ * Bulk inserts multiple timecards into the Timecards collection.
+ *
+ * @method bulkInsertTimecards
+ * @param {Object} args - The arguments for the method.
+ * @param {Array} args.timecards - An array of timecard objects to be inserted.
+ * @param {string} args.timecards[].projectId - The ID of the project for the timecard.
+ * @param {string} args.timecards[].task - The task for the timecard.
+ * @param {Date} args.timecards[].date - The date of the timecard.
+ * @param {number} args.timecards[].hours - The number of hours for the timecard.
+ * @param {string} [args.timecards[].userId] - The ID of the user for the timecard (optional).
+ * @param {Object} [args.timecards[].customfields] - Custom fields for the timecard (optional).
+ * @throws {Meteor.Error} If the user is not authenticated.
+ * @throws {Meteor.Error} If validation fails for any timecard.
+ * @returns {Object} An object containing the success message.
+ */
+const bulkInsertTimecards = new ValidatedMethod({
+  name: 'bulkInsertTimecards',
+  validate(args) {
+    check(args, {
+      timecards: Array,
+    })
+    console.log(args.timecards)
+    args.timecards.forEach((timecard) => {
+      check(timecard, {
+        projectId: String,
+        task: String,
+        date: Date,
+        hours: Number,
+        userId: Match.Maybe(String), // Optional userId
+        customfields: Match.Maybe(Object), // Optional custom fields
+      })
+    })
+  },
+  mixins: [authenticationMixin, transactionLogMixin],
+  async run({ timecards }) {
+    const insertedTimecards = []
+    for (const timecard of timecards) {
+      const userId = timecard.userId || this.userId // Use provided userId or fallback to the current user
+      const { projectId, task, date, hours, customfields } = timecard
+      // Check time entry rules
+      await checkTimeEntryRule({
+        userId,
+        projectId,
+        task,
+        state: 'new',
+        date,
+        hours,
+      })
+      // Insert the timecard
+      const timecardId = await insertTimeCard(projectId, task, date, hours, userId, null, customfields)
+      insertedTimecards.push(timecardId)
+    }
+    return {
+      success: true,
+      message: `${insertedTimecards.length} timecards successfully inserted.`,
+    }
+  },
+})
 export {
   insertTimeCard,
   insertTimeCardMethod,
@@ -990,5 +1049,6 @@ export {
   getGoogleWorkspaceData,
   userTimeCardsForPeriodByProjectByTaskMethod,
   getWeekTotal,
-  getTotalForWeekPerDay
+  getTotalForWeekPerDay,
+  bulkInsertTimecards,
 }

@@ -131,6 +131,20 @@
       "gitlab_help": "Ви можете використовувати всі параметри запиту, доступні у списку API завдань/проблем у GitLab.",
       "import": "Імпорт",
       "importCSV": {
+        "expectedFormatTitle": "Очікуваний формат CSV",
+        "expectedFormatDescription": "Завантажений CSV-файл повинен бути розділений комами. Перша строка повинна бути заголовком зі значеннями: Завдання, Дата, Години.",
+        "columnName": "Назва стовпця",
+        "description": "Опис",
+        "example": "Приклад",
+        "expectedFormatTask": "Завдання",
+        "taskDescription": "Опис завдання.",
+        "taskExample": "Виправити помилки, Написати документацію",
+        "expectedFormatDate": "Дата",
+        "dateDescription": "Дата у форматі РРРР-ММ-ДД або повний ISO UTC часовий штамп (наприклад, РРРР-ММ-ДДTHH:mm:ss.sssZ).",
+        "dateExample": "2025-04-07, 2025-04-07T14:30:00.000Z",
+        "expectedFormatHours": "Години",
+        "hoursDescription": "Кількість відпрацьованих годин (числове значення).",
+        "hoursExample": "8, 4.5",
         "title": "Імпорт даних CSV",
         "chooseFile": "Вибрати файл",
         "removeFile.title": "Видалити файл",
@@ -249,7 +263,8 @@
       "show_resource_in_details": "Відображати/експортувати поле ресурсу на сторінці 'Деталі'?",
       "allow_individual_task_rates": "Дозволити індивідуальні ставки за завдання?",
       "show_rate_in_details": "Відображати/експортувати ставку на сторінці 'Деталі'?",
-      "enable_LDAP": "Активувати LDAP?"
+      "enable_LDAP": "Активувати LDAP?",
+      "enable_project_CSV_import": "Увімкнути імпорт CSV для проекту"
     },
     "customer": {
       "select_customer": "Виберіть клієнта",

@@ -131,6 +131,20 @@
     "gitlab_help": "Puedes usar todos los parámetros de consulta disponibles en la API de Problemas de GitLab, por ejemplo,",
     "import": "Importar",
     "importCSV": {
+      "expectedFormatTitle": "Formato CSV Esperado",
+      "expectedFormatDescription": "El archivo CSV cargado debe tener las siguientes columnas:",
+      "columnName": "Nombre de la Columna",
+      "description": "Descripción",
+      "example": "Ejemplo",
+      "expectedFormatTask": "Tarea",
+      "taskDescription": "Una descripción de la tarea.",
+      "taskExample": "Corregir errores, Escribir documentación",
+      "expectedFormatDate": "Fecha",
+      "dateDescription": "La fecha en formato AAAA-MM-DD o como marca de tiempo UTC ISO completa (por ejemplo, AAAA-MM-DDTHH:mm:ss.sssZ).",
+      "dateExample": "2025-04-07, 2025-04-07T14:30:00.000Z",
+      "expectedFormatHours": "Horas",
+      "hoursDescription": "El número de horas trabajadas (numérico).",
+      "hoursExample": "8, 4.5",
       "title": "Importar datos CSV",
       "chooseFile": "Elegir archivo",
       "removeFile.title": "Eliminar archivo",
@@ -251,7 +265,8 @@
     "show_resource_in_details": "¿Mostrar/exportar campo de recurso en la vista de detalles?",
     "allow_individual_task_rates": "¿Permitir tarifas individuales por tarea?",
     "show_rate_in_details": "¿Mostrar/exportar campo de tarifa en la vista de detalles?",
-    "enable_LDAP": "¿Habilitar Integración con LDAP?"
+    "enable_LDAP": "¿Habilitar Integración con LDAP?",
+    "enable_project_CSV_import": "Habilitar la importación de CSV de proyectos"
 	},
 	"customer": {
 		"select_customer": "Seleccionar un Cliente",
