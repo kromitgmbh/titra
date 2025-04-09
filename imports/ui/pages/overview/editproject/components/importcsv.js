@@ -107,10 +107,10 @@ Template.importProjectCSV.events({
 
 function parseCSV(text) {
   const lines = text.trim().split('\n')
-  const headers = lines[0].split(',').map((h) => h.trim())
+  const headers = lines[0].split(',').map((h) => h.trim().toLowerCase())
 
   // Basic header validation
-  if (headers.length !== 3 || headers[0] !== 'Task' || headers[1] !== 'Date' || headers[2] !== 'Hours') {
+  if (headers.length !== 3 || headers[0] !== 'task' || headers[1] !== 'date' || headers[2] !== 'hours') {
     throw new Meteor.Error(t('project.importCSV.invalidHeader'))
   }
 
