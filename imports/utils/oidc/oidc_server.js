@@ -20,7 +20,9 @@ async function getConfiguration() {
 
 async function getToken(query) {
   const config = await getConfiguration()
-  const serverTokenEndpoint = `${config.serverUrl}${config.tokenEndpoint}`
+  const serverTokenEndpoint = config.tokenEndpoint.startsWith('http://') || config.tokenEndpoint.startsWith('https://') 
+    ? config.tokenEndpoint 
+    : `${config.serverUrl}${config.tokenEndpoint}`;
 
   const request = await fetch(serverTokenEndpoint, {
     method: 'POST',
@@ -49,7 +51,9 @@ async function getToken(query) {
 }
 
 async function getUserInfoFromEndpoint(accessToken, config, expiresAt) {
-  const serverUserinfoEndpoint = `${config.serverUrl}${config.userinfoEndpoint}`
+  const serverUserinfoEndpoint = config.userinfoEndpoint.startsWith('http://') || config.userinfoEndpoint.startsWith('https://') 
+    ? config.userinfoEndpoint 
+    : `${config.serverUrl}${config.userinfoEndpoint}`;
   const request = await fetch(serverUserinfoEndpoint, {
     method: 'GET',
     headers: {
