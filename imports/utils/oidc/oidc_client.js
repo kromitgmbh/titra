@@ -39,7 +39,9 @@ function registerOidc() {
       options.display = display
     }
 
-    let loginUrl = `${config.serverUrl}${config.authorizationEndpoint}`
+    let loginUrl = config.authorizationEndpoint.startsWith('http') 
+      ? config.authorizationEndpoint 
+      : `${config.serverUrl}${config.authorizationEndpoint}`
     // check if the loginUrl already contains a '?'
     const hasExistingParams = loginUrl.indexOf('?') !== -1
 
