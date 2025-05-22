@@ -3,9 +3,11 @@ import { validateEmail, getGlobalSetting } from '../../utils/frontend_helpers'
 import { isOidcConfigured, disableDefaultLoginForm, isAutoLoginEnabled } from '../../utils/oidc/oidc_helper'
 import { oidcReady } from '../../utils/oidc/oidc_client'
 import { t } from '../../utils/i18n.js'
+import { debugLog } from '../../utils/debugLog'
 import './signIn.html'
 
 function handleLoginResult(error, templateInstance) {
+  debugLog('[OIDC] handleLoginResult called', { error, templateInstance })
   if (error) {
     if (error.error === 403 || error.error === 400) {
       templateInstance.$('.notification').text(t(`login.${error.error}`))
@@ -14,13 +16,16 @@ function handleLoginResult(error, templateInstance) {
     }
     document.querySelector('.notification').classList.remove('d-none')
   } else {
-    FlowRouter.go('projectlist')
+    debugLog('[OIDC] Redirecting to projectlist')
+    FlowRouter.go('/')
   }
 }
 
 function signInOidc(event, templateInstance) {
   event.preventDefault()
-  const res = Meteor.loginWithOidc((error) => {
+  debugLog('[OIDC] signInOidc called')
+  Meteor.loginWithOidc((error) => {
+    debugLog('[OIDC] OIDC callback invoked', { error })
     handleLoginResult(error, templateInstance)
   })
 }
@@ -87,7 +92,9 @@ Template.signIn.onRendered(function signInRendered() {
   const templateInstance = this
   this.autorun(() => {
     if(oidcReady.get() && isAutoLoginEnabled()) {
+      debugLog('[OIDC] Auto OIDC login triggered')
       Meteor.loginWithOidc((error) => {
+        debugLog('[OIDC] OIDC callback invoked (auto login)', { error })
         handleLoginResult(error, templateInstance)
       })
     }

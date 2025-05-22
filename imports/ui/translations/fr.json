@@ -256,7 +256,8 @@
     "allow_individual_task_rates": "Autoriser des taux de tâche individuels?",
     "show_rate_in_details": "Afficher/exporter le champ taux dans la vue détaillée ?",
     "enable_LDAP": "Activer l'intégration LDAP ?",
-    "enable_project_CSV_import": "Activer l'importation CSV du projet"
+    "enable_project_CSV_import": "Activer l'importation CSV du projet",
+    "debug_mode": "Activer le mode debug ?"
   },
   "customer": {
     "select_customer": "Selectionner un client",

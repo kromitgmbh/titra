@@ -2,6 +2,7 @@
 import { OAuth } from 'meteor/oauth'
 import { Random } from 'meteor/random'
 import { ServiceConfiguration } from 'meteor/service-configuration'
+import { debugLog } from '../debugLog'
 
 const SERVICE_NAME = 'oidc'
 const oidcReady = new ReactiveVar(false)
@@ -9,12 +10,18 @@ function registerOidc() {
   Accounts.oauth.registerService(SERVICE_NAME)
 
   Meteor.loginWithOidc = (callback) => {
+    debugLog('[OIDC] Meteor.loginWithOidc called')
     const options = {}
-    const completeCallback = Accounts.oauth.credentialRequestCompleteHandler(callback)
+    const completeCallback = Accounts.oauth.credentialRequestCompleteHandler((...args) => {
+      debugLog('[OIDC] OIDC completeCallback invoked', ...args)
+      if (callback) callback(...args)
+    })
 
     const config = ServiceConfiguration.configurations.findOne({ service: SERVICE_NAME })
+    debugLog('[OIDC] Loaded OIDC config', config)
     if (!config) {
       if (completeCallback) {
+        debugLog('[OIDC] No OIDC config found, calling callback with error')
         completeCallback(
           new ServiceConfiguration.ConfigError('Service oidc not configured.'),
         )
@@ -59,6 +66,7 @@ function registerOidc() {
       height: options.popupOptions.height || 450,
     }
 
+    debugLog('[OIDC] Launching OAuth login', { loginService: SERVICE_NAME, loginStyle, loginUrl, credentialToken, popupOptions })
     OAuth.launchLogin({
       loginService: SERVICE_NAME,
       loginStyle,

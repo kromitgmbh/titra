@@ -175,4 +175,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableProjectCSVImport', description: 'settings.enable_project_CSV_import', type: 'checkbox', value: true, category: 'settings.categories.customization',
 })
+defaultSettings.push({
+  name: 'debugMode', description: 'settings.debug_mode', type: 'checkbox', value: 'false', category: 'settings.categories.global',
+})
 export { defaultSettings, Globalsettings }

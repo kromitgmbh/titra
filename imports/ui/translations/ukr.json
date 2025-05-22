@@ -264,7 +264,8 @@
       "allow_individual_task_rates": "Дозволити індивідуальні ставки за завдання?",
       "show_rate_in_details": "Відображати/експортувати ставку на сторінці 'Деталі'?",
       "enable_LDAP": "Активувати LDAP?",
-      "enable_project_CSV_import": "Увімкнути імпорт CSV для проекту"
+      "enable_project_CSV_import": "Увімкнути імпорт CSV для проекту",
+      "debug_mode": "Увімкнути режим налагодження?"
     },
     "customer": {
       "select_customer": "Виберіть клієнта",

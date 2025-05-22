@@ -266,7 +266,8 @@
     "allow_individual_task_rates": "Allow individual task rates?",
     "show_rate_in_details": "Show/export rate field in details view?",
     "enable_LDAP": "Enable LDAP login?",
-    "enable_project_CSV_import": "Enable Project CSV Import"
+    "enable_project_CSV_import": "Enable Project CSV Import",
+    "debug_mode": "Enable debug mode?"
   },
   "customer": {
     "select_customer": "Select a customer",

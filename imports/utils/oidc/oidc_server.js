@@ -2,6 +2,7 @@
 import { Meteor } from 'meteor/meteor'
 import { OAuth } from 'meteor/oauth'
 import { ServiceConfiguration } from 'meteor/service-configuration'
+import { debugLog } from '../debugLog'
 
 const SERVICE_NAME = 'oidc'
 
@@ -12,7 +13,9 @@ if (Meteor.release) {
 
 async function getConfiguration() {
   const config = await(ServiceConfiguration.configurations.findOneAsync({ service: SERVICE_NAME }))
+  debugLog('[OIDC] getConfiguration', config)
   if (!config) {
+    debugLog('[OIDC] No OIDC config found')
     throw new ServiceConfiguration.ConfigError('Service oidc not configured.')
   }
   return config
@@ -23,7 +26,7 @@ async function getToken(query) {
   const serverTokenEndpoint = config.tokenEndpoint.startsWith('http://') || config.tokenEndpoint.startsWith('https://') 
     ? config.tokenEndpoint 
     : `${config.serverUrl}${config.tokenEndpoint}`;
-
+  debugLog('[OIDC] getToken', { serverTokenEndpoint, query })
   const request = await fetch(serverTokenEndpoint, {
     method: 'POST',
     headers: {
@@ -42,8 +45,9 @@ async function getToken(query) {
   });
 
   const response = await request.json();
-
+  debugLog('[OIDC] getToken response', response)
   if(response.error) {
+    debugLog(`[OIDC] Failed to get token from OIDC ${serverTokenEndpoint}: ${response.error}`)
     throw new Error(`Failed to get token from OIDC ${serverTokenEndpoint}: ${response.error}`);
   } else {
     return response;
@@ -54,6 +58,7 @@ async function getUserInfoFromEndpoint(accessToken, config, expiresAt) {
   const serverUserinfoEndpoint = config.userinfoEndpoint.startsWith('http://') || config.userinfoEndpoint.startsWith('https://') 
     ? config.userinfoEndpoint 
     : `${config.serverUrl}${config.userinfoEndpoint}`;
+  debugLog('[OIDC] getUserInfoFromEndpoint', { serverUserinfoEndpoint, accessToken })
   const request = await fetch(serverUserinfoEndpoint, {
     method: 'GET',
     headers: {
@@ -63,8 +68,9 @@ async function getUserInfoFromEndpoint(accessToken, config, expiresAt) {
   });
 
   const response = await request.json();
-
+  debugLog('[OIDC] getUserInfoFromEndpoint response', response)
   if(response.error) {
+    debugLog(`[OIDC] Failed to get userinfo from OIDC ${serverUserinfoEndpoint}: ${response.error}`)
     throw new Error(`Failed to get userinfo from OIDC ${serverUserinfoEndpoint}: ${response.error}`);
   } else
     return {
@@ -83,10 +89,12 @@ function getTokenContent(token) {
     try {
       const parts = token.split('.')
       content = JSON.parse(Buffer.from(parts[1], 'base64').toString())
+      debugLog('[OIDC] getTokenContent', content)
     } catch (err) {
       content = {
         exp: 0,
       }
+      debugLog('[OIDC] Failed to parse token content', err)
     }
   }
   return content
@@ -95,7 +103,7 @@ function getTokenContent(token) {
 function getUserInfoFromToken(accessToken) {
   const tokenContent = getTokenContent(accessToken)
   const mainEmail = tokenContent.email || tokenContent.emails[0]
-
+  debugLog('[OIDC] getUserInfoFromToken', { tokenContent, mainEmail })
   return {
     id: tokenContent.sub,
     username: tokenContent.username || tokenContent.preferred_username || mainEmail,
@@ -108,7 +116,7 @@ function getUserInfoFromToken(accessToken) {
 
 async function getUserInfo(accessToken, expiresAt) {
   const config = await getConfiguration()
-
+  debugLog('[OIDC] getUserInfo', { accessToken, expiresAt, config })
   if (config.userinfoEndpoint) {
     return await getUserInfoFromEndpoint(accessToken, config, expiresAt)
   }
@@ -118,6 +126,7 @@ async function getUserInfo(accessToken, expiresAt) {
 async function registerOidc() {
   Accounts.oauth.registerService(SERVICE_NAME)
   OAuth.registerService(SERVICE_NAME, 2, null, async (query) => {
+    debugLog('[OIDC] registerOidc service callback', { query })
     const token = await getToken(query)
     const accessToken = token.access_token || token.id_token
     const expiresAt = (+new Date()) + (1000 * parseInt(token.expires_in, 10))
@@ -146,6 +155,7 @@ async function registerOidc() {
       address: userinfo.email,
       verified: true,
     }
+    debugLog('[OIDC] registerOidc returning', { serviceData, profile, email })
     return {
       serviceData,
       options: { profile, emails: [email] },

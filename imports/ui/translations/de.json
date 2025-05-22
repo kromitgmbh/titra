@@ -266,7 +266,8 @@
     "allow_individual_task_rates": "Individuelle Stundensätze für Tätigkeiten erlauben?",
     "show_rate_in_details": "Rate in Detailansicht anzeigen/exportieren?",
     "enable_LDAP": "LDAP Anmeldung aktivieren?",
-    "enable_project_CSV_import": "Projekt-CSV-Import aktivieren"
+    "enable_project_CSV_import": "Projekt-CSV-Import aktivieren",
+    "debug_mode": "Debug Modus aktivieren?"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

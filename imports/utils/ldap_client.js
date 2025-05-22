@@ -1,5 +1,6 @@
 import { Tracker } from 'meteor/tracker'
 import { getGlobalSetting } from "./frontend_helpers"
+import { debugLog } from './debugLog'
 // Pass in username, password as normal
 // customLdapOptions should be passed in if you want to override LDAP_DEFAULTS
 // on any particular call (if you have multiple ldap servers you'd like to connect to)
@@ -8,7 +9,7 @@ const handle = Meteor.subscribe('globalsettings')
 Tracker.autorun(() => {
   if(handle.ready()) {
     if(getGlobalSetting('enableLDAP')){
-      console.log('LDAP ENABLED')
+      debugLog('LDAP ENABLED')
       Meteor.loginWithLDAP = function (username, password, customLdapOptions, callback) {
         // Retrieve arguments as array
         const args = []

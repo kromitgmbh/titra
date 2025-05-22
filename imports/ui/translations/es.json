@@ -266,7 +266,8 @@
     "allow_individual_task_rates": "¿Permitir tarifas individuales por tarea?",
     "show_rate_in_details": "¿Mostrar/exportar campo de tarifa en la vista de detalles?",
     "enable_LDAP": "¿Habilitar Integración con LDAP?",
-    "enable_project_CSV_import": "Habilitar la importación de CSV de proyectos"
+    "enable_project_CSV_import": "Habilitar la importación de CSV de proyectos",
+    "debug_mode": "¿Activar modo depuración?"
 	},
 	"customer": {
 		"select_customer": "Seleccionar un Cliente",

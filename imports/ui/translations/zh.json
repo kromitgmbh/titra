@@ -224,7 +224,8 @@
     "allow_individual_task_rates": "允许单独任务费率",
     "show_rate_in_details": "在详细视图中显示/导出费率字段",
     "enable_LDAP": "启用 LDAP",
-    "enable_project_CSV_import": "启用项目 CSV 导入"
+    "enable_project_CSV_import": "启用项目 CSV 导入",
+    "debug_mode": "启用调试模式？"
   },
   "customer": {
     "select_customer": "请选一个客户",

@@ -107,7 +107,10 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
   currentMonthHours = Number.parseFloat(currentMonthTimeCardsRaw[0]?.currentMonthHours)
   const previousMonthTimeCardsRaw = await Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: previousMonthStart, $lte: previousMonthEnd } } }, { $group: { _id: null, previousMonthHours: { $sum: '$hours' } } }]).toArray()
   previousMonthHours = Number.parseFloat(previousMonthTimeCardsRaw[0]?.previousMonthHours)
-  const beforePreviousMonthTimeCardsRaw = await Timecards.rawCollection().aggregate([{ $match: { projectId, date: { $gte: beforePreviousMonthStart, $lte: beforePreviousMonthStart } } }, { $group: { _id: null, beforePreviousMonthHours: { $sum: '$hours' } } }]).toArray()
+  const beforePreviousMonthTimeCardsRaw = await Timecards.rawCollection().aggregate([
+    { $match: { projectId, date: { $gte: beforePreviousMonthStart, $lte: beforePreviousMonthEnd } } },
+    { $group: { _id: null, beforePreviousMonthHours: { $sum: '$hours' } } }
+  ]).toArray()
   beforePreviousMonthHours = Number
     .parseFloat(beforePreviousMonthTimeCardsRaw[0]?.beforePreviousMonthHours)
   // observeChanges only returns after the initial `added` callbacks
