@@ -64,7 +64,7 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
   const previousMonthStart = dayjs.utc().subtract(1, 'month').startOf('month').toDate()
   const previousMonthEnd = dayjs.utc().subtract(1, 'month').endOf('month').toDate()
   const beforePreviousMonthStart = dayjs.utc().subtract(2, 'month').startOf('month').toDate()
-  const beforePreviousMonthEnd = dayjs.utc().subtract(2, 'month').endOf('month')
+  const beforePreviousMonthEnd = dayjs.utc().subtract(2, 'month').endOf('month').toDate()
   const beforePreviousMonthName = dayjs.utc().subtract(2, 'month').format('MMM')
 
   let totalHours = 0
@@ -122,14 +122,13 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
       added: async (timecardId) => {
         if (!initializing) {
           const timecard = await Timecards.findOneAsync({ _id: timecardId })
-          if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+          if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd, null, '[]')) {
             currentMonthHours += Number.parseFloat(timecard.hours)
           }
-          if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+          if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd, null, '[]')) {
             previousMonthHours += Number.parseFloat(timecard.hours)
           }
-          if (dayjs(new Date(timecard.date))
-            .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
+          if (dayjs(new Date(timecard.date)).isBetween(beforePreviousMonthStart, beforePreviousMonthEnd, null, '[]')) {
             beforePreviousMonthHours += Number.parseFloat(timecard.hours)
           }
           if (project.rates && project.rates[timecard.userId]) {
@@ -159,14 +158,13 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
         if (!initializing) {
           const timecard = await Timecards.findOneAsync({ _id: timecardId })
           if (timecard) {
-            if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+            if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd, null, '[]')) {
               currentMonthHours += Number.parseFloat(timecard.hours)
             }
-            if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+            if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd, null, '[]')) {
               previousMonthHours += Number.parseFloat(timecard.hours)
             }
-            if (dayjs(new Date(timecard.date))
-              .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
+            if (dayjs(new Date(timecard.date)).isBetween(beforePreviousMonthStart, beforePreviousMonthEnd, null, '[]')) {
               beforePreviousMonthHours += Number.parseFloat(timecard.hours)
             }
             if (project?.rates && project.rates[timecard.userId]) {
@@ -196,14 +194,13 @@ Meteor.publish('projectStats', async function projectStats(projectId) {
       changed: async (timecardId) => {
         if (!initializing) {
           const timecard = await Timecards.findOneAsync({ _id: timecardId })
-          if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+          if (dayjs(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd, null, '[]')) {
             currentMonthHours += Number.parseFloat(timecard.hours)
           }
-          if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd)) {
+          if (dayjs(new Date(timecard.date)).isBetween(previousMonthStart, previousMonthEnd, null, '[]')) {
             previousMonthHours += Number.parseFloat(timecard.hours)
           }
-          if (dayjs(new Date(timecard.date))
-            .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
+          if (dayjs(new Date(timecard.date)).isBetween(beforePreviousMonthStart, beforePreviousMonthEnd, null, '[]')) {
             beforePreviousMonthHours += Number.parseFloat(timecard.hours)
           }
           if (project?.rates && project?.rates[timecard.userId]) {

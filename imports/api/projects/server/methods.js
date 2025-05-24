@@ -72,13 +72,13 @@ const getAllProjectStats = new ValidatedMethod({
         projectId: { $in: projectList },
         date: { $gte: beforePreviousMonthStart.toDate() },
       }).fetchAsync()) {
-      if (dayjs.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd)) {
+      if (dayjs.utc(new Date(timecard.date)).isBetween(currentMonthStart, currentMonthEnd, null, '[]')) {
         currentMonthHours += Number.parseFloat(timecard.hours)
       } else if (dayjs.utc(new Date(timecard.date))
-        .isBetween(previousMonthStart, previousMonthEnd)) {
+        .isBetween(previousMonthStart, previousMonthEnd, null, '[]')) {
         previousMonthHours += Number.parseFloat(timecard.hours)
       } else if (dayjs.utc(new Date(timecard.date))
-        .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd)) {
+        .isBetween(beforePreviousMonthStart, beforePreviousMonthEnd, null, '[]')) {
         beforePreviousMonthHours += Number.parseFloat(timecard.hours)
       }
     }

@@ -1,6 +1,6 @@
 {
   "name": "titra",
-  "version": "0.99.33",
+  "version": "0.99.34",
   "private": true,
   "scripts": {
     "start": "meteor run"
@@ -33,7 +33,7 @@
     "jquery-serializejson": "^3.2.1",
     "ldapjs": "3.0.7",
     "math-expression-evaluator": "^2.0.6",
-    "meteor-node-stubs": "^1.2.17",
+    "meteor-node-stubs": "^1.2.19",
     "namedavatar": "^1.2.0",
     "node-emoji": "^2.2.0",
     "quill-delta-to-html": "^0.12.1",
