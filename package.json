@@ -1,12 +1,12 @@
 {
   "name": "titra",
-  "version": "0.99.34",
+  "version": "0.99.35",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.27.1",
+    "@babel/runtime": "^7.27.6",
     "@dashboardcode/bsmultiselect": "^1.1.18",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@fullcalendar/core": "6.1.17",
@@ -25,14 +25,14 @@
     "docker-names": "^1.2.1",
     "file-saver": "^2.0.5",
     "frappe-charts": "1.6.2",
-    "frappe-datatable": "^1.18.4",
+    "frappe-datatable": "^1.19.0",
     "frappe-gantt": "^0.6.1",
-    "hotkeys-js": "^3.13.10",
+    "hotkeys-js": "^3.13.14",
     "is-dark": "^1.0.4",
     "jquery": "3.7.1",
     "jquery-serializejson": "^3.2.1",
     "ldapjs": "3.0.7",
-    "math-expression-evaluator": "^2.0.6",
+    "math-expression-evaluator": "^2.0.7",
     "meteor-node-stubs": "^1.2.19",
     "namedavatar": "^1.2.0",
     "node-emoji": "^2.2.0",

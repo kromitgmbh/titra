@@ -233,7 +233,7 @@
     "holiday_country": "País de Festivo",
     "holiday_state": "Estado de Festivo",
     "holiday_region": "Región de Festivo",
-    "xframe_options_origin": "URL de Origen para la Cabecera X-Frame-Options",
+    "xframe_options_origin": "URLs de Origen para la Cabecera frame-ancestors",
     "project_search_num_results": "Número de proyectos mostrados en la búsqueda de proyectos (predeterminado 5)",
     "task_search_num_results": "Número de tareas mostradas en la búsqueda de tareas (predeterminado 5)",
     "user_search_num_results": "Número de usuarios mostrados en la búsqueda de usuarios (predeterminado 5)",

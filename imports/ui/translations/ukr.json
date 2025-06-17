@@ -233,7 +233,7 @@
       "holiday_country": "Країна свята",
       "holiday_state": "Федеральна земля свята",
       "holiday_region": "Регіон свята",
-      "xframe_options_origin": "URL-адреса джерела заголовка X-Frame-Options",
+      "xframe_options_origin": "URLs-адреса джерела заголовка frame-ancestors",
       "project_search_num_results": "Кількість проектів, що відображаються в пошуку проектів (за замовчуванням 5)",
       "task_search_num_results": "Кількість завдань, що відображаються в пошуку завдань (за замовчуванням 5)",
       "user_search_num_results": "Кількість користувачів, що відображаються в пошуку користувачів (за замовчуванням 5)",

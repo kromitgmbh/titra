@@ -225,7 +225,7 @@
     "holiday_country": "Pays des vacances",
     "holiday_state": "Etat des vacances",
     "holiday_region": "Région des vacances",
-    "xframe_options_origin": "X-Frame-Options header origin URL",
+    "xframe_options_origin": "frame-ancestors header URLs",
     "project_search_num_results": "Nombre de projets affichés dans la recherche de projets (par défaut 5)",
     "task_search_num_results": "Nombre de tâches affichées dans la recherche de tâches (par défaut 5)",
     "user_search_num_results": "Nombre d'utilisateurs affichés dans la recherche d'utilisateurs (par défaut 5)",

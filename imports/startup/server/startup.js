@@ -1,5 +1,5 @@
 import { AccountsAnonymous } from 'meteor/faburem:accounts-anonymous'
-import { BrowserPolicy } from 'meteor/browser-policy-framing'
+import { BrowserPolicy } from 'meteor/browser-policy-content'
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter'
 import { ServiceConfiguration } from 'meteor/service-configuration'
 import Extensions from '../../api/extensions/extensions.js'
@@ -48,7 +48,7 @@ Meteor.startup(async () => {
     }
   }
   if (await getGlobalSettingAsync('XFrameOptionsOrigin')) {
-    BrowserPolicy.framing.restrictToOrigin(await getGlobalSettingAsync('XFrameOptionsOrigin'))
+    BrowserPolicy.content.allowFrameAncestorsOrigin(await getGlobalSettingAsync('XFrameOptionsOrigin'))
   }
   if (process.env.NODE_ENV !== 'development') {
     // eslint-disable-next-line no-console

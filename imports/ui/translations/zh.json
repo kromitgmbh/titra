@@ -216,7 +216,7 @@
     "holiday_country": "假日国家",
     "holiday_state": "假日州",
     "holiday_region": "假日地区",
-    "xframe_options_origin": "X-Frame-Options header origin URL",
+    "xframe_options_origin": "frame-ancestors header origin URLs",
     "google_clientid": "Google Workspace Client ID",
     "google_secret": "Google Workspace Client Secret",
     "openai": "Open AI API Key",
