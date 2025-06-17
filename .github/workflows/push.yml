@@ -40,10 +40,26 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
+      - name: Build and push kromit tag
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: linux/amd64
           push: true
           tags: kromit/titra:latest, kromit/titra:${{steps.autotag.outputs.tagname}}
+      - name: Set up QEMU for titraio
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx for titraio
+        uses: docker/setup-buildx-action@v3
+      - name: Login to DockerHub for titraio
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME_TITRAIO }}
+          password: ${{ secrets.DOCKERHUB_TOKEN_TITRAIO }}
+      - name: Build and push titraio tag
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: titraio/titra:latest, titraio/titra:${{steps.autotag.outputs.tagname}}
