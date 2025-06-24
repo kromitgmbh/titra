@@ -77,7 +77,16 @@ const updateOidcSettings = new ValidatedMethod({
     check(configuration, Object)
   },
   mixins: [adminAuthenticationMixin, transactionLogMixin],
-  async run({ configuration }) {    
+  async run({ configuration }) {
+    // Preserve existing secret if not provided
+    if (!configuration.secret || configuration.secret.length === 0) {
+      const existing = await ServiceConfiguration.configurations.findOneAsync({ service: 'oidc' })
+      if (existing && existing.secret) {
+        configuration.secret = existing.secret
+      } else {
+        delete configuration.secret
+      }
+    }
     for (const [key, value] of Object.entries(configuration)) {
       await ServiceConfiguration.configurations.upsertAsync({ service: 'oidc' }, {
         $set: {
@@ -85,12 +94,12 @@ const updateOidcSettings = new ValidatedMethod({
         },
       })
     }
-    if(configuration.secret && configuration.secret.length > 0) {
+    if (configuration.secret && configuration.secret.length > 0) {
       try {
-        if(Accounts.oauth.serviceNames().indexOf('oidc') === -1) {
+        if (Accounts.oauth.serviceNames().indexOf('oidc') === -1) {
           await registerOidc()
         }
-      } catch (error) {console.error(error)}
+      } catch (error) { console.error(error) }
     } else {
       delete configuration.secret
     }
