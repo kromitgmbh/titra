@@ -5,14 +5,15 @@ on:
 name: Docker build
 jobs:
   release:
-    name: Autotag
+    name: Build and Push to Docker Hub
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      - name: autotag
+
+      - name: Autotag
         id: autotag
         uses: butlerlogic/action-autotag@1.1.2
         env:
@@ -20,46 +21,54 @@ jobs:
         with:
           strategy: package
           tag_message: ${{ github.event.head_commit.message }}
-      - name: create_release
+
+      - name: Create Release
+        if: steps.autotag.outputs.tagname != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: actions/create-release@latest
-        if: success()
         with:
           tag_name: ${{steps.autotag.outputs.tagname}}
           release_name: ${{steps.autotag.outputs.tagname}}
           body: ${{steps.autotag.outputs.tagmessage}}
           draft: false
           prerelease: false
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Login to DockerHub
+
+      - name: Login to Docker Hub (kromit)
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push kromit tag
+
+      - name: Build and push to kromit
         uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
           tags: kromit/titra:latest, kromit/titra:${{steps.autotag.outputs.tagname}}
-      - name: Set up QEMU for titraio
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx for titraio
-        uses: docker/setup-buildx-action@v3
-      - name: Login to DockerHub for titraio
+          # Cache the build layers to GitHub's cache
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Login to Docker Hub (titraio)
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME_TITRAIO }}
           password: ${{ secrets.DOCKERHUB_TOKEN_TITRAIO }}
-      - name: Build and push titraio tag
+
+      - name: Build and push to titraio
         uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
           tags: titraio/titra:latest, titraio/titra:${{steps.autotag.outputs.tagname}}
+          # Reuse the build layers from the GitHub cache
+          cache-from: type=gha
