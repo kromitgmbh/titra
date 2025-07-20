@@ -111,7 +111,7 @@ Template.tracktime.onCreated(function tracktimeCreated() {
       if (this.subscriptionsReady()) {
         this.time_entry.set(Timecards.findOne(this.tcid.get()))
         this.date.set(Timecards.findOne({ _id: this.tcid.get() })
-          ? dayjs(Timecards.findOne({ _id: this.tcid.get() }).date).toDate() // Ensure consistent timezone usage
+          ? dayjs.utc(Timecards.findOne({ _id: this.tcid.get() }).date).toDate() // Ensure consistent timezone usage
           : dayjs().toDate())
         this.projectId.set(Timecards.findOne({ _id: this.tcid.get() }) ? Timecards.findOne({ _id: this.tcid.get() }).projectId : '')
       }
