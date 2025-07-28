@@ -206,7 +206,7 @@ Template.tracktime.events({
       : dayjs.utc(`${localDate.getFullYear()}-${localDate.getMonth() + 1}-${localDate.getDate()}`).toDate() // Ensure consistent timezone usage
     if (getGlobalSetting('useStartTime') && !templateInstance.tcid?.get()) {
       if ($('#startTime').val()) {
-        date = dayjs.utc(date.setHours($('#startTime').val().split(':')[0], $('#startTime').val().split(':')[1])).toDate()
+        date = dayjs(date.setHours($('#startTime').val().split(':')[0], $('#startTime').val().split(':')[1])).toDate()
       } else {
         showToast(t('notifications.check_time_input'))
         templateInstance.$(event.currentTarget).text(buttonLabel)
@@ -433,7 +433,7 @@ Template.tracktime.helpers({
     || (Template.instance().dat?.dateArg && Template.instance().data.dateArg.get())
     || (Template.instance().data?.projectIdArg && Template.instance().data.projectIdArg.get()) ? '' : 'tab-borders'),
   edittcid: () => Template.instance().edittcid,
-  startTime: () => dayjs.utc(Template.instance().date.get()).format('HH:mm'),
+  startTime: () => dayjs(Template.instance().date.get()).format('HH:mm'),
   customfields: () => CustomFields.find({ classname: 'time_entry' }),
   getCustomFieldValue: (fieldId) => (Template.instance().time_entry.get()
     ? Template.instance().time_entry.get()[fieldId] : false),
