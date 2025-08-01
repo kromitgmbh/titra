@@ -55,9 +55,11 @@ class Autocomplete {
         this.dropdown._menu.children[0]?.focus()
       }
     })
-    // field.addEventListener('focusout', (e) => {
-    //   this.dropdown.hide()
-    // })
+    field.addEventListener('focusout', (e) => {
+      if (e.relatedTarget?.className !== 'dropdown-item') {
+        this.dropdown.hide()
+      }
+    })
   }
 
   setData(data) {
