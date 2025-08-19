@@ -267,6 +267,7 @@
     "show_rate_in_details": "Show/export rate field in details view?",
     "enable_LDAP": "Enable LDAP login?",
     "enable_project_CSV_import": "Enable Project CSV Import",
+    "enable_task_planning": "Enable task planning with estimated hours?",
     "debug_mode": "Enable debug mode?"
   },
   "customer": {
@@ -301,6 +302,7 @@
     "lastUsed": "Last used",
     "startDate": "Planned start",
     "endDate": "Planned finish",
+    "estimatedHours": "Estimated hours",
     "duration": "Duration",
     "dependencies": "Dependencies",
     "newTask": "New task",

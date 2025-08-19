@@ -4,11 +4,12 @@ import { t } from '../../../../../utils/i18n.js'
 import './taskModal.html'
 import Tasks from '../../../../../api/tasks/tasks'
 import CustomFields from '../../../../../api/customfields/customfields.js'
-import { showToast } from '../../../../../utils/frontend_helpers.js'
+import { showToast, getGlobalSetting } from '../../../../../utils/frontend_helpers.js'
 import BsDialogs from '../../../../shared components/bootstrapDialogs'
 
 Template.taskModal.onCreated(function taskModalCreated() {
   this.editTask = new ReactiveVar(false)
+  this.subscribe('globalsettings')
   this.autorun(() => {
     if (this.data?.editTaskID.get()) {
       this.editTask.set(Tasks.findOne({ _id: this.data?.editTaskID.get() }))
@@ -26,6 +27,8 @@ Template.taskModal.events({
       if ($(this).val() && !$(this).hasClass('js-customfield')) {
         if ($(this).get(0).type === 'date') {
           newTask[$(this).get(0).name] = new Date($(this).val())
+        } else if ($(this).get(0).type === 'number') {
+          newTask[$(this).get(0).name] = Number($(this).val())
         } else {
           newTask[$(this).get(0).name] = $(this).val()
         }
@@ -91,6 +94,8 @@ Template.taskModal.helpers({
     ? Template.instance().editTask.get().start?.toJSON().slice(0, 10)
     : new Date().toJSON().slice(0, 10)),
   end: () => (Template.instance().editTask.get() ? Template.instance().editTask.get().end?.toJSON().slice(0, 10) : ''),
+  estimatedHours: () => (Template.instance().editTask.get() ? Template.instance().editTask.get().estimatedHours || '' : ''),
+  isTaskPlanningEnabled: () => getGlobalSetting('enableTaskPlanning'),
   possibleDependencies: () => Tasks.find({ projectId: FlowRouter.getParam('id'), _id: { $ne: Template.instance().editTask.get()?._id } }),
   isSelectedDep: (dependency) => (Template.instance().editTask.get()?.dependencies?.includes(dependency) ? 'selected' : ''),
   replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
