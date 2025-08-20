@@ -225,6 +225,7 @@
     "show_rate_in_details": "在详细视图中显示/导出费率字段",
     "enable_LDAP": "启用 LDAP",
     "enable_project_CSV_import": "启用项目 CSV 导入",
+    "enable_task_planning": "启用带有预估小时数的任务规划？",
     "debug_mode": "启用调试模式？"
   },
   "customer": {
@@ -260,6 +261,7 @@
     "lastUsed": "上次使用",
     "startDate": "计划开始",
     "endDate": "计划完成",
+    "estimatedHours": "预估小时数",
     "duration": "时长",
     "dependencies": "依赖",
     "newTask": "新建任务",

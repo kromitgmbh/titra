@@ -257,6 +257,7 @@
     "show_rate_in_details": "Afficher/exporter le champ taux dans la vue détaillée ?",
     "enable_LDAP": "Activer l'intégration LDAP ?",
     "enable_project_CSV_import": "Activer l'importation CSV du projet",
+    "enable_task_planning": "Activer la planification des tâches avec les heures estimées ?",
     "debug_mode": "Activer le mode debug ?"
   },
   "customer": {
@@ -292,6 +293,7 @@
     "lastUsed": "Dernière utilisation",
     "startDate": "Début prévu",
     "endDate": "Fin prévue",
+    "estimatedHours": "Heures estimées",
     "duration": "Durée",
     "dependencies": "Dépendances",
     "newTask": "Nouvelle tâche",
