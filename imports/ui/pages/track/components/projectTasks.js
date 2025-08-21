@@ -14,23 +14,29 @@ import {
 dayjs.extend(utc)
 
 function taskMapper(task) {
-  const mapping = 
-  [task._id,
+  const mapping = [task._id,
     task.name,
     dayjs.utc(task.start).format(getGlobalSetting('dateformat')),
     dayjs.utc(task.end).format(getGlobalSetting('dateformat')),
     task.dependencies?.map((dep) => Tasks.findOne({ _id: dep })?.name).join(',')]
-    if (CustomFields.find({ classname: 'task' }).count() > 0) {
-      for (const customfield of CustomFields.find({ classname: 'task' }).fetch()) {
-        mapping.push(task[customfield.name])
-      }
+
+  // Add estimated hours column if task planning is enabled
+  if (getGlobalSetting('enableTaskPlanning')) {
+    mapping.push(task.estimatedHours || '')
+  }
+
+  if (CustomFields.find({ classname: 'task' }).count() > 0) {
+    for (const customfield of CustomFields.find({ classname: 'task' }).fetch()) {
+      mapping.push(task[customfield.name])
     }
-    return mapping
+  }
+  return mapping
 }
 
 Template.projectTasks.onCreated(function projectTasksCreated() {
   this.subscribe('projectTasks', { projectId: FlowRouter.getParam('id') })
   this.subscribe('customfieldsForClass', { classname: 'task' })
+  this.subscribe('globalsettings')
   this.editTaskID = new ReactiveVar(false)
 })
 
@@ -71,6 +77,17 @@ Template.projectTasks.onRendered(() => {
           width: 2,
         },
       ]
+
+      // Add estimated hours column if task planning is enabled
+      if (getGlobalSetting('enableTaskPlanning')) {
+        columns.push({
+          name: t('estimatedHours'),
+          editable: true,
+          format: addToolTipToTableCell,
+          width: 1,
+        })
+      }
+
       if (CustomFields.find({ classname: 'task' }).count() > 0) {
         for (const customfield of CustomFields.find({ classname: 'task' }).fetch()) {
           columns.push({
@@ -93,7 +110,7 @@ Template.projectTasks.onRendered(() => {
               clusterize: false,
               layout: 'ratio',
               noDataMessage: t('tabular.sZeroRecords'),
-              getEditor(colIndex, rowIndex, value, parent, column, row, data) {
+              getEditor(colIndex, rowIndex, value, parent, column, row) {
                 templateInstance.editTaskID.set(row[0].content)
                 templateInstance.$(parent.parentNode).removeClass('dt-cell--editing')
                 new Bootstrap.Modal(templateInstance.$('#task-modal')).show()
@@ -152,7 +169,7 @@ Template.projectTasks.helpers({
 
 Template.projectTasks.events({
   'change .form-check-input': (event, templateInstance) => {
-    Meteor.call('setDefaultTaskForProject', { projectId: FlowRouter.getParam('id'), taskId: templateInstance.$(event.target).data('id') }, (error, result) => {
+    Meteor.call('setDefaultTaskForProject', { projectId: FlowRouter.getParam('id'), taskId: templateInstance.$(event.target).data('id') }, (error) => {
       if (error) {
         console.error(error)
       } else {
