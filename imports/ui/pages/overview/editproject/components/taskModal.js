@@ -4,7 +4,7 @@ import { t } from '../../../../../utils/i18n.js'
 import './taskModal.html'
 import Tasks from '../../../../../api/tasks/tasks'
 import CustomFields from '../../../../../api/customfields/customfields.js'
-import { showToast, getGlobalSetting } from '../../../../../utils/frontend_helpers.js'
+import { showToast } from '../../../../../utils/frontend_helpers.js'
 import BsDialogs from '../../../../shared components/bootstrapDialogs'
 
 Template.taskModal.onCreated(function taskModalCreated() {
@@ -95,7 +95,6 @@ Template.taskModal.helpers({
     : new Date().toJSON().slice(0, 10)),
   end: () => (Template.instance().editTask.get() ? Template.instance().editTask.get().end?.toJSON().slice(0, 10) : ''),
   estimatedHours: () => (Template.instance().editTask.get() ? Template.instance().editTask.get().estimatedHours || '' : ''),
-  isTaskPlanningEnabled: () => getGlobalSetting('enableTaskPlanning'),
   possibleDependencies: () => Tasks.find({ projectId: FlowRouter.getParam('id'), _id: { $ne: Template.instance().editTask.get()?._id } }),
   isSelectedDep: (dependency) => (Template.instance().editTask.get()?.dependencies?.includes(dependency) ? 'selected' : ''),
   replaceSpecialChars: (string) => string.replace(/[^A-Z0-9]/ig, '_'),
