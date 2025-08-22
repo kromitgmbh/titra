@@ -10,6 +10,7 @@ Inserts a new project task into the Tasks collection.
 @param {string} args.name - The name of the task.
 @param {Date} args.start - The start date of the task.
 @param {Date} args.end - The end date of the task.
+@param {number} [args.estimatedHours] - The estimated/planned hours for the task.
 @param {string[]} [args.dependencies] - An array of task IDs that this task depends on.
 */
 const insertProjectTask = new ValidatedMethod({
@@ -20,19 +21,21 @@ const insertProjectTask = new ValidatedMethod({
       name: String,
       start: Date,
       end: Date,
+      estimatedHours: Match.Optional(Number),
       dependencies: Match.Optional([String]),
       customfields: Match.Optional(Object),
     })
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
-    projectId, name, start, end, dependencies, customfields,
+    projectId, name, start, end, estimatedHours, dependencies, customfields,
   }) {
     await Tasks.insertAsync({
       projectId,
       name,
       start,
       end,
+      estimatedHours,
       dependencies,
       ...customfields,
     })
@@ -46,6 +49,7 @@ const insertProjectTask = new ValidatedMethod({
  * @param {string} [args.name] - The name of the task.
  * @param {Date} [args.start] - The start date of the task.
  * @param {Date} [args.end] - The end date of the task.
+ * @param {number} [args.estimatedHours] - The estimated/planned hours for the task.
  * @param {string[]} [args.dependencies] - An array of task IDs that this task depends on.
  * @throws {Meteor.Error} If user is not authenticated.
  * @returns {String} 'notifications.success' if successful
@@ -59,19 +63,21 @@ const updateTask = new ValidatedMethod({
       name: Match.Optional(String),
       start: Match.Optional(Date),
       end: Match.Optional(Date),
+      estimatedHours: Match.Optional(Number),
       dependencies: Match.Optional([String]),
       customfields: Match.Optional(Object),
     })
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({
-    taskId, name, start, end, dependencies, customfields,
+    taskId, name, start, end, estimatedHours, dependencies, customfields,
   }) {
     await Tasks.updateAsync(taskId, {
       $set: {
         name,
         start,
         end,
+        estimatedHours,
         dependencies,
         ...customfields,
       },

@@ -267,6 +267,7 @@
     "show_rate_in_details": "¿Mostrar/exportar campo de tarifa en la vista de detalles?",
     "enable_LDAP": "¿Habilitar Integración con LDAP?",
     "enable_project_CSV_import": "Habilitar la importación de CSV de proyectos",
+    "enable_task_planning": "¿Activar planificación de tareas con horas estimadas?",
     "debug_mode": "¿Activar modo depuración?"
 	},
 	"customer": {
@@ -301,6 +302,10 @@
 		"lastUsed": "Últimas Utilizadas",
 		"startDate": "Inicio Planificado",
 		"endDate": "Fin Planificado",
+		"estimatedHours": "Horas estimadas",
+		"actualHours": "Horas reales",
+		"variance": "Varianza",
+		"progress": "Progreso",
 		"duration": "Duración",
 		"dependencies": "Dependencias",
 		"newTask": "Nueva Tarea",

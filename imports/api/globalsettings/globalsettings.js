@@ -178,4 +178,7 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'debugMode', description: 'settings.debug_mode', type: 'checkbox', value: 'false', category: 'settings.categories.global',
 })
+defaultSettings.push({
+  name: 'enableTaskPlanning', description: 'settings.enable_task_planning', type: 'checkbox', value: false, category: 'settings.categories.time_tracking',
+})
 export { defaultSettings, Globalsettings }

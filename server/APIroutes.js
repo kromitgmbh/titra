@@ -1,9 +1,10 @@
 import { Match, check } from 'meteor/check'
-import { WebApp } from 'meteor/webapp';
+import { WebApp } from 'meteor/webapp'
 import { getJson } from './bodyparser'
 import { insertTimeCard } from '../imports/api/timecards/server/methods'
 import Timecards from '../imports/api/timecards/timecards'
 import Projects from '../imports/api/projects/projects'
+import Tasks from '../imports/api/tasks/tasks'
 
 function sendResponse(res, statusCode, message, payload) {
   const response = {}
@@ -73,7 +74,7 @@ async function checkAuthorization(req, res) {
  *  }
  * @apiUse AuthError
  */
-WebApp.handlers.use('/timeentry/create/', async (req, res, next) => {
+WebApp.handlers.use('/timeentry/create/', async (req, res) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -118,12 +119,13 @@ WebApp.handlers.use('/timeentry/create/', async (req, res, next) => {
   * for the provided date.
   * @apiUse AuthError
   */
-WebApp.handlers.use('/timeentry/list/', async (req, res, next) => {
+WebApp.handlers.use('/timeentry/list/', async (req, res) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
-  const url = req._parsedUrl.pathname.split('/')
+  const { pathname } = req._parsedUrl
+  const url = pathname.split('/')
   const date = new Date(url[3])
   try {
     check(date, Date)
@@ -150,12 +152,13 @@ WebApp.handlers.use('/timeentry/list/', async (req, res, next) => {
   * for the provided date range.
   * @apiUse AuthError
   */
-WebApp.handlers.use('/timeentry/daterange/', async (req, res, next) => {
+WebApp.handlers.use('/timeentry/daterange/', async (req, res) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
-  const url = req._parsedUrl.pathname.split('/')
+  const { pathname } = req._parsedUrl
+  const url = pathname.split('/')
   const fromDate = new Date(url[3])
   const toDate = new Date(url[4])
   try {
@@ -182,7 +185,7 @@ WebApp.handlers.use('/timeentry/daterange/', async (req, res, next) => {
    * @apiSuccess {json} response An array of all projects visible for the user with the provided API token.
    * @apiUse AuthError
    */
-WebApp.handlers.use('/project/list/', async (req, res, next) => {
+WebApp.handlers.use('/project/list/', async (req, res) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -204,12 +207,13 @@ WebApp.handlers.use('/project/list/', async (req, res, next) => {
  * @apiSuccess {json} response An array of time entries for the specified project.
  * @apiUse AuthError
  */
-WebApp.handlers.use('/project/timeentries/', async (req, res, next) => {
+WebApp.handlers.use('/project/timeentries/', async (req, res) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
-  const url = req._parsedUrl.pathname.split('/')
+  const { pathname } = req._parsedUrl
+  const url = pathname.split('/')
   const projectId = url[3]
   const payload = await Timecards.find({
     projectId,
@@ -220,28 +224,29 @@ WebApp.handlers.use('/project/timeentries/', async (req, res, next) => {
  * @api {get} /project/timeentriesfordaterange/:projectId/:fromDate/:toDate Get time entries for a project within a date range
  * @apiName GetTimeEntriesForDateRange
  * @apiGroup Project
- * 
+ *
  * @apiParam {String} projectId The ID of the project.
  * @apiParam {String} fromDate The start date of the range (ISO 8601 format).
  * @apiParam {String} toDate The end date of the range (ISO 8601 format).
- * 
+ *
  * @apiSuccess {Object[]} payload A list of time entries for the specified project and date range.
  * @apiSuccess {String} payload.projectId The ID of the project.
  * @apiSuccess {String} payload.date The date of the time entry.
  * @apiSuccess {Number} payload.hours The number of hours logged.
  * @apiSuccess {String} payload.description A description of the work done.
- * 
+ *
  * @apiError (500) InvalidParameters Invalid parameters received.
- * 
+ *
  * @apiExample {curl} Example usage:
  *     curl -i http://localhost:3000/project/timeentriesfordaterange/12345/2023-01-01/2023-01-31
  */
-WebApp.handlers.use('/project/timeentriesfordaterange/', async (req, res, next) => {
+WebApp.handlers.use('/project/timeentriesfordaterange/', async (req, res) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
   }
-  const url = req._parsedUrl.pathname.split('/')
+  const { pathname } = req._parsedUrl
+  const url = pathname.split('/')
   const projectId = url[3]
   const fromDate = new Date(url[4])
   const toDate = new Date(url[5])
@@ -295,7 +300,7 @@ WebApp.handlers.use('/project/timeentriesfordaterange/', async (req, res, next) 
    * @apiExample {curl} Example usage:
  *     curl -d '{"name":"api-test-project", "description":"fabians api project"}' -H "Content-Type: application/json" -H "Authorization: Token abcdefgHIJKLMNOP" -X POST http://localhost:3000/project/create
    */
-WebApp.handlers.use('/project/create/', async (req, res, next) => {
+WebApp.handlers.use('/project/create/', async (req, res) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -348,7 +353,7 @@ WebApp.handlers.use('/project/create/', async (req, res, next) => {
     *     }
    * @apiUse AuthError
    */
-WebApp.handlers.use('/timer/start/', async (req, res, next) => {
+WebApp.handlers.use('/timer/start/', async (req, res) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -387,7 +392,7 @@ WebApp.handlers.use('/timer/start/', async (req, res, next) => {
     *     }
    * @apiUse AuthError
    */
-WebApp.handlers.use('/timer/get/', async (req, res, next) => {
+WebApp.handlers.use('/timer/get/', async (req, res) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -427,7 +432,7 @@ WebApp.handlers.use('/timer/get/', async (req, res, next) => {
     *     }
    * @apiUse AuthError
    */
-WebApp.handlers.use('/timer/stop/', async (req, res, next) => {
+WebApp.handlers.use('/timer/stop/', async (req, res) => {
   const meteorUser = await checkAuthorization(req, res)
   if (!meteorUser) {
     return
@@ -443,4 +448,185 @@ WebApp.handlers.use('/timer/stop/', async (req, res, next) => {
   } else {
     sendResponse(res, 500, 'No running timer found.')
   }
+})
+
+/**
+ * @api {post} /project/task/create Create a predefined task for a project
+ * @apiName createProjectTask
+ * @apiDescription Create a new predefined task for a project with estimated hours
+ * @apiGroup Task
+ *
+ * @apiHeader {String} Token The authorization header Bearer API token.
+ * @apiBody {String} projectId The project ID.
+ * @apiBody {String} name The name of the task.
+ * @apiBody {Date} start The start date of the task in ISO format.
+ * @apiBody {Date} end The end date of the task in ISO format.
+ * @apiBody {Number} [estimatedHours] The estimated/planned hours for the task.
+ * @apiBody {String[]} [dependencies] An array of task IDs that this task depends on.
+ * @apiBody {Object} [customfields] An object containing custom fields for the task.
+ * @apiParamExample {json} Request-Example:
+ *                  {
+ *                    "projectId": "123456",
+ *                    "name": "Development Task",
+ *                    "start": "2024-01-01T09:00:00.000Z",
+ *                    "end": "2024-01-05T17:00:00.000Z",
+ *                    "estimatedHours": 40
+ *                  }
+ * @apiSuccess {json} response The id of the new task.
+ * @apiSuccessExample {json} Success response:
+ * {
+ *  message: "Task created."
+ *  payload: {
+ *    taskId: "123456"
+ *  }
+ *  }
+ * @apiUse AuthError
+ */
+WebApp.handlers.use('/project/task/create/', async (req, res) => {
+  const meteorUser = await checkAuthorization(req, res)
+  if (!meteorUser) {
+    return
+  }
+  let json
+  try {
+    json = await getJson(req)
+  } catch (e) {
+    sendResponse(res, 400, `Invalid JSON received. ${e}`)
+  }
+  if (json) {
+    try {
+      check(json.projectId, String)
+      check(json.name, String)
+      check(new Date(json.start), Date)
+      check(new Date(json.end), Date)
+      check(json.estimatedHours, Match.Maybe(Number))
+      check(json.dependencies, Match.Maybe([String]))
+      check(json.customfields, Match.Maybe(Object))
+    } catch (error) {
+      sendResponse(res, 500, `Invalid parameters received.${error}`)
+      return
+    }
+
+    // Check if user has access to the project
+    const project = await Projects.findOneAsync({
+      _id: json.projectId,
+      $or: [{ userId: meteorUser._id }, { public: true }, { team: meteorUser._id }],
+    })
+
+    if (!project) {
+      sendResponse(res, 403, 'Access denied to project.')
+      return
+    }
+
+    const taskId = await Tasks.insertAsync({
+      projectId: json.projectId,
+      name: json.name,
+      start: new Date(json.start),
+      end: new Date(json.end),
+      estimatedHours: json.estimatedHours,
+      dependencies: json.dependencies,
+      ...json.customfields,
+    })
+
+    const payload = { taskId }
+    sendResponse(res, 200, 'Task created.', payload)
+    return
+  }
+  sendResponse(res, 500, 'Missing mandatory parameters.')
+})
+
+/**
+ * @api {get} /project/tasks/:projectId Get all tasks for a project
+ * @apiName getProjectTasks
+ * @apiDescription List all tasks for the specified project
+ * @apiGroup Task
+ *
+ * @apiHeader {String} Token The authorization header Bearer API token.
+ * @apiParam {String} projectId The ID of the project to list tasks for.
+ * @apiSuccess {json} response An array of tasks for the specified project.
+ * @apiUse AuthError
+ */
+WebApp.handlers.use('/project/tasks/', async (req, res) => {
+  const meteorUser = await checkAuthorization(req, res)
+  if (!meteorUser) {
+    return
+  }
+  const { pathname } = req._parsedUrl
+  const url = pathname.split('/')
+  const projectId = url[3]
+
+  // Check if user has access to the project
+  const project = await Projects.findOneAsync({
+    _id: projectId,
+    $or: [{ userId: meteorUser._id }, { public: true }, { team: meteorUser._id }],
+  })
+
+  if (!project) {
+    sendResponse(res, 403, 'Access denied to project.')
+    return
+  }
+
+  const payload = await Tasks.find({ projectId }).fetchAsync()
+  sendResponse(res, 200, 'Returning tasks for project', payload)
+})
+
+/**
+ * @api {get} /project/task/stats/:projectId Get task statistics for a project
+ * @apiName getProjectTaskStats
+ * @apiDescription Get planned vs actual hours statistics for all tasks in a project
+ * @apiGroup Task
+ *
+ * @apiHeader {String} Token The authorization header Bearer API token.
+ * @apiParam {String} projectId The ID of the project to get task statistics for.
+ * @apiSuccess {json} response Task statistics with planned vs actual hours.
+ * @apiUse AuthError
+ */
+WebApp.handlers.use('/project/task/stats/', async (req, res) => {
+  const meteorUser = await checkAuthorization(req, res)
+  if (!meteorUser) {
+    return
+  }
+  const { pathname } = req._parsedUrl
+  const url = pathname.split('/')
+  const projectId = url[4]
+
+  // Check if user has access to the project
+  const project = await Projects.findOneAsync({
+    _id: projectId,
+    $or: [{ userId: meteorUser._id }, { public: true }, { team: meteorUser._id }],
+  })
+
+  if (!project) {
+    sendResponse(res, 403, 'Access denied to project.')
+    return
+  }
+
+  const tasks = await Tasks.find({ projectId }).fetchAsync()
+
+  // Get actual hours from timecards for each task
+  const taskStats = await Promise.all(tasks.map(async (task) => {
+    const actualHours = await Timecards.rawCollection().aggregate([
+      { $match: { projectId, task: task.name } },
+      { $group: { _id: null, totalHours: { $sum: '$hours' } } },
+    ]).toArray()
+
+    return {
+      taskId: task._id,
+      taskName: task.name,
+      estimatedHours: task.estimatedHours || 0,
+      actualHours: actualHours[0]?.totalHours || 0,
+      variance: (actualHours[0]?.totalHours || 0) - (task.estimatedHours || 0),
+      start: task.start,
+      end: task.end,
+    }
+  }))
+
+  const payload = {
+    projectId,
+    totalEstimatedHours: taskStats.reduce((sum, task) => sum + task.estimatedHours, 0),
+    totalActualHours: taskStats.reduce((sum, task) => sum + task.actualHours, 0),
+    tasks: taskStats,
+  }
+
+  sendResponse(res, 200, 'Returning task statistics for project', payload)
 })

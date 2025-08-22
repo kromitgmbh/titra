@@ -26,6 +26,12 @@
                         <input type="date" id="end" name="end" class="form-control" value="{{end}}"/>
                         <label class="form-label" for="end">{{t "task.endDate"}}</label>   
                     </div>
+                    {{#if getGlobalSetting "enableTaskPlanning"}}
+                        <div class="mb-3 form-floating">
+                            <input type="number" id="estimatedHours" name="estimatedHours" class="form-control" value="{{estimatedHours}}" step="0.25" min="0"/>
+                            <label class="form-label" for="estimatedHours">{{t "task.estimatedHours"}}</label>   
+                        </div>
+                    {{/if}}
                     <div class="mb-3 form-floating">
                         <select id="dependencies" name="dependencies" class="form-select">
                             <option value=""> </option>

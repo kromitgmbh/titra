@@ -267,6 +267,7 @@
     "show_rate_in_details": "Rate in Detailansicht anzeigen/exportieren?",
     "enable_LDAP": "LDAP Anmeldung aktivieren?",
     "enable_project_CSV_import": "Projekt-CSV-Import aktivieren",
+    "enable_task_planning": "Aufgabenplanung mit geschätzten Stunden aktivieren?",
     "debug_mode": "Debug Modus aktivieren?"
   },
   "customer": {
@@ -301,6 +302,10 @@
     "lastUsed": "Zuletzt verwendet",
     "startDate": "Geplanter Start",
     "endDate": "Geplantes Ende",
+    "estimatedHours": "Geschätzte Stunden",
+    "actualHours": "Tatsächliche Stunden",
+    "variance": "Abweichung",
+    "progress": "Fortschritt",
     "duration": "Dauer",
     "dependencies": "Abhängigkeiten",
     "newTask": "Neue Tätigkeit",

@@ -1,4 +1,4 @@
-import { check } from 'meteor/check'
+import { check, Match } from 'meteor/check'
 import { checkAuthentication, getGlobalSettingAsync } from '../../../utils/server_method_helpers.js'
 import Tasks from '../tasks.js'
 
