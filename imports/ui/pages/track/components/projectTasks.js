@@ -9,7 +9,7 @@ import Timecards from '../../../../api/timecards/timecards'
 import CustomFields from '../../../../api/customfields/customfields'
 import '../../overview/editproject/components/taskModal.js'
 import {
-  addToolTipToTableCell, getGlobalSetting, showToast,
+  addToolTipToTableCell, getGlobalSetting, showToast, timeInUserUnit, numberWithUserPrecision,
 } from '../../../../utils/frontend_helpers'
 
 dayjs.extend(utc)
@@ -37,11 +37,11 @@ function formatProgressBar(value) {
 function formatVariance(value) {
   const variance = parseFloat(value)
   if (variance > 0) {
-    return `<span class="text-danger">+${value}h</span>`
+    return `<span class="text-danger">+${value}</span>`
   } else if (variance < 0) {
-    return `<span class="text-success">${value}h</span>`
+    return `<span class="text-success">${value}</span>`
   }
-  return `<span class="text-muted">${value}h</span>`
+  return `<span class="text-muted">${value}</span>`
 }
 
 function taskMapper(task) {
@@ -61,15 +61,15 @@ function taskMapper(task) {
       task: task.name 
     }).fetch().reduce((total, entry) => total + (entry.hours || 0), 0)
     
-    mapping.push(actualHours.toFixed(2))
+    mapping.push(timeInUserUnit(actualHours) || '0')
     
     // Calculate variance (actual - estimated)
     const variance = actualHours - (task.estimatedHours || 0)
-    mapping.push(variance.toFixed(2))
+    mapping.push(timeInUserUnit(variance) || '0')
     
     // Calculate progress percentage
     const progressPercent = task.estimatedHours ? (actualHours / task.estimatedHours * 100) : 0
-    mapping.push(`${progressPercent.toFixed(1)}%`)
+    mapping.push(`${numberWithUserPrecision(progressPercent)}%`)
   }
 
   if (CustomFields.find({ classname: 'task' }).count() > 0) {
