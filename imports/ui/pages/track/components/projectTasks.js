@@ -5,6 +5,7 @@ import Bootstrap from 'bootstrap'
 import { i18nReady, t } from '../../../../utils/i18n.js'
 import './projectTasks.html'
 import Tasks from '../../../../api/tasks/tasks'
+import Timecards from '../../../../api/timecards/timecards'
 import CustomFields from '../../../../api/customfields/customfields'
 import '../../overview/editproject/components/taskModal.js'
 import {
@@ -12,6 +13,36 @@ import {
 } from '../../../../utils/frontend_helpers'
 
 dayjs.extend(utc)
+
+// Progress bar formatter function
+function formatProgressBar(value) {
+  const percent = parseFloat(value)
+  let colorClass = 'bg-success'
+  if (percent > 110) colorClass = 'bg-danger'
+  else if (percent > 100) colorClass = 'bg-warning'
+  
+  return `
+    <div class="d-flex align-items-center">
+      <div class="progress me-2" style="width: 60px; height: 16px;">
+        <div class="progress-bar ${colorClass}" role="progressbar" 
+             style="width: ${Math.min(percent, 100)}%" 
+             aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">
+        </div>
+      </div>
+      <small>${value}</small>
+    </div>`
+}
+
+// Variance formatter function
+function formatVariance(value) {
+  const variance = parseFloat(value)
+  if (variance > 0) {
+    return `<span class="text-danger">+${value}h</span>`
+  } else if (variance < 0) {
+    return `<span class="text-success">${value}h</span>`
+  }
+  return `<span class="text-muted">${value}h</span>`
+}
 
 function taskMapper(task) {
   const mapping = [task._id,
@@ -23,6 +54,22 @@ function taskMapper(task) {
   // Add estimated hours column if task planning is enabled
   if (getGlobalSetting('enableTaskPlanning')) {
     mapping.push(task.estimatedHours || '')
+    
+    // Calculate actual hours for this task
+    const actualHours = Timecards.find({ 
+      projectId: task.projectId, 
+      task: task.name 
+    }).fetch().reduce((total, entry) => total + (entry.hours || 0), 0)
+    
+    mapping.push(actualHours.toFixed(2))
+    
+    // Calculate variance (actual - estimated)
+    const variance = actualHours - (task.estimatedHours || 0)
+    mapping.push(variance.toFixed(2))
+    
+    // Calculate progress percentage
+    const progressPercent = task.estimatedHours ? (actualHours / task.estimatedHours * 100) : 0
+    mapping.push(`${progressPercent.toFixed(1)}%`)
   }
 
   if (CustomFields.find({ classname: 'task' }).count() > 0) {
@@ -37,6 +84,17 @@ Template.projectTasks.onCreated(function projectTasksCreated() {
   this.subscribe('projectTasks', { projectId: FlowRouter.getParam('id') })
   this.subscribe('customfieldsForClass', { classname: 'task' })
   this.subscribe('globalsettings')
+  
+  // Subscribe to timecards for the last 2 years to calculate actual hours
+  const endDate = new Date()
+  const startDate = new Date()
+  startDate.setFullYear(startDate.getFullYear() - 2)
+  
+  this.subscribe('periodTimecards', { 
+    startDate, 
+    endDate,   
+    userId: 'all' 
+  })
   this.editTaskID = new ReactiveVar(false)
 })
 
@@ -85,6 +143,27 @@ Template.projectTasks.onRendered(() => {
           editable: true,
           format: addToolTipToTableCell,
           width: 1,
+        })
+        
+        columns.push({
+          name: t('task.actualHours'),
+          editable: false,
+          format: addToolTipToTableCell,
+          width: 1,
+        })
+        
+        columns.push({
+          name: t('task.variance'),
+          editable: false,
+          format: (value) => formatVariance(value),
+          width: 1,
+        })
+        
+        columns.push({
+          name: t('task.progress'),
+          editable: false,
+          format: (value) => formatProgressBar(value),
+          width: 2,
         })
       }
 
