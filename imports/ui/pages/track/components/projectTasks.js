@@ -81,7 +81,7 @@ Template.projectTasks.onRendered(() => {
       // Add estimated hours column if task planning is enabled
       if (getGlobalSetting('enableTaskPlanning')) {
         columns.push({
-          name: t('estimatedHours'),
+          name: t('task.estimatedHours'),
           editable: true,
           format: addToolTipToTableCell,
           width: 1,
