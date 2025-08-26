@@ -43,7 +43,9 @@ Template.verificationNotification.onDestroyed(function verificationNotificationD
 Template.verificationNotification.helpers({
   showNotification() {
     const status = Template.instance().verificationStatus.get()
-    return status && status.required && !status.completed
+    // Show notification if verification is required, not completed, but NOT overdue
+    // (overdue cases are handled by the lock overlay)
+    return status && status.required && !status.completed && !status.overdue
   },
 
   dismissed() {

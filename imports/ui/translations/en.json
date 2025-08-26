@@ -280,7 +280,11 @@
     "days_remaining_message": "You have {{count}} day(s) remaining to complete the required action.",
     "last_day_message": "This is your last day to complete the required action.",
     "complete_action": "Complete Action",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "account_locked_title": "Account Locked - Verification Required",
+    "account_locked_message": "Your account has been locked because the required action verification was not completed within the specified timeframe. You must complete the verification to continue using the application.",
+    "must_verify_message": "To unlock your account and continue using Titra, please complete the required verification action.",
+    "continue_to_verification": "Continue to Verification"
   },
   "customer": {
     "select_customer": "Select a customer",

@@ -20,9 +20,11 @@
           <a href="{{verificationUrl}}" class="btn btn-sm btn-outline-primary me-2" target="_blank">
             {{t "verification.complete_action"}}
           </a>
-          <button type="button" class="btn btn-sm btn-outline-secondary js-dismiss-notification">
-            {{t "verification.dismiss"}}
-          </button>
+          {{#unless overdue}}
+            <button type="button" class="btn btn-sm btn-outline-secondary js-dismiss-notification">
+              {{t "verification.dismiss"}}
+            </button>
+          {{/unless}}
         </div>
       </div>
     </div>
