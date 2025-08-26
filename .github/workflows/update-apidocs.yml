@@ -7,7 +7,7 @@ name: Generate and Deploy API Docs
 on:
   push:
     branches:
-      - main # Change this to your default branch (e.g., master)
+      - master # Change this to your default branch (e.g., master)
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
