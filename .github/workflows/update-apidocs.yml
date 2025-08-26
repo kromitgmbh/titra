@@ -35,7 +35,7 @@ jobs:
       #    -i: input directory (where your documented source code is)
       #    -o: output directory (where the docs will be generated)
       - name: Generate API Docs
-        run: apidoc -i server/APIroutes.js -o apidoc/
+        run: apidoc -i titra/titra/server/APIroutes.js -o apidoc/
 
       # 5. Deploys the generated documentation to the gh-pages branch
       - name: Deploy to GitHub Pages
