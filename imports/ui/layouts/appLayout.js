@@ -6,6 +6,7 @@ import './appLayout.html'
 import '../shared components/navbar.js'
 import '../shared components/connectioncheck.js'
 import '../shared components/toast.html'
+import '../shared components/verificationNotification.js'
 
 Template.appLayout.events({
   'click #logout': (event) => {

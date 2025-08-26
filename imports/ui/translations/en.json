@@ -268,7 +268,19 @@
     "enable_LDAP": "Enable LDAP login?",
     "enable_project_CSV_import": "Enable Project CSV Import",
     "enable_task_planning": "Enable task planning with estimated hours?",
-    "debug_mode": "Enable debug mode?"
+    "debug_mode": "Enable debug mode?",
+    "enable_user_action_verification": "Enable user action verification requirement?",
+    "user_action_verification_period": "User action verification period (days)",
+    "user_action_verification_service_url": "User action verification service URL"
+  },
+  "verification": {
+    "overdue_title": "Action Required - Overdue",
+    "overdue_message": "You have missed the deadline to complete the required action. Please complete it immediately.",
+    "reminder_title": "Action Required",
+    "days_remaining_message": "You have {{count}} day(s) remaining to complete the required action.",
+    "last_day_message": "This is your last day to complete the required action.",
+    "complete_action": "Complete Action",
+    "dismiss": "Dismiss"
   },
   "customer": {
     "select_customer": "Select a customer",

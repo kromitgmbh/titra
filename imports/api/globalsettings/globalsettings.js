@@ -181,4 +181,13 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableTaskPlanning', description: 'settings.enable_task_planning', type: 'checkbox', value: false, category: 'settings.categories.time_tracking',
 })
+defaultSettings.push({
+  name: 'enableUserActionVerification', description: 'settings.enable_user_action_verification', type: 'checkbox', value: false, category: 'settings.categories.global',
+})
+defaultSettings.push({
+  name: 'userActionVerificationPeriod', description: 'settings.user_action_verification_period', type: 'number', value: 30, category: 'settings.categories.global',
+})
+defaultSettings.push({
+  name: 'userActionVerificationServiceUrl', description: 'settings.user_action_verification_service_url', type: 'text', value: '', category: 'settings.categories.global',
+})
 export { defaultSettings, Globalsettings }

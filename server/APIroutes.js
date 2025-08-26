@@ -630,3 +630,76 @@ WebApp.handlers.use('/project/task/stats/', async (req, res) => {
 
   sendResponse(res, 200, 'Returning task statistics for project', payload)
 })
+
+/**
+ * @api {post} /user/action-verification/callback User Action Verification Callback
+ * @apiName userActionVerificationCallback
+ * @apiDescription Callback endpoint for external services to confirm user action completion
+ * @apiGroup UserVerification
+ *
+ * @apiBody {String} userId The ID of the user who completed the action.
+ * @apiBody {String} secret The secret token for verification.
+ * @apiParamExample {json} Request-Example:
+ *                  {
+ *                    "userId": "abc123def456",
+ *                    "secret": "generated-secret-token"
+ *                  }
+ * @apiSuccess {json} response Confirmation of action verification completion.
+ * @apiSuccessExample {json} Success response:
+ * {
+ *  message: "User action verification completed successfully."
+ *  }
+ * @apiError (400) InvalidJSON Invalid JSON received.
+ * @apiError (500) InvalidParameters Invalid parameters received.
+ * @apiError (404) UserNotFound User not found or verification not required.
+ * @apiError (403) InvalidSecret Invalid secret provided.
+ */
+WebApp.handlers.use('/user/action-verification/callback/', async (req, res) => {
+  let json
+  try {
+    json = await getJson(req)
+  } catch (e) {
+    sendResponse(res, 400, `Invalid JSON received. ${e}`)
+    return
+  }
+
+  if (json) {
+    try {
+      check(json.userId, String)
+      check(json.secret, String)
+    } catch (error) {
+      sendResponse(res, 500, `Invalid parameters received. ${error}`)
+      return
+    }
+
+    // Find user and verify secret
+    const user = await Meteor.users.findOneAsync({
+      _id: json.userId,
+      'actionVerification.required': true,
+      'actionVerification.completed': false,
+    })
+
+    if (!user) {
+      sendResponse(res, 404, 'User not found or verification not required.')
+      return
+    }
+
+    if (user.actionVerification.secret !== json.secret) {
+      sendResponse(res, 403, 'Invalid secret provided.')
+      return
+    }
+
+    // Mark verification as completed
+    await Meteor.users.updateAsync({ _id: json.userId }, {
+      $set: {
+        'actionVerification.completed': true,
+        'actionVerification.completedAt': new Date(),
+      },
+    })
+
+    sendResponse(res, 200, 'User action verification completed successfully.')
+    return
+  }
+
+  sendResponse(res, 500, 'Missing mandatory parameters.')
+})
