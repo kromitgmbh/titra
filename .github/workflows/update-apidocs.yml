@@ -1,0 +1,47 @@
+# .github/workflows/update-apidocs.yml
+
+name: Generate and Deploy API Docs
+
+# Controls when the action will run.
+# This workflow runs on every push to the 'main' branch.
+on:
+  push:
+    branches:
+      - main # Change this to your default branch (e.g., master)
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build-and-deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # 1. Checks out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # 2. Sets up Node.js in the runner
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Specify the Node.js version you use
+
+      # 3. Installs the apidoc CLI tool globally
+      - name: Install apidoc
+        run: npm install -g apidoc
+
+      # 4. Runs the apidoc command to generate documentation
+      #    -i: input directory (where your documented source code is)
+      #    -o: output directory (where the docs will be generated)
+      - name: Generate API Docs
+        run: apidoc -i server/APIroutes.js -o apidoc/
+
+      # 5. Deploys the generated documentation to the gh-pages branch
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          # This token is provided by Actions, you do not need to create your own secret
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # The directory where your generated documentation is located
+          publish_dir: ./apidoc
