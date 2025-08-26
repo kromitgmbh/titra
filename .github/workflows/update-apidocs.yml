@@ -35,7 +35,7 @@ jobs:
       #    -i: input directory (where your documented source code is)
       #    -o: output directory (where the docs will be generated)
       - name: Generate API Docs
-        run: mkdir /apidoc && apidoc -i server/ -o /apidoc/
+        run: mkdir ./apidoc && apidoc -i server/ -o ./apidoc/
 
       # 5. Deploys the generated documentation to the gh-pages branch
       - name: Deploy to GitHub Pages
@@ -44,4 +44,4 @@ jobs:
           # This token is provided by Actions, you do not need to create your own secret
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # The directory where your generated documentation is located
-          publish_dir: /apidoc
+          publish_dir: ./apidoc
