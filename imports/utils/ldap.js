@@ -722,7 +722,7 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
         if (LDAP.getSettings('LDAP_SYNC_ADMIN_STATUS') === true) {
           debugLog.debug('Updating admin status')
           const targetGroups = LDAP.getSettings('LDAP_SYNC_ADMIN_GROUPS').split(',')
-          const groups = await ldap.getUserGroups(username, ldapUser)
+          const groups = (await ldap.getUserGroups(username, ldapUser))
             .filter((value) => targetGroups.includes(value))
 
           user.isAdmin = groups?.length > 0
@@ -755,12 +755,12 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
         loginRequest.ldapPass = undefined
       }
 
-      const result = await addLdapUser(ldapUser, username[0], loginRequest.ldapPass)
+      const result = await addLdapUser(ldapUser, username, loginRequest.ldapPass)
 
       if (LDAP.getSettings('LDAP_SYNC_ADMIN_STATUS') === true) {
         debugLog.debug('Updating admin status')
         const targetGroups = LDAP.getSettings('LDAP_SYNC_ADMIN_GROUPS').split(',')
-        const groups = await ldap.getUserGroups(username, ldapUser).filter((value) => targetGroups.includes(value))
+        const groups = (await ldap.getUserGroups(username, ldapUser)).filter((value) => targetGroups.includes(value))
 
         result.isAdmin = groups?.length > 0
         await Meteor.users.updateAsync({ _id: result.userId }, { $set: { isAdmin: result.isAdmin } })
