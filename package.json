@@ -31,7 +31,7 @@
     "is-dark": "^1.0.4",
     "jquery": "3.7.1",
     "jquery-serializejson": "^3.2.1",
-    "ldapjs": "3.0.7",
+    "ldapjs-client": "0.1.7",
     "math-expression-evaluator": "^2.0.7",
     "meteor-node-stubs": "^1.2.22",
     "namedavatar": "^1.2.0",
