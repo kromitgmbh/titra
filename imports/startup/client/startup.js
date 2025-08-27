@@ -20,7 +20,13 @@ import {
 const i18nextDebugMode = window.location.href.indexOf('localhost') > 0
 let lightThemeCSS
 let darkThemeCSS
-Template.registerHelper('t', (param) => (i18nReady.get() ? t(param) : 'Loading ...'))
+Template.registerHelper('t', (param, variables) => {
+  // If variables is a Spacebars.kw object, extract .hash
+  const vars = variables && variables.hash ? variables.hash : (variables || {})
+  return i18nReady.get()
+    ? t(param, vars)
+    : 'Loading ...'
+})
 Template.registerHelper('prefix', () => window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX || '')
 
 Meteor.startup(() => {

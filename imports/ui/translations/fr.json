@@ -267,7 +267,7 @@
     "overdue_title": "Action requise - En retard",
     "overdue_message": "Vous avez manqué la date limite pour effectuer l'action requise. Veuillez la compléter immédiatement.",
     "reminder_title": "Action requise",
-    "days_remaining_message": "Il vous reste {{count}} jour(s) pour effectuer l'action requise.",
+    "days_remaining_message": "Il vous reste {count} jour(s) pour effectuer l'action requise.",
     "last_day_message": "C'est votre dernier jour pour effectuer l'action requise.",
     "complete_action": "Effectuer l'action",
     "dismiss": "Ignorer",

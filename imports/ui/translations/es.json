@@ -277,7 +277,7 @@
 		"overdue_title": "Acción requerida - Vencida",
 		"overdue_message": "Ha perdido la fecha límite para completar la acción requerida. Por favor, complétela inmediatamente.",
 		"reminder_title": "Acción requerida",
-		"days_remaining_message": "Tiene {{count}} día(s) restante(s) para completar la acción requerida.",
+		"days_remaining_message": "Tiene {count} día(s) restante(s) para completar la acción requerida.",
 		"last_day_message": "Este es su último día para completar la acción requerida.",
 		"complete_action": "Completar acción",
 		"dismiss": "Descartar",

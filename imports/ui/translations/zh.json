@@ -235,7 +235,7 @@
     "overdue_title": "需要操作 - 已逾期",
     "overdue_message": "您已错过完成所需操作的截止日期。请立即完成。",
     "reminder_title": "需要操作",
-    "days_remaining_message": "您还有{{count}}天来完成所需操作。",
+    "days_remaining_message": "您还有{count}天来完成所需操作。",
     "last_day_message": "这是您完成所需操作的最后一天。",
     "complete_action": "完成操作",
     "dismiss": "取消",

@@ -277,7 +277,7 @@
     "overdue_title": "Aktion erforderlich - Überfällig",
     "overdue_message": "Sie haben die Frist für die Durchführung der erforderlichen Aktion verpasst. Bitte führen Sie sie umgehend durch.",
     "reminder_title": "Aktion erforderlich",
-    "days_remaining_message": "Sie haben noch {{count}} Tag(e) Zeit, um die erforderliche Aktion durchzuführen.",
+    "days_remaining_message": "Sie haben noch {count} Tag(e) Zeit, um die erforderliche Aktion durchzuführen.",
     "last_day_message": "Dies ist Ihr letzter Tag, um die erforderliche Aktion durchzuführen.",
     "complete_action": "Aktion durchführen",
     "dismiss": "Verwerfen",
