@@ -7,7 +7,7 @@ name: Generate and Deploy API Docs
 on:
   push:
     branches:
-      - main # Change this to your default branch (e.g., master)
+      - master # Change this to your default branch (e.g., master)
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -35,7 +35,7 @@ jobs:
       #    -i: input directory (where your documented source code is)
       #    -o: output directory (where the docs will be generated)
       - name: Generate API Docs
-        run: apidoc -i server/APIroutes.js -o apidoc/
+        run: mkdir ./apidoc && apidoc -i server/ -o ./apidoc/
 
       # 5. Deploys the generated documentation to the gh-pages branch
       - name: Deploy to GitHub Pages
