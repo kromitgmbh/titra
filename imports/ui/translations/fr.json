@@ -258,7 +258,23 @@
     "enable_LDAP": "Activer l'intégration LDAP ?",
     "enable_project_CSV_import": "Activer l'importation CSV du projet",
     "enable_task_planning": "Activer la planification des tâches avec les heures estimées ?",
-    "debug_mode": "Activer le mode debug ?"
+    "debug_mode": "Activer le mode debug ?",
+    "enable_user_action_verification": "Activer l'exigence de vérification d'action utilisateur ?",
+    "user_action_verification_period": "Période de vérification d'action utilisateur (jours)",
+    "user_action_verification_service_url": "URL du service de vérification d'action utilisateur"
+  },
+  "verification": {
+    "overdue_title": "Action requise - En retard",
+    "overdue_message": "Vous avez manqué la date limite pour effectuer l'action requise. Veuillez la compléter immédiatement.",
+    "reminder_title": "Action requise",
+    "days_remaining_message": "Il vous reste {{count}} jour(s) pour effectuer l'action requise.",
+    "last_day_message": "C'est votre dernier jour pour effectuer l'action requise.",
+    "complete_action": "Effectuer l'action",
+    "dismiss": "Ignorer",
+    "account_locked_title": "Compte verrouillé - Vérification requise",
+    "account_locked_message": "Votre compte a été verrouillé car la vérification d'action requise n'a pas été effectuée dans le délai spécifié. Vous devez compléter la vérification pour continuer à utiliser l'application.",
+    "must_verify_message": "Pour déverrouiller votre compte et continuer à utiliser Titra, veuillez compléter l'action de vérification requise.",
+    "continue_to_verification": "Continuer vers la vérification"
   },
   "customer": {
     "select_customer": "Selectionner un client",

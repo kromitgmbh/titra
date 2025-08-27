@@ -226,7 +226,23 @@
     "enable_LDAP": "启用 LDAP",
     "enable_project_CSV_import": "启用项目 CSV 导入",
     "enable_task_planning": "启用带有预估小时数的任务规划？",
-    "debug_mode": "启用调试模式？"
+    "debug_mode": "启用调试模式？",
+    "enable_user_action_verification": "启用用户操作验证要求？",
+    "user_action_verification_period": "用户操作验证期限（天）",
+    "user_action_verification_service_url": "用户操作验证服务URL"
+  },
+  "verification": {
+    "overdue_title": "需要操作 - 已逾期",
+    "overdue_message": "您已错过完成所需操作的截止日期。请立即完成。",
+    "reminder_title": "需要操作",
+    "days_remaining_message": "您还有{{count}}天来完成所需操作。",
+    "last_day_message": "这是您完成所需操作的最后一天。",
+    "complete_action": "完成操作",
+    "dismiss": "取消",
+    "account_locked_title": "账户已锁定 - 需要验证",
+    "account_locked_message": "您的账户已被锁定，因为所需的操作验证未在指定时间内完成。您必须完成验证才能继续使用应用程序。",
+    "must_verify_message": "要解锁您的账户并继续使用Titra，请完成所需的验证操作。",
+    "continue_to_verification": "继续验证"
   },
   "customer": {
     "select_customer": "请选一个客户",

@@ -268,7 +268,23 @@
     "enable_LDAP": "LDAP Anmeldung aktivieren?",
     "enable_project_CSV_import": "Projekt-CSV-Import aktivieren",
     "enable_task_planning": "Aufgabenplanung mit geschätzten Stunden aktivieren?",
-    "debug_mode": "Debug Modus aktivieren?"
+    "debug_mode": "Debug Modus aktivieren?",
+    "enable_user_action_verification": "Benutzeraktionsverifizierung aktivieren?",
+    "user_action_verification_period": "Benutzeraktionsverifizierungszeitraum (Tage)",
+    "user_action_verification_service_url": "URL des Benutzeraktionsverifizierungsdienstes"
+  },
+  "verification": {
+    "overdue_title": "Aktion erforderlich - Überfällig",
+    "overdue_message": "Sie haben die Frist für die Durchführung der erforderlichen Aktion verpasst. Bitte führen Sie sie umgehend durch.",
+    "reminder_title": "Aktion erforderlich",
+    "days_remaining_message": "Sie haben noch {{count}} Tag(e) Zeit, um die erforderliche Aktion durchzuführen.",
+    "last_day_message": "Dies ist Ihr letzter Tag, um die erforderliche Aktion durchzuführen.",
+    "complete_action": "Aktion durchführen",
+    "dismiss": "Verwerfen",
+    "account_locked_title": "Konto gesperrt - Verifizierung erforderlich",
+    "account_locked_message": "Ihr Konto wurde gesperrt, da die erforderliche Aktionsverifizierung nicht innerhalb des angegebenen Zeitrahmens abgeschlossen wurde. Sie müssen die Verifizierung abschließen, um die Anwendung weiter zu nutzen.",
+    "must_verify_message": "Um Ihr Konto zu entsperren und Titra weiter zu nutzen, schließen Sie bitte die erforderliche Verifizierungsaktion ab.",
+    "continue_to_verification": "Zur Verifizierung fortfahren"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

@@ -268,7 +268,23 @@
     "enable_LDAP": "¿Habilitar Integración con LDAP?",
     "enable_project_CSV_import": "Habilitar la importación de CSV de proyectos",
     "enable_task_planning": "¿Activar planificación de tareas con horas estimadas?",
-    "debug_mode": "¿Activar modo depuración?"
+    "debug_mode": "¿Activar modo depuración?",
+    "enable_user_action_verification": "¿Activar requisito de verificación de acción de usuario?",
+    "user_action_verification_period": "Período de verificación de acción de usuario (días)",
+    "user_action_verification_service_url": "URL del servicio de verificación de acción de usuario"
+	},
+	"verification": {
+		"overdue_title": "Acción requerida - Vencida",
+		"overdue_message": "Ha perdido la fecha límite para completar la acción requerida. Por favor, complétela inmediatamente.",
+		"reminder_title": "Acción requerida",
+		"days_remaining_message": "Tiene {{count}} día(s) restante(s) para completar la acción requerida.",
+		"last_day_message": "Este es su último día para completar la acción requerida.",
+		"complete_action": "Completar acción",
+		"dismiss": "Descartar",
+		"account_locked_title": "Cuenta bloqueada - Verificación requerida",
+		"account_locked_message": "Su cuenta ha sido bloqueada porque la verificación de acción requerida no se completó dentro del plazo especificado. Debe completar la verificación para continuar usando la aplicación.",
+		"must_verify_message": "Para desbloquear su cuenta y continuar usando Titra, por favor complete la acción de verificación requerida.",
+		"continue_to_verification": "Continuar a verificación"
 	},
 	"customer": {
 		"select_customer": "Seleccionar un Cliente",
