@@ -1,9 +1,9 @@
 import { check, Match } from 'meteor/check'
-import { NodeVM } from 'vm2'
-import { fetch, Headers} from 'meteor/fetch'
+import { fetch, Headers } from 'meteor/fetch'
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
+import { NodeVM } from '../../../utils/vm_sandbox.js'
 import {
-    adminAuthenticationMixin, authenticationMixin, transactionLogMixin,
+  adminAuthenticationMixin, authenticationMixin, transactionLogMixin,
 } from '../../../utils/server_method_helpers'
 import OutboundInterfaces from '../outboundinterfaces.js'
 
@@ -20,29 +20,29 @@ import OutboundInterfaces from '../outboundinterfaces.js'
  * @returns {string} - The success notification message.
  */
 const outboundinterfacesinsert = new ValidatedMethod({
-    name: 'outboundinterfaces.insert',
-    validate({
-        name, description, processData, active, faIcon,
-    }) {
-        check(name, String)
-        check(description, String)
-        check(processData, Match.Maybe(String))
-        check(faIcon, Match.Maybe(String))
-        check(active, Boolean)
-    },
-    mixins: [adminAuthenticationMixin, transactionLogMixin],
-    async run({
-        name, description, processData, active, faIcon,
-    }) {
-        await OutboundInterfaces.insertAsync({
-            name,
-            description,
-            processData,
-            active,
-            faIcon,
-        })
-        return 'notifications.success'
-    },
+  name: 'outboundinterfaces.insert',
+  validate({
+    name, description, processData, active, faIcon,
+  }) {
+    check(name, String)
+    check(description, String)
+    check(processData, Match.Maybe(String))
+    check(faIcon, Match.Maybe(String))
+    check(active, Boolean)
+  },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
+  async run({
+    name, description, processData, active, faIcon,
+  }) {
+    await OutboundInterfaces.insertAsync({
+      name,
+      description,
+      processData,
+      active,
+      faIcon,
+    })
+    return 'notifications.success'
+  },
 })
 /**
  * Updates an outbound interface.
@@ -58,42 +58,42 @@ const outboundinterfacesinsert = new ValidatedMethod({
  * @returns {string} - The success notification message.
  */
 const outboundinterfacesupdate = new ValidatedMethod({
-    name: 'outboundinterfaces.update',
-    validate({
-        _id,
+  name: 'outboundinterfaces.update',
+  validate({
+    _id,
+    name,
+    description,
+    processData,
+    faIcon,
+    active,
+  }) {
+    check(_id, String)
+    check(name, String)
+    check(description, String)
+    check(processData, Match.Maybe(String))
+    check(active, Boolean)
+    check(faIcon, Match.Maybe(String))
+  },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
+  async run({
+    _id,
+    name,
+    description,
+    processData,
+    faIcon,
+    active,
+  }) {
+    await OutboundInterfaces.updateAsync({ _id }, {
+      $set: {
         name,
         description,
         processData,
-        faIcon,
         active,
-    }) {
-        check(_id, String)
-        check(name, String)
-        check(description, String)
-        check(processData, Match.Maybe(String))
-        check(active, Boolean)
-        check(faIcon, Match.Maybe(String))
-    },
-    mixins: [adminAuthenticationMixin, transactionLogMixin],
-    async run({
-        _id,
-        name,
-        description,
-        processData,
         faIcon,
-        active,
-    }) {
-        await OutboundInterfaces.updateAsync({ _id }, {
-            $set: {
-                name,
-                description,
-                processData,
-                active,
-                faIcon,
-            },
-        })
-        return 'notifications.success'
-    },
+      },
+    })
+    return 'notifications.success'
+  },
 })
 /**
  * Removes an outbound interface.
@@ -104,15 +104,15 @@ const outboundinterfacesupdate = new ValidatedMethod({
  * @returns {string} The success notification message.
  */
 const outboundinterfacesremove = new ValidatedMethod({
-    name: 'outboundinterfaces.remove',
-    validate({ _id }) {
-        check(_id, String)
-    },
-    mixins: [adminAuthenticationMixin, transactionLogMixin],
-    async run({ _id }) {
-        await OutboundInterfaces.removeAsync({ _id })
-        return 'notifications.success'
-    },
+  name: 'outboundinterfaces.remove',
+  validate({ _id }) {
+    check(_id, String)
+  },
+  mixins: [adminAuthenticationMixin, transactionLogMixin],
+  async run({ _id }) {
+    await OutboundInterfaces.removeAsync({ _id })
+    return 'notifications.success'
+  },
 })
 
 /**
@@ -121,31 +121,32 @@ const outboundinterfacesremove = new ValidatedMethod({
  * @param {Object} options - The options for running the outbound interface.
  * @param {string} options._id - The ID of the outbound interface.
  * @param {Array} options.data - The data to be processed by the outbound interface.
- * @returns {string|boolean} - The result of running the outbound interface, or false if the outbound interface script threw an error.
+ * @returns {string|boolean} - The result of running the outbound interface, or false if
+ * the outbound interface script threw an error.
  */
 const outboundinterfacesrun = new ValidatedMethod({
-    name: 'outboundinterfaces.run',
-    validate({ _id, data }) {
-        check(_id, String)
-        check(data, Array)
-    },
-    mixins: [authenticationMixin],
-    async run({ _id, data }) {
-        const outboundInterface = await OutboundInterfaces.findOneAsync({ _id })
-        if (outboundInterface) {
-            const vm = new NodeVM({
-                console: 'inherit',
-                sandbox: {
-                    fetch,
-                    data,
-                    Headers,
-                },
-            })
-            const result = await vm.run(outboundInterface.processData)
-            return 'notifications.success'
-        }
-        return false
-    },
+  name: 'outboundinterfaces.run',
+  validate({ _id, data }) {
+    check(_id, String)
+    check(data, Array)
+  },
+  mixins: [authenticationMixin],
+  async run({ _id, data }) {
+    const outboundInterface = await OutboundInterfaces.findOneAsync({ _id })
+    if (outboundInterface) {
+      const vm = new NodeVM({
+        console: 'inherit',
+        sandbox: {
+          fetch,
+          data,
+          Headers,
+        },
+      })
+      await vm.run(outboundInterface.processData)
+      return 'notifications.success'
+    }
+    return false
+  },
 })
 /**
  * Retrieves the active outbound interfaces.
@@ -155,17 +156,17 @@ const outboundinterfacesrun = new ValidatedMethod({
  * @returns {Array} An array of active outbound interfaces.
  */
 const getOutboundInterfaces = new ValidatedMethod({
-    name: 'outboundinterfaces.get',
-    validate: null,
-    mixins: [authenticationMixin],
-    async run() {
-        return OutboundInterfaces.find({ active: true }, { fields: { processData: 0 } }).fetchAsync()
-    },
+  name: 'outboundinterfaces.get',
+  validate: null,
+  mixins: [authenticationMixin],
+  async run() {
+    return OutboundInterfaces.find({ active: true }, { fields: { processData: 0 } }).fetchAsync()
+  },
 })
 export {
-    outboundinterfacesinsert,
-    outboundinterfacesupdate,
-    outboundinterfacesremove,
-    outboundinterfacesrun,
-    getOutboundInterfaces,
+  outboundinterfacesinsert,
+  outboundinterfacesupdate,
+  outboundinterfacesremove,
+  outboundinterfacesrun,
+  getOutboundInterfaces,
 }
