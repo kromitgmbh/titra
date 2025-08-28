@@ -516,7 +516,15 @@
     "admin_users": "Administrative Benutzer",
     "inactive_users": "Inaktive Benutzer",
     "icon": "Symbol",
-    "outbound_processdata_hint": "Dieses JavaScript wird auf dem Server ausgeführt, wenn der entsprechende Button von einem Benutzer auf der Detailseite geklickt wird. Das Skript erhält die aktuell angezeigten Daten in der Variable 'data' und hat Zugriff auf die node fetch Funktion, um Daten an ein externes System zu senden. Es ist nicht erforderlich, einen Wert zurückzugeben. Alle Fehler werden erfasst und dem Benutzer als '500 interner Serverfehler' angezeigt."
+    "outbound_processdata_hint": "Dieses JavaScript wird auf dem Server ausgeführt, wenn der entsprechende Button von einem Benutzer auf der Detailseite geklickt wird. Das Skript erhält die aktuell angezeigten Daten in der Variable 'data' und hat Zugriff auf die node fetch Funktion, um Daten an ein externes System zu senden. Es ist nicht erforderlich, einen Wert zurückzugeben. Alle Fehler werden erfasst und dem Benutzer als '500 interner Serverfehler' angezeigt.",
+    "webhook_verification": "Webhook-Verifizierung",
+    "webhook_verification_interfaces": "Webhook-Verifizierungsschnittstellen",
+    "create_edit_webhook_verification": "Webhook-Verifizierungsschnittstelle erstellen oder bearbeiten",
+    "allowed_domains": "Erlaubte Domains",
+    "allowed_domains_hint": "Kommagetrennte Liste der Domains, die Webhooks senden dürfen (z.B. api.stripe.com, webhook.example.com)",
+    "webhook_process_data": "Webhook-Verarbeitungsskript",
+    "webhook_processdata_hint": "Dieses JavaScript wird ausgeführt, wenn ein Webhook empfangen wird. Das Skript hat Zugriff auf die Variablen 'webhookData' (Webhook-Payload) und 'senderDomain'. Geben Sie ein Objekt mit den Eigenschaften 'action' ('complete' oder 'revoke') und 'userId' zurück, um die Verifizierung zu verarbeiten, oder null, um den Webhook zu ignorieren.",
+    "confirm_delete": "Sind Sie sicher, dass Sie dieses Element löschen möchten?"
   },
   "wekan": {
     "list": "Wekan Liste",

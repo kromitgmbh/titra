@@ -497,7 +497,15 @@
     "admin_users": "Utilisateurs administratifs",
     "inactive_users": "Utilisateurs inactifs",
     "icon": "Icône",
-    "outbound_processdata_hint": "Ce JavaScript sera exécuté sur le serveur chaque fois que le bouton correspondant sera cliqué par un utilisateur dans la page de détails. Le script recevra les données actuellement affichées dans la variable 'data' et aura accès à la fonction fetch du nœud pour envoyer des données vers un système externe. Il n'est pas nécessaire de retourner une valeur, toutes les erreurs seront capturées et affichées à l'utilisateur sous la forme d'une 'erreur interne du serveur 500'."
+    "outbound_processdata_hint": "Ce JavaScript sera exécuté sur le serveur chaque fois que le bouton correspondant sera cliqué par un utilisateur dans la page de détails. Le script recevra les données actuellement affichées dans la variable 'data' et aura accès à la fonction fetch du nœud pour envoyer des données vers un système externe. Il n'est pas nécessaire de retourner une valeur, toutes les erreurs seront capturées et affichées à l'utilisateur sous la forme d'une 'erreur interne du serveur 500'.",
+    "webhook_verification": "Vérification Webhook",
+    "webhook_verification_interfaces": "Interfaces de vérification webhook",
+    "create_edit_webhook_verification": "Créer ou modifier une interface de vérification webhook",
+    "allowed_domains": "Domaines autorisés",
+    "allowed_domains_hint": "Liste séparée par des virgules des domaines autorisés à envoyer des webhooks (ex: api.stripe.com, webhook.example.com)",
+    "webhook_process_data": "Script de traitement webhook",
+    "webhook_processdata_hint": "Ce JavaScript sera exécuté chaque fois qu'un webhook est reçu. Le script a accès aux variables 'webhookData' (charge utile du webhook) et 'senderDomain'. Retournez un objet avec les propriétés 'action' ('complete' ou 'revoke') et 'userId' pour traiter la vérification, ou null pour ignorer le webhook.",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer cet élément ?"
   },
   "wekan": {
     "list": "Liste Wekan",

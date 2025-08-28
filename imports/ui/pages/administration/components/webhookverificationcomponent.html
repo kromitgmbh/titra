@@ -1,0 +1,61 @@
+<template name="webhookverificationcomponent">
+    <div class="container">
+        <div class="card mb-3">
+            <div class="card-header">
+                <span>{{t "administration.create_edit_webhook_verification"}}</span>
+            </div>
+            <div class="card-block" id="addWebhookVerification">
+                <form class="form">
+                    <input class="d-none" type="text" id="_id" name="_id"/>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="name" name="name"/>
+                        <label for="name" class="form-label">{{t "globals.name"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="description" name="description"/>
+                        <label for="description" class="form-label">{{t "globals.description"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="allowedDomains" name="allowedDomains" placeholder="example.com, webhook.stripe.com"/>
+                        <label for="allowedDomains" class="form-label">{{t "administration.allowed_domains"}}</label>
+                        <span class="form-text">{{t "administration.allowed_domains_hint"}}</span>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <textarea class="form-control mb-3" name="processData" id="processData" style="min-height:15rem;"></textarea>
+                        <label for="processData" class="form-label">{{t "administration.webhook_process_data"}}</label>
+                        <span class="form-text">{{t "administration.webhook_processdata_hint"}}</span>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input id="isActive" name="isActive" aria-label="Webhook verification active" class="form-check-input js-webhook-verification-state" type="checkbox">
+                        <label for="isActive" class="form-label">{{t "administration.active"}}</label>
+                    </div>
+                    <button type="reset" class="btn btn-secondary js-reset">{{t "globals.cancel"}}</button>
+                    <button type="button" class="btn btn-primary js-add-webhook-verification">{{t "administration.create"}}</button>
+                    <button type="button" class="btn btn-primary js-update-webhook-verification d-none ms-auto">{{t "navigation.save"}}</button>
+                </form>
+            </div>
+        </div>
+        <h6>{{t "administration.webhook_verification_interfaces"}}</h6>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{{t "globals.name"}}</th>
+                    <th>{{t "globals.description"}}</th>
+                    <th>{{t "administration.allowed_domains"}}</th>
+                    <th>{{t "tracktime.actions"}}</th>
+                </tr>
+            </thead>
+            {{#each webhookInterface in webhookVerificationInterfaces}}
+                <tr>
+                    <td>{{webhookInterface.name}}</td>
+                    <td>{{webhookInterface.description}}</td>
+                    <td>{{webhookInterface.allowedDomains}}</td>
+                    <td>
+                        <button class="btn js-edit-webhook-verification" data-interface-id="{{webhookInterface._id}}"><i class="fa fa-pencil"></i></button>
+                        <button class="btn js-remove-webhook-verification" data-interface-id="{{webhookInterface._id}}"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+            {{/each}}
+        </table>
+    </div>
+</template>

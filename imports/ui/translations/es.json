@@ -507,7 +507,15 @@
         "admin_users": "Usuarios administrativos",
         "inactive_users": "Usuarios inactivos",
         "icon": "Icono",
-        "outbound_processdata_hint": "Este JavaScript se ejecutará en el servidor cada vez que el usuario haga clic en el botón correspondiente en la página de detalles. El script recibirá los datos actualmente mostrados en la variable 'data' y tendrá acceso a la función fetch del nodo para enviar datos a un sistema externo. No es necesario devolver un valor, todos los errores serán capturados y mostrados al usuario como 'error interno del servidor 500'."
+        "outbound_processdata_hint": "Este JavaScript se ejecutará en el servidor cada vez que el usuario haga clic en el botón correspondiente en la página de detalles. El script recibirá los datos actualmente mostrados en la variable 'data' y tendrá acceso a la función fetch del nodo para enviar datos a un sistema externo. No es necesario devolver un valor, todos los errores serán capturados y mostrados al usuario como 'error interno del servidor 500'.",
+        "webhook_verification": "Verificación Webhook",
+        "webhook_verification_interfaces": "Interfaces de verificación webhook",
+        "create_edit_webhook_verification": "Crear o editar interfaz de verificación webhook",
+        "allowed_domains": "Dominios permitidos",
+        "allowed_domains_hint": "Lista separada por comas de dominios permitidos para enviar webhooks (ej: api.stripe.com, webhook.example.com)",
+        "webhook_process_data": "Script de procesamiento webhook",
+        "webhook_processdata_hint": "Este JavaScript se ejecutará cada vez que se reciba un webhook. El script tiene acceso a las variables 'webhookData' (carga útil del webhook) y 'senderDomain'. Devuelve un objeto con las propiedades 'action' ('complete' o 'revoke') y 'userId' para procesar la verificación, o null para ignorar el webhook.",
+        "confirm_delete": "¿Está seguro de que desea eliminar este elemento?"
     },
     "wekan": {
         "list": "Lista de Wekan",

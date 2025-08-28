@@ -456,7 +456,15 @@
     "admin_users": "管理员用户",
     "inactive_users": "非活跃用户",
     "icon": "图标",
-    "outbound_processdata_hint": "当用户在详细页面点击相应按钮时，此JavaScript将在服务器上执行。脚本将在'data'变量中接收当前显示的数据，并可以使用节点fetch函数将数据发送到外部系统。无需返回值，所有错误都将被捕获并显示给用户为'500内部服务器错误'。"
+    "outbound_processdata_hint": "当用户在详细页面点击相应按钮时，此JavaScript将在服务器上执行。脚本将在'data'变量中接收当前显示的数据，并可以使用节点fetch函数将数据发送到外部系统。无需返回值，所有错误都将被捕获并显示给用户为'500内部服务器错误'。",
+    "webhook_verification": "Webhook验证",
+    "webhook_verification_interfaces": "Webhook验证接口",
+    "create_edit_webhook_verification": "创建或编辑Webhook验证接口",
+    "allowed_domains": "允许的域名",
+    "allowed_domains_hint": "允许发送webhook的域名列表，用逗号分隔（例如：api.stripe.com, webhook.example.com）",
+    "webhook_process_data": "Webhook处理脚本",
+    "webhook_processdata_hint": "每当收到webhook时都会执行此JavaScript。脚本可以访问'webhookData'（webhook载荷）和'senderDomain'变量。返回包含'action'（'complete'或'revoke'）和'userId'属性的对象来处理验证，或返回null忽略webhook。",
+    "confirm_delete": "您确定要删除此项目吗？"
   },
   "wekan": {
     "list": "Wekan 列表",

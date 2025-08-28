@@ -508,7 +508,15 @@
     "admin_users": "Administrative users",
     "inactive_users": "Inactive users",
     "icon": "Icon",
-    "outbound_processdata_hint": "This JavaScript will be executed on the server whenever the corresponding button is clicked by a user in the details page. The script will receive the currently displayed data in the 'data' variable and has access to the node fetch function to send data to an external system. There is no need to return a value, all errors will be caught and displayed to the user as '500 internal server error'."
+    "outbound_processdata_hint": "This JavaScript will be executed on the server whenever the corresponding button is clicked by a user in the details page. The script will receive the currently displayed data in the 'data' variable and has access to the node fetch function to send data to an external system. There is no need to return a value, all errors will be caught and displayed to the user as '500 internal server error'.",
+    "webhook_verification": "Webhook Verification",
+    "webhook_verification_interfaces": "Webhook verification interfaces",
+    "create_edit_webhook_verification": "Create or edit webhook verification interface",
+    "allowed_domains": "Allowed domains",
+    "allowed_domains_hint": "Comma-separated list of domains allowed to send webhooks (e.g. api.stripe.com, webhook.example.com)",
+    "webhook_process_data": "Webhook processing script",
+    "webhook_processdata_hint": "This JavaScript will be executed whenever a webhook is received. The script has access to 'webhookData' (the webhook payload) and 'senderDomain' variables. Return an object with 'action' ('complete' or 'revoke') and 'userId' properties to process verification, or null to ignore the webhook.",
+    "confirm_delete": "Are you sure you want to delete this item?"
   },
   "wekan": {
     "list": "Wekan list",

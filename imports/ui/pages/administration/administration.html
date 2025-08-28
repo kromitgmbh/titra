@@ -23,6 +23,11 @@
         <li class="nav-item">
             <a class="nav-link" id="outboundinterfaces-tab" data-bs-toggle="tab" href="#outboundinterfaces" role="tab" aria-controls="outboundinterfaces" aria-selected="false">{{t "administration.outboundinterfaces"}}</a>
         </li>
+        {{#if getGlobalSetting "enableUserActionVerification"}}
+            <li class="nav-item">
+                <a class="nav-link" id="webhookverification-tab" data-bs-toggle="tab" href="#webhookverification" role="tab" aria-controls="webhookverification" aria-selected="false">{{t "administration.webhook_verification"}}</a>
+            </li>
+        {{/if}}
         {{#if getGlobalSetting "enableTransactions"}}
             <li class="nav-item">
                 <a class="nav-link" id="transactions-tab" data-bs-toggle="tab" href="#transactions" role="tab" aria-controls="transactions" aria-selected="false">{{t "transactions.transactions"}}</a>
@@ -76,6 +81,13 @@
             {{#if isActive "outboundinterfaces-tab"}}
                 {{#if i18nReady}}
                     {{>outboundinterfacescomponent}}
+                {{/if}}
+            {{/if}}
+        </div>
+        <div class="tab-pane fade table-responsive p-3 tab-borders" id="webhookverification">
+            {{#if isActive "webhookverification-tab"}}
+                {{#if i18nReady}}
+                    {{>webhookverificationcomponent}}
                 {{/if}}
             {{/if}}
         </div>
