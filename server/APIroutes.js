@@ -703,3 +703,88 @@ WebApp.handlers.use('/user/action-verification/callback/', async (req, res) => {
 
   sendResponse(res, 500, 'Missing mandatory parameters.')
 })
+
+/**
+ * @api {post} /user/action-verification/revoke User Action Verification Revoke
+ * @apiName userActionVerificationRevoke
+ * @apiDescription Revoke a user's verification status when external requirements are no longer met
+ * @apiGroup UserVerification
+ *
+ * @apiBody {String} userId The ID of the user whose verification should be revoked.
+ * @apiBody {String} secret The secret token for verification.
+ * @apiParamExample {json} Request-Example:
+ *                  {
+ *                    "userId": "abc123def456",
+ *                    "secret": "generated-secret-token"
+ *                  }
+ * @apiSuccess {json} response Confirmation of action verification revocation.
+ * @apiSuccessExample {json} Success response:
+ * {
+ *  message: "User action verification revoked successfully."
+ *  }
+ * @apiError (400) InvalidJSON Invalid JSON received.
+ * @apiError (500) InvalidParameters Invalid parameters received.
+ * @apiError (404) UserNotFound User not found or verification not applicable.
+ * @apiError (403) InvalidSecret Invalid secret provided.
+ */
+WebApp.handlers.use('/user/action-verification/revoke/', async (req, res) => {
+  let json
+  try {
+    json = await getJson(req)
+  } catch (e) {
+    sendResponse(res, 400, `Invalid JSON received. ${e}`)
+    return
+  }
+
+  if (json) {
+    try {
+      check(json.userId, String)
+      check(json.secret, String)
+    } catch (error) {
+      sendResponse(res, 500, `Invalid parameters received. ${error}`)
+      return
+    }
+
+    // Find user and verify secret - accept both completed and non-completed verifications
+    const user = await Meteor.users.findOneAsync({
+      _id: json.userId,
+      'actionVerification.required': true,
+    })
+
+    if (!user) {
+      sendResponse(res, 404, 'User not found or verification not applicable.')
+      return
+    }
+
+    if (user.actionVerification.secret !== json.secret) {
+      sendResponse(res, 403, 'Invalid secret provided.')
+      return
+    }
+
+    // Import required modules
+    const { getGlobalSettingAsync } = await import('../imports/utils/server_method_helpers.js')
+    const { Random } = await import('meteor/random')
+
+    // Get verification period and calculate new deadline
+    const verificationPeriod = await getGlobalSettingAsync('userActionVerificationPeriod') || 30
+    const newDeadline = new Date()
+    newDeadline.setDate(newDeadline.getDate() + verificationPeriod)
+
+    // Revoke verification and generate new secret
+    await Meteor.users.updateAsync({ _id: json.userId }, {
+      $set: {
+        'actionVerification.completed': false,
+        'actionVerification.deadline': newDeadline,
+        'actionVerification.secret': Random.secret(32),
+      },
+      $unset: {
+        'actionVerification.completedAt': '',
+      },
+    })
+
+    sendResponse(res, 200, 'User action verification revoked successfully.')
+    return
+  }
+
+  sendResponse(res, 500, 'Missing mandatory parameters.')
+})
