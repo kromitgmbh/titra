@@ -710,8 +710,11 @@ WebApp.handlers.use('/user/action-verification/webhook/', async (req, res) => {
         if (senderDomain === allowed) return true
         // Support localhost variations for development
         if (allowed === 'localhost' && (senderDomain.includes('localhost') || senderDomain.includes('127.0.0.1'))) return true
-        // Support wildcard matching for subdomains
-        if (allowed.startsWith('*.') && senderDomain.endsWith(allowed.substring(1))) return true
+        // Support wildcard matching for subdomains (*.example.com matches both subdomain.example.com and example.com)
+        if (allowed.startsWith('*.')) {
+          const domain = allowed.substring(2) // Remove *.
+          return senderDomain === domain || senderDomain.endsWith('.' + domain)
+        }
         return false
       })
       
