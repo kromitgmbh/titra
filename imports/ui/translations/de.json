@@ -271,7 +271,9 @@
     "debug_mode": "Debug Modus aktivieren?",
     "enable_user_action_verification": "Benutzeraktionsverifizierung aktivieren?",
     "user_action_verification_period": "Benutzeraktionsverifizierungszeitraum (Tage)",
-    "user_action_verification_service_url": "URL des Benutzeraktionsverifizierungsdienstes"
+    "user_action_verification_service_url": "URL des Benutzeraktionsverifizierungsdienstes",
+    "user_action_verification_url_param": "URL-Parameter für Benutzeraktionsverifizierung",
+    "user_action_verification_type": "Typ der Benutzeraktionsverifizierung"
   },
   "verification": {
     "overdue_title": "Aktion erforderlich - Überfällig",
@@ -284,7 +286,9 @@
     "account_locked_title": "Konto gesperrt - Verifizierung erforderlich",
     "account_locked_message": "Ihr Konto wurde gesperrt, da die erforderliche Aktionsverifizierung nicht innerhalb des angegebenen Zeitrahmens abgeschlossen wurde. Sie müssen die Verifizierung abschließen, um die Anwendung weiter zu nutzen.",
     "must_verify_message": "Um Ihr Konto zu entsperren und Titra weiter zu nutzen, schließen Sie bitte die erforderliche Verifizierungsaktion ab.",
-    "continue_to_verification": "Zur Verifizierung fortfahren"
+    "continue_to_verification": "Zur Verifizierung fortfahren",
+    "type_payment": "Zahlung",
+    "type_e-learning": "E-Learning"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

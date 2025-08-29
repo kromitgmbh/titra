@@ -271,7 +271,9 @@
     "debug_mode": "Enable debug mode?",
     "enable_user_action_verification": "Enable user action verification requirement?",
     "user_action_verification_period": "User action verification period (days)",
-    "user_action_verification_service_url": "User action verification service URL"
+    "user_action_verification_service_url": "User action verification service URL",
+    "user_action_verification_url_param": "User action verification URL parameter name",
+    "user_action_verification_type": "User action verification type"
   },
   "verification": {
     "overdue_title": "Action Required - Overdue",
@@ -284,7 +286,9 @@
     "account_locked_title": "Account Locked - Verification Required",
     "account_locked_message": "Your account has been locked because the required action verification was not completed within the specified timeframe. You must complete the verification to continue using the application.",
     "must_verify_message": "To unlock your account and continue using Titra, please complete the required verification action.",
-    "continue_to_verification": "Continue to Verification"
+    "continue_to_verification": "Continue to Verification",
+    "type_payment": "payment",
+    "type_e-learning": "e-learning"
   },
   "customer": {
     "select_customer": "Select a customer",

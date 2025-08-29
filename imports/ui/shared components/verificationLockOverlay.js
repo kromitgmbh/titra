@@ -1,6 +1,8 @@
 import { ReactiveVar } from 'meteor/reactive-var'
 import './verificationLockOverlay.html'
 import './verificationLockOverlay.css'
+import { getGlobalSetting } from '../../../utils/frontend_helpers.js'
+import { t } from '../../../utils/i18n.js'
 
 Template.verificationLockOverlay.onCreated(function verificationLockOverlayCreated() {
   this.verificationStatus = new ReactiveVar(null)
@@ -48,5 +50,25 @@ Template.verificationLockOverlay.helpers({
 
   verificationUrl() {
     return Template.instance().verificationUrl.get()
+  },
+
+  verificationType() {
+    const type = getGlobalSetting('userActionVerificationType')
+    if (!type) {
+      return t('verification.continue_to_verification') // Default: "Continue to Verification"
+    }
+    
+    // Check if it's a predefined type with translation
+    const translationKey = `verification.type_${type}`
+    const translated = t(translationKey)
+    
+    // If translation exists and is different from the key, use translated term
+    if (translated !== translationKey) {
+      return `Continue to ${translated}`
+    }
+    
+    // Otherwise use the custom string as-is (capitalize first letter)
+    const customType = type.charAt(0).toUpperCase() + type.slice(1)
+    return `Continue to ${customType}`
   },
 })

@@ -269,7 +269,9 @@
       "debug_mode": "Увімкнути режим налагодження?",
       "enable_user_action_verification": "Увімкнути вимогу верифікації дій користувача?",
       "user_action_verification_period": "Період верифікації дій користувача (дні)",
-      "user_action_verification_service_url": "URL сервісу верифікації дій користувача"
+      "user_action_verification_service_url": "URL сервісу верифікації дій користувача",
+      "user_action_verification_url_param": "Ім'я URL-параметра верифікації дій користувача",
+      "user_action_verification_type": "Тип верифікації дій користувача"
     },
     "verification": {
       "overdue_title": "Потрібна дія - Прострочено",
@@ -282,7 +284,9 @@
       "account_locked_title": "Акаунт заблоковано - Потрібна верифікація",
       "account_locked_message": "Ваш акаунт було заблоковано, оскільки необхідна верифікація дії не була завершена в зазначені терміни. Ви повинні завершити верифікацію, щоб продовжити використання додатку.",
       "must_verify_message": "Щоб розблокувати ваш акаунт та продовжити використання Titra, будь ласка, завершіть необхідну дію верифікації.",
-      "continue_to_verification": "Продовжити верифікацію"
+      "continue_to_verification": "Продовжити верифікацію",
+      "type_payment": "платіж",
+      "type_e-learning": "e-learning"
     },
     "customer": {
       "select_customer": "Виберіть клієнта",

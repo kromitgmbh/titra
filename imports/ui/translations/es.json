@@ -271,7 +271,9 @@
     "debug_mode": "¿Activar modo depuración?",
     "enable_user_action_verification": "¿Activar requisito de verificación de acción de usuario?",
     "user_action_verification_period": "Período de verificación de acción de usuario (días)",
-    "user_action_verification_service_url": "URL del servicio de verificación de acción de usuario"
+    "user_action_verification_service_url": "URL del servicio de verificación de acción de usuario",
+    "user_action_verification_url_param": "Nombre del parámetro URL de verificación de acción de usuario",
+    "user_action_verification_type": "Tipo de verificación de acción de usuario"
 	},
 	"verification": {
 		"overdue_title": "Acción requerida - Vencida",
@@ -284,7 +286,9 @@
 		"account_locked_title": "Cuenta bloqueada - Verificación requerida",
 		"account_locked_message": "Su cuenta ha sido bloqueada porque la verificación de acción requerida no se completó dentro del plazo especificado. Debe completar la verificación para continuar usando la aplicación.",
 		"must_verify_message": "Para desbloquear su cuenta y continuar usando Titra, por favor complete la acción de verificación requerida.",
-		"continue_to_verification": "Continuar a verificación"
+		"continue_to_verification": "Continuar a verificación",
+		"type_payment": "pago",
+		"type_e-learning": "e-learning"
 	},
 	"customer": {
 		"select_customer": "Seleccionar un Cliente",

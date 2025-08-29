@@ -2,6 +2,7 @@ import './webhookverificationcomponent.html'
 import WebhookVerification from '../../../../api/webhookverification/webhookverification.js'
 import { showToast } from '../../../../utils/frontend_helpers.js'
 import { t } from '../../../../utils/i18n.js'
+import { getGlobalSetting } from '../../../../utils/frontend_helpers.js'
 
 Template.webhookverificationcomponent.onCreated(function webhookverificationcomponentCreated() {
   this.subscribe('webhookverification')
@@ -25,6 +26,9 @@ Template.webhookverificationcomponent.events({
       return
     }
 
+    // Get the configurable URL parameter name
+    const urlParam = getGlobalSetting('userActionVerificationUrlParam') || 'client_reference_id'
+
     Meteor.call('webhookverification.insert', {
       name,
       description,
@@ -37,12 +41,12 @@ Template.webhookverificationcomponent.events({
 if (webhookData.type === 'checkout.session.completed') {
   return {
     action: 'complete',
-    userId: webhookData.data.object.client_reference_id
+    userId: webhookData.data.object.${urlParam}
   }
 } else if (webhookData.type === 'customer.subscription.deleted') {
   return {
     action: 'revoke', 
-    userId: webhookData.data.object.metadata.client_reference_id
+    userId: webhookData.data.object.metadata.${urlParam}
   }
 }
 
