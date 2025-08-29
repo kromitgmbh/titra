@@ -288,7 +288,22 @@
     "must_verify_message": "Um Ihr Konto zu entsperren und Titra weiter zu nutzen, schließen Sie bitte die erforderliche Verifizierungsaktion ab.",
     "continue_to_verification": "Zur Verifizierung fortfahren",
     "type_payment": "Zahlung",
-    "type_e-learning": "E-Learning"
+    "type_e-learning": "E-Learning",
+    "complete_payment": "Zahlung abschließen",
+    "complete_e-learning": "E-Learning abschließen",
+    "complete_default": "Aktion abschließen",
+    "continue_to_payment": "Zur Zahlung fortfahren",
+    "continue_to_e-learning": "Zum E-Learning fortfahren",
+    "continue_to_default": "Zur Verifizierung fortfahren",
+    "payment_required": "Zahlung erforderlich",
+    "e-learning_required": "E-Learning erforderlich",
+    "action_required": "Aktion erforderlich",
+    "payment_overdue": "Zahlung erforderlich - Überfällig",
+    "e-learning_overdue": "E-Learning erforderlich - Überfällig",
+    "action_overdue": "Aktion erforderlich - Überfällig",
+    "account_locked_payment": "Konto gesperrt - Zahlung erforderlich",
+    "account_locked_e-learning": "Konto gesperrt - E-Learning erforderlich",
+    "account_locked_default": "Konto gesperrt - Verifizierung erforderlich"
   },
   "customer": {
     "select_customer": "Kunde auswählen",

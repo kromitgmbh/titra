@@ -288,7 +288,22 @@
     "must_verify_message": "To unlock your account and continue using Titra, please complete the required verification action.",
     "continue_to_verification": "Continue to Verification",
     "type_payment": "payment",
-    "type_e-learning": "e-learning"
+    "type_e-learning": "e-learning",
+    "complete_payment": "Complete Payment",
+    "complete_e-learning": "Complete E-Learning",
+    "complete_default": "Complete Action",
+    "continue_to_payment": "Continue to Payment",
+    "continue_to_e-learning": "Continue to E-Learning",
+    "continue_to_default": "Continue to Verification",
+    "payment_required": "Payment Required",
+    "e-learning_required": "E-Learning Required",
+    "action_required": "Action Required",
+    "payment_overdue": "Payment Required - Overdue",
+    "e-learning_overdue": "E-Learning Required - Overdue",
+    "action_overdue": "Action Required - Overdue",
+    "account_locked_payment": "Account Locked - Payment Required",
+    "account_locked_e-learning": "Account Locked - E-Learning Required",
+    "account_locked_default": "Account Locked - Verification Required"
   },
   "customer": {
     "select_customer": "Select a customer",

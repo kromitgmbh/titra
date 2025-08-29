@@ -286,7 +286,22 @@
       "must_verify_message": "Щоб розблокувати ваш акаунт та продовжити використання Titra, будь ласка, завершіть необхідну дію верифікації.",
       "continue_to_verification": "Продовжити верифікацію",
       "type_payment": "платіж",
-      "type_e-learning": "e-learning"
+      "type_e-learning": "e-learning",
+      "complete_payment": "Завершити платіж",
+      "complete_e-learning": "Завершити e-learning",
+      "complete_default": "Виконати дію",
+      "continue_to_payment": "Продовжити до платежу",
+      "continue_to_e-learning": "Продовжити до e-learning",
+      "continue_to_default": "Продовжити верифікацію",
+      "payment_required": "Потрібен платіж",
+      "e-learning_required": "Потрібне e-learning",
+      "action_required": "Потрібна дія",
+      "payment_overdue": "Потрібен платіж - Прострочено",
+      "e-learning_overdue": "Потрібне e-learning - Прострочено",
+      "action_overdue": "Потрібна дія - Прострочено",
+      "account_locked_payment": "Акаунт заблоковано - Потрібен платіж",
+      "account_locked_e-learning": "Акаунт заблоковано - Потрібне e-learning",
+      "account_locked_default": "Акаунт заблоковано - Потрібна верифікація"
     },
     "customer": {
       "select_customer": "Виберіть клієнта",

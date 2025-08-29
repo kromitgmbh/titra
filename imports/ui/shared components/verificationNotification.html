@@ -5,10 +5,10 @@
         <i class="fa fa-exclamation-triangle me-2"></i>
         <div class="flex-grow-1">
           {{#if overdue}}
-            <strong>{{t "verification.overdue_title"}}</strong>
+            <strong>{{notificationTitle}}</strong>
             {{t "verification.overdue_message"}}
           {{else}}
-            <strong>{{t "verification.reminder_title"}}</strong>
+            <strong>{{notificationTitle}}</strong>
             {{#if daysRemaining}}
               {{t "verification.days_remaining_message" count=daysRemaining}}
             {{else}}

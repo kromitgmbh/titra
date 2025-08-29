@@ -278,7 +278,22 @@
     "must_verify_message": "Pour déverrouiller votre compte et continuer à utiliser Titra, veuillez compléter l'action de vérification requise.",
     "continue_to_verification": "Continuer vers la vérification",
     "type_payment": "paiement",
-    "type_e-learning": "e-learning"
+    "type_e-learning": "e-learning",
+    "complete_payment": "Effectuer le paiement",
+    "complete_e-learning": "Compléter l'e-learning",
+    "complete_default": "Effectuer l'action",
+    "continue_to_payment": "Continuer vers le paiement",
+    "continue_to_e-learning": "Continuer vers l'e-learning",
+    "continue_to_default": "Continuer vers la vérification",
+    "payment_required": "Paiement requis",
+    "e-learning_required": "E-learning requis",
+    "action_required": "Action requise",
+    "payment_overdue": "Paiement requis - En retard",
+    "e-learning_overdue": "E-learning requis - En retard",
+    "action_overdue": "Action requise - En retard",
+    "account_locked_payment": "Compte verrouillé - Paiement requis",
+    "account_locked_e-learning": "Compte verrouillé - E-learning requis",
+    "account_locked_default": "Compte verrouillé - Vérification requise"
   },
   "customer": {
     "select_customer": "Selectionner un client",

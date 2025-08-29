@@ -246,7 +246,22 @@
     "must_verify_message": "要解锁您的账户并继续使用Titra，请完成所需的验证操作。",
     "continue_to_verification": "继续验证",
     "type_payment": "付款",
-    "type_e-learning": "电子学习"
+    "type_e-learning": "电子学习",
+    "complete_payment": "完成付款",
+    "complete_e-learning": "完成电子学习",
+    "complete_default": "完成操作",
+    "continue_to_payment": "继续付款",
+    "continue_to_e-learning": "继续电子学习",
+    "continue_to_default": "继续验证",
+    "payment_required": "需要付款",
+    "e-learning_required": "需要电子学习",
+    "action_required": "需要操作",
+    "payment_overdue": "需要付款 - 已逾期",
+    "e-learning_overdue": "需要电子学习 - 已逾期",
+    "action_overdue": "需要操作 - 已逾期",
+    "account_locked_payment": "账户已锁定 - 需要付款",
+    "account_locked_e-learning": "账户已锁定 - 需要电子学习",
+    "account_locked_default": "账户已锁定 - 需要验证"
   },
   "customer": {
     "select_customer": "请选一个客户",

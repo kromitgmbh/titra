@@ -288,7 +288,22 @@
 		"must_verify_message": "Para desbloquear su cuenta y continuar usando Titra, por favor complete la acción de verificación requerida.",
 		"continue_to_verification": "Continuar a verificación",
 		"type_payment": "pago",
-		"type_e-learning": "e-learning"
+		"type_e-learning": "e-learning",
+		"complete_payment": "Completar pago",
+		"complete_e-learning": "Completar e-learning",
+		"complete_default": "Completar acción",
+		"continue_to_payment": "Continuar al pago",
+		"continue_to_e-learning": "Continuar al e-learning",
+		"continue_to_default": "Continuar a verificación",
+		"payment_required": "Pago requerido",
+		"e-learning_required": "E-learning requerido",
+		"action_required": "Acción requerida",
+		"payment_overdue": "Pago requerido - Vencido",
+		"e-learning_overdue": "E-learning requerido - Vencido",
+		"action_overdue": "Acción requerida - Vencida",
+		"account_locked_payment": "Cuenta bloqueada - Pago requerido",
+		"account_locked_e-learning": "Cuenta bloqueada - E-learning requerido",
+		"account_locked_default": "Cuenta bloqueada - Verificación requerida"
 	},
 	"customer": {
 		"select_customer": "Seleccionar un Cliente",
