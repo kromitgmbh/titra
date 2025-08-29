@@ -113,10 +113,11 @@ export class NodeSandbox {
         // This makes it compatible with vm2's behavior where return statements work
         if (this.options.wrapper === 'none') {
           // Even with wrapper 'none', we need to wrap in a function to allow returns
-          wrappedCode = `(function() { ${code} })()`
+          // Use call() to bind the sandbox data as 'this' context
+          wrappedCode = `(function() { ${code} }).call(this)`
         } else {
           // For other wrapper types, also wrap in a function
-          wrappedCode = `(function() { ${code} })()`
+          wrappedCode = `(function() { ${code} }).call(this)`
         }
 
         // Execute the code in the sandbox
