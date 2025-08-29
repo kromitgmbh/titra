@@ -184,16 +184,5 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableUserActionVerification', description: 'settings.enable_user_action_verification', type: 'checkbox', value: false, category: 'settings.categories.global',
 })
-defaultSettings.push({
-  name: 'userActionVerificationPeriod', description: 'settings.user_action_verification_period', type: 'number', value: 30, category: 'settings.categories.global',
-})
-defaultSettings.push({
-  name: 'userActionVerificationServiceUrl', description: 'settings.user_action_verification_service_url', type: 'text', value: '', category: 'settings.categories.global',
-})
-defaultSettings.push({
-  name: 'userActionVerificationUrlParam', description: 'settings.user_action_verification_url_param', type: 'text', value: 'client_reference_id', category: 'settings.categories.global',
-})
-defaultSettings.push({
-  name: 'userActionVerificationType', description: 'settings.user_action_verification_type', type: 'text', value: '', category: 'settings.categories.global',
-})
+
 export { defaultSettings, Globalsettings }

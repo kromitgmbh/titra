@@ -185,13 +185,13 @@ const updateProfile = new ValidatedMethod({
 
     // If this was an anonymous user being converted and verification is enabled
     if (wasAnonymous && isBecomingNamed) {
-      const { getGlobalSettingAsync } = await import('../../../utils/server_method_helpers.js')
+      const { getGlobalSettingAsync, getDefaultVerificationSettingsAsync } = await import('../../../utils/server_method_helpers.js')
       const enableVerification = await getGlobalSettingAsync('enableUserActionVerification')
 
       if (enableVerification) {
-        const verificationPeriod = await getGlobalSettingAsync('userActionVerificationPeriod') || 30
+        const verificationSettings = await getDefaultVerificationSettingsAsync()
         const deadline = new Date()
-        deadline.setDate(deadline.getDate() + verificationPeriod)
+        deadline.setDate(deadline.getDate() + verificationSettings.verificationPeriod)
 
         await Meteor.users.updateAsync({ _id: this.userId }, {
           $set: {
@@ -458,13 +458,14 @@ const getUserVerificationUrl = new ValidatedMethod({
   mixins: [authenticationMixin],
   async run() {
     const user = await Meteor.users.findOneAsync({ _id: this.userId })
-    const { getGlobalSettingAsync } = await import('../../../utils/server_method_helpers.js')
+    const { getGlobalSettingAsync, getDefaultVerificationSettingsAsync } = await import('../../../utils/server_method_helpers.js')
 
     if (!user.actionVerification?.required || user.actionVerification.completed) {
       throw new Meteor.Error('verification-not-required', 'Action verification not required or already completed')
     }
 
-    const serviceUrl = await getGlobalSettingAsync('userActionVerificationServiceUrl')
+    const verificationSettings = await getDefaultVerificationSettingsAsync()
+    const serviceUrl = verificationSettings.serviceUrl
     if (!serviceUrl) {
       throw new Meteor.Error('service-url-not-configured', 'Verification service URL not configured')
     }

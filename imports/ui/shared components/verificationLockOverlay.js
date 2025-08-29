@@ -53,7 +53,19 @@ Template.verificationLockOverlay.helpers({
   },
 
   verificationType() {
-    const type = getGlobalSetting('userActionVerificationType')
+    const instance = Template.instance()
+    
+    // Get verification type from reactive variable or call method if not cached
+    if (!instance.verificationType) {
+      instance.verificationType = new ReactiveVar('')
+      Meteor.call('webhookverification.getdefaulttype', (error, result) => {
+        if (!error) {
+          instance.verificationType.set(result || '')
+        }
+      })
+    }
+    
+    const type = instance.verificationType.get()
     if (!type) {
       return t('verification.continue_to_verification') // Default: "Continue to Verification"
     }
