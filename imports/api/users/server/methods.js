@@ -198,7 +198,6 @@ const updateProfile = new ValidatedMethod({
             'actionVerification.required': true,
             'actionVerification.deadline': deadline,
             'actionVerification.completed': false,
-            'actionVerification.secret': Random.secret(32),
             'actionVerification.webhookInterfaceId': verificationSettings.webhookInterfaceId,
           },
         })
@@ -451,7 +450,7 @@ const getUserVerificationStatus = new ValidatedMethod({
 /**
  * Get the verification URL for the current user
  * @throws {Meteor.Error} If user is not authenticated.
- * @returns {String} The verification URL with userId and secret
+ * @returns {String} The verification URL with userId parameter
  */
 const getUserVerificationUrl = new ValidatedMethod({
   name: 'getUserVerificationUrl',
@@ -502,7 +501,6 @@ const getUserVerificationUrl = new ValidatedMethod({
     const url = new URL(serviceUrl)
     const urlParam = webhookInterface.urlParam || 'client_reference_id'
     url.searchParams.set(urlParam, this.userId)
-    url.searchParams.set('secret', user.actionVerification.secret)
 
     return url.toString()
   },

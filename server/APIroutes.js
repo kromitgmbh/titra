@@ -687,7 +687,6 @@ WebApp.handlers.use('/user/action-verification/webhook/', async (req, res) => {
       const WebhookVerification = (await import('../imports/api/webhookverification/webhookverification.js')).default
       const { processWebhookVerification } = await import('../imports/api/webhookverification/server/methods.js')
       const { getGlobalSettingAsync } = await import('../imports/utils/server_method_helpers.js')
-      const { Random } = await import('meteor/random')
 
       // Check if user action verification is enabled
       const verificationEnabled = await getGlobalSettingAsync('enableUserActionVerification')
@@ -762,12 +761,11 @@ WebApp.handlers.use('/user/action-verification/webhook/', async (req, res) => {
         const newDeadline = new Date()
         newDeadline.setDate(newDeadline.getDate() + verificationPeriod)
 
-        // Revoke verification and generate new secret
+        // Revoke verification
         await Meteor.users.updateAsync({ _id: result.userId }, {
           $set: {
             'actionVerification.completed': false,
             'actionVerification.deadline': newDeadline,
-            'actionVerification.secret': Random.secret(32),
           },
           $unset: {
             'actionVerification.completedAt': '',
