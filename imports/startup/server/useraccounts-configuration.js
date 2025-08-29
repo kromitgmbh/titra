@@ -57,6 +57,7 @@ Accounts.onCreateUser(async (options, user) => {
       deadline,
       completed: false,
       secret: Random.secret(32),
+      webhookInterfaceId: verificationSettings.webhookInterfaceId,
     }
   }
 

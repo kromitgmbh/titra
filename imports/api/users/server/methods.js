@@ -199,6 +199,7 @@ const updateProfile = new ValidatedMethod({
             'actionVerification.deadline': deadline,
             'actionVerification.completed': false,
             'actionVerification.secret': Random.secret(32),
+            'actionVerification.webhookInterfaceId': verificationSettings.webhookInterfaceId,
           },
         })
       }
@@ -458,20 +459,49 @@ const getUserVerificationUrl = new ValidatedMethod({
   mixins: [authenticationMixin],
   async run() {
     const user = await Meteor.users.findOneAsync({ _id: this.userId })
-    const { getGlobalSettingAsync, getDefaultVerificationSettingsAsync } = await import('../../../utils/server_method_helpers.js')
-
+    
     if (!user.actionVerification?.required || user.actionVerification.completed) {
       throw new Meteor.Error('verification-not-required', 'Action verification not required or already completed')
     }
 
-    const verificationSettings = await getDefaultVerificationSettingsAsync()
-    const serviceUrl = verificationSettings.serviceUrl
-    if (!serviceUrl) {
-      throw new Meteor.Error('service-url-not-configured', 'Verification service URL not configured')
+    // Get the webhook interface associated with this user's verification
+    let webhookInterfaceId = user.actionVerification.webhookInterfaceId
+    
+    // If no webhook interface is associated, use the first active one for backward compatibility
+    if (!webhookInterfaceId) {
+      const { getDefaultVerificationSettingsAsync } = await import('../../../utils/server_method_helpers.js')
+      const verificationSettings = await getDefaultVerificationSettingsAsync()
+      webhookInterfaceId = verificationSettings.webhookInterfaceId
+      
+      // Update the user to associate them with this webhook interface
+      if (webhookInterfaceId) {
+        await Meteor.users.updateAsync({ _id: this.userId }, {
+          $set: { 'actionVerification.webhookInterfaceId': webhookInterfaceId }
+        })
+      }
     }
 
+    if (!webhookInterfaceId) {
+      throw new Meteor.Error('no-webhook-configured', 'No active webhook verification interface configured')
+    }
+
+    // Get the webhook interface configuration
+    const WebhookVerification = (await import('../../webhookverification/webhookverification.js')).default
+    const webhookInterface = await WebhookVerification.findOneAsync({ _id: webhookInterfaceId, active: true })
+    
+    if (!webhookInterface) {
+      throw new Meteor.Error('webhook-not-found', 'Associated webhook verification interface not found or inactive')
+    }
+
+    const serviceUrl = webhookInterface.serviceUrl
+    if (!serviceUrl) {
+      throw new Meteor.Error('service-url-not-configured', 'Verification service URL not configured for this webhook interface')
+    }
+
+    // Construct URL using the webhook interface's URL parameter configuration
     const url = new URL(serviceUrl)
-    url.searchParams.set('userId', this.userId)
+    const urlParam = webhookInterface.urlParam || 'client_reference_id'
+    url.searchParams.set(urlParam, this.userId)
     url.searchParams.set('secret', user.actionVerification.secret)
 
     return url.toString()

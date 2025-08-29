@@ -222,17 +222,46 @@ const processWebhookVerification = new ValidatedMethod({
 })
 
 /**
- * Get default verification settings for frontend display.
- * Returns the verification type from the first active webhook.
+ * Get verification type for the current user.
+ * Returns the verification type from the user's associated webhook interface.
  *
  * @method webhookverification.getdefaulttype
- * @returns {string} The default verification type.
+ * @returns {string} The verification type for the current user.
  */
 const getDefaultVerificationType = new ValidatedMethod({
   name: 'webhookverification.getdefaulttype',
   validate: null,
   mixins: [authenticationMixin],
   async run() {
+    const user = await Meteor.users.findOneAsync({ _id: this.userId })
+    
+    // If user has verification requirement, get type from their associated webhook interface
+    if (user?.actionVerification?.required) {
+      let webhookInterfaceId = user.actionVerification.webhookInterfaceId
+      
+      // If no webhook interface is associated, use the first active one for backward compatibility
+      if (!webhookInterfaceId) {
+        const { getDefaultVerificationSettingsAsync } = await import('../../../utils/server_method_helpers.js')
+        const verificationSettings = await getDefaultVerificationSettingsAsync()
+        webhookInterfaceId = verificationSettings.webhookInterfaceId
+        
+        // Update the user to associate them with this webhook interface
+        if (webhookInterfaceId) {
+          await Meteor.users.updateAsync({ _id: this.userId }, {
+            $set: { 'actionVerification.webhookInterfaceId': webhookInterfaceId }
+          })
+        }
+      }
+
+      if (webhookInterfaceId) {
+        const webhookInterface = await WebhookVerification.findOneAsync({ _id: webhookInterfaceId, active: true })
+        if (webhookInterface) {
+          return webhookInterface.verificationType || ''
+        }
+      }
+    }
+    
+    // Fallback: get from first active webhook interface
     const firstWebhook = await WebhookVerification.findOneAsync({ active: true })
     return firstWebhook?.verificationType || ''
   },

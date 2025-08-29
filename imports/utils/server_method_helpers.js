@@ -16,11 +16,22 @@ async function getDefaultVerificationSettingsAsync() {
   // Get default verification settings from the first active webhook
   const firstWebhook = await WebhookVerification.findOneAsync({ active: true })
   
+  if (!firstWebhook) {
+    return {
+      verificationPeriod: 30,
+      serviceUrl: '',
+      urlParam: 'client_reference_id',
+      verificationType: '',
+      webhookInterfaceId: null,
+    }
+  }
+  
   return {
-    verificationPeriod: firstWebhook?.verificationPeriod || 30,
-    serviceUrl: firstWebhook?.serviceUrl || '',
-    urlParam: firstWebhook?.urlParam || 'client_reference_id',
-    verificationType: firstWebhook?.verificationType || '',
+    verificationPeriod: firstWebhook.verificationPeriod || 30,
+    serviceUrl: firstWebhook.serviceUrl || '',
+    urlParam: firstWebhook.urlParam || 'client_reference_id',
+    verificationType: firstWebhook.verificationType || '',
+    webhookInterfaceId: firstWebhook._id,
   }
 }
 async function getUserSettingAsync(field) {
