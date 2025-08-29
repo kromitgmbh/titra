@@ -21,6 +21,22 @@
                         <span class="form-text">{{t "administration.allowed_domains_hint"}}</span>
                     </div>
                     <div class="mb-3 form-floating">
+                        <input class="form-control" type="number" id="verificationPeriod" name="verificationPeriod" value="30"/>
+                        <label for="verificationPeriod" class="form-label">{{t "settings.user_action_verification_period"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="serviceUrl" name="serviceUrl"/>
+                        <label for="serviceUrl" class="form-label">{{t "settings.user_action_verification_service_url"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="urlParam" name="urlParam" value="client_reference_id"/>
+                        <label for="urlParam" class="form-label">{{t "settings.user_action_verification_url_param"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input class="form-control" type="text" id="verificationType" name="verificationType"/>
+                        <label for="verificationType" class="form-label">{{t "settings.user_action_verification_type"}}</label>
+                    </div>
+                    <div class="mb-3 form-floating">
                         <textarea class="form-control mb-3" name="processData" id="processData" style="min-height:15rem;"></textarea>
                         <label for="processData" class="form-label">{{t "administration.webhook_process_data"}}</label>
                         <span class="form-text">{{t "administration.webhook_processdata_hint"}}</span>
@@ -42,6 +58,7 @@
                     <th>{{t "globals.name"}}</th>
                     <th>{{t "globals.description"}}</th>
                     <th>{{t "administration.allowed_domains"}}</th>
+                    <th>{{t "settings.user_action_verification_type"}}</th>
                     <th>{{t "tracktime.actions"}}</th>
                 </tr>
             </thead>
@@ -50,6 +67,7 @@
                     <td>{{webhookInterface.name}}</td>
                     <td>{{webhookInterface.description}}</td>
                     <td>{{webhookInterface.allowedDomains}}</td>
+                    <td>{{webhookInterface.verificationType}}</td>
                     <td>
                         <button class="btn js-edit-webhook-verification" data-interface-id="{{webhookInterface._id}}"><i class="fa fa-pencil"></i></button>
                         <button class="btn js-remove-webhook-verification" data-interface-id="{{webhookInterface._id}}"><i class="fa fa-trash"></i></button>

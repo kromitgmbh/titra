@@ -47,9 +47,10 @@ Accounts.onCreateUser(async (options, user) => {
   // Handle user action verification for non-anonymous users
   const enableVerification = await getGlobalSettingAsync('enableUserActionVerification')
   if (enableVerification && !options.anonymous && localUser.emails && localUser.emails.length > 0) {
-    const verificationPeriod = await getGlobalSettingAsync('userActionVerificationPeriod') || 30
+    const { getDefaultVerificationSettingsAsync } = await import('../../utils/server_method_helpers.js')
+    const verificationSettings = await getDefaultVerificationSettingsAsync()
     const deadline = new Date()
-    deadline.setDate(deadline.getDate() + verificationPeriod)
+    deadline.setDate(deadline.getDate() + verificationSettings.verificationPeriod)
 
     localUser.actionVerification = {
       required: true,

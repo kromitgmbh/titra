@@ -21,22 +21,30 @@ import WebhookVerification from '../webhookverification.js'
 const webhookverificationinsert = new ValidatedMethod({
   name: 'webhookverification.insert',
   validate({
-    name, description, allowedDomains, processData, active,
+    name, description, allowedDomains, verificationPeriod, serviceUrl, urlParam, verificationType, processData, active,
   }) {
     check(name, String)
     check(description, String)
     check(allowedDomains, String)
+    check(verificationPeriod, Match.Maybe(Number))
+    check(serviceUrl, Match.Maybe(String))
+    check(urlParam, Match.Maybe(String))
+    check(verificationType, Match.Maybe(String))
     check(processData, Match.Maybe(String))
     check(active, Boolean)
   },
   mixins: [adminAuthenticationMixin, transactionLogMixin],
   async run({
-    name, description, allowedDomains, processData, active,
+    name, description, allowedDomains, verificationPeriod, serviceUrl, urlParam, verificationType, processData, active,
   }) {
     await WebhookVerification.insertAsync({
       name,
       description,
       allowedDomains,
+      verificationPeriod: verificationPeriod || 30,
+      serviceUrl: serviceUrl || '',
+      urlParam: urlParam || 'client_reference_id',
+      verificationType: verificationType || '',
       processData,
       active,
     })
@@ -64,6 +72,10 @@ const webhookverificationupdate = new ValidatedMethod({
     name,
     description,
     allowedDomains,
+    verificationPeriod,
+    serviceUrl,
+    urlParam,
+    verificationType,
     processData,
     active,
   }) {
@@ -71,6 +83,10 @@ const webhookverificationupdate = new ValidatedMethod({
     check(name, String)
     check(description, String)
     check(allowedDomains, String)
+    check(verificationPeriod, Match.Maybe(Number))
+    check(serviceUrl, Match.Maybe(String))
+    check(urlParam, Match.Maybe(String))
+    check(verificationType, Match.Maybe(String))
     check(processData, String)
     check(active, Boolean)
   },
@@ -80,6 +96,10 @@ const webhookverificationupdate = new ValidatedMethod({
     name,
     description,
     allowedDomains,
+    verificationPeriod,
+    serviceUrl,
+    urlParam,
+    verificationType,
     processData,
     active,
   }) {
@@ -88,6 +108,10 @@ const webhookverificationupdate = new ValidatedMethod({
         name,
         description,
         allowedDomains,
+        verificationPeriod: verificationPeriod || 30,
+        serviceUrl: serviceUrl || '',
+        urlParam: urlParam || 'client_reference_id',
+        verificationType: verificationType || '',
         processData,
         active,
       },
@@ -170,6 +194,12 @@ const processWebhookVerification = new ValidatedMethod({
       sandbox: {
         webhookData,
         senderDomain,
+        webhookConfig: {
+          verificationPeriod: webhookInterface.verificationPeriod || 30,
+          serviceUrl: webhookInterface.serviceUrl || '',
+          urlParam: webhookInterface.urlParam || 'client_reference_id',
+          verificationType: webhookInterface.verificationType || '',
+        },
         getGlobalSettingAsync,
         console,
       },
@@ -191,10 +221,28 @@ const processWebhookVerification = new ValidatedMethod({
   },
 })
 
+/**
+ * Get default verification settings for frontend display.
+ * Returns the verification type from the first active webhook.
+ *
+ * @method webhookverification.getdefaulttype
+ * @returns {string} The default verification type.
+ */
+const getDefaultVerificationType = new ValidatedMethod({
+  name: 'webhookverification.getdefaulttype',
+  validate: null,
+  mixins: [authenticationMixin],
+  async run() {
+    const firstWebhook = await WebhookVerification.findOneAsync({ active: true })
+    return firstWebhook?.verificationType || ''
+  },
+})
+
 export {
   webhookverificationinsert,
   webhookverificationupdate,
   webhookverificationremove,
   getWebhookVerification,
   processWebhookVerification,
+  getDefaultVerificationType,
 }

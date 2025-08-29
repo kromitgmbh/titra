@@ -757,8 +757,8 @@ WebApp.handlers.use('/user/action-verification/webhook/', async (req, res) => {
         sendResponse(res, 200, 'User action verification completed successfully.')
         
       } else if (result.action === 'revoke') {
-        // Get verification period and calculate new deadline
-        const verificationPeriod = await getGlobalSettingAsync('userActionVerificationPeriod') || 30
+        // Get verification period from the webhook interface and calculate new deadline
+        const verificationPeriod = activeInterface.verificationPeriod || 30
         const newDeadline = new Date()
         newDeadline.setDate(newDeadline.getDate() + verificationPeriod)
 

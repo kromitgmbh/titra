@@ -18,6 +18,10 @@ Template.webhookverificationcomponent.events({
     const name = templateInstance.$('#name').val()
     const description = templateInstance.$('#description').val()
     const allowedDomains = templateInstance.$('#allowedDomains').val()
+    const verificationPeriod = parseInt(templateInstance.$('#verificationPeriod').val()) || 30
+    const serviceUrl = templateInstance.$('#serviceUrl').val()
+    const urlParam = templateInstance.$('#urlParam').val() || 'client_reference_id'
+    const verificationType = templateInstance.$('#verificationType').val()
     const processData = templateInstance.$('#processData').val()
     const active = templateInstance.$('#isActive').is(':checked')
     
@@ -26,15 +30,16 @@ Template.webhookverificationcomponent.events({
       return
     }
 
-    // Get the configurable URL parameter name
-    const urlParam = getGlobalSetting('userActionVerificationUrlParam') || 'client_reference_id'
-
     Meteor.call('webhookverification.insert', {
       name,
       description,
       allowedDomains,
+      verificationPeriod,
+      serviceUrl,
+      urlParam,
+      verificationType,
       processData: processData || `// Process webhook data
-// Available variables: webhookData, senderDomain
+// Available variables: webhookData, senderDomain, webhookConfig
 // Return an object with: { action: 'complete' | 'revoke', userId: 'string' }
 
 // Example for Stripe webhooks:
@@ -69,6 +74,10 @@ return null`,
     const name = templateInstance.$('#name').val()
     const description = templateInstance.$('#description').val()
     const allowedDomains = templateInstance.$('#allowedDomains').val()
+    const verificationPeriod = parseInt(templateInstance.$('#verificationPeriod').val()) || 30
+    const serviceUrl = templateInstance.$('#serviceUrl').val()
+    const urlParam = templateInstance.$('#urlParam').val() || 'client_reference_id'
+    const verificationType = templateInstance.$('#verificationType').val()
     const processData = templateInstance.$('#processData').val()
     const active = templateInstance.$('#isActive').is(':checked')
     
@@ -82,6 +91,10 @@ return null`,
       name,
       description,
       allowedDomains,
+      verificationPeriod,
+      serviceUrl,
+      urlParam,
+      verificationType,
       processData,
       active,
     }, (error) => {
@@ -106,6 +119,10 @@ return null`,
       templateInstance.$('#name').val(webhookInterface.name)
       templateInstance.$('#description').val(webhookInterface.description)
       templateInstance.$('#allowedDomains').val(webhookInterface.allowedDomains)
+      templateInstance.$('#verificationPeriod').val(webhookInterface.verificationPeriod || 30)
+      templateInstance.$('#serviceUrl').val(webhookInterface.serviceUrl || '')
+      templateInstance.$('#urlParam').val(webhookInterface.urlParam || 'client_reference_id')
+      templateInstance.$('#verificationType').val(webhookInterface.verificationType || '')
       templateInstance.$('#processData').val(webhookInterface.processData)
       templateInstance.$('#isActive').prop('checked', webhookInterface.active)
       templateInstance.$('.js-add-webhook-verification').addClass('d-none')
