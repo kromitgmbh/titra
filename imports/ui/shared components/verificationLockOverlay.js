@@ -1,8 +1,8 @@
 import { ReactiveVar } from 'meteor/reactive-var'
 import './verificationLockOverlay.html'
 import './verificationLockOverlay.css'
-import { getGlobalSetting } from '../../../utils/frontend_helpers.js'
-import { t } from '../../../utils/i18n.js'
+import { getGlobalSetting } from '../../utils/frontend_helpers.js'
+import { t } from '../../utils/i18n.js'
 
 Template.verificationLockOverlay.onCreated(function verificationLockOverlayCreated() {
   this.verificationStatus = new ReactiveVar(null)

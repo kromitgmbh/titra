@@ -1,8 +1,8 @@
 import { ReactiveVar } from 'meteor/reactive-var'
 import './verificationNotification.html'
 import './verificationNotification.css'
-import { getGlobalSetting } from '../../../utils/frontend_helpers.js'
-import { t } from '../../../utils/i18n.js'
+import { getGlobalSetting } from '../../utils/frontend_helpers.js'
+import { t } from '../../utils/i18n.js'
 
 Template.verificationNotification.onCreated(function verificationNotificationCreated() {
   this.verificationStatus = new ReactiveVar(null)
