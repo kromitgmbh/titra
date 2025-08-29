@@ -109,9 +109,14 @@ export class NodeSandbox {
       try {
         let wrappedCode = code
 
-        // For wrapper 'none', just execute the code directly
+        // Wrap the code in a function to allow return statements
+        // This makes it compatible with vm2's behavior where return statements work
         if (this.options.wrapper === 'none') {
-          wrappedCode = code
+          // Even with wrapper 'none', we need to wrap in a function to allow returns
+          wrappedCode = `(function() { ${code} })()`
+        } else {
+          // For other wrapper types, also wrap in a function
+          wrappedCode = `(function() { ${code} })()`
         }
 
         // Execute the code in the sandbox
