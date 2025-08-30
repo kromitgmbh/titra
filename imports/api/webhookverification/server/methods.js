@@ -1,5 +1,5 @@
 import { check, Match } from 'meteor/check'
-import { NodeVM } from 'vm2'
+import { NodeVM } from '../../../utils/vm_sandbox.js'
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import {
   adminAuthenticationMixin, authenticationMixin, transactionLogMixin, getGlobalSettingAsync,
