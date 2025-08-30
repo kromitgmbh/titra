@@ -225,7 +225,7 @@ const insertTimeCardMethod = new ValidatedMethod({
     const check = await checkTimeEntryRule({
       userId, projectId, task, state: 'new', date, hours,
     })
-    await insertTimeCard(projectId, task, date, hours, userId, taskRate, customfields)
+    insertTimeCard(projectId, task, date, hours, userId, taskRate, customfields)
   },
 })
 /**
