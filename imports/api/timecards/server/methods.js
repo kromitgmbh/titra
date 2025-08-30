@@ -1,8 +1,8 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import dayjs from 'dayjs'
-import { NodeVM } from 'vm2'
 import { fetch } from 'meteor/fetch'
 import { check, Match } from 'meteor/check'
+import { NodeVM } from '../../../utils/vm_sandbox.js'
 import Timecards from '../timecards.js'
 import Tasks from '../../tasks/tasks.js'
 import Projects from '../../projects/projects.js'
@@ -46,6 +46,7 @@ async function checkTimeEntryRule({
   const vm = new NodeVM({
     wrapper: 'none',
     timeout: 1000,
+    console: 'inherit', // Enable console logging for testing
     sandbox: {
       user: meteorUser.profile,
       project: await Projects.findOneAsync({ _id: projectId }),
@@ -60,7 +61,7 @@ async function checkTimeEntryRule({
     },
   })
   try {
-    if (!vm.run(await getGlobalSettingAsync('timeEntryRule'))) {
+    if (!await vm.run(await getGlobalSettingAsync('timeEntryRule'))) {
       throw new Meteor.Error('notifications.time_entry_rule_failed')
     }
   } catch (error) {
@@ -224,7 +225,7 @@ const insertTimeCardMethod = new ValidatedMethod({
     const check = await checkTimeEntryRule({
       userId, projectId, task, state: 'new', date, hours,
     })
-    await insertTimeCard(projectId, task, date, hours, userId, taskRate, customfields)
+    insertTimeCard(projectId, task, date, hours, userId, taskRate, customfields)
   },
 })
 /**

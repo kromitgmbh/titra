@@ -266,7 +266,7 @@ Template.tracktime.events({
         if (error) {
           console.error(error)
           if (typeof error.error === 'string' && error.error.indexOf('notifications') >= 0) {
-            showToast(t(error.error))
+            showToast(t(error.error.replace('[', '').replace(']', '')))
           }
         } else {
           templateInstance.$('.js-tasksearch-input').val('')
