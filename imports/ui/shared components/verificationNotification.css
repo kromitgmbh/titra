@@ -1,0 +1,30 @@
+.verification-notification {
+  margin-bottom: 1rem;
+  border-left: 4px solid #f39c12;
+}
+
+.verification-notification .fa-exclamation-triangle {
+  color: #f39c12;
+  font-size: 1.1rem;
+}
+
+.verification-notification .btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .verification-notification .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+  
+  .verification-notification .ms-3 {
+    margin-left: 0 !important;
+    margin-top: 1rem;
+    width: 100%;
+  }
+  
+  .verification-notification .btn {
+    margin-bottom: 0.5rem;
+  }
+}

@@ -10,6 +10,7 @@ import './components/oidccomponent.js'
 import './components/transactionscomponent.js'
 import './components/inboundinterfacescomponent.js'
 import './components/outboundinterfacescomponent.js'
+import './components/webhookverificationcomponent.js'
 
 Template.administration.onCreated(function administrationCreated() {
   this.activeTab = new ReactiveVar()

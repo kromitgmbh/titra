@@ -630,3 +630,158 @@ WebApp.handlers.use('/project/task/stats/', async (req, res) => {
 
   sendResponse(res, 200, 'Returning task statistics for project', payload)
 })
+
+/**
+ * @api {post} /user/action-verification/webhook User Action Verification Webhook
+ * @apiName userActionVerificationWebhook
+ * @apiDescription Webhook endpoint for external services to manage user verification status
+ * @apiGroup UserVerification
+ *
+ * @apiBody {Object} * Any webhook payload - processing depends on configured webhook verification interface
+ * @apiParamExample {json} Stripe-Example:
+ *                  {
+ *                    "type": "checkout.session.completed",
+ *                    "data": {
+ *                      "object": {
+ *                        "client_reference_id": "abc123def456"
+ *                      }
+ *                    }
+ *                  }
+ * @apiSuccess {json} response Confirmation of webhook processing.
+ * @apiSuccessExample {json} Success response:
+ * {
+ *  message: "Webhook processed successfully."
+ *  }
+ * @apiError (400) InvalidJSON Invalid JSON received.
+ * @apiError (403) DomainNotAllowed Sender domain not whitelisted.
+ * @apiError (404) NoActiveInterface No active webhook verification interface found.
+ * @apiError (500) ProcessingError Error processing webhook data.
+ */
+WebApp.handlers.use('/user/action-verification/webhook/', async (req, res) => {
+  let json
+  try {
+    json = await getJson(req)
+  } catch (e) {
+    sendResponse(res, 400, `Invalid JSON received. ${e}`)
+    return
+  }
+
+  if (json) {
+    // Get sender domain/IP from request headers for validation
+    let senderDomain = req.headers['x-forwarded-for'] || 
+                      req.headers['x-real-ip'] || 
+                      req.connection.remoteAddress ||
+                      req.socket.remoteAddress ||
+                      (req.connection.socket ? req.connection.socket.remoteAddress : null) ||
+                      'unknown'
+    
+    // If we have a reverse DNS lookup result or explicit domain header, use that
+    if (req.headers['x-forwarded-host']) {
+      senderDomain = req.headers['x-forwarded-host']
+    } else if (req.headers.host) {
+      senderDomain = req.headers.host
+    }
+    
+    try {
+      // Import required modules
+      const WebhookVerification = (await import('../imports/api/webhookverification/webhookverification.js')).default
+      const { processWebhookVerification } = await import('../imports/api/webhookverification/server/methods.js')
+      const { getGlobalSettingAsync } = await import('../imports/utils/server_method_helpers.js')
+
+      // Check if user action verification is enabled
+      const verificationEnabled = await getGlobalSettingAsync('enableUserActionVerification')
+      if (!verificationEnabled) {
+        sendResponse(res, 404, 'User action verification is not enabled.')
+        return
+      }
+
+      // Find active webhook verification interface
+      const activeInterface = await WebhookVerification.findOneAsync({ active: true })
+      if (!activeInterface) {
+        sendResponse(res, 404, 'No active webhook verification interface found.')
+        return
+      }
+
+      // Check if sender domain/IP is allowed (support both domains and IP addresses)
+      const allowedDomains = activeInterface.allowedDomains.split(',').map(d => d.trim())
+      const isAllowed = allowedDomains.some(allowed => {
+        // Exact match for domains or IPs
+        if (senderDomain === allowed) return true
+        // Support localhost variations for development
+        if (allowed === 'localhost' && (senderDomain.includes('localhost') || senderDomain.includes('127.0.0.1'))) return true
+        // Support wildcard matching for subdomains (*.example.com matches both subdomain.example.com and example.com)
+        if (allowed.startsWith('*.')) {
+          const domain = allowed.substring(2) // Remove *.
+          return senderDomain === domain || senderDomain.endsWith('.' + domain)
+        }
+        return false
+      })
+      
+      if (!isAllowed) {
+        sendResponse(res, 403, `Sender ${senderDomain} not whitelisted for webhook verification.`)
+        return
+      }
+
+      // Process webhook using custom code
+      const result = await Meteor.callAsync('webhookverification.process', {
+        _id: activeInterface._id,
+        webhookData: json,
+        senderDomain,
+      })
+
+      if (!result || !result.action || !result.userId) {
+        sendResponse(res, 200, 'Webhook received but no action required.')
+        return
+      }
+
+      // Find user
+      const user = await Meteor.users.findOneAsync({
+        _id: result.userId,
+        'actionVerification.required': true,
+      })
+
+      if (!user) {
+        sendResponse(res, 404, 'User not found or verification not required.')
+        return
+      }
+
+      if (result.action === 'complete') {
+        // Mark verification as completed
+        await Meteor.users.updateAsync({ _id: result.userId }, {
+          $set: {
+            'actionVerification.completed': true,
+            'actionVerification.completedAt': new Date(),
+          },
+        })
+        sendResponse(res, 200, 'User action verification completed successfully.')
+        
+      } else if (result.action === 'revoke') {
+        // Get verification period from the webhook interface and calculate new deadline
+        const verificationPeriod = activeInterface.verificationPeriod || 30
+        const newDeadline = new Date()
+        newDeadline.setDate(newDeadline.getDate() + verificationPeriod)
+
+        // Revoke verification
+        await Meteor.users.updateAsync({ _id: result.userId }, {
+          $set: {
+            'actionVerification.completed': false,
+            'actionVerification.deadline': newDeadline,
+          },
+          $unset: {
+            'actionVerification.completedAt': '',
+          },
+        })
+        sendResponse(res, 200, 'User action verification revoked successfully.')
+        
+      } else {
+        sendResponse(res, 400, 'Invalid action specified. Must be "complete" or "revoke".')
+      }
+      
+    } catch (error) {
+      console.error('Webhook processing error:', error)
+      sendResponse(res, 500, `Error processing webhook: ${error.message}`)
+    }
+  } else {
+    sendResponse(res, 400, 'Missing webhook payload.')
+  }
+})

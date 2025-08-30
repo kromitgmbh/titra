@@ -181,4 +181,8 @@ defaultSettings.push({
 defaultSettings.push({
   name: 'enableTaskPlanning', description: 'settings.enable_task_planning', type: 'checkbox', value: false, category: 'settings.categories.time_tracking',
 })
+defaultSettings.push({
+  name: 'enableUserActionVerification', description: 'settings.enable_user_action_verification', type: 'checkbox', value: false, category: 'settings.categories.global',
+})
+
 export { defaultSettings, Globalsettings }

@@ -5,10 +5,34 @@ import Transactions from '../api/transactions/transactions.js'
 import { periodToDates } from './periodHelpers.js'
 import { Globalsettings } from '../api/globalsettings/globalsettings.js'
 import { getGlobalSetting } from './frontend_helpers.js'
+import WebhookVerification from '../api/webhookverification/webhookverification.js'
 
 async function getGlobalSettingAsync(name) {
   const globalSetting = await Globalsettings.findOneAsync({ name })
   return globalSetting ? globalSetting.value : false
+}
+
+async function getDefaultVerificationSettingsAsync() {
+  // Get default verification settings from the first active webhook
+  const firstWebhook = await WebhookVerification.findOneAsync({ active: true })
+  
+  if (!firstWebhook) {
+    return {
+      verificationPeriod: 30,
+      serviceUrl: '',
+      urlParam: 'client_reference_id',
+      verificationType: '',
+      webhookInterfaceId: null,
+    }
+  }
+  
+  return {
+    verificationPeriod: firstWebhook.verificationPeriod || 30,
+    serviceUrl: firstWebhook.serviceUrl || '',
+    urlParam: firstWebhook.urlParam || 'client_reference_id',
+    verificationType: firstWebhook.verificationType || '',
+    webhookInterfaceId: firstWebhook._id,
+  }
 }
 async function getUserSettingAsync(field) {
   const meteorUser = await Meteor.userAsync()
@@ -717,5 +741,6 @@ export {
   buildDetailedTimeEntriesForPeriodSelectorAsync,
   getGlobalSettingAsync,
   getUserSettingAsync,
+  getDefaultVerificationSettingsAsync,
   calculateSimilarity,
 }

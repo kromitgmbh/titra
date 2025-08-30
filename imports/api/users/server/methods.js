@@ -1,6 +1,7 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { check, Match } from 'meteor/check'
 import { Accounts } from 'meteor/accounts-base'
+import { Random } from 'meteor/random'
 import { authenticationMixin, adminAuthenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers.js'
 
 /**
@@ -109,23 +110,6 @@ const updateSettings = new ValidatedMethod({
   },
 })
 
-const updateTimeUnit = new ValidatedMethod({
-  name: 'updateTimeUnit',
-  validate(args) {
-    check(args.timeunit, String)
-  },
-  mixins: [authenticationMixin, transactionLogMixin],
-  async run({
-    timeunit
-  }) {
-    await Meteor.users.updateAsync({ _id: this.userId }, {
-      $set: {
-        'profile.timeunit': timeunit,
-      },
-    })
-  },
-})
-
 /**
  * Resets a user's settings.
  * @throws {Meteor.Error} If user is not authenticated.
@@ -182,6 +166,12 @@ const updateProfile = new ValidatedMethod({
   async run({
     name, avatar, avatarColor,
   }) {
+    const user = await Meteor.users.findOneAsync({ _id: this.userId })
+
+    // Check if this is an anonymous user being converted to a named user
+    const wasAnonymous = !user.emails || user.emails.length === 0
+    const isBecomingNamed = name && name.length > 0
+
     if (!avatar) {
       await Meteor.users.updateAsync({ _id: this.userId }, { $unset: { 'profile.avatar': '' } })
     }
@@ -192,6 +182,27 @@ const updateProfile = new ValidatedMethod({
         'profile.avatarColor': avatarColor,
       },
     })
+
+    // If this was an anonymous user being converted and verification is enabled
+    if (wasAnonymous && isBecomingNamed) {
+      const { getGlobalSettingAsync, getDefaultVerificationSettingsAsync } = await import('../../../utils/server_method_helpers.js')
+      const enableVerification = await getGlobalSettingAsync('enableUserActionVerification')
+
+      if (enableVerification) {
+        const verificationSettings = await getDefaultVerificationSettingsAsync()
+        const deadline = new Date()
+        deadline.setDate(deadline.getDate() + verificationSettings.verificationPeriod)
+
+        await Meteor.users.updateAsync({ _id: this.userId }, {
+          $set: {
+            'actionVerification.required': true,
+            'actionVerification.deadline': deadline,
+            'actionVerification.completed': false,
+            'actionVerification.webhookInterfaceId': verificationSettings.webhookInterfaceId,
+          },
+        })
+      }
+    }
   },
 })
 /**
@@ -406,6 +417,95 @@ const adminUserStats = new ValidatedMethod({
   },
 })
 
+/**
+ * Get current user's action verification status
+ * @throws {Meteor.Error} If user is not authenticated.
+ * @returns {Object} The verification status
+ */
+const getUserVerificationStatus = new ValidatedMethod({
+  name: 'getUserVerificationStatus',
+  validate: null,
+  mixins: [authenticationMixin],
+  async run() {
+    const user = await Meteor.users.findOneAsync({ _id: this.userId })
+
+    if (!user.actionVerification?.required) {
+      return { required: false }
+    }
+
+    const now = new Date()
+    const deadline = new Date(user.actionVerification.deadline)
+    const daysRemaining = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24))
+
+    return {
+      required: true,
+      completed: user.actionVerification.completed,
+      deadline: user.actionVerification.deadline,
+      daysRemaining: Math.max(0, daysRemaining),
+      overdue: now > deadline && !user.actionVerification.completed,
+    }
+  },
+})
+
+/**
+ * Get the verification URL for the current user
+ * @throws {Meteor.Error} If user is not authenticated.
+ * @returns {String} The verification URL with userId parameter
+ */
+const getUserVerificationUrl = new ValidatedMethod({
+  name: 'getUserVerificationUrl',
+  validate: null,
+  mixins: [authenticationMixin],
+  async run() {
+    const user = await Meteor.users.findOneAsync({ _id: this.userId })
+    
+    if (!user.actionVerification?.required || user.actionVerification.completed) {
+      throw new Meteor.Error('verification-not-required', 'Action verification not required or already completed')
+    }
+
+    // Get the webhook interface associated with this user's verification
+    let webhookInterfaceId = user.actionVerification.webhookInterfaceId
+    
+    // If no webhook interface is associated, use the first active one for backward compatibility
+    if (!webhookInterfaceId) {
+      const { getDefaultVerificationSettingsAsync } = await import('../../../utils/server_method_helpers.js')
+      const verificationSettings = await getDefaultVerificationSettingsAsync()
+      webhookInterfaceId = verificationSettings.webhookInterfaceId
+      
+      // Update the user to associate them with this webhook interface
+      if (webhookInterfaceId) {
+        await Meteor.users.updateAsync({ _id: this.userId }, {
+          $set: { 'actionVerification.webhookInterfaceId': webhookInterfaceId }
+        })
+      }
+    }
+
+    if (!webhookInterfaceId) {
+      throw new Meteor.Error('no-webhook-configured', 'No active webhook verification interface configured')
+    }
+
+    // Get the webhook interface configuration
+    const WebhookVerification = (await import('../../webhookverification/webhookverification.js')).default
+    const webhookInterface = await WebhookVerification.findOneAsync({ _id: webhookInterfaceId, active: true })
+    
+    if (!webhookInterface) {
+      throw new Meteor.Error('webhook-not-found', 'Associated webhook verification interface not found or inactive')
+    }
+
+    const serviceUrl = webhookInterface.serviceUrl
+    if (!serviceUrl) {
+      throw new Meteor.Error('service-url-not-configured', 'Verification service URL not configured for this webhook interface')
+    }
+
+    // Construct URL using the webhook interface's URL parameter configuration
+    const url = new URL(serviceUrl)
+    const urlParam = webhookInterface.urlParam || 'client_reference_id'
+    url.searchParams.set(urlParam, this.userId)
+
+    return url.toString()
+  },
+})
+
 export {
   claimAdmin,
   adminCreateUser,
@@ -418,4 +518,6 @@ export {
   updateSettings,
   resetUserSettings,
   adminUserStats,
+  getUserVerificationStatus,
+  getUserVerificationUrl,
 }
