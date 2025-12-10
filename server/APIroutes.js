@@ -637,7 +637,7 @@ WebApp.handlers.use('/project/task/stats/', async (req, res) => {
  * @apiDescription Webhook endpoint for external services to manage user verification status
  * @apiGroup UserVerification
  *
- * @apiBody {Object} * Any webhook payload - processing depends on configured webhook verification interface
+ * @apiBody {Object} Any webhook payload - processing depends on configured webhook verification interface
  * @apiParamExample {json} Stripe-Example:
  *                  {
  *                    "type": "checkout.session.completed",
