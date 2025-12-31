@@ -1,5 +1,96 @@
 import { createContext, runInContext } from 'vm'
 import { setTimeout as nodeSetTimeout } from 'timers'
+import { Meteor } from 'meteor/meteor'
+
+/**
+ * Validates code to prevent malicious code execution
+ * @param {string} code - The code to validate
+ * @throws {Meteor.Error} If the code contains potentially malicious patterns
+ */
+export function validateSandboxCode(code) {
+  if (typeof code !== 'string') {
+    throw new Meteor.Error('invalid-code', 'Code must be a string')
+  }
+  // Check code length to prevent excessively large payloads
+  if (code.length > 50000) {
+    throw new Meteor.Error('code-too-long', 'Code exceeds maximum allowed length of 50KB')
+  }
+  // Define dangerous patterns that should not be allowed
+  const dangerousPatterns = [
+    // Process and system access
+    { pattern: /\bprocess\s*\.\s*(?:exit|kill|abort|env|cwd|chdir|platform|version|execPath|argv|execArgv|mainModule|dlopen)\b/gi, description: 'process object manipulation' },
+    { pattern: /\bprocess\s*\[\s*['"`](?:exit|kill|abort|env|cwd|chdir)\s*['"`]\s*\]/gi, description: 'process object bracket access' },
+    { pattern: /\bglobal\s*\.\s*process\b/gi, description: 'global.process access' },
+    { pattern: /\bglobal\s*\[\s*['"`]process['"`]\s*\]/gi, description: 'global process bracket access' },
+    // File system and dangerous Node.js modules
+    { pattern: /\brequire\s*\(\s*['"`](?:fs|child_process|cluster|worker_threads|vm|repl)\s*['"`]\s*\)/gi, description: 'dangerous module require' },
+    { pattern: /\bimport\s+.*\s+from\s+['"`](?:fs|child_process|cluster|worker_threads|vm|repl)['"`]/gi, description: 'dangerous module import' },
+    { pattern: /\b(?:readFileSync|writeFileSync|unlinkSync|rmdirSync|mkdirSync|existsSync|readdirSync)\b/gi, description: 'synchronous file system operations' },
+    { pattern: /\b(?:readFile|writeFile|unlink|rmdir|mkdir|exists|readdir|appendFile|chmod|chown)\s*\(/gi, description: 'file system operations' },
+    { pattern: /\bexec(?:Sync|File|FileSync)?\s*\(/gi, description: 'code execution functions' },
+    { pattern: /\bspawn(?:Sync)?\s*\(/gi, description: 'process spawning' },
+    { pattern: /\bfork\s*\(/gi, description: 'process forking' },
+    // Constructor and prototype manipulation
+    { pattern: /\bconstructor\s*\.\s*constructor\b/gi, description: 'constructor chain access' },
+    { pattern: /\b__proto__\b/gi, description: 'prototype manipulation' },
+    { pattern: /\bObject\s*\.\s*setPrototypeOf\b/gi, description: 'prototype manipulation' },
+    { pattern: /\bFunction\s*\(\s*['"`]/gi, description: 'Function constructor' },
+    { pattern: /\bnew\s+Function\s*\(/gi, description: 'new Function constructor' },
+    // Eval and code injection
+    { pattern: /\beval\s*\(/gi, description: 'eval function' },
+    { pattern: /\bsetTimeout\s*\(\s*['"`]/gi, description: 'setTimeout with string code' },
+    { pattern: /\bsetInterval\s*\(\s*['"`]/gi, description: 'setInterval with string code' },
+    // Global object access attempts
+    { pattern: /\bglobalThis\b/gi, description: 'globalThis access' },
+    { pattern: /\bthis\s*\.\s*constructor\s*\.\s*constructor\b/gi, description: 'constructor escape attempt' },
+    // Attempts to access Node.js internals
+    { pattern: /\bMeteor\s*\.\s*(?:users|call|apply|methods|publish|subscribe|startup)\b/gi, description: 'Meteor internal access' },
+    { pattern: /\bAccounts\s*\./gi, description: 'Accounts object access' },
+    { pattern: /\bDDP\s*\./gi, description: 'DDP object access' },
+    { pattern: /\bMongoInternals\b/gi, description: 'MongoInternals access' },
+    // Obfuscation attempts
+    { pattern: /\\u0065\\u0076\\u0061\\u006c/gi, description: 'unicode obfuscated eval' },
+    { pattern: /\\x65\\x76\\x61\\x6c/gi, description: 'hex obfuscated eval' },
+    { pattern: /String\s*\.\s*fromCharCode\s*\(/gi, description: 'character code obfuscation' },
+    // Buffer and binary manipulation
+    { pattern: /\bBuffer\s*\.\s*(?:from|alloc|allocUnsafe)\b/gi, description: 'Buffer manipulation' },
+    // Module system manipulation
+    { pattern: /\bmodule\s*\.\s*(?:require|exports|loaded|parent|children)\b/gi, description: 'module object manipulation' },
+    { pattern: /\brequire\s*\.\s*(?:cache|main|resolve)\b/gi, description: 'require object manipulation' },
+    { pattern: /\b__dirname\b/gi, description: '__dirname access' },
+    { pattern: /\b__filename\b/gi, description: '__filename access' },
+  ]
+  // Check for dangerous patterns
+  const violations = []
+  for (const { pattern, description } of dangerousPatterns) {
+    const matches = code.match(pattern)
+    if (matches) {
+      violations.push({
+        description,
+        examples: matches.slice(0, 3), // Show up to 3 examples
+      })
+    }
+  }
+  if (violations.length > 0) {
+    const errorMessage = violations.map((v) => `- ${v.description}: ${v.examples.join(', ')}`).join('\n')
+    throw new Meteor.Error(
+      'malicious-code-detected',
+      `Potentially malicious code patterns detected:\n${errorMessage}`,
+    )
+  }
+  // Validate the code can be parsed as valid JavaScript
+  try {
+    // Use Function constructor in a safe way just for syntax validation
+    // We're not executing this, just checking if it parses
+    // eslint-disable-next-line no-new, no-new-func
+    new Function(code)
+  } catch (syntaxError) {
+    throw new Meteor.Error(
+      'syntax-error',
+      `Code contains invalid JavaScript syntax: ${syntaxError.message}`,
+    )
+  }
+}
 
 /**
  * A native Node.js vm-based sandbox that replaces vm2's NodeVM functionality.
@@ -100,6 +191,9 @@ export class NodeSandbox {
   }
 
   async run(code) {
+    // Validate code before execution
+    validateSandboxCode(code)
+
     return new Promise((resolve, reject) => {
       // Set up timeout
       const timeoutId = setTimeout(() => {

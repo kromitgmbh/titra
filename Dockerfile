@@ -47,5 +47,7 @@ EXPOSE 3000
 WORKDIR /app/
 COPY --from=1 app/bundle bundle
 COPY entrypoint.sh /docker/entrypoint.sh
+RUN chown -R node:node /app
+USER node
 ENTRYPOINT ["/docker/entrypoint.sh"]
 CMD ["node", "bundle/main.js"]

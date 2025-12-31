@@ -82,6 +82,7 @@ Template.globalsettingscomponent.events({
     }
     Meteor.call('updateGlobalSettings', settingsArray, (error) => {
       if (error) {
+        showToast(error.reason)
         console.error(error)
       } else {
         showToast(t('notifications.settings_saved_success'))
