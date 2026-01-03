@@ -34,6 +34,23 @@ async function checkAuthorization(req, res) {
   sendResponse(res, 401, 'Missing authorization header or invalid authorization token supplied.')
   return false
 }
+
+async function checkProjectAccess(projectId, userId, res) {
+  const project = await Projects.findOneAsync({
+    _id: projectId,
+    $or: [
+      { userId },
+      { public: true },
+      { team: userId },
+      { admins: userId },
+    ],
+  })
+  if (!project) {
+    sendResponse(res, 403, 'Access denied to project.')
+    return false
+  }
+  return project
+}
 /**
  * @apiDefine AuthError
  * @apiError {json} AuthError The request is missing the authentication header or an invalid API token has been provided.
@@ -95,6 +112,11 @@ WebApp.handlers.use('/timeentry/create/', async (req, res) => {
       check(json.customfields, Match.Maybe(Object))
     } catch (error) {
       sendResponse(res, 500, `Invalid parameters received.${error}`)
+      return
+    }
+    // Check if user has access to the project
+    const project = await checkProjectAccess(json.projectId, meteorUser._id, res)
+    if (!project) {
       return
     }
     const timecardId = await insertTimeCard(json.projectId, json.task, new Date(json.date), json.hours, meteorUser._id, json.taskRate, json.customfields)
@@ -215,6 +237,13 @@ WebApp.handlers.use('/project/timeentries/', async (req, res) => {
   const { pathname } = req._parsedUrl
   const url = pathname.split('/')
   const projectId = url[3]
+
+  // Check if user has access to the project
+  const project = await checkProjectAccess(projectId, meteorUser._id, res)
+  if (!project) {
+    return
+  }
+
   const payload = await Timecards.find({
     projectId,
   }).fetchAsync()
@@ -258,6 +287,13 @@ WebApp.handlers.use('/project/timeentriesfordaterange/', async (req, res) => {
     sendResponse(res, 500, `Invalid parameters received.${error}`)
     return
   }
+
+  // Check if user has access to the project
+  const project = await checkProjectAccess(projectId, meteorUser._id, res)
+  if (!project) {
+    return
+  }
+
   const payload = await Timecards.find({
     projectId,
     date: { $gte: fromDate, $lte: toDate },
@@ -508,13 +544,8 @@ WebApp.handlers.use('/project/task/create/', async (req, res) => {
     }
 
     // Check if user has access to the project
-    const project = await Projects.findOneAsync({
-      _id: json.projectId,
-      $or: [{ userId: meteorUser._id }, { public: true }, { team: meteorUser._id }],
-    })
-
+    const project = await checkProjectAccess(json.projectId, meteorUser._id, res)
     if (!project) {
-      sendResponse(res, 403, 'Access denied to project.')
       return
     }
 
@@ -556,13 +587,8 @@ WebApp.handlers.use('/project/tasks/', async (req, res) => {
   const projectId = url[3]
 
   // Check if user has access to the project
-  const project = await Projects.findOneAsync({
-    _id: projectId,
-    $or: [{ userId: meteorUser._id }, { public: true }, { team: meteorUser._id }],
-  })
-
+  const project = await checkProjectAccess(projectId, meteorUser._id, res)
   if (!project) {
-    sendResponse(res, 403, 'Access denied to project.')
     return
   }
 
@@ -591,13 +617,8 @@ WebApp.handlers.use('/project/task/stats/', async (req, res) => {
   const projectId = url[4]
 
   // Check if user has access to the project
-  const project = await Projects.findOneAsync({
-    _id: projectId,
-    $or: [{ userId: meteorUser._id }, { public: true }, { team: meteorUser._id }],
-  })
-
+  const project = await checkProjectAccess(projectId, meteorUser._id, res)
   if (!project) {
-    sendResponse(res, 403, 'Access denied to project.')
     return
   }
 
