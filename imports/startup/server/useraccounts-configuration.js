@@ -1,4 +1,6 @@
+/* eslint-disable no-param-reassign */
 import { Accounts } from 'meteor/accounts-base'
+import { Random } from 'meteor/random'
 import dockerNames from 'docker-names'
 import { getGlobalSettingAsync } from '../../utils/server_method_helpers'
 import initNewUser from '../../api/projects/setup.js'
@@ -41,6 +43,24 @@ Accounts.onCreateUser(async (options, user) => {
   if (localUser && await Meteor.users.find().countAsync() === 0) {
     localUser.isAdmin = true
   }
+
+  // Handle user action verification for non-anonymous users
+  const enableVerification = await getGlobalSettingAsync('enableUserActionVerification')
+  if (enableVerification && !options.anonymous && localUser.emails && localUser.emails.length > 0) {
+    const { getDefaultVerificationSettingsAsync } = await import('../../utils/server_method_helpers.js')
+    const verificationSettings = await getDefaultVerificationSettingsAsync()
+    const deadline = new Date()
+    deadline.setDate(deadline.getDate() + verificationSettings.verificationPeriod)
+
+    localUser.actionVerification = {
+      required: true,
+      deadline,
+      completed: false,
+      secret: Random.secret(32),
+      webhookInterfaceId: verificationSettings.webhookInterfaceId,
+    }
+  }
+
   return localUser
 })
 const fromName = await getGlobalSettingAsync('fromName')

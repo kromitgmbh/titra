@@ -1,0 +1,27 @@
+<template name="verificationLockOverlay">
+  {{#if showLockOverlay}}
+    <div class="verification-lock-overlay">
+      <div class="verification-lock-backdrop"></div>
+      <div class="verification-lock-modal">
+        <div class="text-center">
+          <i class="fa fa-lock fa-4x text-danger mb-4"></i>
+          <h2 class="text-danger mb-3">{{lockTitle}}</h2>
+          <p class="mb-4">{{t "verification.account_locked_message"}}</p>
+          <p class="mb-4 font-weight-bold">{{t "verification.must_verify_message"}}</p>
+          
+          {{#if verificationUrl}}
+            <a href="{{verificationUrl}}" class="btn btn-primary btn-lg" target="_blank">
+              <i class="fa fa-external-link-alt me-2"></i>
+              {{verificationType}}
+            </a>
+          {{else}}
+            <div class="alert alert-warning mt-3">
+              <i class="fa fa-exclamation-triangle me-2"></i>
+              Verification service is not configured. Please contact your administrator.
+            </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</template>

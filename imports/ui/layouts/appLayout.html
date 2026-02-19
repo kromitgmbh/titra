@@ -4,8 +4,10 @@
   <div class="pt-3 mt-1 d-print-none"></div>
     <div class="main-content">
       <div class="container mb-3">
+        {{>verificationNotification}}
         {{>connectioncheck}}
         {{> yield}}
       </div>
   </div>
+  {{>verificationLockOverlay}}
 </template>

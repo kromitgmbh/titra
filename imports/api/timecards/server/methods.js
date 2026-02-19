@@ -1,8 +1,8 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import dayjs from 'dayjs'
-import { NodeVM } from 'vm2'
 import { fetch } from 'meteor/fetch'
 import { check, Match } from 'meteor/check'
+import { NodeVM } from '../../../utils/vm_sandbox.js'
 import Timecards from '../timecards.js'
 import Tasks from '../../tasks/tasks.js'
 import Projects from '../../projects/projects.js'
@@ -46,6 +46,7 @@ async function checkTimeEntryRule({
   const vm = new NodeVM({
     wrapper: 'none',
     timeout: 1000,
+    console: 'inherit', // Enable console logging for testing
     sandbox: {
       user: meteorUser.profile,
       project: await Projects.findOneAsync({ _id: projectId }),
@@ -60,7 +61,7 @@ async function checkTimeEntryRule({
     },
   })
   try {
-    if (!vm.run(await getGlobalSettingAsync('timeEntryRule'))) {
+    if (!await vm.run(await getGlobalSettingAsync('timeEntryRule'))) {
       throw new Meteor.Error('notifications.time_entry_rule_failed')
     }
   } catch (error) {
@@ -84,24 +85,24 @@ async function checkTimeEntryRule({
  */
 async function insertTimeCard(projectId, task, date, hours, userId, taskRate, customfields) {
   const newTimeCard = {
+    ...customfields,
     userId,
     projectId,
     date,
     hours,
     task: await emojify(task),
-    ...customfields,
   }
   if (taskRate) {
     newTimeCard.taskRate = taskRate
   }
   if (!await Tasks.findOneAsync({ $or: [{ userId }, { projectId }], name: await emojify(task) })) {
     await Tasks.insertAsync({
-      userId, lastUsed: new Date(), name: await emojify(task), ...customfields,
+      ...customfields, userId, lastUsed: new Date(), name: await emojify(task),
     })
   } else {
     await Tasks.updateAsync(
       { $or: [{ userId }, { projectId }], name: await emojify(task) },
-      { $set: { lastUsed: new Date(), ...customfields } },
+      { $set: { ...customfields, lastUsed: new Date() } },
     )
   }
   return Timecards.insertAsync(newTimeCard)
@@ -224,7 +225,7 @@ const insertTimeCardMethod = new ValidatedMethod({
     const check = await checkTimeEntryRule({
       userId, projectId, task, state: 'new', date, hours,
     })
-    await insertTimeCard(projectId, task, date, hours, userId, taskRate, customfields)
+    insertTimeCard(projectId, task, date, hours, userId, taskRate, customfields)
   },
 })
 /**
@@ -311,14 +312,14 @@ const updateTimeCard = new ValidatedMethod({
       userId, projectId, task, state: timecard.state, date, hours,
     })
     if (!await Tasks.findOneAsync({ userId, name: await emojify(task) })) {
-      await Tasks.insertAsync({ userId, name: await emojify(task), ...customfields })
+      await Tasks.insertAsync({ ...customfields, userId, name: await emojify(task) })
     }
     const fieldsToSet = {
+      ...customfields,
       projectId,
       date,
       hours,
       task: await emojify(task),
-      ...customfields,
     }
     if (taskRate) {
       fieldsToSet.taskRate = taskRate
@@ -899,14 +900,14 @@ const userTimeCardsForPeriodByProjectByTaskMethod = new ValidatedMethod({
       {
         $sort: {
           task: -1,
-        }
+        },
       },
       {
         $group: {
           _id: { $concat: ['$projectId', '|', '$task'] },
           entries: { $push: '$$ROOT' },
         },
-      },]).toArray()
+      }]).toArray()
   },
 })
 /**
@@ -938,7 +939,7 @@ const getTotalForWeekPerDay = new ValidatedMethod({
           _id: { date: '$date' },
           totalForDate: { $sum: '$hours' },
         },
-      },]).toArray()
+      }]).toArray()
   },
 })
 /**
@@ -967,9 +968,9 @@ const getWeekTotal = new ValidatedMethod({
       {
         $group: {
           _id: `${startDate}-${endDate}`,
-          total: { $sum: '$hours'},
+          total: { $sum: '$hours' },
         },
-      },]).toArray()
+      }]).toArray()
     return aggregatedweek[0]?.total
   },
 })
@@ -1011,8 +1012,11 @@ const bulkInsertTimecards = new ValidatedMethod({
   async run({ timecards }) {
     const insertedTimecards = []
     for (const timecard of timecards) {
-      const userId = timecard.userId || this.userId // Use provided userId or fallback to the current user
-      const { projectId, task, date, hours, customfields } = timecard
+      const userId = timecard.userId || this.userId
+      // Use provided userId or fallback to the current user
+      const {
+        projectId, task, date, hours, customfields,
+      } = timecard
       // Check time entry rules
       await checkTimeEntryRule({
         userId,

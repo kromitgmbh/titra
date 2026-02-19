@@ -13,7 +13,7 @@ const setup = (language, lang, debugMode) => {
   }
 }
 const getLanguage = () => _lang
-const t = (key) => {
+const t = (key, variables = {}) => {
   if (!key) {
     return false
   }
@@ -29,6 +29,14 @@ const t = (key) => {
     }
     translatedValue = key
   }
+
+  // Interpolate variables
+  if (typeof translatedValue === 'string' && Object.keys(variables).length > 0) {
+    Object.entries(variables).forEach(([varKey, varValue]) => {
+      translatedValue = translatedValue.replace(new RegExp(`{${varKey}}`, 'g'), varValue)
+    })
+  }
+
   return translatedValue
 }
 let fallbackLocale = {}

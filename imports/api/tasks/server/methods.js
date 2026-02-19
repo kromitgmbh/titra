@@ -31,13 +31,13 @@ const insertProjectTask = new ValidatedMethod({
     projectId, name, start, end, estimatedHours, dependencies, customfields,
   }) {
     await Tasks.insertAsync({
+      ...customfields,
       projectId,
       name,
       start,
       end,
       estimatedHours,
       dependencies,
-      ...customfields,
     })
   },
 })
@@ -74,12 +74,12 @@ const updateTask = new ValidatedMethod({
   }) {
     await Tasks.updateAsync(taskId, {
       $set: {
+        ...customfields,
         name,
         start,
         end,
         estimatedHours,
         dependencies,
-        ...customfields,
       },
     })
   },

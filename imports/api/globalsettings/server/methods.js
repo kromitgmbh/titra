@@ -3,7 +3,7 @@ import { ServiceConfiguration } from 'meteor/service-configuration'
 import { defaultSettings, Globalsettings } from '../globalsettings.js'
 import { adminAuthenticationMixin, transactionLogMixin } from '../../../utils/server_method_helpers.js'
 import { registerOidc } from '../../../utils/oidc/oidc_server.js'
-
+import { validateSandboxCode } from '../../../utils/vm_sandbox.js'
 /**
 @summary Updates global settings
 @param {Array} settingsArray - Array of settings to update
@@ -21,6 +21,10 @@ const updateGlobalSettings = new ValidatedMethod({
       check(setting, Object)
       check(setting.name, String)
       check(setting.value, Match.OneOf(String, Number, Boolean))
+      // Special validation for timeEntryRule to prevent code injection
+      if (setting.name === 'timeEntryRule' && typeof setting.value === 'string') {
+        validateSandboxCode(setting.value)
+      }
       // eslint-disable-next-line no-await-in-loop
       await Globalsettings.updateAsync({ name: setting.name }, { $set: { value: setting.value } })
     }
