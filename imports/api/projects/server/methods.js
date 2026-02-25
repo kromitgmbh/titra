@@ -496,7 +496,13 @@ const updatePriority = new ValidatedMethod({
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId, priority }) {
-    await Projects.updateAsync({ _id: projectId }, { $set: { priority } })
+    await Projects.updateAsync(
+      {
+        _id: projectId,
+        $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+      },
+      { $set: { priority } },
+    )
     return 'notifications.project_priority_success'
   },
 })
@@ -519,7 +525,17 @@ const setDefaultTaskForProject = new ValidatedMethod({
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId, taskId }) {
+    const project = await Projects.findOneAsync({
+      _id: projectId,
+      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+    })
+    if (!project) {
+      throw new Meteor.Error('notifications.project_not_found')
+    }
     const task = await Tasks.findOneAsync({ _id: taskId })
+    if (!task || task.projectId !== projectId) {
+      throw new Meteor.Error('notifications.task_not_found')
+    }
     if (task.isDefaultTask) {
       await Projects.updateAsync({ _id: projectId }, { $unset: { defaultTask: 1 } })
       await Tasks.updateAsync({ _id: taskId }, { $set: { isDefaultTask: false } })
@@ -553,19 +569,22 @@ const setRateForUser = new ValidatedMethod({
   },
   mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId, userId, rate }) {
-    const project = await Projects.findOneAsync({ _id: projectId })
-    if (project) {
-      const rates = project.rates || {}
-      const rateId = JSON.parse(`{ "rates.${userId}": 1}`)
-      if (parseFloat(rate) > 0) {
-        rates[userId] = rate
-        await Projects.updateAsync({ _id: projectId }, { $set: { rates } })
-      } else {
-        await Projects.updateAsync({ _id: projectId }, { $unset: rateId })
-      }
-      return 'notifications.rate_success'
+    const project = await Projects.findOneAsync({
+      _id: projectId,
+      $or: [{ userId: this.userId }, { admins: { $in: [this.userId] } }],
+    })
+    if (!project) {
+      throw new Meteor.Error('notifications.project_not_found')
     }
-    throw new Meteor.Error('notifications.project_not_found')
+    const rates = project.rates || {}
+    const rateId = JSON.parse(`{ "rates.${userId}": 1}`)
+    if (parseFloat(rate) > 0) {
+      rates[userId] = rate
+      await Projects.updateAsync({ _id: projectId }, { $set: { rates } })
+    } else {
+      await Projects.updateAsync({ _id: projectId }, { $unset: rateId })
+    }
+    return 'notifications.rate_success'
   },
 })
 
