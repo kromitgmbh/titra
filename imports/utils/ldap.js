@@ -50,7 +50,7 @@ class LDAP {
       }
       return value
     }
-    debugLog.warn(`Lookup for unset variable: ${name}`)
+    debugLog(`Lookup for unset variable: ${name}`)
     return undefined
   }
 
@@ -69,7 +69,7 @@ class LDAP {
   // }
 
   async connectAsync() {
-    debugLog.info('Init setup')
+    debugLog('Init setup')
 
     // Import the new client dynamically
     if (!this.LdapClient) {
@@ -111,8 +111,8 @@ class LDAP {
       connectionOptions.url = `ldap://${connectionOptions.url}`
     }
 
-    debugLog.info('Connecting', connectionOptions.url)
-    debugLog.debug(`connectionOptions${util.inspect(connectionOptions)}`)
+    debugLog('Connecting', connectionOptions.url)
+    debugLog(`connectionOptions${util.inspect(connectionOptions)}`)
 
     // Create client using new library - no createClient method, use constructor directly
     this.client = new this.LdapClient(connectionOptions)
@@ -127,10 +127,10 @@ class LDAP {
       // The new library auto-connects when needed, no explicit connect required
       // Just test the connection by attempting to bind if we have credentials
       this.connected = true
-      debugLog.info('LDAP client initialized')
+      debugLog('LDAP client initialized')
       return true
     } catch (error) {
-      debugLog.error('LDAP connection error', error)
+      debugLog('LDAP connection error', error)
       throw error
     }
   }
@@ -147,7 +147,7 @@ class LDAP {
     }
     const usernameFilter = this.options.User_Search_Field ? this.options.User_Search_Field.split(',').map((item) => `(${item}=${username})`) : this.options.UsernameField.split(',').map((item) => `(${item}=${username})`)
     if (usernameFilter === undefined || usernameFilter?.length === 0) {
-      debugLog.error('LDAP_User_Search_Field not defined')
+      debugLog('LDAP_User_Search_Field not defined')
     } else if (usernameFilter?.length === 1) {
       filter.push(`${usernameFilter[0]}`)
     } else {
@@ -177,7 +177,7 @@ class LDAP {
     if (this.domainBinded === true) {
       return
     }
-    debugLog.info('Binding UserDN', this.options.Authentication_UserDN)
+    debugLog('Binding UserDN', this.options.Authentication_UserDN)
 
     await this.bindAsync(this.options.Authentication_UserDN, this.options.Authentication_Password)
     this.domainBinded = true
@@ -205,9 +205,9 @@ class LDAP {
       }
     }
 
-    debugLog.info('Searching user', username)
-    debugLog.debug('searchOptions', searchOptions)
-    debugLog.debug('BaseDN', this.options.BaseDN)
+    debugLog('Searching user', username)
+    debugLog('searchOptions', searchOptions)
+    debugLog('BaseDN', this.options.BaseDN)
 
     if (page) {
       return this.searchAllPaged(this.options.BaseDN, searchOptions, page)
@@ -243,9 +243,9 @@ class LDAP {
       scope: 'sub',
     }
 
-    debugLog.info('Searching by id', id)
-    debugLog.debug('search filter', filter)
-    debugLog.debug('BaseDN', this.options.BaseDN)
+    debugLog('Searching by id', id)
+    debugLog('search filter', filter)
+    debugLog('BaseDN', this.options.BaseDN)
 
     const result = await this.searchAllAsync(this.options.BaseDN, searchOptions)
 
@@ -254,7 +254,7 @@ class LDAP {
     }
 
     if (result?.length > 1) {
-      debugLog.error('Search by id', id, 'returned', result.length, 'records')
+      debugLog('Search by id', id, 'returned', result.length, 'records')
     }
     return result[0]
   }
@@ -267,18 +267,18 @@ class LDAP {
       scope: this.options.User_Search_Scope || 'sub',
     }
 
-    debugLog.info('Searching user', username)
-    debugLog.debug('searchOptions', searchOptions)
-    debugLog.debug('BaseDN', this.options.BaseDN)
+    debugLog('Searching user', username)
+    debugLog('searchOptions', searchOptions)
+    debugLog('BaseDN', this.options.BaseDN)
 
     const result = await this.searchAllAsync(this.options.BaseDN, searchOptions)
-    debugLog.debug('searchAllAsync result', result)
+    debugLog('searchAllAsync result', result)
     if (!Array.isArray(result) || result?.length === 0) {
       return
     }
 
     if (result?.length > 1) {
-      debugLog.error('Search by username', username, 'returned', result.length, 'records')
+      debugLog('Search by username', username, 'returned', result.length, 'records')
     }
     return result[0]
   }
@@ -308,7 +308,7 @@ class LDAP {
       scope: 'sub',
     }
 
-    debugLog.debug('Group list filter LDAP:', searchOptions.filter)
+    debugLog('Group list filter LDAP:', searchOptions.filter)
 
     const result = await this.searchAllAsync(this.options.BaseDN, searchOptions)
 
@@ -355,7 +355,7 @@ class LDAP {
       scope: 'sub',
     }
 
-    debugLog.debug('Group filter LDAP:', searchOptions.filter)
+    debugLog('Group filter LDAP:', searchOptions.filter)
 
     const result = await this.searchAllAsync(this.options.BaseDN, searchOptions)
 
@@ -393,7 +393,7 @@ class LDAP {
 
       return returnValues
     } catch (error) {
-      debugLog.error('Error extracting LDAP entry data:', error)
+      debugLog('Error extracting LDAP entry data:', error)
       return undefined
     }
   }
@@ -420,7 +420,7 @@ class LDAP {
       const processPage = ({
         entries, title, end, next,
       }) => {
-        debugLog.info(title)
+        debugLog(title)
         page(null, entries, {
           end,
           next: next || (() => {}),
@@ -434,7 +434,7 @@ class LDAP {
         end: true,
       })
     } catch (error) {
-      debugLog.error('Paged search error:', error)
+      debugLog('Paged search error:', error)
       page(error)
     }
   }
@@ -455,27 +455,27 @@ class LDAP {
         }
       }
 
-      debugLog.info('Search result count', entries.length)
+      debugLog('Search result count', entries.length)
       return entries
     } catch (error) {
-      debugLog.error('Search error:', error)
+      debugLog('Search error:', error)
       throw error
     }
   }
 
   async authAsync(dn, password) {
-    debugLog.info('Authenticating', dn)
+    debugLog('Authenticating', dn)
 
     try {
       if (password === '') {
         throw new Error('Password is not provided')
       }
       await this.bindAsync(dn, password)
-      debugLog.info('Authenticated', dn)
+      debugLog('Authenticated', dn)
       return true
     } catch (error) {
-      debugLog.info('Not authenticated', dn)
-      debugLog.debug('error', error)
+      debugLog('Not authenticated', dn)
+      debugLog('error', error)
       return false
     }
   }
@@ -483,7 +483,7 @@ class LDAP {
   disconnect() {
     this.connected = false
     this.domainBinded = false
-    debugLog.info('Disconnecting')
+    debugLog('Disconnecting')
     if (this.client) {
       this.client.unbind()
     }
@@ -514,7 +514,7 @@ function getLdapFullname(ldapUser) {
   if (fullnameField.indexOf('#{') > -1) {
     return fullnameField.replace(/#{(.+?)}/g, (match, field) => ldapUser[field][0])
   }
-  return ldapUser[fullnameField][0]
+  return ldapUser[fullnameField]
 }
 
 function getLdapUserUniqueID(ldapUser) {
@@ -540,7 +540,7 @@ function getLdapUserUniqueID(ldapUser) {
     Unique_Identifier_Field = Unique_Identifier_Field
       .find((field) => !isEmpty(ldapUser[field]))
     if (Unique_Identifier_Field) {
-      debugLog.debug(`Identifying user with: ${Unique_Identifier_Field}`)
+      debugLog(`Identifying user with: ${Unique_Identifier_Field}`)
       Unique_Identifier_Field = {
         attribute: Unique_Identifier_Field,
         value: ldapUser[Unique_Identifier_Field].toString('hex'),
@@ -559,7 +559,7 @@ function fallbackDefaultAccountSystem(bind, username, password) {
     }
   }
 
-  debugLog.info('Fallback to default account system: ', username)
+  debugLog('Fallback to default account system: ', username)
 
   const loginRequest = {
     user: username,
@@ -568,7 +568,7 @@ function fallbackDefaultAccountSystem(bind, username, password) {
       algorithm: 'sha-256',
     },
   }
-  debugLog.debug('Fallback options: ', loginRequest)
+  debugLog('Fallback options: ', loginRequest)
 
   return Accounts._runLoginHandlers(bind, loginRequest)
 }
@@ -579,7 +579,7 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
         return undefined
       }
 
-      debugLog.info('Init LDAP login', loginRequest.username)
+      debugLog('Init LDAP login', loginRequest.username)
 
       const self = this
       const ldap = new LDAP()
@@ -588,16 +588,15 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
       try {
         await ldap.connectAsync()
         const user_authentication = LDAP.getSettings('LDAP_USER_AUTHENTICATION') || LDAP.getSettings('LDAP_USERNAME_FIELD') || 'uid'
-        debugLog.debug(user_authentication)
+        debugLog(user_authentication)
         if (user_authentication && user_authentication !== 'none') {
           await ldap.bindUserIfNecessary(loginRequest.username, loginRequest.ldapPass)
           const tempLdapUser = await ldap.searchUsersAsync(loginRequest.username)
-          console.log('templLdapUser', tempLdapUser)
           ldapUser = tempLdapUser[0]
         } else {
           const users = await ldap.searchUsersAsync(loginRequest.username)
           if (users?.length !== 1) {
-            debugLog.info('Search returned', users.length, 'record(s) for', loginRequest.username)
+            debugLog('Search returned', users.length, 'record(s) for', loginRequest.username)
             throw new Error('User not Found')
           }
 
@@ -608,11 +607,11 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
           }
           if (await ldap.authAsync(ldapUser.dn, loginRequest.ldapPass) !== true) {
             ldapUser = null
-            debugLog.info('Wrong password for', loginRequest.username)
+            debugLog('Wrong password for', loginRequest.username)
           }
         }
       } catch (error) {
-        debugLog.error(error)
+        debugLog(error)
       }
 
       if (!ldapUser) {
@@ -636,8 +635,8 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
           'services.ldap.id': Unique_Identifier_Field.value,
         }
 
-        debugLog.info('Querying user')
-        debugLog.debug('userQuery', userQuery)
+        debugLog('Querying user')
+        debugLog('userQuery', userQuery)
 
         user = await Meteor.users.findOneAsync(userQuery)
       }
@@ -677,7 +676,7 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
           }
         }
 
-        debugLog.debug('userQuery', userQuery)
+        debugLog('userQuery', userQuery)
 
         user = await Meteor.users.findOneAsync(userQuery)
       }
@@ -685,7 +684,7 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
       // Attempt to find user by e-mail address only
 
       if (!user && email && LDAP.getSettings('LDAP_EMAIL_MATCH_ENABLE') === true) {
-        debugLog.info('No user exists with username', username, '- attempting to find by e-mail address instead')
+        debugLog('No user exists with username', username, '- attempting to find by e-mail address instead')
 
         if (LDAP.getSettings('LDAP_EMAIL_MATCH_VERIFIED') === true) {
           userQuery = {
@@ -698,7 +697,7 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
           }
         }
 
-        debugLog.debug('userQuery', userQuery)
+        debugLog('userQuery', userQuery)
 
         user = await Meteor.users.findOneAsync(userQuery)
       }
@@ -706,11 +705,11 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
       // Login user if they exist
       if (user) {
         if (user.authenticationMethod !== 'ldap' && LDAP.getSettings('LDAP_MERGE_EXISTING_USERS') !== true) {
-          debugLog.info('User exists without "authenticationMethod : ldap"')
+          debugLog('User exists without "authenticationMethod : ldap"')
           throw new Meteor.Error('LDAP-login-error', 'LDAP Authentication succeded, but there\'s already a matching titra account in MongoDB')
         }
 
-        debugLog.info('Logging user')
+        debugLog('Logging user')
 
         const stampedToken = Accounts._generateStampedLoginToken()
         const update_data = {
@@ -720,7 +719,7 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
         }
 
         if (LDAP.getSettings('LDAP_SYNC_ADMIN_STATUS') === true) {
-          debugLog.debug('Updating admin status')
+          debugLog('Updating admin status')
           const targetGroups = LDAP.getSettings('LDAP_SYNC_ADMIN_GROUPS').split(',')
           const groups = (await ldap.getUserGroups(username, ldapUser))
             .filter((value) => targetGroups.includes(value))
@@ -745,7 +744,7 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
 
       // Create new user
 
-      debugLog.info('User does not exist, creating', username)
+      debugLog('User does not exist, creating', username)
 
       if (LDAP.getSettings('LDAP_USERNAME_FIELD') === '') {
         username = undefined
@@ -758,7 +757,7 @@ getGlobalSettingAsync('enableLDAP').then((ldapEnabled) => {
       const result = await addLdapUser(ldapUser, username, loginRequest.ldapPass)
 
       if (LDAP.getSettings('LDAP_SYNC_ADMIN_STATUS') === true) {
-        debugLog.debug('Updating admin status')
+        debugLog('Updating admin status')
         const targetGroups = LDAP.getSettings('LDAP_SYNC_ADMIN_GROUPS').split(',')
         const groups = (await ldap.getUserGroups(username, ldapUser)).filter((value) => targetGroups.includes(value))
 
@@ -835,11 +834,11 @@ function getDataToSyncUserData(ldapUser, user) {
     const fieldMap = JSON.parse(syncUserDataFieldMap)
     const emailList = []
     fieldMap.map((userField, ldapField) => {
-      debugLog.debug(`Mapping field ${ldapField} -> ${userField}`)
+      debugLog(`Mapping field ${ldapField} -> ${userField}`)
       switch (userField) {
         case 'email':
           if (!ldapUser.hasOwnProperty(ldapField)) {
-            debugLog.debug(`user does not have attribute: ${ldapField}`)
+            debugLog(`user does not have attribute: ${ldapField}`)
             return
           }
 
@@ -856,7 +855,7 @@ function getDataToSyncUserData(ldapUser, user) {
           const [outerKey, innerKeys] = userField.split(/\.(.+)/)
 
           if (!whitelistedUserFields.find((el) => el === outerKey)) {
-            debugLog.debug(`user attribute not whitelisted: ${userField}`)
+            debugLog(`user attribute not whitelisted: ${userField}`)
             return
           }
 
@@ -866,12 +865,12 @@ function getDataToSyncUserData(ldapUser, user) {
             try {
               customFieldsMeta = JSON.parse(LDAP.getSettings('Accounts_CustomFields'))
             } catch (e) {
-              debugLog.debug('Invalid JSON for Custom Fields')
+              debugLog('Invalid JSON for Custom Fields')
               return
             }
 
             if (!getPropertyValue(customFieldsMeta, innerKeys)) {
-              debugLog.debug(`user attribute does not exist: ${userField}`)
+              debugLog(`user attribute does not exist: ${userField}`)
               return
             }
           }
@@ -892,7 +891,7 @@ function getDataToSyncUserData(ldapUser, user) {
                 : obj[currKey] = obj[currKey] || {}),
               userData,
             )
-            debugLog.debug(`user.${userField} changed to: ${tmpLdapField}`)
+            debugLog(`user.${userField} changed to: ${tmpLdapField}`)
           }
       }
     })
@@ -925,33 +924,33 @@ function getDataToSyncUserData(ldapUser, user) {
 }
 
 async function syncUserData(user, ldapUser) {
-  debugLog.info('Syncing user data')
-  debugLog.debug('user', { email: user.email, _id: user._id })
+  debugLog('Syncing user data')
+  debugLog('user', { email: user.email, _id: user._id })
   // logDebug('ldapUser', ldapUser.object);
 
   if (LDAP.getSettings('LDAP_USERNAME_FIELD') !== '') {
     const username = getLdapUsername(ldapUser)
     if (user && user._id && username !== user.username) {
-      debugLog.info('Syncing user username', user.username, '->', username)
+      debugLog('Syncing user username', user.username, '->', username)
       await Meteor.users.findOneAsync({ _id: user._id }, { $set: { username } })
     }
   }
 
   if (LDAP.getSettings('LDAP_FULLNAME_FIELD') !== '') {
     const fullname = getLdapFullname(ldapUser)
-    debugLog.debug('fullname=', fullname)
+    debugLog('fullname=', fullname)
     if (user && user._id && fullname !== '') {
-      debugLog.info('Syncing user fullname:', fullname)
+      debugLog('Syncing user fullname:', fullname)
       await Meteor.users.updateAsync({ _id: user._id }, { $set: { 'profile.fullname': fullname } })
     }
   }
 
   if (LDAP.getSettings('LDAP_EMAIL_FIELD') !== '') {
     const email = getLdapEmail(ldapUser)
-    debugLog.debug('email=', email)
+    debugLog('email=', email)
 
     if (user && user._id && email !== '') {
-      debugLog.info('Syncing user email:', email)
+      debugLog('Syncing user email:', email)
       await Meteor.users.updateAsync({
         _id: user._id,
       }, {
@@ -987,7 +986,7 @@ async function addLdapUser(ldapUser, username, password) {
     userObject.email = `${username || uniqueId.value}@${LDAP.getSettings('LDAP_DEFAULT_DOMAIN')}`
   } else {
     const error = new Meteor.Error('LDAP-login-error', 'LDAP Authentication succeded, there is no email to create an account. Have you tried setting your Default Domain in LDAP Settings?')
-    debugLog.error(error)
+    debugLog(error)
     throw error
   }
   // handle special case for titra to sync profile.name
@@ -998,7 +997,7 @@ async function addLdapUser(ldapUser, username, password) {
     userObject.profile.currentLanguageProject = 'Project'
     userObject.profile.currentLanguageProjectDesc = { ops: [{ insert: 'This project has been automatically created for you, feel free to change it! Did you know that you can use emojis like 💰 ⏱ 👍 everywhere?' }] }
   }
-  debugLog.debug('New user data', userObject)
+  debugLog('New user data', userObject)
 
   if (password) {
     userObject.password = password
@@ -1008,7 +1007,7 @@ async function addLdapUser(ldapUser, username, password) {
     // This creates the account with password service
     userObject.ldap = true
     userObject._id = await Accounts.createUserAsync(userObject)
-    debugLog.debug('New user created through LDAP login: ', userObject._id)
+    debugLog('New user created through LDAP login: ', userObject._id)
     // Add the services.ldap identifiers
     await Meteor.users.updateAsync({ _id: userObject._id }, {
       $set: {
@@ -1018,7 +1017,7 @@ async function addLdapUser(ldapUser, username, password) {
       },
     })
   } catch (error) {
-    debugLog.error('Error creating user', error)
+    debugLog('Error creating user', error)
     return error
   }
 
