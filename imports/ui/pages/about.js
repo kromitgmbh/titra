@@ -17,14 +17,35 @@ Template.about.events({
   'click #retrieveChangeLog': (event, templateInstance) => {
     event.preventDefault()
     if (!templateInstance.$('#changelog').hasClass('show')) {
-      $.getJSON('https://api.github.com/repos/kromitgmbh/titra/tags', (data) => {
-        const tag = data[2]
-        $.getJSON(tag.commit.url, async (commitData) => {
-          templateInstance.$('#titra-changelog').html(`Version <a href='https://github.com/kromitgmbh/titra/tags' target='_blank'>${tag.name}</a> (${dayjs(commitData.commit.committer.date).format(getGlobalSetting('dateformat'))}) :<br/>${await emojify(commitData.commit.message)}`)
+      const changelog = templateInstance.$('#titra-changelog')
+      changelog.text(t('globals.loading'))
+      $.getJSON('https://api.github.com/repos/titraio/titra/releases/latest')
+        .done((release) => {
+          if (!release?.tag_name) {
+            changelog.text(t('settings.titra_changelog_error'))
+            return
+          }
+
+          const releaseDate = release.published_at
+            ? ` (${dayjs(release.published_at).format(getGlobalSetting('dateformat'))})`
+            : ''
+          emojify(release.body || '').then((releaseNotes) => {
+            const releaseLink = $('<a/>', {
+              href: `https://github.com/titraio/titra/releases/tag/${encodeURIComponent(release.tag_name)}`,
+              target: '_blank',
+              rel: 'noopener noreferrer',
+            }).text(release.tag_name)
+            changelog.empty()
+              .append(document.createTextNode('Version '))
+              .append(releaseLink)
+              .append(document.createTextNode(`${releaseDate} :\n${releaseNotes}`))
+          }).catch(() => {
+            changelog.text(t('settings.titra_changelog_error'))
+          })
         })
-      }).fail(() => {
-        templateInstance.$('#titra-changelog').html(t('settings.titra_changelog_error'))
-      })
+        .fail(() => {
+          changelog.text(t('settings.titra_changelog_error'))
+        })
     }
   },
 })

@@ -103,12 +103,23 @@ const getProjectUsers = new ValidatedMethod({
   mixins: [authenticationMixin, transactionLogMixin],
   async run({ projectId }) {
     const data = []
-    const project = await Projects.findOneAsync({ _id: projectId })
+    const project = await Projects.findOneAsync(
+      { _id: projectId },
+      {
+        fields: {
+          public: 1,
+          team: 1,
+          admins: 1,
+          userId: 1,
+        },
+      },
+    )
     if (project?.public) {
-      for (const user of Meteor.users.find({})) {
-        if (user.inactive !== true) {
-          data.push({ _id: user._id, profile: user.profile })
-        }
+      for (const user of Meteor.users.find(
+        { inactive: { $ne: true } },
+        { fields: { 'profile.name': 1 } },
+      )) {
+        data.push({ _id: user._id, profile: { name: user.profile?.name } })
       }
     } else if (project?.team || project?.admins) {
       let team = []
@@ -123,9 +134,12 @@ const getProjectUsers = new ValidatedMethod({
       }
       team = team.filter((value, index, self) => self.indexOf(value) === index)
       await Promise.all(team.map(async (member) => {
-        const user = await Meteor.users.findOneAsync({ _id: member })
-        if (user && user.inactive !== true) {
-          data.push({ _id: user._id, profile: user.profile })
+        const user = await Meteor.users.findOneAsync(
+          { _id: member, inactive: { $ne: true } },
+          { fields: { 'profile.name': 1 } },
+        )
+        if (user) {
+          data.push({ _id: user._id, profile: { name: user.profile?.name } })
         }
       }))
     }

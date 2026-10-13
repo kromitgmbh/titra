@@ -3,6 +3,12 @@ import Timecards from '../../timecards/timecards.js'
 import Projects from '../../projects/projects.js'
 import { Dashboards } from '../../dashboards/dashboards'
 import { checkAuthentication, checkAdminAuthentication } from '../../../utils/server_method_helpers.js'
+
+const projectUserFields = {
+  'profile.name': 1,
+  'profile.avatar': 1,
+  'profile.avatarColor': 1,
+}
 /**
  * Publishes the users who tracked time on a project based on the provided project ID.
  * @param {String} projectId - The project ID.
@@ -32,7 +38,7 @@ Meteor.publish('projectUsers', async function projectUsers({ projectId }) {
         if (!initializing) {
           userIds.push(await Timecards.findOneAsync(_id).userId)
           uniqueUsers = [...new Set(userIds)]
-          this.added('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetchAsync() })
+          this.added('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { fields: projectUserFields }).fetchAsync() })
         }
       },
       removed: async() => {
@@ -41,7 +47,7 @@ Meteor.publish('projectUsers', async function projectUsers({ projectId }) {
           Timecards.find({ projectId: { $in: projectList } }).forEach((timecard) => {
             userIds.push(timecard.userId)
           })
-          this.changed('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetchAsync() })
+          this.changed('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { fields: projectUserFields }).fetchAsync() })
         }
       },
       // don't care about changed
@@ -55,7 +61,7 @@ Meteor.publish('projectUsers', async function projectUsers({ projectId }) {
         if (!initializing) {
           userIds.push(await Timecards.findOneAsync(_id).userId)
           uniqueUsers = [...new Set(userIds)]
-          this.added('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetchAsync() })
+          this.added('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { fields: projectUserFields }).fetchAsync() })
         }
       },
       removed: async () => {
@@ -65,14 +71,14 @@ Meteor.publish('projectUsers', async function projectUsers({ projectId }) {
             userIds.push(timecard.userId)
           })
           uniqueUsers = [...new Set(userIds)]
-          this.changed('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetchAsync() })
+          this.changed('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { fields: projectUserFields }).fetchAsync() })
         }
       },
     })
   }
   uniqueUsers = [...new Set(userIds)]
   initializing = false
-  this.added('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { profile: 1 }).fetchAsync() })
+  this.added('projectUsers', projectId, { users: await Meteor.users.find({ _id: { $in: uniqueUsers }, inactive: { $ne: true } }, { fields: projectUserFields }).fetchAsync() })
   this.ready()
   this.onStop(() => {
     handle.stop()
@@ -182,7 +188,7 @@ Meteor.publish('projectResources', async function projectResources({ projectId }
     }
     const meteorUser = await Meteor.users.findOneAsync(
       { _id: userId, inactive: { $ne: true } },
-      { profile: 1 },
+      { fields: { 'profile.name': 1 } },
     )
     if (meteorUser?.profile) {
       this.added('projectResources', userId, meteorUser.profile)
